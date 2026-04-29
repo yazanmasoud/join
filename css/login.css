@@ -27,6 +27,15 @@ body {
     width: 100px;
 }
 
+.logo-start {
+  transform: scale(2) translate(200px, 100px);
+  transition: transform 0.6s ease;
+}
+
+.logo-start.shrink {
+  transform: scale(1) translate(0, 0);
+}
+
 .signup-container {
     display: flex;
     justify-content: flex-end;
