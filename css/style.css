@@ -1,0 +1,7 @@
+@import url('./root.css');
+
+h2,
+h3 {
+  font-size: 54px;
+  color: var(--color-text-mai);
+}
