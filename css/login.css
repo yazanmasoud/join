@@ -1,14 +1,15 @@
 body {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: var(--color-bg-tertiary);
+    flex-direction: column;
+    background-color: var(--color-bg-tertiary);
     font-family: 'Inter', sans-serif;
 }
 
 .content-wrapper {
     max-width: 1440px;
     width: 100%;
+    height: 100vh;
 }
 
 .welcome-section {
@@ -29,7 +30,7 @@ body {
 .signup-container {
     display: flex;
     justify-content: flex-end;
-    margin-top: 64px;
+    align-items: center;
     margin-right: 80px;
     gap: 36px;
 }
@@ -55,8 +56,6 @@ p {
 
 .h1-login {
     color: var(--color-text-main);
-    font-size: 61px;
-    font-weight: 700;
 }
 
 .login-hr {
@@ -129,4 +128,17 @@ p {
     color: var(--color-highlights);
     border: 1px solid var(--color-highlights);
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+    text-align: center;
+    margin-top: 80px;
+    color: var(--color-link);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+footer a:hover {
+    color: var(--color-highlights);
+    font-weight: bold;
 }
