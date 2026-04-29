@@ -15,6 +15,28 @@
     <link rel="stylesheet" href="./css/contacts.css" />
   </head>
   <body>
+    <div class="content-wrapper">
+
+      <sektion class="welcome-section">
+        <img src="./assets/logos/main-logo.svg" alt="Join Logo" class="join-logo">
+          <div class="signup-container">
+            <p class="p-welcome">Not a Join User?</p>
+            <button id="signup-btn" class="signup-btn">Sign Up</button>
+          </div>
+      </sektion>
+    <sektion class="login-container">
+      <h1 class="h1-login">Log in</h1>
+      <hr class="login-hr">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      
+      <div class="login_btn-container">
+        <button id="login-btn">Log in</button>
+       <button id="guest-btn">Guest Log in</button>
+      </div>
+    </sektion>
+
+    </div>
     <script src="js/template.js" defer></script>
     <script src="js/storage.js" defer></script>
     <script src="js/task.js" defer></script>
