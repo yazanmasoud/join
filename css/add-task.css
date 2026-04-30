@@ -23,6 +23,125 @@ main {
   overflow-y: auto;
 }
 
+.add-task {
+  display: flex;
+  gap: 40px;
+  border-radius: 12px;
+  padding-top: 40px;
+}
+
+.add-section-left {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.input-group {
+  padding: 12px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  font-size: 16px;
+  max-width: 440px;
+  font-family: 'Inter', sans-serif;
+}
+
+.input-wrapper {
+  position: relative;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px;
+  padding-right: 45px;
+  box-sizing: border-box;
+}
+
+.input-wrapper button {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.vertical-divider {
+  width: 2px;
+  height: 100px;
+  background: #d1d1d1;
+  max-width: 100%;
+}
+
+.prio-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.priority-btn-content {
+  display: flex;
+  gap: 10px;
+}
+
+.prio-btn {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #d1d1d1;
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.medium-btn {
+  background-color: var(--color-btn-medium);
+}
+
+.priority-btn-content .active-urgent {
+  background-color: #ff3d00;
+  color: white;
+}
+.priority-btn-content .active-medium {
+  background-color: #ffa800;
+  color: white;
+}
+.priority-btn-content .active-low {
+  background-color: #7ae229;
+  color: white;
+}
+
+.priority-btn-content button.active-urgent img,
+.priority-btn-content button.medium img,
+.priority-btn-content button.active-low img {
+  filter: brightness(0) invert(1);
+}
+
 /* PLACEHOLDER */
 .sidebar-placeholder,
 .header-placeholder {

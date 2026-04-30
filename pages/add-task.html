@@ -17,28 +17,72 @@
     <main class="content-area">
       <section class="summary-header">
         <h2>Add Task</h2>
-        <div class="add-section-left">
-          <div class="input-group">
-            <label>Title*</label>
-            <input type="text" id="taskTitle" placeholder="Enter a Title" />
+        <div class="add-task">
+          <div class="add-section-left">
+            <div class="input-group">
+              <label for="taskTitle">Title*</label>
+              <input type="text" id="taskTitle" placeholder="Enter a title" />
+            </div>
+            <div class="input-group">
+              <label for="taskDescription">Description</label>
+              <textarea
+                id="taskDescription"
+                placeholder="Enter a Description"
+              ></textarea>
+            </div>
+            <div class="input-group">
+              <label for="taskDate">Due date*</label>
+              <div class="input-wrapper">
+                <input type="date" id="taskDate" placeholder="dd/mm/yyyy" />
+                <button
+                  type="button"
+                  onclick="document.getElementById('TaskDate').showPicker()"
+                >
+                  <img
+                    src="../assets/icons/date-icon.svg"
+                    alt="Kalender öffnen"
+                  />
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="input-group">
-            <label>Description</label>
-            <input
-              type="text"
-              id="taskDescription"
-              placeholder="Enter a Description"
-            />
+          <div class="vertical-divider"></div>
+          <div class="add-section-left">
+            <div class="input-group">
+              <label>Priority</label>
+              <!-- Die ID 'prioContainer' ist wichtig für das Script -->
+              <div class="priority-btn-content" id="prioContainer"></div>
+            </div>
+
+            <div class="input-group">
+              <label for="tasksAssigned">Assigned to</label>
+              <select id="tasksAssigned">
+                <option>Select contacts to assign</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="taskCategory">Category*</label>
+              <select id="taskCategory">
+                <option>Select task category</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="subtasks">Subtasks</label>
+              <input type="text" id="subtasks" placeholder="Add new subtask" />
+            </div>
           </div>
-          <div class="input-group">
-            <label>Due date*</label>
-            <input type="text" id="TaskDate" placeholder="dd/mm/yyyy" />
-            <button>
-              <img src="../assets/icons/date-icon.svg" alt="öffne Kalender" />
-            </button>
-          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-secondary" onclick="clearForm()">
+            Clear <span class="icon">x</span>
+          </button>
+          <button class="btn-primary" onclick="createTask()">
+            Create Task <span class="icon">✓</span>
+          </button>
         </div>
       </section>
     </main>
+    <script src="../js/template.js"></script>
+    <script src="../js/task.js"></script>
   </body>
 </html>
