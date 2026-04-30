@@ -7,9 +7,12 @@ body {
 }
 
 .content-wrapper {
-    max-width: 1440px;
+    max-width: 1920px;
     width: 100%;
     height: 100vh;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .welcome-section {
@@ -28,12 +31,12 @@ body {
 }
 
 .logo-start {
-  transform: scale(2) translate(200px, 100px);
-  transition: transform 0.6s ease;
+    transform: scale(2) translate(200px, 100px);
+    transition: transform 0.6s ease;
 }
 
 .logo-start.shrink {
-  transform: scale(1) translate(0, 0);
+    transform: scale(1) translate(0, 0);
 }
 
 .signup-container {
@@ -50,7 +53,7 @@ p {
     font-weight: 400;
 }
 
-.login-container {
+.login-signup-section {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -63,18 +66,35 @@ p {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.h1-login {
+.h1-login-signup {
     color: var(--color-text-main);
 }
 
-.login-hr {
+.login-signup-hr {
     width: 140px;
     border: 2px solid var(--color-highlights);
     margin-top: 16px;
     margin-bottom: 20px;
 }
 
-.username, .password {
+.signup-section-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 0;
+    width: 100%;
+
+}
+
+.signup-section-header .btn {
+    position: absolute;
+    left: 0px;
+}
+
+.username,
+.password,
+.email {
     width: 422px;
     height: 48px;
     padding: 8px;
@@ -83,20 +103,28 @@ p {
     border-radius: 10px;
 }
 
-.username:focus, .password:focus {
+.username:focus,
+.password:focus,
+.email:focus {
     border-color: var(--color-highlights);
     outline: none;
 }
 
 .username {
     background-image: url('../assets/icons/mail-icon-login.svg');
-    background-position: right 10px center; 
+    background-position: right 10px center;
     background-repeat: no-repeat;
 }
 
 .password {
     background-image: url('../assets/icons/lock-icon-login.svg');
-    background-position: right 10px center; 
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+}
+
+.email {
+    background-image: url('../assets/icons/mail-icon-login.svg');
+    background-position: right 10px center;
     background-repeat: no-repeat;
 }
 
@@ -108,7 +136,8 @@ p {
     width: 100%;
 }
 
-.login-btn, .signup-btn {
+.login-btn,
+.signup-btn {
     padding: 15px 24px;
     background-color: var(--color-bg-secondary);
     color: var(--color-bg-primary);
@@ -118,7 +147,8 @@ p {
     font-weight: 700;
 }
 
-.login-btn:hover, .signup-btn:hover {
+.login-btn:hover,
+.signup-btn:hover {
     background-color: var(--color-highlights);
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -141,7 +171,7 @@ p {
 
 footer {
     text-align: center;
-    margin-top: 80px;
+    margin-top: auto;
     color: var(--color-link);
     font-size: 16px;
     cursor: pointer;

@@ -15,11 +15,23 @@ body {
   width: 100%;
   font-family: 'Inter', sans-serif;
   font-size: 32px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 a {
   text-decoration: none;
   color: var(--color-link);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.btn {
+  border: none;
+  background: none;
 }
 
 /* ===== Spinner ===== */
