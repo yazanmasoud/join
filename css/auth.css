@@ -28,20 +28,42 @@ body {
 }
 
 .join-logo {
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 80px;
-    margin-left: 80px;
     width: 100px;
 }
 
-.logo-start {
-    transform: scale(2) translate(200px, 100px);
-    transition: transform 0.6s ease;
+/* placeholder to preserve layout while the real image is positioned fixed */
+.logo-wrap {
+    width: 100px;
+    margin-top: 80px;
+    margin-left: 80px;
+    height: 100px; /* reserve vertical space */
 }
 
+.logo-start {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(2);
+    transition: transform 700ms cubic-bezier(.2,.9,.2,1), left 700ms, top 700ms;
+    z-index: 1000;
+    pointer-events: none; /* avoid capturing clicks while animating */
+}
+
+/* Move to top-left while keeping the placeholder in the layout */
 .logo-start.shrink {
-    transform: scale(1) translate(0, 0);
+    left: 80px; /* final left gap, matches .logo-wrap margin-left */
+    top: 24px;  /* final top gap */
+    transform: translate(0, 0) scale(1);
+}
+
+/* When final, keep it visible but let layout continue to use .logo-wrap */
+.logo-start.final {
+    /* keep fixed to avoid layout reflow; visual is same as final position */
+    position: fixed;
+    left: 80px;
+    top: 24px;
+    transform: translate(0,0) scale(1);
+    pointer-events: auto;
 }
 
 .signup-container {
@@ -216,8 +238,8 @@ footer {
     gap: 30px;
     display: flex;
     justify-content: center;
-    padding-top: 150px;
-    padding-bottom: 30px;
+    margin-top: auto; /* push footer to bottom */
+    padding: 30px 0 30px 0;
 }
 
 footer a:hover {

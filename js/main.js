@@ -2,10 +2,19 @@ const isLoginPage = document.getElementById("login");
 
 function animateLogo(delay = 0) {
   const logo = document.getElementById("logo");
-  if (!logo || logo.classList.contains("shrink")) return;
+  const login = document.getElementById("login");
+
+  if (!logo || !login || logo.classList.contains("shrink")) return;
 
   setTimeout(() => {
     logo.classList.add("shrink");
+
+    const transitionMs = 700;
+    const bufferMs = 120; // small buffer to ensure animation finished
+    setTimeout(() => {
+      logo.classList.add('final');
+      login.classList.remove('hidden');
+    }, transitionMs + bufferMs);
   }, delay);
 }
 
@@ -19,8 +28,8 @@ function openSignUp() {
 
   if (!signup || !login) return;
 
-  signup.classList.remove("hidden"); // anzeigen
-  login.classList.add("hidden");     // verstecken
+  signup.classList.remove("hidden");
+  login.classList.add("hidden");
 }
 
 function openLogin() {
@@ -29,6 +38,6 @@ function openLogin() {
 
   if (!signup || !login) return;
 
-  signup.classList.add("hidden");    // verstecken
-  login.classList.remove("hidden");  // anzeigen
+  signup.classList.add("hidden");
+  login.classList.remove("hidden");
 }
