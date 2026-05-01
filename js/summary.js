@@ -17,6 +17,19 @@ function fetchSummaryData() {
   });
 }
 
+function handleGuestLogin() {
+  const container = document.getElementById('greeting-container');
+  const nameElement = document.querySelector('[data-field="userName"]');
+
+  if (dashboardData.isGuest || !dashboardData.userName) {
+    container.classList.add('is-guest');
+    if (nameElement) nameElement.innerText = ''; // Name löschen im Gast-Modus
+  } else {
+    container.classList.remove('is-guest');
+    if (nameElement) nameElement.innerText = dashboardData.userName; // Name setzen
+  }
+}
+
 function calculateMetrics(tasks) {
   return {
     todo: tasks.filter((t) => t.status === 'todo').length || 0,
