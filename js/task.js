@@ -53,24 +53,57 @@ function setPriority(prio) {
   if (activeBtn) activeBtn.classList.add('active-' + prio.toLowerCase());
 }
 
+function clearForm() {
+  // Text-Felder leeren
+  document.getElementById('taskTitle').value = '';
+  document.getElementById('taskDescription').value = '';
+  document.getElementById('taskDate').value = '';
+  document.getElementById('subtasks').value = '';
+
+  // Dropdowns zurücksetzen (erster Eintrag: "Select...")
+  document.getElementById('taskCategory').selectedIndex = 0;
+  document.getElementById('tasksAssigned').selectedIndex = 0;
+
+  // Priorität auf Standard zurücksetzen
+  setPriority('Medium');
+
+  console.log('Formular wurde geleert.');
+}
+
 async function createTask() {
   const userId = 'guest_user';
+
+  // Hole die Werte aus dem Formular
+  const title = document.getElementById('taskTitle').value;
+  const date = document.getElementById('taskDate').value;
+  const category = document.getElementById('taskCategory').value;
+
+  // Pflichtfelder prüfen
+  if (!title || !date || category === 'Select task category') {
+    alert('Please fill in all required fields (*)');
+    return;
+  }
+
   const newTask = {
-    title: document.getElementById('taskTitle').value,
+    title: title,
     description: document.getElementById('taskDescription').value,
-    dueDate: document.getElementById('taskDate').value,
-    category: document.getElementById('taskCategory').value,
+    dueDate: date,
+    category: category,
     priority: currentPriority,
     assignedTo: document.getElementById('tasksAssigned').value,
     createdAt: Date.now(),
   };
 
   try {
+    // In Firebase speichern
     await database.ref(`users/${userId}/tasks`).push(newTask);
-    alert('Task gespeichert!');
-    if (typeof window.clearForm === 'function') clearForm();
+
+    // Feedback und Formular leeren
+    alert('Task erfolgreich gespeichert!');
+    clearForm();
   } catch (e) {
     console.error('Fehler beim Speichern:', e);
+    alert('Fehler beim Speichern des Tasks.');
   }
 }
 
