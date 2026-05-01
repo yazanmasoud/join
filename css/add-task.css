@@ -1,9 +1,6 @@
 @import url(./root.css);
 
 /* 1. BASIS LAYOUT & RESET */
-* {
-  box-sizing: border-box; /* Verhindert Layout-Fehler durch Padding */
-}
 
 body {
   margin: 0;
@@ -56,7 +53,7 @@ main {
   color: #ff3d00;
 }
 
-/* 3. INPUTS & ELEMENTS (Zusammengefasst) */
+/* 3. INPUTS & ELEMENTS*/
 input,
 textarea,
 select {
@@ -101,7 +98,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
 /* 4. PRIORITÄTEN & BUTTONS */
 .vertical-divider {
   width: 2px;
-  height: 440px; /* Hier ggf. Höhe anpassen, falls es zu kurz war */
+  height: 440px;
   background: #d1d1d1;
 }
 
@@ -138,7 +135,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
   color: white;
 }
 
-/* Icon-Invertierung bei aktiven Buttons */
+/* Icon-Invertierung, aktiven Buttons */
 .priority-btn-content button[class*='active-'] img {
   filter: brightness(0) invert(1);
 }
@@ -151,17 +148,17 @@ input[type='date']::-webkit-calendar-picker-indicator {
 /* Spezifische Hover-Farben über Klassen (nur wenn nicht aktiv) */
 .color-urgent:not([class*='active']):hover {
   border-color: #ff3d00;
-  background-color: #fff0ed; /* Ganz helles Rot */
+  background-color: #fff0ed;
 }
 
 .color-medium:not([class*='active']):hover {
   border-color: #ffa800;
-  background-color: #fff5e5; /* Ganz helles Gelb */
+  background-color: #fff5e5;
 }
 
 .color-low:not([class*='active']):hover {
   border-color: #7ae229;
-  background-color: #f2ffe9; /* Ganz helles Grün */
+  background-color: #f2ffe9;
 }
 
 /* Deaktiviert den Hover-Effekt, sobald eine "active-" Klasse vorhanden ist */
@@ -169,6 +166,24 @@ input[type='date']::-webkit-calendar-picker-indicator {
   transform: none;
   box-shadow: none;
   cursor: default;
+}
+
+.form-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 32px;
+  max-width: 100%;
+}
+
+.required-hint {
+  font-size: 16px;
+  margin: 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
 }
 
 /* 5. PLACEHOLDER */

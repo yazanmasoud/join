@@ -77,13 +77,26 @@
             </div>
           </div>
         </div>
-        <div class="form-actions">
-          <button class="btn-secondary" onclick="clearForm()">
-            Clear <span class="icon">x</span>
-          </button>
-          <button class="btn-primary" onclick="createTask()">
-            Create Task <span class="icon">✓</span>
-          </button>
+        <div class="form-bottom">
+          <p class="required-hint">
+            <span class="required">*</span>This field is required
+          </p>
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="clearForm()">
+              Clear <span class="icon-cancel"></span>
+              <img
+                src="../assets/icons/cancle-icon.svg"
+                alt="Verwerfe den Entwurf Button"
+              />
+            </button>
+            <button type="submit" class="btn-primary" onclick="createTask()">
+              Create Task
+              <img
+                src="../assets/icons/create-task.svg"
+                alt="speichere den Task"
+              />
+            </button>
+          </div>
         </div>
       </section>
     </main>
