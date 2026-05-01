@@ -142,6 +142,34 @@ input[type='date']::-webkit-calendar-picker-indicator {
 .priority-btn-content button[class*='active-'] img {
   filter: brightness(0) invert(1);
 }
+.prio-btn:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  transition: all 0.1s ease;
+}
+
+/* Spezifische Hover-Farben über Klassen (nur wenn nicht aktiv) */
+.color-urgent:not([class*='active']):hover {
+  border-color: #ff3d00;
+  background-color: #fff0ed; /* Ganz helles Rot */
+}
+
+.color-medium:not([class*='active']):hover {
+  border-color: #ffa800;
+  background-color: #fff5e5; /* Ganz helles Gelb */
+}
+
+.color-low:not([class*='active']):hover {
+  border-color: #7ae229;
+  background-color: #f2ffe9; /* Ganz helles Grün */
+}
+
+/* Deaktiviert den Hover-Effekt, sobald eine "active-" Klasse vorhanden ist */
+.prio-btn[class*='active-']:hover {
+  transform: none;
+  box-shadow: none;
+  cursor: default;
+}
 
 /* 5. PLACEHOLDER */
 .sidebar-placeholder,
