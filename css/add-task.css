@@ -1,6 +1,10 @@
 @import url(./root.css);
 
-/* BASIS LAYOUT */
+/* 1. BASIS LAYOUT & RESET */
+* {
+  box-sizing: border-box; /* Verhindert Layout-Fehler durch Padding */
+}
+
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -23,6 +27,7 @@ main {
   overflow-y: auto;
 }
 
+/* 2. FORMULAR STRUKTUR */
 .add-task {
   display: flex;
   gap: 40px;
@@ -51,16 +56,18 @@ main {
   color: #ff3d00;
 }
 
+/* 3. INPUTS & ELEMENTS (Zusammengefasst) */
 input,
 textarea,
 select {
   width: 100%;
+  max-width: 440px;
   padding: 12px;
   border: 1px solid #d1d1d1;
   border-radius: 10px;
   font-size: 16px;
-  max-width: 440px;
   font-family: 'Inter', sans-serif;
+  outline: none;
 }
 
 .input-wrapper {
@@ -71,10 +78,7 @@ select {
 }
 
 .input-wrapper input {
-  width: 100%;
-  padding: 12px;
   padding-right: 45px;
-  box-sizing: border-box;
 }
 
 .input-wrapper button {
@@ -88,21 +92,17 @@ select {
   align-items: center;
 }
 
+/* Spezial-Fix für Date-Icon */
 input[type='date']::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
 }
 
+/* 4. PRIORITÄTEN & BUTTONS */
 .vertical-divider {
   width: 2px;
-  height: 100px;
+  height: 440px; /* Hier ggf. Höhe anpassen, falls es zu kurz war */
   background: #d1d1d1;
-  max-width: 100%;
-}
-
-.prio-buttons {
-  display: flex;
-  gap: 10px;
 }
 
 .priority-btn-content {
@@ -121,32 +121,29 @@ input[type='date']::-webkit-calendar-picker-indicator {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-size: 16px;
 }
 
-.medium-btn {
-  background-color: var(--color-btn-medium);
-}
-
-.priority-btn-content .active-urgent {
+/* Aktive Zustände */
+.active-urgent {
   background-color: #ff3d00;
   color: white;
 }
-.priority-btn-content .active-medium {
+.active-medium {
   background-color: #ffa800;
   color: white;
 }
-.priority-btn-content .active-low {
+.active-low {
   background-color: #7ae229;
   color: white;
 }
 
-.priority-btn-content button.active-urgent img,
-.priority-btn-content button.medium img,
-.priority-btn-content button.active-low img {
+/* Icon-Invertierung bei aktiven Buttons */
+.priority-btn-content button[class*='active-'] img {
   filter: brightness(0) invert(1);
 }
 
-/* PLACEHOLDER */
+/* 5. PLACEHOLDER */
 .sidebar-placeholder,
 .header-placeholder {
   display: flex;

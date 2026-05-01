@@ -1,3 +1,17 @@
+async function createTask() {
+  const newTask = {
+    title: document.getElementById('taskTitle').value,
+    prio: currentPriority,
+  };
+
+  try {
+    await database.ref('tasks').push(newTask);
+    // Hier könntest du stattdessen eine Erfolgsmeldung im UI anzeigen (z.B. Task Added Banner)
+  } catch (error) {
+    console.error('Fehler beim Speichern:', error);
+  }
+}
+
 let currentPriority = 'Medium';
 
 function setPriority(prio) {
