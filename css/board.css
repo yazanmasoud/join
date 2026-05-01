@@ -1,0 +1,77 @@
+@import url(./root.css);
+
+/*BASIS LAYOUT & RESET */
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-tertiary);
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  grid-template-rows: 80px 1fr;
+  height: 100vh;
+}
+
+.main-content {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  padding: 60px;
+  overflow-y: auto;
+}
+
+.content-area {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  gap: 20px;
+}
+
+.board-header-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-container input {
+  width: 312px;
+  padding: 8px 16px;
+  padding-right: 50px; /* Platz für das Such-Icon */
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  font-size: 20px;
+  background-color: white;
+}
+
+.search-divider {
+  width: 1px;
+  height: 31px;
+  background-color: #d1d1d1;
+  position: absolute;
+  right: 48px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 16px;
+  cursor: pointer;
+}
+
+/* PLACEHOLDER */
+.sidebar-placeholder,
+.header-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

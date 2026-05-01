@@ -1,13 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Board</title>
     <script src="../js/main.js" defer></script>
-    <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-    
-</body>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/root.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/fonts.css" />
+    <link rel="stylesheet" href="../css/btn.css" />
+    <link rel="stylesheet" href="../css/board.css" />
+  </head>
+  <body>
+    <aside class="sidebar-placeholder">Sidebar Platzhalter</aside>
+    <header class="header-placeholder">Header Platzhalter</header>
+    <main class="main-content">
+      <section class="content-area">
+        <div class="board-header">
+          <h2>Board</h2>
+
+          <div class="board-header-right">
+            <div class="search-container">
+              <input type="text" placeholder="Find Task" id="searchTask" />
+              <div class="search-divider"></div>
+              <img
+                src="../assets/icons/search-icon.svg"
+                alt="Search"
+                class="search-icon"
+              />
+            </div>
+
+            <button class="btn-add-task" onclick="openAddTask()">
+              Add task <img src="../assets/icons/add.svg" alt="plus" />
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Firebase App (Basis-SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Database -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <!--Logik -->
+    <script src="../js/template.js"></script>
+    <script src="../js/board.js"></script>
+  </body>
 </html>
