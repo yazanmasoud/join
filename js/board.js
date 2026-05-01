@@ -11,22 +11,19 @@ function initBoard() {
 }
 
 function renderAllTasks(allTasks) {
-  const columns = ['todo', 'progress', 'feedback', 'done'];
-  columns.forEach((col) => {
-    const el = document.getElementById(col);
-    if (el) el.innerHTML = '';
-  });
+  const cols = ['todo', 'progress', 'feedback', 'done'];
+  cols.forEach((id) => (document.getElementById(id).innerHTML = ''));
 
   if (allTasks) {
-    Object.keys(allTasks).forEach((id) => {
-      const task = allTasks[id];
-      // FALLBACK: Wenn kein Status da ist, nimm 'todo'
-      const status = task.status || 'todo';
-      const container = document.getElementById(status);
+    Object.entries(allTasks).forEach(([id, task]) => {
+      const container = document.getElementById(task.status || 'todo');
       if (container) container.innerHTML += generateTaskHTML(task, id);
     });
   }
-  columns.forEach((col) => checkPlaceholder(col));
+  cols.forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
+  });
 }
 
 function checkPlaceholder(id) {
