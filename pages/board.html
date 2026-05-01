@@ -37,6 +37,80 @@
             </button>
           </div>
         </div>
+
+        <div class="board-columns">
+          <!-- 1. TO DO -->
+          <div class="column">
+            <div class="column-header">
+              <span>To do</span>
+              <button class="add-task-small" onclick="openAddTask('todo')">
+                <img src="../assets/icons/board-add-icon.svg" alt="add" />
+              </button>
+            </div>
+            <div
+              class="task-container"
+              id="todo"
+              ondrop="moveTo('todo')"
+              ondragover="allowDrop(event)"
+            >
+              <div class="no-tasks">No tasks To do</div>
+            </div>
+          </div>
+
+          <!-- 2. IN PROGRESS -->
+          <div class="column">
+            <div class="column-header">
+              <span>In progress</span>
+              <button class="add-task-small" onclick="openAddTask('progress')">
+                <img src="../assets/icons/board-add-icon.svg" alt="add" />
+              </button>
+            </div>
+            <div
+              class="task-container"
+              id="progress"
+              ondrop="moveTo('progress')"
+              ondragover="allowDrop(event)"
+            >
+              <div class="no-tasks">No tasks In progress</div>
+            </div>
+          </div>
+
+          <!-- 3. AWAIT FEEDBACK -->
+          <div class="column">
+            <div class="column-header">
+              <span>Await feedback</span>
+              <button class="add-task-small" onclick="openAddTask('feedback')">
+                <img src="../assets/icons/board-add-icon.svg" alt="add" />
+              </button>
+            </div>
+            <div
+              class="task-container"
+              id="feedback"
+              ondrop="moveTo('feedback')"
+              ondragover="allowDrop(event)"
+            >
+              <div class="no-tasks">No tasks Await feedback</div>
+            </div>
+          </div>
+
+          <!-- 4. DONE -->
+          <div class="column">
+            <div class="column-header">
+              <span>Done</span>
+              <button class="add-task-small" onclick="openAddTask('done')">
+                <img src="../assets/icons/board-add-icon.svg" alt="add" />
+              </button>
+            </div>
+            <div
+              class="task-container"
+              id="done"
+              ondrop="moveTo('done')"
+              ondragover="allowDrop(event)"
+            >
+              <div class="no-tasks">No tasks Done</div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 

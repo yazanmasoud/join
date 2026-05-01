@@ -1,4 +1,3 @@
-// 1. GLOBALE VARIABLEN & DATEN
 const CATEGORY_OPTIONS = ['Technical Task', 'User Story', 'Feature Task'];
 const CONTACT_OPTIONS = [
   'Maximilian Müller',
@@ -7,7 +6,6 @@ const CONTACT_OPTIONS = [
 ];
 let currentPriority = 'Medium';
 
-// 2. INITIALISIERUNG
 function initAddTask() {
   renderPriorityButtons();
   renderCategories();
@@ -15,7 +13,6 @@ function initAddTask() {
   setPriority(currentPriority);
 }
 
-// 3. RENDER FUNKTIONEN
 function renderPriorityButtons() {
   const container = document.getElementById('prioContainer');
   if (container) container.innerHTML = getPriorityButtonsHTML();
@@ -23,88 +20,70 @@ function renderPriorityButtons() {
 
 function renderCategories() {
   const select = document.getElementById('taskCategory');
-  if (select) {
+  if (select)
     select.innerHTML = getSelectOptionsHTML(
       CATEGORY_OPTIONS,
       'Select task category',
     );
-  }
 }
 
 function renderContacts() {
   const select = document.getElementById('tasksAssigned');
-  if (select) {
+  if (select)
     select.innerHTML = getSelectOptionsHTML(
       CONTACT_OPTIONS,
       'Select contacts to assign',
     );
-  }
 }
 
-// 4. LOGIK & INTERAKTION
 function setPriority(prio) {
   currentPriority = prio;
-  const buttons = document.querySelectorAll('.priority-btn-content button');
-  buttons.forEach((btn) =>
-    btn.classList.remove('active-urgent', 'active-medium', 'active-low'),
+  const btns = document.querySelectorAll('.prio-btn');
+  btns.forEach((b) =>
+    b.classList.remove('active-urgent', 'active-medium', 'active-low'),
   );
-
-  const activeBtn = document.getElementById('prio' + prio);
-  if (activeBtn) activeBtn.classList.add('active-' + prio.toLowerCase());
+  const active = document.getElementById('prio' + prio);
+  if (active) active.classList.add('active-' + prio.toLowerCase());
 }
 
-function clearForm() {
-  // Text-Felder leeren
-  document.getElementById('taskTitle').value = '';
-  document.getElementById('taskDescription').value = '';
-  document.getElementById('taskDate').value = '';
-  document.getElementById('subtasks').value = '';
-
-  // Dropdowns zurücksetzen (erster Eintrag: "Select...")
-  document.getElementById('taskCategory').selectedIndex = 0;
-  document.getElementById('tasksAssigned').selectedIndex = 0;
-
-  // Priorität auf Standard zurücksetzen
-  setPriority('Medium');
-
-  console.log('Formular wurde geleert.');
+function getTaskObject() {
+  return {
+    title: document.getElementById('taskTitle').value,
+    description: document.getElementById('taskDescription').value,
+    dueDate: document.getElementById('taskDate').value,
+    category: document.getElementById('taskCategory').value,
+    priority: currentPriority,
+    assignedTo: document.getElementById('tasksAssigned').value,
+    status: 'todo',
+    createdAt: Date.now(),
+  };
 }
 
 async function createTask() {
-  const userId = 'guest_user';
-
-  // Hole die Werte aus dem Formular
-  const title = document.getElementById('taskTitle').value;
-  const date = document.getElementById('taskDate').value;
-  const category = document.getElementById('taskCategory').value;
-
-  // Pflichtfelder prüfen
-  if (!title || !date || category === 'Select task category') {
-    alert('Please fill in all required fields (*)');
-    return;
+  const task = getTaskObject();
+  if (
+    !task.title ||
+    !task.dueDate ||
+    task.category === 'Select task category'
+  ) {
+    return alert('Please fill in all required fields (*)');
   }
-
-  const newTask = {
-    title: title,
-    description: document.getElementById('taskDescription').value,
-    dueDate: date,
-    category: category,
-    priority: currentPriority,
-    assignedTo: document.getElementById('tasksAssigned').value,
-    createdAt: Date.now(),
-  };
-
   try {
-    // In Firebase speichern
-    await database.ref(`users/${userId}/tasks`).push(newTask);
-
-    // Feedback und Formular leeren
+    await database.ref('tasks').push(task);
     alert('Task erfolgreich gespeichert!');
-    clearForm();
+    window.location.href = 'board.html';
   } catch (e) {
-    console.error('Fehler beim Speichern:', e);
-    alert('Fehler beim Speichern des Tasks.');
+    console.error('Fehler:', e);
   }
+}
+
+function clearForm() {
+  ['taskTitle', 'taskDescription', 'taskDate', 'subtasks'].forEach(
+    (id) => (document.getElementById(id).value = ''),
+  );
+  document.getElementById('taskCategory').selectedIndex = 0;
+  document.getElementById('tasksAssigned').selectedIndex = 0;
+  setPriority('Medium');
 }
 
 initAddTask();
