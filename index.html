@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="de">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Join</title>
@@ -9,54 +10,64 @@
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/fonts.css" />
     <link rel="stylesheet" href="./css/btn.css" />
-    <link rel="stylesheet" href="./css/login.css" />
+    <link rel="stylesheet" href="./css/auth.css" />
     <link rel="stylesheet" href="./css/summary-dashboard.css" />
     <link rel="stylesheet" href="./css/add-task.css" />
     <link rel="stylesheet" href="./css/contacts.css" />
-  </head>
-  <body>
+</head>
+
+<body>
     <!-- <div id="spinner-container" class="spinner-container">
         <div class="spinner"></div>
     </div> -->
 
     <div class="content-wrapper">
 
-      <section class="welcome-section">
-        <img src="./assets/logos/main-logo.svg" alt="Join Logo" class="join-logo logo-start">
-          <div class="signup-container">
-            <p class="p-welcome">Not a Join User?</p>
-            <button class="signup-btn" onclick="openSignUp()">Sign Up</button>
-          </div>
-      </section>
+        <section class="welcome-section">
+            <img src="./assets/logos/main-logo.svg" alt="Join Logo" class="join-logo logo-start">
+            <div class="signup-container">
+                <p class="p-welcome">Not a Join User?</p>
+                <button class="signup-btn" onclick="openSignUp()">Sign Up</button>
+            </div>
+        </section>
 
         <section id="login" class="login-signup-section">
             <h1 class="h1-login-signup">Log in</h1>
             <hr class="login-signup-hr">
             <input type="text" id="username" class="username" placeholder="Username" required>
             <input type="password" id="password" class="password" placeholder="Password" required>
-      
+
             <div class="login_btn-container">
-            <button class="login-btn">Log in</button>
-            <button class="guest-btn">Guest Log in</button>
+                <button class="login-btn">Log in</button>
+                <button class="guest-btn">Guest Log in</button>
         </section>
 
         <section id="signup" class="login-signup-section hidden">
             <div class="signup-section-header">
-                <button class="btn" onclick="openLogin()"><img src="./assets/icons/arrow-left-line.svg" alt="arrow left"></button>
+                <button class="btn" onclick="openLogin()"><img src="./assets/icons/arrow-left-line.svg"
+                        alt="arrow left"></button>
                 <h1 class="h1-login-signup">Sign Up</h1>
             </div>
             <hr class="login-signup-hr">
             <input type="text" id="signup-username" class="username" placeholder="Username" required>
             <input type="email" id="signup-email" class="email" placeholder="Email" required>
             <input type="password" id="signup-password" class="password" placeholder="Password" required>
-            <input type="password" id="signup-confirm-password" class="password" placeholder="Confirm Password" required>
+            <input type="password" id="signup-confirm-password" class="password" placeholder="Confirm Password"
+                required>
+
+            <div class="privacy-container">
+                <input type="checkbox" id="privacy">
+                <label for="privacy">
+                    I accept the <a href="./pages/privacy.html">Privacy policy</a>
+                </label>
+            </div>
 
             <button class="signup-btn">Sign Up</button>
         </section>
 
         <footer class="login-footer">
-        <a href="./pages/impressum.html">Legal Notice - </a>
-        <a href="./pages/privacy.html">Privacy Policy</a>
+            <a href="./pages/impressum.html">Legal Notice - </a>
+            <a href="./pages/privacy.html">Privacy Policy</a>
         </footer>
     </div>
 
@@ -66,5 +77,6 @@
     <script src="js/contact.js" defer></script>
     <script src="js/drag-and-drop.js" defer></script>
     <script src="js/main.js" defer></script>
-  </body>
+</body>
+
 </html>
