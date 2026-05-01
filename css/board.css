@@ -1,7 +1,6 @@
 @import url(./root.css);
 
-/*BASIS LAYOUT & RESET */
-
+/* --- 1. BASIS LAYOUT & RESET --- */
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--color-bg-tertiary);
@@ -9,11 +8,12 @@ body {
   grid-template-columns: 232px 1fr;
   grid-template-rows: 80px 1fr;
   height: 100vh;
+  margin: 0;
 }
 
 .main-content {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
+  grid-column: 2;
+  grid-row: 2;
   padding: 60px;
   overflow-y: auto;
 }
@@ -23,35 +23,44 @@ body {
   max-width: 1920px;
   margin: 0 auto;
 }
-/*header */
-.board-header {
+
+/* Hilfsklassen für Flex-Zentrierung */
+.board-header,
+.board-header-right,
+.search-container,
+.column-header,
+.detail-view-header,
+.detail-view-prio-badge,
+.action-btn,
+.assigned-user,
+.subtask-item,
+.input-wrapper,
+.sidebar-placeholder,
+.header-placeholder {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+}
+
+/* --- 2. HEADER & SEARCH --- */
+.board-header {
+  justify-content: space-between;
   margin-bottom: 40px;
   gap: 20px;
 }
 
 .board-header-right {
-  display: flex;
-  align-items: center;
   gap: 32px;
 }
 
 .search-container {
   position: relative;
-  display: flex;
-  align-items: center;
 }
-
 .search-container input {
   width: 312px;
-  padding: 8px 16px;
-  padding-right: 50px; /* Platz für das Such-Icon */
+  padding: 8px 50px 8px 16px;
   border: 1px solid #d1d1d1;
   border-radius: 10px;
   font-size: 20px;
-  background-color: white;
 }
 
 .search-divider {
@@ -67,12 +76,12 @@ body {
   right: 16px;
   cursor: pointer;
 }
-/*BOARD */
+
+/* --- 3. BOARD COLUMNS --- */
 .board-columns {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
-  justify-content: flex-start;
 }
 
 .column {
@@ -83,39 +92,17 @@ body {
   flex-direction: column;
 }
 
-/* Header der Spalte (Text links, Button rechts) */
 .column-header {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 0 10px;
   margin-bottom: 16px;
 }
-
 .column-header span {
   font-size: 20px;
   font-weight: 700;
   color: #42526e;
 }
 
-/* Der kleine Plus-Button aus deinem Bild */
-.add-task-small {
-  border: 2px solid #2a3647;
-  border-radius: 8px;
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3px;
-  transition: all 0.1s ease-in-out;
-}
-
-.add-task-small:hover {
-  border-color: #29abe2;
-}
-
-/* Der Bereich für die Tasks (wichtig für Drag & Drop) */
 .task-container {
   min-height: 80vh;
   width: 100%;
@@ -124,20 +111,263 @@ body {
   gap: 16px;
 }
 
-/* Platzhalter wenn keine Tasks(wie im Bild) */
-.no-tasks {
-  background: #e7e7e7;
+.add-task-small {
+  border: 2px solid #2a3647;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  padding: 3px;
+  transition: all 0.1s ease-in-out;
+}
+.add-task-small:hover {
+  border-color: #29abe2;
+}
+
+/* --- 4. TASK CARDS & CATEGORIES --- */
+.task-card {
+  background: white;
+  border-radius: 24px;
+  padding: 16px;
+  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.08);
+  cursor: grab;
+  user-select: none;
+}
+.task-card:active {
+  transform: rotate(2deg);
+  cursor: grabbing;
+}
+
+.task-category {
+  color: white;
+  padding: 4px 16px;
+  border-radius: 8px;
+  width: fit-content;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.task-category.userstory {
+  background-color: var(--color-category-story);
+}
+.task-category.technicaltask {
+  background-color: var(--color-category-technical);
+}
+.task-category.featuretask {
+  background-color: var(--color-category-feature);
+}
+
+.no-tasks,
+.drag-area-highlight {
   border: 1px dashed #a8a8a8;
   border-radius: 10px;
+}
+.no-tasks {
+  background: #e7e7e7;
   height: 35px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #a8a8a8;
   font-size: 16px;
+  white-space: nowrap;
+}
+.drag-area-highlight {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: #ccc;
+  min-height: 50px;
 }
 
-/* PLACEHOLDER */
+/* --- 5. DIALOG & DETAILS --- */
+.detail-dialog-frame {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 525px;
+  width: 90%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.detail-dialog-frame::backdrop {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.task-detail-content-style {
+  background-color: white;
+  border-radius: 12px;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-view {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.detail-view-header {
+  justify-content: space-between;
+}
+.detail-view-close {
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 4px;
+}
+.detail-view-close:hover {
+  background: #eee;
+}
+.detail-view-title {
+  font-size: 61px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+.detail-view-description,
+.detail-view-info-row {
+  font-size: 20px;
+}
+.detail-view-info-row {
+  gap: 20px;
+}
+.detail-view-label {
+  color: #2a3647;
+  width: 120px;
+}
+.detail-view-prio-badge {
+  gap: 10px;
+  text-transform: capitalize;
+}
+.detail-view-prio-badge img {
+  width: 20px;
+}
+
+.detail-view-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+.action-btn {
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  color: #2a3647;
+}
+.action-btn:hover {
+  color: #29abe2;
+  font-weight: 700;
+}
+.divider {
+  width: 1px;
+  height: 24px;
+  background: #d1d1d1;
+}
+
+/* --- 6. FORMS & EDIT MODE --- */
+.input-group {
+  margin-bottom: 24px;
+  width: 100%;
+}
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 20px;
+}
+.required {
+  color: #ff3d00;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px 21px;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  font-size: 20px;
+  outline: none;
+  background-color: white;
+}
+textarea {
+  resize: none;
+  height: 120px;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+.input-wrapper button {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Date-Input Styling */
+input[type='date'] {
+  color: #d1d1d1;
+}
+input[type='date']:focus,
+input[type='date']:valid {
+  color: black;
+}
+
+/* Edit Mode Specials */
+.edit-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.edit-mode .vertical-divider {
+  display: none;
+}
+
+.priority-btn-content {
+  display: flex;
+  gap: 16px;
+}
+.prio-btn {
+  flex: 1;
+  padding: 16px;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.active-urgent {
+  background-color: #ff3d00;
+  color: white;
+}
+.active-medium {
+  background-color: #ffa800;
+  color: white;
+}
+.active-low {
+  background-color: #7ae229;
+  color: white;
+}
+
+.btn-save-edit {
+  align-self: flex-end;
+  padding: 12px 24px;
+  background-color: #2a3647;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+.btn-save-edit:hover {
+  background-color: #29abe2;
+}
+
 .sidebar-placeholder,
 .header-placeholder {
   display: flex;

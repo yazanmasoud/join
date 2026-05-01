@@ -51,7 +51,11 @@
               class="task-container"
               id="todo"
               ondrop="moveTo('todo')"
-              ondragover="allowDrop(event)"
+              ondragover="
+                allowDrop(event);
+                highlight('todo');
+              "
+              ondragleave="removeHighlight('todo')"
             >
               <div class="no-tasks">No tasks To do</div>
             </div>
@@ -113,7 +117,11 @@
         </div>
       </section>
     </main>
-
+    <dialog id="taskDetailDialog" class="detail-dialog-frame">
+      <div id="taskDetailContent" class="task-detail-content-style">
+        <!-- Hier wird das Template eingefügt -->
+      </div>
+    </dialog>
     <!-- Firebase App (Basis-SDK) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <!-- Firebase Database -->
