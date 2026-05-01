@@ -2,6 +2,14 @@ body {
   margin: 0px;
 }
 
+body.has-active-page .help-icon {
+  display: block;
+}
+
+body.help-open .help-icon {
+  display: none;
+}
+
 .layout {
   min-height: 100vh;
   display: grid;
@@ -26,7 +34,7 @@ header {
     padding-left: 60px;
 }
 
-.headerLeft {
+.header-left {
     font-size: 20px;
     font-style: regular;
     line-height: 120%;
@@ -35,35 +43,35 @@ header {
     color: var(--color-text-main);
 }
 
-.headerRight {
+.header-right {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 16px;
 }
 
-.helpIcon {
+.help-icon {
+    display: flex;
     width: 32px;
     height: 32px;
     border-radius: 50%;
     border: 1px solid #ccc;
-    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
 }
 
-.helpIcon:hover {
+.help-icon:hover {
     transform: scale(1.1);
 }
 
-.helpIcon img {
+.help-icon img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-.headerAvatar {
+.header-avatar {
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -74,7 +82,7 @@ header {
     cursor: pointer;
 }
 
-.headerAvatar:hover {
+.header-avatar:hover {
     background-color: rgba(12, 46, 98, 0.12);
 }
 
@@ -91,7 +99,7 @@ aside {
     padding-bottom: 30px;
 }
 
-.navItem {
+.nav-item {
     display: flex;
     align-items: center;
     padding-top: 8px;
@@ -103,21 +111,21 @@ aside {
     cursor: pointer;
 }
 
-.navItem:hover {
+.nav-item:hover {
     background-color: var(--color-menu-hover);
 }
 
-.navItem.active{
+.nav-item.active{
   background-color: var(--color-menu-active);
   cursor: default;
 }
 
-.navIcon {
+.nav-icon {
     width: 30px;
     height: 30px;
 }
 
-.navText {
+.nav-text {
     font-weight: 400;
     font-style: Regular;
     font-size: 16px;
@@ -125,18 +133,18 @@ aside {
     letter-spacing: 0%;
 }
 
-.menuCenter {
+.menu-center {
     gap: 15px;
 }
 
-.menuBottom {
+.menu-bottom {
     display: flex;
     flex-direction: column;
     gap: 4px;
     padding-top: 243px;
 }
 
-.navLink {
+.nav-link {
     display: flex;
     align-items: center;
     padding-top: 8px;
@@ -148,20 +156,20 @@ aside {
     cursor: pointer;
 } 
 
-.navLink.active {
+.nav-link.active {
   background-color: var(--color-menu-active);
   cursor: default;
   transform: none;
 }
 
-.menuBottomLink {
+.menu-bottom-link {
     font-weight: 400;
     font-style: Regular;
     font-size: 16px;
     color: var(--color-menu-button-text);
 }
 
-.navLink:not(.active) .menuBottomLink:hover {
+.nav-link:not(.active) .menu-bottom-link:hover {
     color: var(--color-highlights);
     transform: scale(1.1);
 }

@@ -1,3 +1,8 @@
+let currentPage = null;
+let previousPage = null;
+const pageHistory = [];
+
+
 async function loadTemplate(containerId, templatePath) {
   const container = document.getElementById(containerId);
 
@@ -26,11 +31,49 @@ function initLayout() {
   loadTemplate("mainContent", "../pages/summary.html");
 }
 
+function navigateTo(page) {
+  const currentPage = pageHistory[pageHistory.length - 1];
+
+  if (currentPage !== page) {
+    pageHistory.push(page);
+  }
+
+  loadTemplate('mainContent', `../pages/${page}.html`);
+}
+
+function goBack() {
+  if (pageHistory.length > 1) {
+    pageHistory.pop();
+    const previousPage = pageHistory[pageHistory.length - 1];
+
+    loadTemplate('mainContent', `../pages/${previousPage}.html`);
+  }
+
+  //vergibt die Klasse "has-active-page" an den Body, damit das Hilfesymbol angezeigt wird, und entfernt die Klasse "help-open", damit das Hilfesymbol nicht mehr ausgeblendet wird
+  document.body.classList.add('has-active-page');
+  document.body.classList.remove('help-open');
+}
+
 // Ändert die Hintergundfarbe des Menüpunktes, der angeklickt wurde, und entfernt die Hintergundfarbe von den anderen Menüpunkten
 function setActiveNavItem(clickedItem) {
-  document.querySelectorAll('.navLink').forEach(item => {
+  document.querySelectorAll('.nav-link').forEach(item => {
     item.classList.remove('active');
   });
 
   clickedItem.classList.add('active');
+
+//vergibt die Klasse "has-active-page" an den Body, damit das Hilfesymbol angezeigt wird, und entfernt die Klasse "help-open", damit das Hilfesymbol nicht mehr ausgeblendet wird
+  document.body.classList.add('has-active-page');
+  document.body.classList.remove('help-open');
+}
+
+//Entfernt Menüppunkt Markierung beim öffnen der Hilfeseite
+function openHelp() {
+  document.querySelectorAll('.nav-link').forEach(item => {
+    item.classList.remove('active');
+  });
+
+// vergibt die Klasse "help-open" an den Body, damit das Hilfesymbol ausgeblendet wird, und entfernt die Klasse "has-active-page", damit das Hilfesymbol nicht mehr angezeigt wird
+  document.body.classList.add('help-open');
+  document.body.classList.remove('has-active-page');
 }

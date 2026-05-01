@@ -2,30 +2,30 @@
     <div>
         <img src="../assets/logos/nav-logo.svg" alt="Join Logo">
     </div>
-    <div class="menuCenter">
-        <div id="menuSummary" class="navItem navLink active" onclick="setActiveNavItem(this)">
+    <div class="menu-center">
+        <div id="menuSummary" class="nav-item nav-link active" onclick="setActiveNavItem(this); navigateTo('summary')">
             <img src="../assets/icons/nav-summary-icon.svg" alt="Summary Icon">
-            <span class="navText">Summary</span>
+            <span class="nav-text">Summary</span>
         </div>
-        <div id="menuTasks" class="navItem navLink" onclick="setActiveNavItem(this)">
-            <img class="navIcon" src="../assets/icons/nav-add-task-icon.svg" alt="Add Task Icon">
-            <span class="navText">Tasks</span>
+        <div id="menuTasks" class="nav-item nav-link" onclick="setActiveNavItem(this); navigateTo('add-task')">
+            <img class="nav-icon" src="../assets/icons/nav-add-task-icon.svg" alt="Add Task Icon">
+            <span class="nav-text">Tasks</span>
         </div>
-        <div id="menuBoards" class="navItem navLink" onclick="setActiveNavItem(this)">
-            <img class="navIcon" src="../assets/icons/nav-board-icon.svg" alt="Board Icon">
-            <span class="navText">Boards</span>
+        <div id="menuBoards" class="nav-item nav-link" onclick="setActiveNavItem(this); navigateTo('board')">
+            <img class="nav-icon" src="../assets/icons/nav-board-icon.svg" alt="Board Icon">
+            <span class="nav-text">Boards</span>
         </div>
-        <div id="menuContacts" class="navItem navLink" onclick="setActiveNavItem(this)">
-            <img class="navIcon" src="../assets/icons/nav-contact-icon.svg" alt="Contact Icon">
-            <span class="navText">Contacts</span>
+        <div id="menuContacts" class="nav-item nav-link" onclick="setActiveNavItem(this); navigateTo('contacts')">
+            <img class="nav-icon" src="../assets/icons/nav-contact-icon.svg" alt="Contact Icon">
+            <span class="nav-text">Contacts</span>
         </div>
     </div>
-    <div class="menuBottom">
-        <div id="menuPrivacy" class="navLink" onclick="setActiveNavItem(this)">
-            <span class="menuBottomLink">Privacy Policy</span>
+    <div class="menu-bottom">
+        <div id="menuPrivacy" class="nav-link" onclick="setActiveNavItem(this); navigateTo('privacy')">
+            <span class="menu-bottom-link">Privacy Policy</span>
         </div>
-        <div id="menuLegal" class="navLink" onclick="setActiveNavItem(this)">
-            <span class="menuBottomLink">Legal Notice</span>
+        <div id="menuLegal" class="nav-link" onclick="setActiveNavItem(this); navigateTo('imprint')">
+            <span class="menu-bottom-link">Legal Notice</span>
         </div>
     </div>
 </aside>
