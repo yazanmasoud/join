@@ -1,24 +1,17 @@
-function hideSpinner(delay = 0) {
-  setTimeout(() => {
-    const spinner = document.getElementById("spinner-container");
-    if (spinner) {
-      spinner.style.display = "none";
-    }
-  }, delay);
-}
-
-hideSpinner(1500);
+const isLoginPage = document.getElementById("login");
 
 function animateLogo(delay = 0) {
-  const logo = document.querySelector(".logo-start");
-  if (!logo) return;
+  const logo = document.getElementById("logo");
+  if (!logo || logo.classList.contains("shrink")) return;
 
   setTimeout(() => {
     logo.classList.add("shrink");
   }, delay);
 }
 
-animateLogo(500);
+if (isLoginPage) {
+  animateLogo(500);
+}
 
 function openSignUp() {
   const signup = document.getElementById("signup");
