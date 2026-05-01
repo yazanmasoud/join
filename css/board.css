@@ -1,0 +1,146 @@
+@import url(./root.css);
+
+/*BASIS LAYOUT & RESET */
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-tertiary);
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  grid-template-rows: 80px 1fr;
+  height: 100vh;
+}
+
+.main-content {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  padding: 60px;
+  overflow-y: auto;
+}
+
+.content-area {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+}
+/*header */
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  gap: 20px;
+}
+
+.board-header-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-container input {
+  width: 312px;
+  padding: 8px 16px;
+  padding-right: 50px; /* Platz für das Such-Icon */
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  font-size: 20px;
+  background-color: white;
+}
+
+.search-divider {
+  width: 1px;
+  height: 31px;
+  background-color: #d1d1d1;
+  position: absolute;
+  right: 48px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 16px;
+  cursor: pointer;
+}
+/*BOARD */
+.board-columns {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.column {
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header der Spalte (Text links, Button rechts) */
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  margin-bottom: 16px;
+}
+
+.column-header span {
+  font-size: 20px;
+  font-weight: 700;
+  color: #42526e;
+}
+
+/* Der kleine Plus-Button aus deinem Bild */
+.add-task-small {
+  border: 2px solid #2a3647;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  transition: all 0.1s ease-in-out;
+}
+
+.add-task-small:hover {
+  border-color: #29abe2;
+}
+
+/* Der Bereich für die Tasks (wichtig für Drag & Drop) */
+.task-container {
+  min-height: 80vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Platzhalter wenn keine Tasks(wie im Bild) */
+.no-tasks {
+  background: #e7e7e7;
+  border: 1px dashed #a8a8a8;
+  border-radius: 10px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #a8a8a8;
+  font-size: 16px;
+}
+
+/* PLACEHOLDER */
+.sidebar-placeholder,
+.header-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

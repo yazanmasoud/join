@@ -1,12 +1,25 @@
+function generateTaskHTML(task, id) {
+  return `
+    <div class="task-card" draggable="true" ondragstart="startDragging('${id}')">
+      <div class="task-category">${task.category}</div>
+      <h3>${task.title}</h3>
+      <p>${task.description}</p>
+    </div>`;
+}
+
+function getNoTaskPlaceholder(label) {
+  return `<div class="no-tasks">No tasks ${label}</div>`;
+}
+
 function getPriorityButtonsHTML() {
   return `
-    <button type="button" class="prio-btn color-urgent" id="prioUrgent" onclick="setPriority('Urgent')">
+    <button type="button" class="prio-btn" id="prioUrgent" onclick="setPriority('Urgent')">
       Urgent <img src="../assets/icons/prio-urgent-icon.svg">
     </button>
-    <button type="button" class="prio-btn color-medium" id="prioMedium" onclick="setPriority('Medium')">
+    <button type="button" class="prio-btn" id="prioMedium" onclick="setPriority('Medium')">
       Medium <img src="../assets/icons/prio-medium-icon.svg">
     </button>
-    <button type="button" class="prio-btn color-low" id="prioLow" onclick="setPriority('Low')">
+    <button type="button" class="prio-btn" id="prioLow" onclick="setPriority('Low')">
       Low <img src="../assets/icons/prio-low-icon.svg">
     </button>`;
 }

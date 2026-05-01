@@ -1,9 +1,8 @@
 @import url(./root.css);
 
-/* 1. BASIS LAYOUT & RESET */
+/*BASIS LAYOUT & RESET */
 
 body {
-  margin: 0;
   font-family: 'Inter', sans-serif;
   background-color: var(--color-bg-tertiary);
   display: grid;
@@ -12,70 +11,86 @@ body {
   height: 100vh;
 }
 
-main {
-  max-width: 1920px;
+h2 {
+  margin-bottom: 40px;
+}
+
+.summary-header {
   width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
 }
 
 .content-area {
   grid-column: 2 / 3;
   grid-row: 2 / 3;
-  padding: 60px;
+  padding: 60px 80px;
   overflow-y: auto;
+  display: flex;
+  justify-content: center;
 }
 
-/* 2. FORMULAR STRUKTUR */
+/* FORMULAR STRUKTUR */
 .add-task {
   display: flex;
   gap: 40px;
-  border-radius: 12px;
-  padding-top: 40px;
+  flex-wrap: wrap;
 }
 
 .add-section-left {
-  display: flex;
   flex: 1;
+  min-width: 300px;
+  display: flex;
   flex-direction: column;
 }
 
+.vertical-divider {
+  width: 1px;
+  background: #d1d1d1;
+  align-self: stretch;
+  margin: 0 10px;
+}
+
 .input-group {
-  padding: 12px;
+  margin-bottom: 24px;
+  width: 100%;
 }
 
 .input-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .required {
   color: #ff3d00;
 }
 
-/* 3. INPUTS & ELEMENTS*/
+/*INPUTS & ELEMENTS */
 input,
 textarea,
 select {
   width: 100%;
-  max-width: 440px;
-  padding: 12px;
+  padding: 12px 21px;
   border: 1px solid #d1d1d1;
   border-radius: 10px;
-  font-size: 16px;
+  font-size: 20px;
   font-family: 'Inter', sans-serif;
   outline: none;
+  background-color: white;
+}
+
+textarea {
+  resize: none;
+  height: 120px;
 }
 
 .input-wrapper {
   position: relative;
-  max-width: 440px;
+  width: 100%;
   display: flex;
   align-items: center;
-}
-
-.input-wrapper input {
-  padding-right: 45px;
 }
 
 .input-wrapper button {
@@ -83,33 +98,53 @@ select {
   right: 12px;
   background: none;
   border: none;
-  padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
+  padding: 0;
 }
 
-/* Spezial-Fix für Date-Icon */
+/* Placeholder Styling */
+::placeholder {
+  color: #d1d1d1;
+  opacity: 1;
+}
+
+/* Date-Input Spezial-Styling (Farbe & Icon) */
 input[type='date']::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
 }
 
-/* 4. PRIORITÄTEN & BUTTONS */
-.vertical-divider {
-  width: 2px;
-  height: 440px;
-  background: #d1d1d1;
+/* Grundzustand: Grau */
+input[type='date'] {
+  color: #d1d1d1;
 }
 
+/* Webkit: Erzwingt Farbe für Platzhalter-Segmente */
+input[type='date']::-webkit-datetime-edit-fields-wrapper {
+  color: #d1d1d1;
+}
+
+/* Umschalten: Bei Auswahl schwarz */
+input[type='date']:focus,
+input[type='date']:valid {
+  color: black;
+}
+input[type='date']:focus::-webkit-datetime-edit-fields-wrapper,
+input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
+  color: black;
+}
+
+/*PRIORITÄTEN & BUTTONS */
 .priority-btn-content {
   display: flex;
-  gap: 10px;
+  gap: 16px;
 }
 
 .prio-btn {
   flex: 1;
-  padding: 12px;
+  padding: 16px;
   border: 1px solid #d1d1d1;
   background: white;
   border-radius: 10px;
@@ -119,9 +154,10 @@ input[type='date']::-webkit-calendar-picker-indicator {
   justify-content: center;
   gap: 8px;
   font-size: 16px;
+  font-weight: 400;
 }
 
-/* Aktive Zustände */
+/* Aktive Prio-Zustände */
 .active-urgent {
   background-color: #ff3d00;
   color: white;
@@ -135,50 +171,17 @@ input[type='date']::-webkit-calendar-picker-indicator {
   color: white;
 }
 
-/* Icon-Invertierung, aktiven Buttons */
 .priority-btn-content button[class*='active-'] img {
   filter: brightness(0) invert(1);
 }
-.prio-btn:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-  transition: all 0.1s ease;
-}
 
-/* Spezifische Hover-Farben über Klassen (nur wenn nicht aktiv) */
-.color-urgent:not([class*='active']):hover {
-  border-color: #ff3d00;
-  background-color: #fff0ed;
-}
-
-.color-medium:not([class*='active']):hover {
-  border-color: #ffa800;
-  background-color: #fff5e5;
-}
-
-.color-low:not([class*='active']):hover {
-  border-color: #7ae229;
-  background-color: #f2ffe9;
-}
-
-/* Deaktiviert den Hover-Effekt, sobald eine "active-" Klasse vorhanden ist */
-.prio-btn[class*='active-']:hover {
-  transform: none;
-  box-shadow: none;
-  cursor: default;
-}
-
+/*FORM BOTTOM & ACTIONS */
 .form-bottom {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   margin-top: 32px;
-  max-width: 100%;
-}
-
-.required-hint {
-  font-size: 16px;
-  margin: 0;
+  width: 100%;
 }
 
 .form-actions {
@@ -186,10 +189,19 @@ input[type='date']::-webkit-calendar-picker-indicator {
   gap: 16px;
 }
 
-/* 5. PLACEHOLDER */
-.sidebar-placeholder,
-.header-placeholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.required-hint {
+  font-size: 16px;
+}
+
+/* RESPONSIVE DESIGN*/
+@media (max-width: 1100px) {
+  .add-task {
+    flex-direction: column;
+  }
+  .vertical-divider {
+    display: none;
+  }
+  .content-area {
+    padding: 40px 20px;
+  }
 }
