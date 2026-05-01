@@ -211,14 +211,17 @@ p {
 /* ===== FOOTER ===== */
 
 footer {
-    text-align: center;
-    margin-top: auto;
     color: var(--color-link);
     font-size: 16px;
-    cursor: pointer;
+    gap: 30px;
+    display: flex;
+    justify-content: center;
+    padding-top: 150px;
+    padding-bottom: 30px;
 }
 
 footer a:hover {
     color: var(--color-highlights);
-    font-weight: bold;
+    text-shadow: 0 0 0.8px currentColor;
+    cursor: pointer;
 }
