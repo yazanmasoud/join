@@ -1,4 +1,9 @@
+/* ===== PAGE CHECK ===== */
+
 const isLoginPage = document.getElementById("login");
+
+
+/* ===== ANIMATION ===== */
 
 function animateLogo(delay = 0) {
   const logo = document.getElementById("logo");
@@ -11,16 +16,24 @@ function animateLogo(delay = 0) {
 
     const transitionMs = 700;
     const bufferMs = 120; // small buffer to ensure animation finished
+
     setTimeout(() => {
       logo.classList.add('final');
       login.classList.remove('hidden');
     }, transitionMs + bufferMs);
+
   }, delay);
 }
+
+
+/* ===== INIT ===== */
 
 if (isLoginPage) {
   animateLogo(500);
 }
+
+
+/* ===== UI TOGGLE ===== */
 
 function openSignUp() {
   const signup = document.getElementById("signup");
