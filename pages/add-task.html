@@ -73,7 +73,13 @@
             </div>
             <div class="input-group">
               <label for="subtasks">Subtasks</label>
-              <input type="text" id="subtasks" placeholder="Add new subtask" />
+              <input
+                type="text"
+                id="subtasks"
+                placeholder="Add new subtask"
+                onkeydown="handleSubtaskKey(event)"
+              />
+              <ul id="subtasksList"></ul>
             </div>
           </div>
         </div>
