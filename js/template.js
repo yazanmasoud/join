@@ -33,3 +33,13 @@ function getSelectOptionsHTML(optionsArray, defaultText) {
   const allOptions = optionsArray.map((opt) => getOptionHTML(opt)).join('');
   return defaultOption + allOptions;
 }
+
+function getSubtaskHTML(task, index) {
+  return `
+    <li>
+      ${task.title}
+      <button type="button" onclick="deleteSubtask(${index})">
+        <img src="../assets/icons/delete-icon.svg" alt="delete">
+      </button>
+    </li>`;
+}

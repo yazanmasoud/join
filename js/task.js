@@ -102,13 +102,7 @@ function renderSubtasks() {
   if (!list) return;
   list.innerHTML = '';
   subtasks.forEach((task, index) => {
-    list.innerHTML += `
-      <li>
-        ${task.title}
-        <button type="button" onclick="deleteSubtask(${index})">
-          <img src="../assets/icons/delete-icon.svg" alt="delete">
-        </button>
-      </li>`;
+    list.innerHTML += getSubtaskHTML(task, index);
   });
 }
 
