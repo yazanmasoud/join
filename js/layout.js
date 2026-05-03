@@ -77,3 +77,27 @@ function openHelp() {
   document.body.classList.add('help-open');
   document.body.classList.remove('has-active-page');
 }
+
+//öffnet das Dropdown-Menü, wenn auf den Avatar geklickt wird, und schließt es, wenn irgendwo anders auf der Seite geklickt wird
+function toggleAvatarDropdown(event) {
+  event.stopPropagation(); // verhindert sofortiges Schließen
+
+  const dropdown = document.getElementById('avatarDropdown');
+  dropdown.classList.toggle('open');
+}
+
+//schließt das Dropdown-Menü, wenn irgendwo anders auf der Seite geklickt wird
+function closeAvatarDropdown() {
+  const dropdown = document.getElementById('avatarDropdown');
+  dropdown.classList.remove('open');
+}
+
+//function zum Ausloggen
+function logOut() {
+  // Hier können Sie die Logik zum Ausloggen implementieren, z.B. Token löschen, Session beenden, etc.
+  console.log("User logged out");
+  // Nach dem Ausloggen können Sie den Benutzer zur Login-Seite weiterleiten oder die Seite neu laden
+  window.location.href = '../pages/login.html'; // Beispiel: Weiterleitung zur Login-Seite
+
+  closeAvatarDropdown(); // schließt dropdown nach dem Ausloggen
+}
