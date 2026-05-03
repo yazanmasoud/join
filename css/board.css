@@ -46,6 +46,23 @@ h3 {
   align-items: center;
 }
 
+.subtask-item {
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.subtask-item input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.subtask-text {
+  margin-left: 20px;
+  font-size: 16px;
+  color: black;
+}
+
 /* --- 2. HEADER & SEARCH --- */
 .board-header {
   justify-content: space-between;
@@ -171,6 +188,7 @@ h3 {
 .drag-area-highlight {
   border: 1px dashed #a8a8a8;
   border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 .no-tasks {
   background: #e7e7e7;
@@ -194,10 +212,109 @@ h3 {
   border: none;
   border-radius: 12px;
   padding: 0;
-  max-width: 525px;
+  max-width: 526px;
   width: 90%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  margin: auto;
+  inset: 0;
+  transition: max-width 0.2s ease-in-out;
 }
+
+.detail-dialog-frame.edit-mode-wide {
+  max-width: 1100px;
+  width: 95%;
+}
+
+.edit-vertical-divider {
+  width: 1px;
+  background-color: #d1d1d1;
+  align-self: stretch;
+  margin: 0 20px;
+}
+
+.subtask-check-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  object-fit: contain;
+}
+
+.subtask-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+/* Erzwingt Inter für den gesamten Dialog-Inhalt */
+.detail-dialog-frame,
+.task-detail-content-style,
+.edit-mode-main {
+  font-family: 'Inter', sans-serif;
+}
+
+.edit-mode-main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wichtig: Formularelemente müssen explizit angewiesen werden */
+.edit-mode-main input,
+.edit-mode-main textarea,
+.edit-mode-main select,
+.edit-mode-main button {
+  font-family: 'Inter', sans-serif;
+}
+
+.subtasks-list-edit {
+  padding: 0;
+  margin-top: 10px;
+  list-style: none;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.subtask-item-edit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 16px;
+}
+
+.subtask-item-edit button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-content-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.edit-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.edit-footer-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+/* Scrollbar für kleinere Bildschirme */
+.task-detail-content-style {
+  width: 100%;
+}
+
 .detail-dialog-frame::backdrop {
   background-color: rgba(0, 0, 0, 0.2);
 }
@@ -205,9 +322,11 @@ h3 {
 .task-detail-content-style {
   background-color: white;
   border-radius: 12px;
-  padding: 48px 40px;
+  padding: 30px 40px;
   display: flex;
   flex-direction: column;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .detail-view {
@@ -227,21 +346,25 @@ h3 {
   background: #eee;
 }
 .detail-view-title {
-  font-size: 61px;
+  font-size: 36px;
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
-.detail-view-description,
-.detail-view-info-row {
-  font-size: 20px;
+.detail-view-description {
+  font-size: 24px;
 }
 .detail-view-info-row {
   gap: 20px;
+  display: flex;
 }
 .detail-view-label {
-  color: #2a3647;
+  color: var(--color-bg-secondary);
   width: 120px;
+  font-size: 24px;
 }
 .detail-view-prio-badge {
   gap: 10px;
@@ -274,6 +397,31 @@ h3 {
   width: 1px;
   height: 24px;
   background: #d1d1d1;
+}
+
+.assigned-list-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.user-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  border: 2px solid white;
+}
+
+.user-name {
+  font-size: 19px;
+  margin-left: 16px;
 }
 
 /* --- 6. FORMS & EDIT MODE --- */
@@ -310,13 +458,82 @@ textarea {
 .input-wrapper {
   position: relative;
   width: 100%;
+  display: flex;
+  align-items: center;
 }
+
 .input-wrapper button {
   position: absolute;
-  right: 12px;
-  background: none;
+  right: 12px; /* Schiebt das Icon nach innen auf die Position des alten Icons */
+  background: white; /* Überdeckt das Standard-Icon vom Browser */
   border: none;
   cursor: pointer;
+  display: flex;
+  padding: 0;
+}
+
+/* Hover für Urgent (leichtes Rot) */
+.prio-btn-urgent:not(.active-urgent):hover {
+  background-color: #ff3d001a; /* 1A entspricht ca. 10% Transparenz */
+  border-color: #ff3d00;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover für Medium (leichtes Orange) */
+.prio-btn-medium:not(.active-medium):hover {
+  background-color: #ffa8001a;
+  border-color: #ffa800;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover für Low (leichtes Grün) */
+.prio-btn-low:not(.active-low):hover {
+  background-color: #7ae2291a;
+  border-color: #7ae229;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Gemeinsame Transition für weiche Übergänge */
+.prio-btn {
+  transition: all 0.1s ease-in-out;
+}
+
+/* Versteckt das Standard-Browser-Icon (für Chrome/Edge/Safari) */
+input[type='date']::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  cursor: pointer;
+}
+
+.edit-mode-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+/* Verwendet das Styling deiner Add-Task Inputs */
+.edit-mode-container input,
+.edit-mode-container textarea {
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  padding: 12px 21px;
+  font-size: 20px;
+}
+
+.edit-mode-container .btn-save-edit {
+  align-self: flex-end;
+  background-color: #2a3647;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+
+.edit-mode-container .btn-save-edit:hover {
+  background-color: #29abe2;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 /* Date-Input Styling */
@@ -341,6 +558,10 @@ input[type='date']:valid {
 .priority-btn-content {
   display: flex;
   gap: 16px;
+}
+
+.priority-btn-content button[class*='active-'] img {
+  filter: brightness(0) invert(1);
 }
 .prio-btn {
   flex: 1;

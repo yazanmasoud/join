@@ -1,15 +1,9 @@
-// Variablen & Konstanten
-const CATEGORY_OPTIONS = ['Technical Task', 'User Story', 'Feature Task'];
-const CONTACT_OPTIONS = [
-  'Maximilian Müller',
-  'Sofia Schneider',
-  'Benedikt Bauer',
-];
-
 let subtasks = [];
 let currentPriority = 'Medium';
 
-//  Initialisierung
+// Initialisierung
+
+// Bereitet die Seite beim Laden vor, indem sie Dropdowns füllt, Buttons rendert und die Standard-Priorität setzt.
 function initAddTask() {
   renderPriorityButtons();
   renderCategories();
@@ -17,22 +11,28 @@ function initAddTask() {
   setPriority(currentPriority);
 }
 
-//  Logik (Firebase & Daten)
+// Logik (Firebase & Daten)
+
+// Steuert den gesamten Speicherprozess, validiert die Daten und sendet das fertige Objekt an die Firebase-Datenbank.
 async function createTask() {
   const task = getTaskObject();
-  const categorySelect = document.getElementById('taskCategory');
-
-  if (!task.title || !task.dueDate || categorySelect.selectedIndex === 0) {
-    return;
-  }
-
+  if (!validateTask(task)) return;
   try {
     await database.ref('tasks').push(task);
     showSuccessToast();
     clearForm();
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
 }
 
+// Prüft, ob die erforderlichen Pflichtfelder wie Titel, Datum und Kategorie vom Nutzer ausgefüllt wurden.
+function validateTask(task) {
+  const catSelect = document.getElementById('taskCategory');
+  return task.title && task.dueDate && catSelect.selectedIndex !== 0;
+}
+
+// Sammelt alle aktuellen Werte aus den Eingabefeldern und bündelt sie in einem strukturierten Task-Objekt.
 function getTaskObject() {
   return {
     title: document.getElementById('taskTitle').value,
@@ -47,24 +47,23 @@ function getTaskObject() {
   };
 }
 
-// UI & Rendering
+// UI & Rendering (Priority & Dropdowns)
 
-// Priority & Dropdowns
+// Aktualisiert die globale Prioritäts-Variable und passt die visuelle Markierung der Buttons im UI an.
 function setPriority(prio) {
   currentPriority = prio;
-  const btns = document.querySelectorAll('.prio-btn');
-  btns.forEach((b) =>
-    b.classList.remove('active-urgent', 'active-medium', 'active-low'),
-  );
+  clearActivePrioClasses('.prio-btn');
   const active = document.getElementById('prio' + prio);
-  if (active) active.classList.add('active-' + prio.toLowerCase());
+  if (active) active.classList.add(getPrioClass(prio));
 }
 
+// Erzeugt die HTML-Elemente für die Prioritäts-Buttons innerhalb des dafür vorgesehenen Containers.
 function renderPriorityButtons() {
   const container = document.getElementById('prioContainer');
   if (container) container.innerHTML = getPriorityButtonsHTML();
 }
 
+// Befüllt das Kategorie-Auswahlmenü dynamisch mit den in den Konstanten definierten Optionen.
 function renderCategories() {
   const select = document.getElementById('taskCategory');
   if (select)
@@ -74,6 +73,7 @@ function renderCategories() {
     );
 }
 
+// Lädt die verfügbaren Kontakte in das dafür vorgesehene Auswahlfeld der Benutzeroberfläche.
 function renderContacts() {
   const select = document.getElementById('tasksAssigned');
   if (select)
@@ -84,6 +84,8 @@ function renderContacts() {
 }
 
 // Subtask Logik
+
+// Erfasst den Tastendruck im Subtask-Feld und fügt bei "Enter" einen neuen Subtask zum Array hinzu.
 function handleSubtaskKey(event) {
   if (event.key === 'Enter') {
     event.preventDefault();
@@ -97,6 +99,7 @@ function handleSubtaskKey(event) {
   }
 }
 
+// Aktualisiert die Liste der angezeigten Subtasks auf der Seite basierend auf dem aktuellen Datenstand.
 function renderSubtasks() {
   let list = document.getElementById('subtasksList');
   if (!list) return;
@@ -106,12 +109,15 @@ function renderSubtasks() {
   });
 }
 
+// Entfernt einen spezifischen Subtask aus dem Array und stößt die Aktualisierung der Anzeige an.
 function deleteSubtask(index) {
   subtasks.splice(index, 1);
   renderSubtasks();
 }
 
 // Helper Funktionen
+
+// Setzt alle Eingabefelder, das Subtask-Array und die Priorität auf ihre ursprünglichen Standardwerte zurück.
 function clearForm() {
   ['taskTitle', 'taskDescription', 'taskDate', 'subtasks'].forEach((id) => {
     const el = document.getElementById(id);
@@ -124,6 +130,7 @@ function clearForm() {
   setPriority('Medium');
 }
 
+// Blendet kurzzeitig eine Erfolgsmeldung ein, um dem Nutzer den erfolgreichen Speichervorgang zu bestätigen.
 function showSuccessToast() {
   const toast = document.getElementById('successMessage');
   if (toast) {
@@ -131,4 +138,6 @@ function showSuccessToast() {
     setTimeout(() => toast.classList.add('d-none'), 2000);
   }
 }
+
+// Führt die Initialisierungs-Funktion aus, um die Seite startklar zu machen.
 initAddTask();
