@@ -109,7 +109,7 @@ function validateForm() {
   const privacy = document.getElementById("privacy");
 
   const errorBox = document.getElementById("password-error");
-  const errorText = errorBox.querySelector("span");
+  const errorText = document.getElementById("error-text");
 
   // Reset
   errorBox.classList.add("hidden");
