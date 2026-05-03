@@ -44,3 +44,16 @@ function getSubtaskHTML(task, index) {
       </button>
     </li>`;
 }
+
+function generateTaskDetailHTML(task) {
+  return `
+        <div class="task-detail-content">
+            <span class="category">${task.category}</span>
+            <h1>${task.title}</h1>
+            <p>${task.description}</p>
+            <div class="due-date">Due date: ${task.dueDate}</div>
+            <div class="priority">Priority: ${task.priority}</div>
+            <!-- Hier kannst du später die Subtasks rendern -->
+        </div>
+    `;
+}
