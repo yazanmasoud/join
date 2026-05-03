@@ -4,7 +4,7 @@ function generateTaskHTML(task, id) {
     <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" onclick="openTaskDetail('${id}')">
       <div class="task-category ${categoryClass}">${task.category}</div>
       <h3>${task.title}</h3>
-      <p>${task.description}</p>
+      <p class="description-task-board">${task.description}</p>
     </div>`;
 }
 

@@ -11,6 +11,11 @@ body {
   margin: 0;
 }
 
+h3 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
 .main-content {
   grid-column: 2;
   grid-row: 2;
@@ -131,6 +136,13 @@ body {
   box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.08);
   cursor: grab;
   user-select: none;
+  max-width: 252px;
+  width: 100%;
+}
+
+.description-task-board {
+  color: #a8a8a8;
+  font-size: 20px;
 }
 .task-card:active {
   transform: rotate(2deg);
