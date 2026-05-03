@@ -107,11 +107,9 @@ function validateForm() {
   const password = document.getElementById("signup-password");
   const confirmPassword = document.getElementById("signup-confirm-password");
   const privacy = document.getElementById("privacy");
-
   const errorBox = document.getElementById("password-error");
   const errorText = document.getElementById("error-text");
 
-  // Reset
   errorBox.classList.add("hidden");
   errorText.innerText = "";
 
