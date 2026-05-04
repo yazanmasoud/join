@@ -1,8 +1,6 @@
 .help-head {
     display: flex;
     max-width: calc(1940px - 230px);
-    align-items: center;
-    justify-content: space-between;
 }
 
 .help-section {
@@ -14,7 +12,6 @@
     line-height: 24px;
     padding-right: 35px;
     padding-left: 60px;
-    padding-top: 100px;
 }
 
 .help-main {

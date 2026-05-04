@@ -1,17 +1,21 @@
 <header>
-  <div class="header-inner">
-    <div class="header-center">
-      <p class="header-left">Kanban Project Management Tool</p>
+  <div class="header-left">
+    <div class="header-left-wrapper">
+      <img src="../assets/logos/main-logo.svg" alt="Logo" class="header-logo">
+      <p class="header-headline">Kanban Project Management Tool</p>
     </div>
-
     <div class="header-right">
       <div class="help-icon" onclick="navigateTo('help'); openHelp();">
         <img src="../assets/icons/help-icon.svg" alt="Help">
       </div>
       <div id="headerAvatar" class="header-avatar" onclick="toggleAvatarDropdown(event)">SM</div>
       <div id="avatarDropdown" onclick="event.stopPropagation()" class="avatar-dropdown">
-        <a class="avatar-dropdown-item" href="#" onclick="navigateTo('imprint'); closeAvatarDropdown();">Legal Notice</a>
-        <a class="avatar-dropdown-item" href="#" onclick="navigateTo('privacy'); closeAvatarDropdown();">Privacy Policy</a>
+        <a class="avatar-dropdown-item hide-menu-help" href="#"
+          onclick="navigateTo('help'); closeAvatarDropdown();">Help</a>
+        <a class="avatar-dropdown-item" href="#" onclick="navigateTo('imprint'); closeAvatarDropdown();">Legal
+          Notice</a>
+        <a class="avatar-dropdown-item" href="#" onclick="navigateTo('privacy'); closeAvatarDropdown();">Privacy
+          Policy</a>
         <a class="avatar-dropdown-item" href="#" onclick="logOut()">Log out</a>
       </div>
     </div>
