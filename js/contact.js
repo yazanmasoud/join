@@ -11,22 +11,33 @@ function createContact() {
     let email = document.getElementById("contact-email").value;
     let phone = document.getElementById("contact-phone").value;
 
-    let color = getRandomColor();
     let initials = getInitials(name);
+    let color = getRandomColor();
 
     let contact = {
-        name: name,
-        email: email,
-        phone: phone,
-        color: color,
-        initials: initials
+        name,
+        email,
+        phone,
+        initials,
+        color
     };
-    console.log(contact);
+    renderContact(contact);
+}
 
-    let contactAvatar = document.getElementById("contact-avatar");
-    contactAvatar.innerText = initials;
-    contactAvatar.style.backgroundColor = color;
-    
+function renderContact(contact) {
+    let list = document.getElementById("contact-list");
+
+    list.innerHTML += `
+        <div class="contact-item">
+            <div class="contact-avatar" style="background-color: ${contact.color}">
+                ${contact.initials}
+            </div>
+            <div>
+                <div>${contact.name}</div>
+                <div>${contact.email}</div>
+            </div>
+        </div>
+    `;
 }
 
 function getInitials(name) {
@@ -55,7 +66,9 @@ function getRandomColor() {
         "#00BEE8",
         "#1FD7C1",
         "#FF745E",
-        "#FFA35E"
+        "#FFA35E",
+        "#FF5E5E",
+        "#FF5E9E"
     ];
 
     let randomIndex = Math.floor(Math.random() * colors.length);

@@ -12,3 +12,10 @@
   color: white;
   font-weight: bold;
 }
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
