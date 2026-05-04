@@ -225,6 +225,12 @@ p {
     text-decoration: none;
 }
 
+/* Red outline for invalid inputs */
+.error-input {
+    border-color: #b00020 !important;
+    box-shadow: 0 0 0 4px rgba(176,0,32,0.06) !important;
+}
+
 
 /* ===== BUTTONS ===== */
 

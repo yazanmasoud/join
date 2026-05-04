@@ -61,8 +61,10 @@ function checkUsername(username, errorText, errorBox) {
   if (username.value.trim() === "") {
     errorText.innerText = "Bitte Username eingeben";
     errorBox.classList.remove("hidden");
+    username.classList.add('error-input');
     return false;
   }
+  username.classList.remove('error-input');
   return true;
 }
 
@@ -70,8 +72,10 @@ function checkEmail(email, errorText, errorBox) {
   if (!email.value.includes("@")) {
     errorText.innerText = "Ungültige Email";
     errorBox.classList.remove("hidden");
+    email.classList.add('error-input');
     return false;
   }
+  email.classList.remove('error-input');
   return true;
 }
 
@@ -80,15 +84,21 @@ function checkPassword(password, confirmPassword, errorText, errorBox) {
   if (password.value === "" || confirmPassword.value === "") {
     errorText.innerText = "Bitte Passwort eingeben";
     errorBox.classList.remove("hidden");
+    password.classList.add('error-input');
+    confirmPassword.classList.add('error-input');
     return false;
   }
 
   if (password.value !== confirmPassword.value) {
     errorText.innerText = "Passwörter stimmen nicht überein";
     errorBox.classList.remove("hidden");
+    password.classList.add('error-input');
+    confirmPassword.classList.add('error-input');
     return false;
   }
 
+  password.classList.remove('error-input');
+  confirmPassword.classList.remove('error-input');
   return true;
 }
 
@@ -96,8 +106,12 @@ function checkPrivacy(privacy, errorText, errorBox) {
   if (!privacy.checked) {
     errorText.innerText = "Bitte akzeptiere die Privacy Policy";
     errorBox.classList.remove("hidden");
+    const privacyCheckbox = document.getElementById('privacy');
+    if (privacyCheckbox) privacyCheckbox.classList.add('error-input');
     return false;
   }
+  const privacyCheckbox = document.getElementById('privacy');
+  if (privacyCheckbox) privacyCheckbox.classList.remove('error-input');
   return true;
 }
 
@@ -119,4 +133,5 @@ function validateForm() {
   if (!checkPrivacy(privacy, errorText, errorBox)) return false;
 
   return true;
+  
 }

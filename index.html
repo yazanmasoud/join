@@ -52,15 +52,15 @@
 
     <hr class="login-signup-hr">
 
-    <form onsubmit="return validateForm()" novalidate>
+    <form  novalidate>
 
-        <input type="text" id="signup-username" placeholder="Username">
-        <input type="email" id="signup-email" placeholder="Email">
-        <input type="password" id="signup-password" placeholder="Password">
-        <input type="password" id="signup-confirm-password" placeholder="Confirm Password">
+        <input oninput="validateForm()" type="text" id="signup-username" placeholder="Username">
+        <input oninput="validateForm()" type="email" id="signup-email" placeholder="Email">
+        <input oninput="validateForm()" type="password" id="signup-password" placeholder="Password">
+        <input oninput="validateForm()" type="password" id="signup-confirm-password" placeholder="Confirm Password">
 
         <div class="privacy-container">
-            <input type="checkbox" id="privacy">
+            <input type="checkbox" id="privacy" onchange="validateForm()">
             <label for="privacy">
                 I accept the <a href="./pages/privacy.html">Privacy policy</a>
             </label>
