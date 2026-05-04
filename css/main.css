@@ -8,6 +8,16 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 a {
   text-decoration: none;
   color: var(--color-link);
@@ -17,4 +27,43 @@ h2,
 h3 {
   font-size: 54px;
   color: var(--color-text-mai);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.btn {
+  border: none;
+  background: none;
+}
+
+/* ===== Spinner ===== */
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top: 5px solid #2A3647;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
