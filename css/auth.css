@@ -1,13 +1,4 @@
 /* ===== BASE / LAYOUT ===== */
-
-body {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    background-color: var(--color-bg-tertiary);
-    font-family: 'Inter', sans-serif;
-}
-
 .content-wrapper {
     max-width: 1920px;
     width: 100%;
@@ -15,6 +6,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    background-color: var(--color-bg-tertiary);
 }
 
 
@@ -50,7 +42,7 @@ body {
 }
 
 body.mobile-splash {
-  background: #2a3647;
+  background: var(--color-bg-secondary);
 }
 
 /* Move to top-left while keeping the placeholder in the layout */
@@ -81,7 +73,7 @@ body.mobile-splash {
 
 /* ===== TYPOGRAPHY ===== */
 
-p {
+.p-welcome {
     color: var(--color-text-main);
     font-size: 20px;
     font-weight: 400;
@@ -198,8 +190,8 @@ p {
 }
 
 .form-error {
-    color: #b00020;
-    background: rgba(176,0,32,0.06);
+    color: var(--color-error);
+    background: var(--color-error-bg);
     border-radius: 10px;
     padding: 12px;
     margin: 6px 0px 12px 0px ;
@@ -207,13 +199,13 @@ p {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    border: 1px solid rgba(176,0,32,0.16);
-    box-shadow: 0 6px 18px rgba(176,0,32,0.06);
+    border: 1px solid var(--color-error-border);
+    box-shadow: 0 6px 18px var(--color-error-shadow);
 }
 
 
 /* smaller description text */
-.form-error span{ display:block; color:#7a0016; opacity:0.95 }
+.form-error span{ display:block; color: var(--color-error); opacity:0.95 }
 
 /* hidden helper class (keeps previous usage) */
 .hidden{ display:none !important }
@@ -243,8 +235,8 @@ p {
 
 /* Red outline for invalid inputs */
 .error-input {
-    border-color: #b00020 !important;
-    box-shadow: 0 0 0 4px rgba(176,0,32,0.06) !important;
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 4px var(--color-error-shadow)!important;
 }
 
 
