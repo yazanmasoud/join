@@ -1,34 +1,6 @@
 @import url(./root.css);
 
-/*BASIS LAYOUT & RESET */
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--color-bg-tertiary);
-  display: grid;
-  grid-template-columns: 232px 1fr;
-  grid-template-rows: 80px 1fr;
-  height: 100vh;
-}
-
-h2 {
-  margin-bottom: 40px;
-}
-
-.summary-header {
-  width: 100%;
-  max-width: 1920px;
-  margin: 0 auto;
-}
-
-.content-area {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  padding: 60px 80px;
-  overflow-y: auto;
-  display: flex;
-  justify-content: center;
-}
 
 /* FORMULAR STRUKTUR */
 .add-task {

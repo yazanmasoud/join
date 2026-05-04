@@ -1,27 +1,7 @@
-@import url(./root.css);
-
-/* BASIS LAYOUT */
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: var(--color-bg-tertiary);
-  display: grid;
-  grid-template-columns: 232px 1fr;
-  grid-template-rows: 80px 1fr;
-  height: 100vh;
-}
-
-main {
-  max-width: 1920px;
-  width: 100%;
-}
-
 .content-area {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  padding: 60px;
-  overflow-y: auto;
+  padding-left: 60px;
 }
+
 
 /* GEMEINSAME KARTEN-BASIS (Wichtig für Junior Devs!) */
 .card-base {
@@ -166,12 +146,4 @@ main {
 .user-name-display {
   font-size: 64px;
   color: var(--color-highlights);
-}
-
-/* PLACEHOLDER */
-.sidebar-placeholder,
-.header-placeholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
