@@ -1,0 +1,237 @@
+@import url(./root.css);
+
+/*BASIS LAYOUT & RESET */
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-tertiary);
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  grid-template-rows: 80px 1fr;
+  height: 100vh;
+}
+
+h2 {
+  margin-bottom: 40px;
+}
+
+.summary-header {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+.content-area {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  padding: 60px 80px;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* FORMULAR STRUKTUR */
+.add-task {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.add-section-left {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.vertical-divider {
+  width: 1px;
+  background: #d1d1d1;
+  align-self: stretch;
+  margin: 0 10px;
+}
+
+.input-group {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.required {
+  color: #ff3d00;
+}
+
+/*INPUTS & ELEMENTS */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px 21px;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  font-size: 20px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  background-color: white;
+}
+
+textarea {
+  resize: none;
+  height: 120px;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper button {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+/* Placeholder Styling */
+::placeholder {
+  color: #d1d1d1;
+  opacity: 1;
+}
+
+/* Date-Input Spezial-Styling (Farbe & Icon) */
+input[type='date']::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Grundzustand: Grau */
+input[type='date'] {
+  color: #d1d1d1;
+}
+
+/* Webkit: Erzwingt Farbe für Platzhalter-Segmente */
+input[type='date']::-webkit-datetime-edit-fields-wrapper {
+  color: #d1d1d1;
+}
+
+/* Umschalten: Bei Auswahl schwarz */
+input[type='date']:focus,
+input[type='date']:valid {
+  color: black;
+}
+input[type='date']:focus::-webkit-datetime-edit-fields-wrapper,
+input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
+  color: black;
+}
+
+/*PRIORITÄTEN & BUTTONS */
+.priority-btn-content {
+  display: flex;
+  gap: 16px;
+}
+
+.prio-btn {
+  flex: 1;
+  padding: 16px;
+  border: 1px solid #d1d1d1;
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+/* Aktive Prio-Zustände */
+.active-urgent {
+  background-color: #ff3d00;
+  color: white;
+}
+.active-medium {
+  background-color: #ffa800;
+  color: white;
+}
+.active-low {
+  background-color: #7ae229;
+  color: white;
+}
+
+.priority-btn-content button[class*='active-'] img {
+  filter: brightness(0) invert(1);
+}
+
+/*FORM BOTTOM & ACTIONS */
+.form-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.required-hint {
+  font-size: 16px;
+}
+
+/* RESPONSIVE DESIGN*/
+@media (max-width: 1100px) {
+  .add-task {
+    flex-direction: column;
+  }
+  .vertical-divider {
+    display: none;
+  }
+  .content-area {
+    padding: 40px 20px;
+  }
+}
+
+/* Subtask */
+
+.subtasks-list {
+  padding: 0;
+  margin-top: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.subtasks-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.subtasks-list li:hover {
+  background-color: #eeeeee;
+}
+
+.subtasks-list button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: #2a3647;
+}

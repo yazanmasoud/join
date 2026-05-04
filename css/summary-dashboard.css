@@ -1,0 +1,177 @@
+@import url(./root.css);
+
+/* BASIS LAYOUT */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-tertiary);
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  grid-template-rows: 80px 1fr;
+  height: 100vh;
+}
+
+main {
+  max-width: 1920px;
+  width: 100%;
+}
+
+.content-area {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  padding: 60px;
+  overflow-y: auto;
+}
+
+/* GEMEINSAME KARTEN-BASIS (Wichtig für Junior Devs!) */
+.card-base {
+  background-color: var(--color-bg-primary);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  transition: all 75ms ease-in-out;
+}
+
+.card-base:hover {
+  background: var(--color-highlights);
+  color: white;
+  cursor: pointer;
+}
+
+/* HEADER & GRID */
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.vertical-line {
+  width: 3px;
+  height: 40px;
+  background-color: var(--color-highlights);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+}
+
+/* REIHEN-STYLING */
+.top-row,
+.bottom-row {
+  display: flex;
+  gap: 30px;
+  padding: 20px 0;
+}
+
+.bottom-row {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* SPEZIFISCHE KARTEN-STYLES */
+.summary-card {
+  flex: 1;
+  height: 168px;
+  max-width: 264px;
+  justify-content: center;
+  align-items: center;
+}
+
+.summary-card-small {
+  flex: 1;
+  height: 168px;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.summary-card-small .stat-number {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.summary-card-small .stat-label {
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.urgent-row {
+  display: flex;
+  width: 100%;
+  max-width: 560px;
+  height: 168px;
+  padding: 0 38px;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.urgent-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+/* INHALTS-ELEMENTE */
+.summary-card-content {
+  display: flex;
+  align-items: center;
+}
+
+.summary-card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.stat-number {
+  font-size: 54px;
+  font-weight: 600;
+}
+.stat-label {
+  font-size: 20px;
+  line-height: 1.2;
+  display: block;
+}
+
+.urgent-divider {
+  width: 2px;
+  height: 100px;
+  background: #d1d1d1;
+}
+
+.deadline-date {
+  font-weight: bold;
+}
+
+/* GREETING */
+.greeting-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 40px;
+}
+
+.user-name-display {
+  font-size: 64px;
+  color: var(--color-highlights);
+}
+
+/* PLACEHOLDER */
+.sidebar-placeholder,
+.header-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
