@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontakte</title>
+    <script src="../js/main.js" defer></script>
+    <script src="../js/contact.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/contacts.css">
+</head>
+
+<body>
+    <button onclick="openAddContact()">Add New Contact</button>
+
+    <div id="add-contact" class="hidden">
+        <h2>Add New Contact</h2>
+        <input type="text" id="contact-name" placeholder="Contact Name">
+        <input type="text" id="contact-email" placeholder="Contact Email">
+        <input type="text" id="contact-phone" placeholder="Contact Phone">
+
+        <button onclick="createContact()" id="save-contact">Create Contact</button>
+    </div>
+    
+     <div id="contact-list"></div>
+</body>
+
+</html>
