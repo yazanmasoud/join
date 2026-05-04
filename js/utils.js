@@ -41,3 +41,10 @@ function clearActivePrioClasses(selector) {
     b.classList.remove('active-urgent', 'active-medium', 'active-low'),
   );
 }
+
+// Diese Funktion gibt immer die richtige ID zurück
+function getCurrentUserId() {
+  // Wenn wir später Firebase Auth nutzen, steht hier: firebase.auth().currentUser?.uid
+  // Solange das im Aufbau ist, nutzen wir den Fallback:
+  return localStorage.getItem('currentUserId') || 'guest_user';
+}

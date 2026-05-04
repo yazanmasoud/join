@@ -3,11 +3,15 @@ let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
+// ZENTRALE PFAD-VARIABLE (Muss exakt wie in addTask/summary sein)
+const GUEST_PATH = 'users/guest_user/tasks';
+
 /** --- INITIALISIERUNG & RENDERING --- */
 
 // Startet die App, abonniert Firebase-Daten und setzt Dialog-Events
 function initBoard() {
-  database.ref('tasks').on('value', (snapshot) => {
+  // Pfad angepasst: von 'tasks' auf GUEST_PATH
+  database.ref(GUEST_PATH).on('value', (snapshot) => {
     CURRENT_TASKS = snapshot.val() || {};
     renderAllTasks(CURRENT_TASKS);
   });
@@ -38,7 +42,8 @@ async function openTaskDetail(id) {
   const dialog = document.getElementById('taskDetailDialog');
   const content = document.getElementById('taskDetailContent');
   try {
-    const snap = await database.ref(`tasks/${id}`).once('value');
+    // Pfad angepasst
+    const snap = await database.ref(`${GUEST_PATH}/${id}`).once('value');
     const task = snap.val();
     if (task) {
       content.innerHTML = generateTaskDetailHTML(task, id);
@@ -68,7 +73,8 @@ function setupDialogClose() {
 async function toggleSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
   task.subtasks[index].done = !task.subtasks[index].done;
-  await database.ref(`tasks/${taskId}/subtasks/${index}`).update({
+  // Pfad angepasst
+  await database.ref(`${GUEST_PATH}/${taskId}/subtasks/${index}`).update({
     done: task.subtasks[index].done,
   });
   document.getElementById('taskDetailContent').innerHTML =
@@ -101,7 +107,10 @@ function removeHighlight(id) {
 async function moveTo(status) {
   removeHighlight(status);
   if (CURRENT_DRAGGED_ELEMENT) {
-    await database.ref('tasks/' + CURRENT_DRAGGED_ELEMENT).update({ status });
+    // Pfad angepasst
+    await database
+      .ref(`${GUEST_PATH}/${CURRENT_DRAGGED_ELEMENT}`)
+      .update({ status });
   }
 }
 
@@ -110,9 +119,10 @@ async function moveTo(status) {
 // Wechselt die Dialogansicht in den Editiermodus und lädt die aktuellen Task-Daten
 async function editTask(id) {
   const dialog = document.getElementById('taskDetailDialog');
+  // Pfad angepasst
   const task =
     CURRENT_TASKS[id] ||
-    (await database.ref(`tasks/${id}`).once('value')).val();
+    (await database.ref(`${GUEST_PATH}/${id}`).once('value')).val();
   if (task) {
     document.getElementById('taskDetailContent').innerHTML =
       generateEditTaskHTML(task, id);
@@ -144,7 +154,8 @@ async function saveEdit(id) {
     assignedTo: document.getElementById('editAssigned').value,
     subtasks: task.subtasks || [],
   };
-  await database.ref(`tasks/${id}`).update(updates);
+  // Pfad angepasst
+  await database.ref(`${GUEST_PATH}/${id}`).update(updates);
   closeTaskDetail();
 }
 
@@ -194,7 +205,8 @@ function toggleEditSubtask(taskId, index) {
 
 // Löscht einen Task unwiderruflich aus der Firebase-Datenbank
 async function deleteTask(id) {
-  await database.ref('tasks/' + id).remove();
+  // Pfad angepasst
+  await database.ref(`${GUEST_PATH}/${id}`).remove();
   closeTaskDetail();
 }
 

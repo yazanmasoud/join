@@ -4,14 +4,12 @@ async function initDashboard() {
 }
 
 function fetchSummaryData() {
-  const userId = 'guest_user'; // Standard für Testphase
+  const userId = getCurrentUserId();
   const tasksRef = database.ref(`users/${userId}/tasks`);
 
-  // .on('value', ...) sorgt für automatische Updates bei Änderungen
   tasksRef.on('value', (snapshot) => {
     const tasksData = snapshot.val() || {};
     const tasksArray = Object.values(tasksData);
-
     const summaryMetrics = calculateMetrics(tasksArray);
     updateUI(summaryMetrics);
   });
@@ -45,18 +43,25 @@ function calculateMetrics(tasks) {
 }
 
 function getNextDeadline(tasks) {
-  const futureDates = tasks
+  // 1. Filtere nur valide Daten, die nicht leer sind
+  const validDates = tasks
     .map((t) => t.dueDate)
-    .filter(
-      (dateStr) =>
-        dateStr && new Date(dateStr) >= new Date().setHours(0, 0, 0, 0),
-    )
-    .sort((a, b) => new Date(a) - new Date(b));
+    .filter((dateStr) => dateStr && dateStr !== '');
 
-  if (futureDates.length === 0) return 'No upcoming deadline';
+  if (validDates.length === 0) return 'No upcoming deadline';
+
+  // 2. Sortiere alle Daten (das nächste zuerst)
+
+  const sortedDates = validDates.sort((a, b) => new Date(a) - new Date(b));
+
+  // 3. Formatiere das nächste Datum
+  const nextDate = new Date(sortedDates[0]);
+
+  // Check ob das Datum valide ist
+  if (isNaN(nextDate.getTime())) return 'No upcoming deadline';
 
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(futureDates[0]).toLocaleDateString('en-US', options);
+  return nextDate.toLocaleDateString('en-US', options);
 }
 
 function updateUI(data) {

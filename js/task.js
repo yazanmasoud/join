@@ -17,12 +17,15 @@ function initAddTask() {
 async function createTask() {
   const task = getTaskObject();
   if (!validateTask(task)) return;
+
+  const userId = getCurrentUserId(); // Holt sich 'guest_user' oder die echte ID
   try {
-    await database.ref('tasks').push(task);
+    // Speichert unter users/ID/tasks -> so findet die Summary es auch!
+    await database.ref(`users/${userId}/tasks`).push(task);
     showSuccessToast();
     clearForm();
   } catch (e) {
-    console.error(e);
+    console.error('Fehler beim Speichern:', e);
   }
 }
 

@@ -66,6 +66,11 @@ main {
   padding: 20px 0;
 }
 
+.bottom-row {
+  width: 100%;
+  max-width: 560px;
+}
+
 /* SPEZIFISCHE KARTEN-STYLES */
 .summary-card {
   flex: 1;
@@ -78,20 +83,43 @@ main {
 .summary-card-small {
   flex: 1;
   height: 168px;
-  max-width: 168px;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
+  gap: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.summary-card-small .stat-number {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.summary-card-small .stat-label {
+  font-size: 16px;
+  white-space: nowrap;
 }
 
 .urgent-row {
+  display: flex;
   width: 100%;
   max-width: 560px;
   height: 168px;
   padding: 0 38px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
+}
+
+.urgent-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5px;
 }
 
 /* INHALTS-ELEMENTE */
@@ -113,6 +141,8 @@ main {
 }
 .stat-label {
   font-size: 20px;
+  line-height: 1.2;
+  display: block;
 }
 
 .urgent-divider {
