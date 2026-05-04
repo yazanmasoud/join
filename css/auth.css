@@ -49,6 +49,10 @@ body {
     pointer-events: none; /* avoid capturing clicks while animating */
 }
 
+body.mobile-splash {
+  background: #2a3647;
+}
+
 /* Move to top-left while keeping the placeholder in the layout */
 .logo-start.shrink {
     left: 80px; /* final left gap, matches .logo-wrap margin-left */
@@ -135,6 +139,18 @@ p {
     position: absolute;
     left: 0px;
 }
+
+    .signup-container-mobile {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        margin-top: 60px;
+    }
+
+    .signup-container-mobile.visible {
+        display: flex;
+    }
 
 
 /* ===== INPUT FIELDS ===== */
@@ -292,4 +308,51 @@ footer a:hover {
     color: var(--color-highlights);
     text-shadow: 0 0 0.8px currentColor;
     cursor: pointer;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 768px) {
+    .login_btn-container {
+        flex-direction: column;
+        width: 180px;
+        gap: 20px;
+    }
+
+    .username,
+    .password {
+        width: 268px;
+    }
+
+    .login-signup-section {
+        width: 300px;
+        padding: 32px 16px;
+    }
+
+    .join-logo {
+        width: 64px;
+    }
+
+    .welcome-section {
+        margin-bottom: 0;
+    }
+
+    .signup-container {
+        display: none;
+    }
+
+    .h1-login-signup {
+        font-size: 48px;
+    }
+
+    .guest-btn,
+    .signup-btn,
+    .login-btn {
+        font-size: 16px;
+    }
+
+    .logo-start.final {
+    left: 40px;
+    top: 40px;
+    }
 }
