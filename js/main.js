@@ -182,3 +182,9 @@ function validateForm() {
   return true;
   
 }
+
+
+//Guest login simply redirects to the main layout page without authentication
+function loginAsGuest() {
+  window.location.href = './pages/layout.html';
+}
