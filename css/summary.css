@@ -1,7 +1,6 @@
 .content-area {
-  padding-left: 60px;
+  padding: 0 60px;
 }
-
 
 /* GEMEINSAME KARTEN-BASIS (Wichtig für Junior Devs!) */
 .card-base {

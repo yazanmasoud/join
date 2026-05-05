@@ -141,6 +141,3 @@ function showSuccessToast() {
     setTimeout(() => toast.classList.add('d-none'), 2000);
   }
 }
-
-// Führt die Initialisierungs-Funktion aus, um die Seite startklar zu machen.
-initAddTask();

@@ -1,145 +1,106 @@
-<!doctype html>
-<html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="shortcut icon"
-      href="../assets/logos/main-logo.svg"
-      type="image/x-icon"
-    />
-    <title>Board</title>
-    <link
-      rel="shortcut icon"
-      href="../assets/logos/main-logo.svg"
-      type="image/x-icon"
-    />
-    <script src="../js/main.js" defer></script>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/root.css" />
-    <link rel="stylesheet" href="../css/main.css" />
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/fonts.css" />
-    <link rel="stylesheet" href="../css/btn.css" />
-    <link rel="stylesheet" href="../css/board.css" />
-  </head>
-  <body>
-    <aside class="sidebar-placeholder">Sidebar Platzhalter</aside>
-    <header class="header-placeholder">Header Platzhalter</header>
-    <main class="main-content">
-      <section class="content-area">
-        <div class="board-header">
-          <h2>Board</h2>
+<main class="main-content">
+  <section class="content-area">
+    <div class="board-header">
+      <h2>Board</h2>
 
-          <div class="board-header-right">
-            <div class="search-container">
-              <input type="text" placeholder="Find Task" id="searchTask" />
-              <div class="search-divider"></div>
-              <img
-                src="../assets/icons/search-icon.svg"
-                alt="Search"
-                class="search-icon"
-              />
-            </div>
-
-            <button class="btn-add-task" onclick="openAddTask()">
-              Add task <img src="../assets/icons/add.svg" alt="plus" />
-            </button>
-          </div>
+      <div class="board-header-right">
+        <div class="search-container">
+          <input type="text" placeholder="Find Task" id="searchTask" />
+          <div class="search-divider"></div>
+          <img
+            src="../assets/icons/search-icon.svg"
+            alt="Search"
+            class="search-icon"
+          />
         </div>
 
-        <div class="board-columns">
-          <!-- 1. TO DO -->
-          <div class="column">
-            <div class="column-header">
-              <span>To do</span>
-              <button class="add-task-small" onclick="openAddTask('todo')">
-                <img src="../assets/icons/board-add-icon.svg" alt="add" />
-              </button>
-            </div>
-            <div
-              class="task-container"
-              id="todo"
-              ondrop="moveTo('todo')"
-              ondragover="
-                allowDrop(event);
-                highlight('todo');
-              "
-              ondragleave="removeHighlight('todo')"
-            >
-              <div class="no-tasks">No tasks To do</div>
-            </div>
-          </div>
-
-          <!-- 2. IN PROGRESS -->
-          <div class="column">
-            <div class="column-header">
-              <span>In progress</span>
-              <button class="add-task-small" onclick="openAddTask('progress')">
-                <img src="../assets/icons/board-add-icon.svg" alt="add" />
-              </button>
-            </div>
-            <div
-              class="task-container"
-              id="progress"
-              ondrop="moveTo('progress')"
-              ondragover="allowDrop(event)"
-            >
-              <div class="no-tasks">No tasks In progress</div>
-            </div>
-          </div>
-
-          <!-- 3. AWAIT FEEDBACK -->
-          <div class="column">
-            <div class="column-header">
-              <span>Await feedback</span>
-              <button class="add-task-small" onclick="openAddTask('feedback')">
-                <img src="../assets/icons/board-add-icon.svg" alt="add" />
-              </button>
-            </div>
-            <div
-              class="task-container"
-              id="feedback"
-              ondrop="moveTo('feedback')"
-              ondragover="allowDrop(event)"
-            >
-              <div class="no-tasks">No tasks Await feedback</div>
-            </div>
-          </div>
-
-          <!-- 4. DONE -->
-          <div class="column">
-            <div class="column-header">
-              <span>Done</span>
-              <button class="add-task-small" onclick="openAddTask('done')">
-                <img src="../assets/icons/board-add-icon.svg" alt="add" />
-              </button>
-            </div>
-            <div
-              class="task-container"
-              id="done"
-              ondrop="moveTo('done')"
-              ondragover="allowDrop(event)"
-            >
-              <div class="no-tasks">No tasks Done</div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    <dialog id="taskDetailDialog" class="detail-dialog-frame">
-      <div id="taskDetailContent" class="task-detail-content-style">
-        <!-- Hier wird das Template eingefügt -->
+        <button class="btn-add-task" onclick="openAddTask()">
+          Add task <img src="../assets/icons/add.svg" alt="plus" />
+        </button>
       </div>
-    </dialog>
-    <!-- Firebase App (Basis-SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <!-- Firebase Database -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="../js/firebase-config.js"></script>
-    <!--Logik -->
-    <script src="../js/utils.js"></script>
-    <script src="../js/template.js"></script>
-    <script src="../js/board.js"></script>
-  </body>
-</html>
+    </div>
+
+    <div class="board-columns">
+      <!-- 1. TO DO -->
+      <div class="column">
+        <div class="column-header">
+          <span>To do</span>
+          <button class="add-task-small" onclick="openAddTask('todo')">
+            <img src="../assets/icons/board-add-icon.svg" alt="add" />
+          </button>
+        </div>
+        <div
+          class="task-container"
+          id="todo"
+          ondrop="moveTo('todo')"
+          ondragover="
+            allowDrop(event);
+            highlight('todo');
+          "
+          ondragleave="removeHighlight('todo')"
+        >
+          <div class="no-tasks">No tasks To do</div>
+        </div>
+      </div>
+
+      <!-- 2. IN PROGRESS -->
+      <div class="column">
+        <div class="column-header">
+          <span>In progress</span>
+          <button class="add-task-small" onclick="openAddTask('progress')">
+            <img src="../assets/icons/board-add-icon.svg" alt="add" />
+          </button>
+        </div>
+        <div
+          class="task-container"
+          id="progress"
+          ondrop="moveTo('progress')"
+          ondragover="allowDrop(event)"
+        >
+          <div class="no-tasks">No tasks In progress</div>
+        </div>
+      </div>
+
+      <!-- 3. AWAIT FEEDBACK -->
+      <div class="column">
+        <div class="column-header">
+          <span>Await feedback</span>
+          <button class="add-task-small" onclick="openAddTask('feedback')">
+            <img src="../assets/icons/board-add-icon.svg" alt="add" />
+          </button>
+        </div>
+        <div
+          class="task-container"
+          id="feedback"
+          ondrop="moveTo('feedback')"
+          ondragover="allowDrop(event)"
+        >
+          <div class="no-tasks">No tasks Await feedback</div>
+        </div>
+      </div>
+
+      <!-- 4. DONE -->
+      <div class="column">
+        <div class="column-header">
+          <span>Done</span>
+          <button class="add-task-small" onclick="openAddTask('done')">
+            <img src="../assets/icons/board-add-icon.svg" alt="add" />
+          </button>
+        </div>
+        <div
+          class="task-container"
+          id="done"
+          ondrop="moveTo('done')"
+          ondragover="allowDrop(event)"
+        >
+          <div class="no-tasks">No tasks Done</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<dialog id="taskDetailDialog" class="detail-dialog-frame">
+  <div id="taskDetailContent" class="task-detail-content-style">
+    <!-- Hier wird das Template eingefügt -->
+  </div>
+</dialog>
