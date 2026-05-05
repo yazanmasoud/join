@@ -28,7 +28,8 @@
     width: 100px;
     margin-top: 80px;
     margin-left: 80px;
-    height: 100px; /* reserve vertical space */
+    height: 100px;
+    /* reserve vertical space */
 }
 
 .logo-start {
@@ -36,19 +37,22 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(2);
-    transition: transform 700ms cubic-bezier(.2,.9,.2,1), left 700ms, top 700ms;
+    transition: transform 700ms cubic-bezier(.2, .9, .2, 1), left 700ms, top 700ms;
     z-index: 1000;
-    pointer-events: none; /* avoid capturing clicks while animating */
+    pointer-events: none;
+    /* avoid capturing clicks while animating */
 }
 
 body.mobile-splash {
-  background: var(--color-bg-secondary);
+    background: var(--color-bg-secondary);
 }
 
 /* Move to top-left while keeping the placeholder in the layout */
 .logo-start.shrink {
-    left: 80px; /* final left gap, matches .logo-wrap margin-left */
-    top: 24px;  /* final top gap */
+    left: 80px;
+    /* final left gap, matches .logo-wrap margin-left */
+    top: 24px;
+    /* final top gap */
     transform: translate(0, 0) scale(1);
 }
 
@@ -58,7 +62,7 @@ body.mobile-splash {
     position: fixed;
     left: 80px;
     top: 24px;
-    transform: translate(0,0) scale(1);
+    transform: translate(0, 0) scale(1);
     pointer-events: auto;
 }
 
@@ -132,17 +136,17 @@ body.mobile-splash {
     left: 0px;
 }
 
-    .signup-container-mobile {
-        display: none;
-        justify-content: center;
-        align-items: center;
-        gap: 16px;
-        margin-top: 60px;
-    }
+.signup-container-mobile {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 60px;
+}
 
-    .signup-container-mobile.visible {
-        display: flex;
-    }
+.signup-container-mobile.visible {
+    display: flex;
+}
 
 
 /* ===== INPUT FIELDS ===== */
@@ -173,7 +177,7 @@ body.mobile-splash {
 
 .username {
     background-image: url('../assets/icons/user-icon-register.svg');
-    background-position: right 10px center; 
+    background-position: right 10px center;
     background-repeat: no-repeat;
 }
 
@@ -194,7 +198,7 @@ body.mobile-splash {
     background: var(--color-error-bg);
     border-radius: 10px;
     padding: 12px;
-    margin: 6px 0px 12px 0px ;
+    margin: 6px 0px 12px 0px;
     font-size: 15px;
     display: flex;
     align-items: flex-start;
@@ -205,10 +209,17 @@ body.mobile-splash {
 
 
 /* smaller description text */
-.form-error span{ display:block; color: var(--color-error); opacity:0.95 }
+.form-error span {
+    display: block;
+    color: var(--color-error);
+    opacity: 0.95
+}
 
 /* hidden helper class (keeps previous usage) */
-.hidden{ display:none !important }
+.hidden {
+    display: none !important
+}
+
 .email {
     background-image: url('../assets/icons/mail-icon-login.svg');
     background-position: right 10px center;
@@ -218,25 +229,36 @@ body.mobile-splash {
 /* ===== PRIVACY SECTION ===== */
 
 .privacy-container {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: 16px;
-    margin-bottom: 24px;
+    margin: 16px auto 24px;
+    width: 422px;
     font-size: 18px;
-    color: var(--color-text-secondary);
+    color: var(--color-text-secondary)
 }
 
 .privacy-container a {
-    color: var(--color-highlights);
-    text-decoration: none;
+    color: var(--color-highlights)
 }
 
-/* Red outline for invalid inputs */
-.error-input {
-    border-color: var(--color-error);
-    box-shadow: 0 0 0 4px var(--color-error-shadow)!important;
+.privacy-container input[type="checkbox"] {
+    margin: 0;
+    width: 18px;
+    height: 18px
+}
+
+.privacy-container label {
+    white-space: nowrap;
+    margin: 0
+}
+
+.login-signup-section input.error-input,
+.privacy-container input.error-input {
+    border-color: var(--color-error) !important;
+    box-shadow: 0 0 0 6px var(--color-error-shadow) !important;
+    transition: box-shadow .14s, border-color .14s
 }
 
 
@@ -292,7 +314,8 @@ footer {
     gap: 30px;
     display: flex;
     justify-content: center;
-    margin-top: auto; /* push footer to bottom */
+    margin-top: auto;
+    /* push footer to bottom */
     padding: 30px 0 30px 0;
 }
 
@@ -344,7 +367,7 @@ footer a:hover {
     }
 
     .logo-start.final {
-    left: 40px;
-    top: 40px;
+        left: 40px;
+        top: 40px;
     }
 }
