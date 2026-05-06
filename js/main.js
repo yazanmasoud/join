@@ -4,27 +4,7 @@ const isLoginPage = document.getElementById("login");
 
 
 /* ===== ANIMATION ===== */
-/*
-function animateLogo(delay = 0) {
-  const logo = document.getElementById("logo");
-  const login = document.getElementById("login");
 
-  if (!logo || !login || logo.classList.contains("shrink")) return;
-
-  setTimeout(() => {
-    logo.classList.add("shrink");
-
-    const transitionMs = 700;
-    const bufferMs = 120; // small buffer to ensure animation finished
-
-    setTimeout(() => {
-      logo.classList.add('final');
-      login.classList.remove('hidden');
-    }, transitionMs + bufferMs);
-
-  }, delay);
-}
-*/
 function setMobileSplash(logo) {
   if (!isMobile()) return;
   document.body.classList.add("mobile-splash");
@@ -83,21 +63,29 @@ if (isLoginPage) {
 /* ===== UI TOGGLE ===== */
 
 function openSignUp() {
+  const signupContainer = document.getElementById("signup-container");
+  const signupContainerMobile = document.getElementById("signup-container-mobile");
   const signup = document.getElementById("signup");
   const login = document.getElementById("login");
 
   if (!signup || !login) return;
 
+  signupContainer.classList.add("hidden");
+  signupContainerMobile.classList.add("hidden");
   signup.classList.remove("hidden");
   login.classList.add("hidden");
 }
 
 function openLogin() {
+  const signupContainer = document.getElementById("signup-container");
+  const signupContainerMobile = document.getElementById("signup-container-mobile");
   const signup = document.getElementById("signup");
   const login = document.getElementById("login");
 
   if (!signup || !login) return;
 
+  signupContainer.classList.remove("hidden");
+  signupContainerMobile.classList.remove("hidden");
   signup.classList.add("hidden");
   login.classList.remove("hidden");
 }
@@ -106,7 +94,7 @@ function openLogin() {
 
 function checkUsername(username, errorText, errorBox) {
   if (username.value.trim() === "") {
-    errorText.innerText = "Bitte Username eingeben";
+    errorText.innerText = "please enter a username";
     errorBox.classList.remove("hidden");
     username.classList.add('error-input');
     return false;
@@ -117,7 +105,7 @@ function checkUsername(username, errorText, errorBox) {
 
 function checkEmail(email, errorText, errorBox) {
   if (!email.value.includes("@")) {
-    errorText.innerText = "Ungültige Email";
+    errorText.innerText = "Invalid email address";
     errorBox.classList.remove("hidden");
     email.classList.add('error-input');
     return false;
@@ -129,7 +117,7 @@ function checkEmail(email, errorText, errorBox) {
 function checkPassword(password, confirmPassword, errorText, errorBox) {
 
   if (password.value === "" || confirmPassword.value === "") {
-    errorText.innerText = "Bitte Passwort eingeben";
+    errorText.innerText = "please enter a password";
     errorBox.classList.remove("hidden");
     password.classList.add('error-input');
     confirmPassword.classList.add('error-input');
@@ -137,7 +125,7 @@ function checkPassword(password, confirmPassword, errorText, errorBox) {
   }
 
   if (password.value !== confirmPassword.value) {
-    errorText.innerText = "Passwörter stimmen nicht überein";
+    errorText.innerText = "Passwords do not match";
     errorBox.classList.remove("hidden");
     password.classList.add('error-input');
     confirmPassword.classList.add('error-input');
@@ -151,7 +139,7 @@ function checkPassword(password, confirmPassword, errorText, errorBox) {
 
 function checkPrivacy(privacy, errorText, errorBox) {
   if (!privacy.checked) {
-    errorText.innerText = "Bitte akzeptiere die Privacy Policy";
+    errorText.innerText = "Please accept the Privacy Policy";
     errorBox.classList.remove("hidden");
     const privacyCheckbox = document.getElementById('privacy');
     if (privacyCheckbox) privacyCheckbox.classList.add('error-input');
@@ -181,10 +169,4 @@ function validateForm() {
 
   return true;
   
-}
-
-
-//Guest login simply redirects to the main layout page without authentication
-function loginAsGuest() {
-  window.location.href = './pages/layout.html';
 }

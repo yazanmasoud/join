@@ -7,11 +7,10 @@
     <title>Join</title>
     <link rel="stylesheet" href="./css/root.css" />
     <link rel="stylesheet" href="./css/main.css" />
-    <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/fonts.css" />
     <link rel="stylesheet" href="./css/btn.css" />
     <link rel="stylesheet" href="./css/auth.css" />
-    <link rel="stylesheet" href="./css/summary-dashboard.css" />
+    <link rel="stylesheet" href="./css/summary.css" />
     <link rel="stylesheet" href="./css/add-task.css" />
     <link rel="stylesheet" href="./css/contacts.css" />
   </head>
@@ -23,9 +22,9 @@
             <div class="logo-wrap">
                 <img id="logo" class="join-logo logo-start" src="./assets/logos/main-logo.svg" alt="Join Logo">
             </div>
-            <div class="signup-container">
+            <div id="signup-container" class="signup-container">
                 <p class="p-welcome">Not a Join User?</p>
-                <button class="signup-btn" onclick="openSignUp()">Sign Up</button>
+                <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
             </div>
         </section>
 
@@ -36,19 +35,20 @@
             <input type="password" id="password" class="password" placeholder="Password" required>
 
             <div class="login_btn-container">
-                <button class="login-btn">Log in</button>
-                <button class="guest-btn" onclick="loginAsGuest()">Guest Log in</button>
+                <button class="btn-dark">Log in</button>
+                <button class="btn-light" onclick="loginAsGuest()">Guest Log in</button>
+            </div>
         </section>
 
-        <div class="signup-container-mobile">
+        <div id="signup-container-mobile" class="signup-container-mobile">
                 <p class="p-welcome">Not a Join User?</p>
-                <button class="signup-btn" onclick="openSignUp()">Sign Up</button>
+                <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
         </div>
 
 <section id="signup" class="login-signup-section hidden">
 
     <div class="signup-section-header">
-        <button class="btn" onclick="openLogin()">
+        <button class="btn arrow-btn" onclick="openLogin()">
             <img src="./assets/icons/arrow-left-line.svg" alt="arrow left">
         </button>
         <h1 class="h1-login-signup">Sign Up</h1>
@@ -74,7 +74,7 @@
             <span id="error-text"></span>
         </div>
 
-        <button type="submit" class="signup-btn">Sign Up</button>
+        <button type="submit" class="btn-dark">Sign Up</button>
 
     </form>
 
