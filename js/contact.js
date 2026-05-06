@@ -24,10 +24,8 @@ function createContact() {
     };
 
     contacts.push(contact);
-
-    renderContacts(); // 🔥 statt renderContact
-
-    console.log(contacts);
+    contacts.sort((a, b) => a.name.localeCompare(b.name));
+    renderContacts();
 }
 
 function renderContacts() {
