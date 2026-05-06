@@ -4,27 +4,7 @@ const isLoginPage = document.getElementById("login");
 
 
 /* ===== ANIMATION ===== */
-/*
-function animateLogo(delay = 0) {
-  const logo = document.getElementById("logo");
-  const login = document.getElementById("login");
 
-  if (!logo || !login || logo.classList.contains("shrink")) return;
-
-  setTimeout(() => {
-    logo.classList.add("shrink");
-
-    const transitionMs = 700;
-    const bufferMs = 120; // small buffer to ensure animation finished
-
-    setTimeout(() => {
-      logo.classList.add('final');
-      login.classList.remove('hidden');
-    }, transitionMs + bufferMs);
-
-  }, delay);
-}
-*/
 function setMobileSplash(logo) {
   if (!isMobile()) return;
   document.body.classList.add("mobile-splash");
@@ -83,21 +63,29 @@ if (isLoginPage) {
 /* ===== UI TOGGLE ===== */
 
 function openSignUp() {
+  const signupContainer = document.getElementById("signup-container");
+  const signupContainerMobile = document.getElementById("signup-container-mobile");
   const signup = document.getElementById("signup");
   const login = document.getElementById("login");
 
   if (!signup || !login) return;
 
+  signupContainer.classList.add("hidden");
+  signupContainerMobile.classList.add("hidden");
   signup.classList.remove("hidden");
   login.classList.add("hidden");
 }
 
 function openLogin() {
+  const signupContainer = document.getElementById("signup-container");
+  const signupContainerMobile = document.getElementById("signup-container-mobile");
   const signup = document.getElementById("signup");
   const login = document.getElementById("login");
 
   if (!signup || !login) return;
 
+  signupContainer.classList.remove("hidden");
+  signupContainerMobile.classList.remove("hidden");
   signup.classList.add("hidden");
   login.classList.remove("hidden");
 }
