@@ -37,17 +37,18 @@
             <div class="login_btn-container">
                 <button class="btn-dark">Log in</button>
                 <button class="btn-light" onclick="loginAsGuest()">Guest Log in</button>
+            </div>
         </section>
 
         <div id="signup-container-mobile" class="signup-container-mobile">
                 <p class="p-welcome">Not a Join User?</p>
-                <button class="signup-btn" onclick="openSignUp()">Sign Up</button>
+                <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
         </div>
 
 <section id="signup" class="login-signup-section hidden">
 
     <div class="signup-section-header">
-        <button class="btn" onclick="openLogin()">
+        <button class="btn arrow-btn" onclick="openLogin()">
             <img src="./assets/icons/arrow-left-line.svg" alt="arrow left">
         </button>
         <h1 class="h1-login-signup">Sign Up</h1>
@@ -73,7 +74,7 @@
             <span id="error-text"></span>
         </div>
 
-        <button type="submit" class="signup-btn">Sign Up</button>
+        <button type="submit" class="btn-dark">Sign Up</button>
 
     </form>
 
