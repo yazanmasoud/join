@@ -1,3 +1,4 @@
+let contacts = [];
 function openAddContact() {
 document.getElementById("add-contact").classList.remove("hidden");
 }
@@ -21,23 +22,34 @@ function createContact() {
         initials,
         color
     };
-    renderContact(contact);
+
+    contacts.push(contact);
+
+    renderContacts(); // 🔥 statt renderContact
+
+    console.log(contacts);
 }
 
-function renderContact(contact) {
+function renderContacts() {
     let list = document.getElementById("contact-list");
 
-    list.innerHTML += `
-        <div class="contact-item">
-            <div class="contact-avatar" style="background-color: ${contact.color}">
-                ${contact.initials}
+    list.innerHTML = ""; // clear existing contacts
+
+    for (let i = 0; i < contacts.length; i++) {
+        let contact = contacts[i];
+
+        list.innerHTML += `
+            <div class="contact-item">
+                <div class="contact-avatar" style="background-color: ${contact.color}">
+                    ${contact.initials}
+                </div>
+                <div>
+                    <div>${contact.name}</div>
+                    <div>${contact.email}</div>
+                </div>
             </div>
-            <div>
-                <div>${contact.name}</div>
-                <div>${contact.email}</div>
-            </div>
-        </div>
-    `;
+        `;
+    }
 }
 
 function getInitials(name) {
