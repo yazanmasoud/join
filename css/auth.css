@@ -268,40 +268,6 @@ body.mobile-splash {
     width: 100%;
 }
 
-.login-btn,
-.signup-btn {
-    padding: 15px 24px;
-    background-color: var(--color-bg-secondary);
-    color: var(--color-bg-primary);
-    border: none;
-    border-radius: 8px;
-    font-size: 21px;
-    font-weight: 700;
-}
-
-.login-btn:hover,
-.signup-btn:hover {
-    background-color: var(--color-highlights);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.guest-btn {
-    padding: 15px 24px;
-    background-color: var(--color-bg-primary);
-    color: var(--color-bg-secondary);
-    border: 1px solid var(--color-bg-secondary);
-    border-radius: 8px;
-    font-size: 21px;
-    font-weight: 700;
-}
-
-.guest-btn:hover {
-    color: var(--color-highlights);
-    border: 1px solid var(--color-highlights);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-
 /* ===== FOOTER ===== */
 
 footer {
@@ -355,9 +321,8 @@ footer a:hover {
         font-size: 48px;
     }
 
-    .guest-btn,
-    .signup-btn,
-    .login-btn {
+    .btn-light,
+    .btn-dark {
         font-size: 16px;
     }
 
