@@ -81,8 +81,8 @@
 </section>
 
         <footer class="login-footer">
-            <a href="./pages/loginlayout.html" onclick="navigateTo('imprint')">Legal Notice</a>
-            <a href="./pages/loginlayout.html" onclick="navigateTo('privacy')">Privacy Policy</a>
+            <a id="imprintLink" class="footer-link" href="./pages/loginlayout.html?page=imprint" onclick="navigateTo('imprint'); turnOffBackarrow(); setActiveNavItem(this)">Legal Notice</a>
+            <a id="privacyLink" class="footer-link" href="./pages/loginlayout.html?page=privacy" onclick="navigateTo('privacy'); turnOffBackarrow(); setActiveNavItem(this)">Privacy Policy</a>
         </footer>
     </div>
 

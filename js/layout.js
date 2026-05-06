@@ -6,23 +6,12 @@ const pageHistory = [];
 async function loadTemplate(containerId, templatePath) {
   const container = document.getElementById(containerId);
 
-  if (!container) {
-    console.error(`Container nicht gefunden: ${containerId}`);
-    return;
-  }
+  if (!container) return;
 
-  try {
-    const response = await fetch(templatePath);
+  const response = await fetch(templatePath);
+  const html = await response.text();
 
-    if (!response.ok) {
-      throw new Error(`Template konnte nicht geladen werden: ${templatePath}`);
-    }
-
-    const html = await response.text();
-    container.innerHTML = html;
-  } catch (error) {
-    console.error(error);
-  }
+  container.innerHTML = html;
 }
 
 function initLayout() {
@@ -31,9 +20,14 @@ function initLayout() {
   loadTemplate("mainContent", "../pages/summary.html");
 }
 
-function initLoginLayout() {
-  loadTemplate("headerLoginContent", "../templates/headerlogin.html");
-  loadTemplate("sidebarLoginContent", "../templates/asidelogin.html");
+async function initLoginLayout() {
+  await loadTemplate("headerLoginContent", "../templates/headerlogin.html");
+  await loadTemplate("sidebarLoginContent", "../templates/asidelogin.html");
+
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get("page") || "login";
+
+  await loadTemplate("mainLoginContent", `../pages/${page}.html`);
 }
 
 function navigateTo(page) {
@@ -111,4 +105,24 @@ function logOut() {
 // Funktion zum Zurückkehren zur Login-Seite
 function backToLogin() {
   window.location.href = '../index.html'; // Weiterleitung zur Login-Seite
+}
+
+//funktion schalten den zurück Pfeil aus wenn nicht eingeloggt ist
+function turnOffBackarrow() {
+  const backArrow = document.querySelector('.backarrow-placeholder');
+    backArrow.style.display = 'none';
+}
+
+// Funktion zum Setzen des aktiven Navigationspunkts basierend auf der URL
+function setActiveNavFromUrl() {
+    const currentPage =
+        new URLSearchParams(window.location.search).get("page");
+
+    if (currentPage === "imprint") {
+        document.getElementById("menuLegal").classList.add("active");
+    }
+
+    if (currentPage === "privacy") {
+        document.getElementById("menuPrivacy").classList.add("active");
+    }
 }
