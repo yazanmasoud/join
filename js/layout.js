@@ -31,6 +31,11 @@ function initLayout() {
   loadTemplate("mainContent", "../pages/summary.html");
 }
 
+function initLoginLayout() {
+  loadTemplate("headerLoginContent", "../templates/headerlogin.html");
+  loadTemplate("sidebarLoginContent", "../templates/asidelogin.html");
+}
+
 function navigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
 
@@ -39,6 +44,7 @@ function navigateTo(page) {
   }
 
   loadTemplate('mainContent', `../pages/${page}.html`);
+  loadTemplate('mainLoginContent', `../pages/${page}.html`);
 }
 
 function goBack() {
@@ -100,4 +106,9 @@ function logOut() {
   window.location.href = '../pages/login.html'; // Beispiel: Weiterleitung zur Login-Seite
 
   closeAvatarDropdown(); // schließt dropdown nach dem Ausloggen
+}
+
+// Funktion zum Zurückkehren zur Login-Seite
+function backToLogin() {
+  window.location.href = '../index.html'; // Weiterleitung zur Login-Seite
 }
