@@ -1,10 +1,10 @@
 let contacts = [];
 function openAddContact() {
-document.getElementById("add-contact").classList.remove("hidden");
+    document.getElementById("add-contact").classList.remove("hidden");
 }
 
 function closeAddContact() {
-document.getElementById("add-contact").classList.add("hidden");
+    document.getElementById("add-contact").classList.add("hidden");
 }
 
 function createContact() {
@@ -30,24 +30,41 @@ function createContact() {
 
 function renderContacts() {
     let list = document.getElementById("contact-list");
-
-    list.innerHTML = ""; // clear existing contacts
+    list.innerHTML = "";
+    let currentLetter = "";
 
     for (let i = 0; i < contacts.length; i++) {
         let contact = contacts[i];
+        let firstLetter = contact.name[0].toUpperCase();
 
-        list.innerHTML += `
-            <div class="contact-item">
-                <div class="contact-avatar" style="background-color: ${contact.color}">
-                    ${contact.initials}
-                </div>
-                <div>
-                    <div>${contact.name}</div>
-                    <div>${contact.email}</div>
-                </div>
-            </div>
-        `;
+        if (firstLetter !== currentLetter) {
+            renderContactLetter(list, firstLetter);
+            currentLetter = firstLetter;
+        }
+
+        renderSingleContact(list, contact);
     }
+}
+
+function renderContactLetter(list, letter) {
+    list.innerHTML += `
+        <div class="contact-letter">${letter}</div>
+    `;
+}
+
+function renderSingleContact(list, contact) {
+    list.innerHTML += `
+        <div class="contact-item">
+            <div class="contact-avatar" style="background-color: ${contact.color}">
+                ${contact.initials}
+            </div>
+
+            <div>
+                <div>${contact.name}</div>
+                <div>${contact.email}</div>
+            </div>
+        </div>
+    `;
 }
 
 function getInitials(name) {
