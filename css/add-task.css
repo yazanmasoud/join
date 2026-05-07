@@ -14,7 +14,7 @@
 
 .vertical-divider {
   width: 1px;
-  background: #d1d1d1;
+  background: var(--color-divider);
   align-self: stretch;
   margin: 0 10px;
 }
@@ -32,7 +32,7 @@
 }
 
 .required {
-  color: #ff3d00;
+  color: var(--color-required);
 }
 
 /*INPUTS & ELEMENTS */
@@ -41,12 +41,12 @@ textarea,
 select {
   width: 100%;
   padding: 12px 21px;
-  border: 1px solid #d1d1d1;
+  border: 1px solid var(--color-divider);
   border-radius: 10px;
   font-size: 20px;
   font-family: 'Inter', sans-serif;
   outline: none;
-  background-color: white;
+  background-color: var(--color-bg-primary);
 }
 
 textarea {
@@ -74,7 +74,7 @@ textarea {
 
 /* Placeholder Styling */
 ::placeholder {
-  color: #d1d1d1;
+  color: var(--color-divider);
   opacity: 1;
 }
 
@@ -86,22 +86,22 @@ input[type='date']::-webkit-calendar-picker-indicator {
 
 /* Grundzustand: Grau */
 input[type='date'] {
-  color: #d1d1d1;
+  color: var(--color-divider);
 }
 
 /* Webkit: Erzwingt Farbe für Platzhalter-Segmente */
 input[type='date']::-webkit-datetime-edit-fields-wrapper {
-  color: #d1d1d1;
+  color: var(--color-divider);
 }
 
 /* Umschalten: Bei Auswahl schwarz */
 input[type='date']:focus,
 input[type='date']:valid {
-  color: black;
+  color: var(--color-text-main);
 }
 input[type='date']:focus::-webkit-datetime-edit-fields-wrapper,
 input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
-  color: black;
+  color: var(--color-text-main);
 }
 
 /*PRIORITÄTEN & BUTTONS */
@@ -113,8 +113,8 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
 .prio-btn {
   flex: 1;
   padding: 16px;
-  border: 1px solid #d1d1d1;
-  background: white;
+  border: 1px solid var(--color-divider);
+  background: var(--color-bg-primary);
   border-radius: 10px;
   cursor: pointer;
   display: flex;
@@ -127,16 +127,16 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
 
 /* Aktive Prio-Zustände */
 .active-urgent {
-  background-color: #ff3d00;
-  color: white;
+  background-color: var(--color-required);
+  color: var(--color-bg-primary);
 }
 .active-medium {
-  background-color: #ffa800;
-  color: white;
+  background-color: var(--color-btn-medium);
+  color: var(--color-bg-primary);
 }
 .active-low {
-  background-color: #7ae229;
-  color: white;
+  background-color: var(--color-category-feature);
+  color: var(--color-bg-primary);
 }
 
 .priority-btn-content button[class*='active-'] img {
@@ -193,7 +193,7 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
 }
 
 .subtasks-list li:hover {
-  background-color: #eeeeee;
+  background-color: var(--color-bg-tertiary);
 }
 
 .subtasks-list button {
@@ -201,5 +201,5 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   border: none;
   cursor: pointer;
   font-weight: bold;
-  color: #2a3647;
+  color: var(--color-bg-secondary);
 }
