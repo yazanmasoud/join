@@ -1,14 +1,25 @@
 <main>
-    <button onclick="openAddContact()">Add New Contact</button>
+    <button class="add-contact-btn" onclick="openAddContact()">
+        <span>Add new contact</span>
+        <img src="../assets/icons/add-contact-icon.svg" alt="">
+    </button>
+<div id="add-contact-popup" class="popup hidden">
 
-    <div id="add-contact" class="hidden">
-        <h2>Add New Contact</h2>
-        <input type="text" id="contact-name" placeholder="Contact Name">
-        <input type="text" id="contact-email" placeholder="Contact Email">
-        <input type="text" id="contact-phone" placeholder="Contact Phone">
+    <div class="popup-content">
+        <button onclick="closeAddContact()">X</button>
 
-        <button onclick="createContact()" id="save-contact">Create Contact</button>
+        <h2>Add Contact</h2>
+
+        <input type="text" id="contact-name" placeholder="Name">
+        <input type="email" id="contact-email" placeholder="Email">
+        <input type="text" id="contact-phone" placeholder="Phone">
+
+        <button onclick="createContact()">
+            Create Contact
+        </button>
     </div>
-    
+
+</div>
+
     <div id="contact-list"></div>
 </main>

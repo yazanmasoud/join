@@ -1,5 +1,5 @@
 .hidden {
-    display: none;
+  display: none;
 }
 
 .contact-avatar {
@@ -23,4 +23,40 @@
 .contact-letter {
   font-weight: bold;
   margin-top: 20px;
+}
+
+.add-contact-btn {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-bg-primary);
+  width: 300px;
+  height: 56px;
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 12px;
+}
+
+.popup {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    width: 500px;
+    background-color: white;
+    padding: 32px;
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
