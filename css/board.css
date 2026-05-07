@@ -31,7 +31,7 @@
 .subtask-text {
   margin-left: 20px;
   font-size: 16px;
-  color: black;
+  color: var(--color-text-main);
 }
 
 /* --- 2. HEADER & SEARCH --- */
@@ -51,7 +51,7 @@
 .search-container input {
   width: 312px;
   padding: 8px 50px 8px 16px;
-  border: 1px solid #d1d1d1;
+  border: 1px solid var(--color-divider);
   border-radius: 10px;
   font-size: 20px;
 }
@@ -59,7 +59,7 @@
 .search-divider {
   width: 1px;
   height: 31px;
-  background-color: #d1d1d1;
+  background-color: var(--color-divider);
   position: absolute;
   right: 48px;
 }
@@ -93,7 +93,7 @@
 .column-header span {
   font-size: 20px;
   font-weight: 700;
-  color: #42526e;
+  color: var(--color-menu-headline);
 }
 
 .task-container {
@@ -105,7 +105,7 @@
 }
 
 .add-task-small {
-  border: 2px solid #2a3647;
+  border: 2px solid var(--color-bg-secondary);
   border-radius: 8px;
   background: transparent;
   cursor: pointer;
@@ -113,12 +113,12 @@
   transition: all 0.1s ease-in-out;
 }
 .add-task-small:hover {
-  border-color: #29abe2;
+  border-color: var(--color-highlights);
 }
 
 /* --- 4. TASK CARDS & CATEGORIES --- */
 .task-card {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 24px;
   padding: 16px;
   box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.08);
@@ -129,7 +129,7 @@
 }
 
 .description-task-board {
-  color: #a8a8a8;
+  color: var(--color-text-secondary);
   font-size: 20px;
 }
 .task-card:active {
@@ -138,7 +138,7 @@
 }
 
 .task-category {
-  color: white;
+  color: var(--color-bg-primary);
   padding: 4px 16px;
   border-radius: 8px;
   width: fit-content;
@@ -157,24 +157,24 @@
 
 .no-tasks,
 .drag-area-highlight {
-  border: 1px dashed #a8a8a8;
+  border: 1px dashed var(--color-text-secondary);
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
 }
 .no-tasks {
-  background: #e7e7e7;
+  background: var(--color-bg-tertiary);
   height: 35px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #a8a8a8;
+  color: var(--color-text-secondary);
   font-size: 16px;
   white-space: nowrap;
 }
 .drag-area-highlight {
   background-color: rgba(0, 0, 0, 0.05);
-  border-color: #ccc;
+  border-color: var(--color-menu-button-text);
   min-height: 50px;
 }
 
@@ -199,7 +199,7 @@
 
 .edit-vertical-divider {
   width: 1px;
-  background-color: #d1d1d1;
+  background-color: var(--color-divider);
   align-self: stretch;
   margin: 0 20px;
 }
@@ -291,7 +291,7 @@
 }
 
 .task-detail-content-style {
-  background-color: white;
+  background-color: var(--color-bg-primary);
   border-radius: 12px;
   padding: 30px 40px;
   display: flex;
@@ -314,7 +314,7 @@
   padding: 4px;
 }
 .detail-view-close:hover {
-  background: #eee;
+  background: var(--color-bg-tertiary);
 }
 .detail-view-title {
   font-size: 36px;
@@ -358,16 +358,16 @@
   font-size: 16px;
   border: none;
   background: none;
-  color: #2a3647;
+  color: var(--color-bg-secondary);
 }
 .action-btn:hover {
-  color: #29abe2;
+  color: var(--color-highlights);
   font-weight: 700;
 }
 .divider {
   width: 1px;
   height: 24px;
-  background: #d1d1d1;
+  background: var(--color-divider);
 }
 
 .assigned-list-detail {
@@ -382,12 +382,12 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  color: white;
+  color: var(--color-bg-primary);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
-  border: 2px solid white;
+  border: 2px solid var(--color-bg-primary);
 }
 
 .user-name {
@@ -407,7 +407,7 @@
   font-size: 20px;
 }
 .required {
-  color: #ff3d00;
+  color: var(--color-required);
 }
 
 input,
@@ -415,11 +415,11 @@ textarea,
 select {
   width: 100%;
   padding: 12px 21px;
-  border: 1px solid #d1d1d1;
+  border: 1px solid var(--color-divider);
   border-radius: 10px;
   font-size: 20px;
   outline: none;
-  background-color: white;
+  background-color: var(--color-bg-primary);
 }
 textarea {
   resize: none;
@@ -436,7 +436,7 @@ textarea {
 .input-wrapper button {
   position: absolute;
   right: 12px; /* Schiebt das Icon nach innen auf die Position des alten Icons */
-  background: white; /* Überdeckt das Standard-Icon vom Browser */
+  background: var(--color-bg-primary); /* Überdeckt das Standard-Icon vom Browser */
   border: none;
   cursor: pointer;
   display: flex;
@@ -446,21 +446,21 @@ textarea {
 /* Hover für Urgent (leichtes Rot) */
 .prio-btn-urgent:not(.active-urgent):hover {
   background-color: #ff3d001a; /* 1A entspricht ca. 10% Transparenz */
-  border-color: #ff3d00;
+  border-color: var(--color-required);
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Hover für Medium (leichtes Orange) */
 .prio-btn-medium:not(.active-medium):hover {
   background-color: #ffa8001a;
-  border-color: #ffa800;
+  border-color: var(--color-btn-medium);
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Hover für Low (leichtes Grün) */
 .prio-btn-low:not(.active-low):hover {
   background-color: #7ae2291a;
-  border-color: #7ae229;
+  border-color: var(--color-category-feature);
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -485,7 +485,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
 /* Verwendet das Styling deiner Add-Task Inputs */
 .edit-mode-container input,
 .edit-mode-container textarea {
-  border: 1px solid #d1d1d1;
+  border: 1px solid var(--color-divider);
   border-radius: 10px;
   padding: 12px 21px;
   font-size: 20px;
@@ -493,8 +493,8 @@ input[type='date']::-webkit-calendar-picker-indicator {
 
 .edit-mode-container .btn-save-edit {
   align-self: flex-end;
-  background-color: #2a3647;
-  color: white;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-bg-primary);
   padding: 12px 24px;
   border-radius: 10px;
   font-weight: 700;
@@ -503,17 +503,17 @@ input[type='date']::-webkit-calendar-picker-indicator {
 }
 
 .edit-mode-container .btn-save-edit:hover {
-  background-color: #29abe2;
+  background-color: var(--color-highlights);
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 /* Date-Input Styling */
 input[type='date'] {
-  color: #d1d1d1;
+  color: var(--color-text-secondary);
 }
 input[type='date']:focus,
 input[type='date']:valid {
-  color: black;
+  color: var(--color-text-primary);
 }
 
 /* Edit Mode Specials */
@@ -537,7 +537,7 @@ input[type='date']:valid {
 .prio-btn {
   flex: 1;
   padding: 16px;
-  border: 1px solid #d1d1d1;
+  border: 1px solid var(--color-divider);
   border-radius: 10px;
   cursor: pointer;
   display: flex;
@@ -546,30 +546,30 @@ input[type='date']:valid {
   gap: 8px;
 }
 .active-urgent {
-  background-color: #ff3d00;
-  color: white;
+  background-color: var(--color-required);
+  color: var(--color-bg-primary);
 }
 .active-medium {
-  background-color: #ffa800;
-  color: white;
+  background-color: var(--color-btn-medium);
+  color: var(--color-bg-primary);
 }
 .active-low {
-  background-color: #7ae229;
-  color: white;
+  background-color: var(--color-category-feature);
+  color: var(--color-bg-primary);
 }
 
 .btn-save-edit {
   align-self: flex-end;
   padding: 12px 24px;
-  background-color: #2a3647;
-  color: white;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-bg-primary);
   border-radius: 10px;
   border: none;
   cursor: pointer;
   font-weight: 700;
 }
 .btn-save-edit:hover {
-  background-color: #29abe2;
+  background-color: var(--color-highlights);
 }
 
 .sidebar-placeholder,

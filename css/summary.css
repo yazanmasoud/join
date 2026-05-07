@@ -13,7 +13,7 @@
 
 .card-base:hover {
   background: var(--color-highlights);
-  color: white;
+  color: var(--color-bg-primary);
   cursor: pointer;
 }
 
@@ -62,7 +62,7 @@
 .summary-card-small {
   flex: 1;
   height: 168px;
-  background-color: white;
+  background-color: var(--color-bg-primary);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -127,7 +127,7 @@
 .urgent-divider {
   width: 2px;
   height: 100px;
-  background: #d1d1d1;
+  background: var(--color-divider);
 }
 
 .deadline-date {

@@ -3,7 +3,7 @@
     font-size: 16px;
     font-weight: 400;
     line-height: 19.2px;
-    max-width: calc(1940px - 230px);
+    max-width: calc(1920px - 230px);
 }
 
 .headline-privacy-layout {
@@ -12,7 +12,7 @@
 
 .privacy-head {
     display: flex;
-    max-width: calc(1940px - 230px);
+    max-width: calc(1920px - 230px);
 }
 
 .privacy-section {
