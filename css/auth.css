@@ -43,10 +43,6 @@
     /* avoid capturing clicks while animating */
 }
 
-body.mobile-splash {
-    background: var(--color-bg-secondary);
-}
-
 /* Move to top-left while keeping the placeholder in the layout */
 .logo-start.shrink {
     left: 80px;
@@ -64,6 +60,16 @@ body.mobile-splash {
     top: 24px;
     transform: translate(0, 0) scale(1);
     pointer-events: auto;
+}
+
+.logo-wrap.layout-mode {
+    margin-top: 0;
+    margin-left: 0;
+    margin-bottom: 60px;
+}
+
+.logo-wrap.layout-mode .logo-start {
+    position: relative;
 }
 
 .signup-container {
@@ -290,6 +296,10 @@ footer a:hover {
 /* ===== RESPONSIVE DESIGN ===== */
 
 @media (max-width: 768px) {
+    body.mobile-splash .content-wrapper {
+        background: var(--color-bg-secondary);
+    }
+
     .login_btn-container {
         flex-direction: column;
         width: 180px;

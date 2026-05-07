@@ -32,19 +32,34 @@ function animateLogo(delay = 0) {
 }
 
 function finishLogoAnimation(logo, login) {
-  const signupMobile = document.querySelector(".signup-container-mobile");
-  const transitionMs = 700;
-  const bufferMs = 120;
+  const delay = 820;
 
   setTimeout(() => {
-    logo.classList.add("final");
-    login.classList.remove("hidden");
+    activateFinalLogoState(logo, login);
+    showMobileSignup();
+    switchLogoToLayoutMode();
+  }, delay);
+}
 
-    if (isMobile() && signupMobile) {
+function activateFinalLogoState(logo, login) {
+  logo.classList.add("final");
+  login.classList.remove("hidden");
+}
+
+function showMobileSignup() {
+  const signupMobile = document.querySelector(".signup-container-mobile");
+
+  if (isMobile() && signupMobile) {
     signupMobile.classList.add("visible");
   }
+}
 
-  }, transitionMs + bufferMs);
+function switchLogoToLayoutMode() {
+  const logoWrap = document.querySelector(".logo-wrap");
+
+  setTimeout(() => {
+    logoWrap?.classList.add("layout-mode");
+  }, 700);
 }
 
 /* ===== RESIZE HANDLER ===== */
