@@ -44,6 +44,16 @@ async function navigateTo(page) {
 }
 
 function goBack() {
+    // Sonderfall: loginlayout.html
+  if (window.location.pathname.includes("loginlayout.html")) {
+
+    sessionStorage.setItem("skipIntroAnimation", "true");
+
+    window.location.href = "../index.html";
+
+    return;
+  }
+
   if (pageHistory.length > 1) {
     pageHistory.pop();
     const previousPage = pageHistory[pageHistory.length - 1];
