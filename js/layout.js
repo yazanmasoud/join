@@ -28,9 +28,11 @@ async function initLoginLayout() {
   const page = params.get("page") || "login";
 
   await loadTemplate("mainLoginContent", `../pages/${page}.html`);
+
+  setActiveLoginNavFromUrl(page);
 }
 
-function navigateTo(page) {
+async function navigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
 
   if (currentPage !== page) {
@@ -70,6 +72,7 @@ function setActiveNavItem(clickedItem) {
 //Entfernt Menüppunkt Markierung beim öffnen der Hilfeseite
 function openHelp() {
   document.querySelectorAll('.nav-link').forEach(item => {
+
     item.classList.remove('active');
   });
 
@@ -114,15 +117,16 @@ function turnOffBackarrow() {
 }
 
 // Funktion zum Setzen des aktiven Navigationspunkts basierend auf der URL
-function setActiveNavFromUrl() {
-    const currentPage =
-        new URLSearchParams(window.location.search).get("page");
+function setActiveLoginNavFromUrl(page) {
+  document.querySelectorAll('.nav-link').forEach(item => {
+    item.classList.remove('active');
+  });
 
-    if (currentPage === "imprint") {
-        document.getElementById("menuLegal").classList.add("active");
-    }
+  if (page === "imprint") {
+    document.getElementById("menuLegalLogin")?.classList.add("active");
+  }
 
-    if (currentPage === "privacy") {
-        document.getElementById("menuPrivacy").classList.add("active");
-    }
+  if (page === "privacy") {
+    document.getElementById("menuPrivacyLogin")?.classList.add("active");
+  }
 }

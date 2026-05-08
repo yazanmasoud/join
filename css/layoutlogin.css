@@ -10,6 +10,10 @@
         "sidebar main";
 }
 
+.backarrow-placeholder {
+    display: none;
+ }
+
 .layout-login::before {
     content: "";
     position: absolute;
@@ -101,6 +105,10 @@
         padding: 10px;
     }
 
+    .backarrow-placeholder {
+        display: flex;
+    }
+
     .menu-bottom-login{
         display: flex;
         flex-direction: row;
@@ -124,10 +132,6 @@
         align-items: center;
         text-align: center;
         height: 60px;
-    }
-
-    .backarrow-placeholder {
-        display: none;
     }
 
     .menu-bottom-link{
