@@ -3,23 +3,29 @@
         <span>Add new contact</span>
         <img src="../assets/icons/add-contact-icon.svg" alt="">
     </button>
-<div id="add-contact-popup" class="popup hidden">
+    <div id="add-contact-popup" class="popup hidden">
 
-    <div class="popup-content">
-        <button onclick="closeAddContact()">X</button>
+        <div class="popup-content">
+            <button class="add-contact-popup-exit-button" onclick="closeAddContact()"><img
+                    src="../assets/icons/Close.svg" alt="Exit button"></button>
 
-        <h2>Add Contact</h2>
 
-        <input type="text" id="contact-name" placeholder="Name">
-        <input type="email" id="contact-email" placeholder="Email">
-        <input type="text" id="contact-phone" placeholder="Phone">
+            <input type="text" id="contact-name" placeholder="Name">
+            <input type="email" id="contact-email" placeholder="Email">
+            <input type="text" id="contact-phone" placeholder="Phone">
+            <div class="add-contact-popup-buttons">
+                <button class="add-contact-cancel-button" onclick="closeAddContact()">
+                    <span>cancel</span>
+                    <img src="../assets/icons/cancle-icon.svg" alt="">
+                </button>
+                <button class="add-contact-create-button" onclick="createContact()">
+                    <span>Create Contact</span>
+                    <img src="../assets/icons/create-task.svg" alt="Check icon">
+                </button>
+            </div>
+        </div>
 
-        <button onclick="createContact()">
-            Create Contact
-        </button>
     </div>
-
-</div>
 
     <div id="contact-list"></div>
 </main>
