@@ -156,6 +156,7 @@
 .username,
 .password,
 .email,
+.phone,
 .login-signup-section input[type="text"],
 .login-signup-section input[type="email"],
 .login-signup-section input[type="password"] {
@@ -170,6 +171,7 @@
 .username:focus,
 .password:focus,
 .email:focus,
+.phone:focus,
 .login-signup-section input[type="text"]:focus,
 .login-signup-section input[type="email"]:focus,
 .login-signup-section input[type="password"]:focus {
@@ -191,6 +193,12 @@
 
 .password {
     background-image: url('../assets/icons/lock-icon-login.svg');
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+}
+
+.phone {
+    background-image: url('../assets/icons/call.svg');
     background-position: right 10px center;
     background-repeat: no-repeat;
 }
