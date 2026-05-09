@@ -1,10 +1,20 @@
 let contacts = [];
 function openAddContact() {
-    document.getElementById("add-contact-popup").showModal()
+    const dialog = document.getElementById("add-contact-popup");
+
+    dialog.classList.remove("contact-dialog-open");
+
+    dialog.showModal();
+
+    setTimeout(() => {
+        dialog.classList.add("contact-dialog-open");
+    }, 10);
 }
 
 function closeAddContact() {
-    document.getElementById("add-contact-popup").close();
+    const dialog = document.getElementById("add-contact-popup");
+    dialog.classList.remove("contact-dialog-open");
+    dialog.close();
 }
 
 function createContact() {
