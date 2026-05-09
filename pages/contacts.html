@@ -3,29 +3,35 @@
         <span>Add new contact</span>
         <img src="../assets/icons/add-contact-icon.svg" alt="">
     </button>
-    <div id="add-contact-popup" class="popup hidden">
 
-        <div class="popup-content">
-            <button class="add-contact-popup-exit-button" onclick="closeAddContact()"><img
-                    src="../assets/icons/Close.svg" alt="Exit button"></button>
+    <dialog id="add-contact-popup" class="contact-dialog">
+        <div class="contact-dialog-content">
+            <img class="contact-dialog-sidebar" src="../assets/img/Frame-add-contact.png" alt="Add contact dialog frame">
+            <img class="contact-dialog-avatar" src="../assets/img/add-contact-profile-icon.png" alt="Profile icon">
 
-
-            <input type="text" id="contact-name" placeholder="Name">
-            <input type="email" id="contact-email" placeholder="Email">
-            <input type="text" id="contact-phone" placeholder="Phone">
-            <div class="add-contact-popup-buttons">
-                <button class="add-contact-cancel-button" onclick="closeAddContact()">
-                    <span>cancel</span>
-                    <img src="../assets/icons/cancle-icon.svg" alt="">
+            <div class="contact-dialog-form">
+                <button class="contact-dialog-close-button" onclick="closeAddContact()"><img
+                        src="../assets/icons/Close.svg" alt="Exit button">
                 </button>
-                <button class="add-contact-create-button" onclick="createContact()">
-                    <span>Create Contact</span>
-                    <img src="../assets/icons/create-task.svg" alt="Check icon">
-                </button>
+
+                <input class="contact-dialog-input" type="text" id="contact-name" placeholder="Name">
+                <input class="contact-dialog-input" type="email" id="contact-email" placeholder="Email">
+                <input class="contact-dialog-input" type="text" id="contact-phone" placeholder="Phone">
+
+                <div class="contact-dialog-actions">
+                    <button class="contact-dialog-cancel-button" onclick="closeAddContact()">
+                        <span>cancel</span>
+                        <img src="../assets/icons/cancle-icon.svg" alt="">
+                    </button>
+
+                    <button class="contact-dialog-create-button" onclick="createContact()">
+                        <span>Create Contact</span>
+                        <img src="../assets/icons/create-task.svg" alt="Check icon">
+                    </button>
+                </div>
             </div>
         </div>
-
-    </div>
+    </dialog>
 
     <div id="contact-list"></div>
 </main>

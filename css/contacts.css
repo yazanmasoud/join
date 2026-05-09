@@ -1,5 +1,10 @@
-.hidden {
-  display: none;
+/* ===== CONTACT LIST ===== */
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .contact-avatar {
@@ -13,17 +18,13 @@
   font-weight: bold;
 }
 
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
 .contact-letter {
   font-weight: bold;
   margin-top: 20px;
 }
+
+
+/* ===== ADD CONTACT BUTTON ===== */
 
 .add-contact-btn {
   background-color: var(--color-bg-secondary);
@@ -40,35 +41,50 @@
   margin: 12px;
 }
 
-.popup {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.2);
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* ===== POPUP / DIALOG ===== */
+
+.contact-dialog {
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  margin: auto;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
 }
 
-.popup-content {
-    width: 500px;
-    background-color: white;
-    padding: 32px;
-    border-radius: 20px;
-
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.contact-dialog-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+  padding: 40px;
 }
 
-.add-contact-popup-buttons {
+.contact-dialog-form {
+  width: 500px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: white;
+  border-radius: 30px;
+}
+
+.contact-dialog-input {
+  width: 90%;
+}
+
+
+/* ===== POPUP BUTTONS ===== */
+
+.contact-dialog-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
   margin-top: 24px;
 }
 
-.add-contact-popup-exit-button{
+.contact-dialog-close-button {
   border: none;
   background: none;
   display: flex;
@@ -76,7 +92,7 @@
   justify-content: flex-end;
 }
 
-.add-contact-cancel-button {
+.contact-dialog-cancel-button {
   background-color: var(--color-bg-primary);
   display: flex;
   width: 100px;
@@ -86,7 +102,7 @@
   font-size: 16px;
 }
 
-.add-contact-create-button {
+.contact-dialog-create-button {
   background-color: var(--color-bg-secondary);
   color: var(--color-bg-primary);
   height: 40px;

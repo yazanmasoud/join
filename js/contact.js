@@ -1,10 +1,10 @@
 let contacts = [];
 function openAddContact() {
-    document.getElementById("add-contact-popup").classList.remove("hidden");
+    document.getElementById("add-contact-popup").showModal()
 }
 
 function closeAddContact() {
-    document.getElementById("add-contact-popup").classList.add("hidden");
+    document.getElementById("add-contact-popup").close();
 }
 
 function createContact() {
