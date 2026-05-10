@@ -58,7 +58,15 @@ function renderContacts() {
 
 function renderContactLetter(list, letter) {
     list.innerHTML += `
-        <div class="contact-letter">${letter}</div>
+        <div class="contact-letter-container">
+
+            <div class="contact-letter">
+                ${letter}
+            </div>
+
+            <div class="contact-divider"></div>
+
+        </div>
     `;
 }
 
