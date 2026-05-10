@@ -182,6 +182,38 @@ function validateForm() {
   if (!checkPassword(password, confirmPassword, errorText, errorBox)) return false;
   if (!checkPrivacy(privacy, errorText, errorBox)) return false;
 
-  return true;
-  
+  return true; 
+}
+
+/* ===== Guest/User Login ===== */
+
+function loginAsGuest() {
+  sessionStorage.setItem("userStatus", "guest");
+  initGuestStorage();
+  window.location.href = "./pages/layout.html";
+}
+
+function isGuest() {
+  return sessionStorage.getItem("userStatus") === "guest";
+}
+
+function initGuestStorage() {
+  if (!localStorage.getItem("guestContacts")) {
+    localStorage.setItem(
+      "guestContacts",
+      JSON.stringify(guestContacts)
+    );
+  }
+
+  if (!localStorage.getItem("guestTasks")) {
+    localStorage.setItem(
+      "guestTasks",
+      JSON.stringify(guestTasks)
+    );
+  }
+}
+
+function loginAsUser() {
+  sessionStorage.setItem("userStatus", "user");
+  window.location.href = "./pages/layout.html";
 }
