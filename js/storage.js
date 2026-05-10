@@ -5,3 +5,24 @@ const contactOptions = [
   'Sofia Schneider',
   'Benedikt Bauer',
 ];
+
+/* ===== Local Storage Handling ===== */
+
+function getStoredContacts() {
+  if (isGuest()) {
+    return JSON.parse(localStorage.getItem("guestContacts")) || [];
+  }
+
+  return contacts;
+}
+
+function getStoredTasks() {
+  if (isGuest()) {
+    return JSON.parse(localStorage.getItem("guestTasks")) || [];
+  }
+
+  return tasks;
+}
+
+/* renderContacts(getStoredContacts()); */
+/* renderTasks(getStoredTasks()); */
