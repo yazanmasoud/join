@@ -1,5 +1,12 @@
 /* ===== CONTACT LIST ===== */
 
+.contact-list{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
 .contact-item {
   display: flex;
   align-items: center;
@@ -18,16 +25,29 @@
   font-weight: bold;
 }
 
-.contact-letter {
-  font-weight: bold;
-  margin-top: 20px;
+.contacts-page {
+    display: flex;
+    height: 100vh;
 }
+
+
 
 /* ===== SIDE BAR ===== */
 .contact-dialog-sidebar {
   width: 400px;
   height: 100%;
   display: block;
+}
+
+.contacts-sidebar {
+width: 400px;
+    background-color: var(--color-bg-primary);
+    padding: 24px;
+    overflow-y: auto;
+    box-shadow: 4px 0px 18px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* ===== ADD CONTACT BUTTON ===== */
@@ -60,7 +80,7 @@
 }
 
 .contact-dialog-open {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .contact-dialog-content {
@@ -80,13 +100,13 @@
 
 .contact-dialog-input {
   box-sizing: border-box;
-  width: 300px;
+  width: 400px;
 }
 
 .contact-inputs-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 
@@ -108,33 +128,32 @@
 }
 
 .contact-dialog-cancel-button {
-  background-color: var(--color-bg-primary);
-  display: flex;
-  width: 100px;
+  width: 130px;
   height: 45px;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  border: 1px solid var(--color-bg-secondary);
+  font-size: 18px;
+  font-weight: 400;
+  display: flex;
+  align-items: anchor-center;
+  background-image: url('../assets/icons/Close.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
 }
 
 .contact-dialog-create-button {
-  background-color: var(--color-bg-secondary);
-  color: var(--color-bg-primary);
   height: 45px;
-  width: 180px;
-  border: none;
-  font-size: 16px;
-  font-weight: 700;
+  width: 200px;
+  font-size: 18px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: anchor-center;
+  background-image: url('../assets/icons/create-task.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
 }
 
-.contact-input-and-close-button{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 55px;
+.contact-input-and-close-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 55px;
 }

@@ -1,8 +1,12 @@
-<main>
-    <button class="add-contact-btn" onclick="openAddContact()">
-        <span>Add new contact</span>
-        <img src="../assets/icons/add-contact-icon.svg" alt="">
-    </button>
+<main class="contacts-page">
+    <section class="contacts-sidebar">
+        <button class="add-contact-btn btn-dark" onclick="openAddContact()">
+            <span>Add new contact</span>
+            <img src="../assets/icons/add-contact-icon.svg" alt="">
+        </button>
+
+        <div id="contact-list"></div>
+    </section>
 
     <dialog id="add-contact-popup" class="contact-dialog">
         <div class="contact-dialog-content">
@@ -22,19 +26,17 @@
                     </div>
                 </div>
                 <div class="contact-dialog-actions">
-                    <button class="contact-dialog-cancel-button" onclick="closeAddContact()">
+                    <button class="contact-dialog-cancel-button btn-light" onclick="closeAddContact()">
                         <span>cancel</span>
-                        <img src="../assets/icons/cancle-icon.svg" alt="cancel icon">
                     </button>
 
-                    <button class="contact-dialog-create-button" onclick="createContact()">
+                    <button class="contact-dialog-create-button btn-dark" onclick="createContact()">
                         <span>Create Contact</span>
-                        <img src="../assets/icons/create-task.svg" alt="Check icon">
                     </button>
                 </div>
             </div>
         </div>
     </dialog>
 
-    <div id="contact-list"></div>
+
 </main>
