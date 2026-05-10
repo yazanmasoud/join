@@ -6,22 +6,25 @@
 
     <dialog id="add-contact-popup" class="contact-dialog">
         <div class="contact-dialog-content">
-            <img class="contact-dialog-sidebar" src="../assets/img/Frame-add-contact.png" alt="Add contact dialog frame">
+            <img class="contact-dialog-sidebar" src="../assets/img/Frame-add-contact.png"
+                alt="Add contact dialog frame">
             <img class="contact-dialog-avatar" src="../assets/img/add-contact-profile-icon.png" alt="Profile icon">
 
             <div class="contact-dialog-form">
-                <button class="contact-dialog-close-button" onclick="closeAddContact()"><img
-                        src="../assets/icons/Close.svg" alt="Exit button">
-                </button>
-
-                <input class="contact-dialog-input username" type="text" id="contact-name" placeholder="Name">
-                <input class="contact-dialog-input email" type="email" id="contact-email" placeholder="Email">
-                <input class="contact-dialog-input phone" type="text" id="contact-phone" placeholder="Phone">
-
+                <div class="contact-input-and-close-button">
+                    <button class="contact-dialog-close-button" onclick="closeAddContact()"><img
+                            src="../assets/icons/Close.svg" alt="Close button">
+                    </button>
+                    <div class="contact-inputs-container">
+                        <input class="contact-dialog-input username" type="text" id="contact-name" placeholder="Name">
+                        <input class="contact-dialog-input email" type="email" id="contact-email" placeholder="Email">
+                        <input class="contact-dialog-input phone" type="text" id="contact-phone" placeholder="Phone">
+                    </div>
+                </div>
                 <div class="contact-dialog-actions">
                     <button class="contact-dialog-cancel-button" onclick="closeAddContact()">
                         <span>cancel</span>
-                        <img src="../assets/icons/cancle-icon.svg" alt="">
+                        <img src="../assets/icons/cancle-icon.svg" alt="cancel icon">
                     </button>
 
                     <button class="contact-dialog-create-button" onclick="createContact()">
