@@ -21,22 +21,18 @@ function initBoard() {
 // Leert die Spalten und zeichnet alle Tasks aus dem übergebenen Objekt neu
 function renderAllTasks(allTasks) {
   const cols = ['todo', 'progress', 'feedback', 'done'];
-
   // PRÜFUNG: Wenn die erste Spalte nicht existiert, sind wir nicht auf der Board-Seite
   if (!document.getElementById(cols[0])) {
     return;
   }
-
   cols.forEach((id) => {
     const colElement = document.getElementById(id);
     if (colElement) colElement.innerHTML = '';
   });
-
   Object.entries(allTasks).forEach(([id, task]) => {
     const container = document.getElementById(task.status || 'todo');
     if (container) container.innerHTML += generateTaskHTML(task, id);
   });
-
   cols.forEach((id) => checkPlaceholder(id));
 }
 

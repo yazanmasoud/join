@@ -22,7 +22,7 @@
 }
 
 .highlighted {
-    color: var(--second-color);
+    color: var(--second-color); /*welche Farbe soll das sein?*/
     font-size: 16px;
     line-height: 19.2px;
     font-weight: 400;
