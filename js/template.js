@@ -1,4 +1,5 @@
 /**  BOARD TASK CARDS*/
+/**  BOARD TASK CARDS*/
 function generateTaskHTML(task, id) {
   const catClass = task.category.replace(/\s+/g, '').toLowerCase();
   return `
@@ -8,13 +9,44 @@ function generateTaskHTML(task, id) {
       <h3>${task.title}</h3>
       <p class="description-task-board">${task.description}</p>
       ${renderSmallSubtaskInfo(task)}
+      <div class="task-card-footer">
+        <div class="contact-badges-container">
+          ${renderCardBadgeArea(task.assignedTo)}
+        </div>
+        <img class="prio-icon-small" src="../assets/icons/prio-${task.priority.toLowerCase()}-icon.svg" alt="${task.priority}">
+      </div>
     </div>`;
+}
+// Erstellt die farbigen Kreise für die Initialen auf der Card
+function renderCardBadgeArea(assignedTo) {
+  if (!assignedTo || assignedTo === 'Select contacts to assign') return '';
+  const contactsArray = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
+
+  return contactsArray
+    .map((name) => {
+      const initials = getInitials(name);
+      const color = getRandomColor(); // Falls du feste Farben pro Name hast, nutze deine Logik hier
+      return `<div class="user-badge-card" style="background-color: ${color}">${initials}</div>`;
+    })
+    .join('');
 }
 
 function renderSmallSubtaskInfo(task) {
   if (!task.subtasks || task.subtasks.length === 0) return '';
+
+  const total = task.subtasks.length;
   const done = task.subtasks.filter((s) => s.done).length;
-  return `<small>${done}/${task.subtasks.length} Subtasks</small>`;
+
+  // Berechnung der Prozentzahl für den blauen Balken
+  const progressPercent = (done / total) * 100;
+
+  return `
+    <div class="task-card-progress-container">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: ${progressPercent}%"></div>
+      </div>
+      <span class="subtask-count">${done}/${total} Subtasks</span>
+    </div>`;
 }
 
 function getNoTaskPlaceholder(label) {
