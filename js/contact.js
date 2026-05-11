@@ -1,4 +1,8 @@
 let contacts = [];
+
+/**
+ * Opens the add contact dialog with an animation effect.
+ */
 function openAddContact() {
     const dialog = document.getElementById("add-contact-popup");
 
@@ -11,12 +15,23 @@ function openAddContact() {
     }, 10);
 }
 
+/**
+ * Closes the add contact dialog
+ * and removes the animation class.
+ */
 function closeAddContact() {
     const dialog = document.getElementById("add-contact-popup");
     dialog.classList.remove("contact-dialog-open");
     dialog.close();
 }
 
+/**
+ * Creates a new contact object
+ * from the input values and adds it
+ * to the contacts array.
+ * Afterwards the contacts get sorted
+ * alphabetically and rendered again.
+ */
 function createContact() {
     let name = document.getElementById("contact-name").value;
     let email = document.getElementById("contact-email").value;
@@ -38,6 +53,11 @@ function createContact() {
     renderContacts();
 }
 
+/**
+ * Renders all contacts into the contact list.
+ * Contacts are grouped by the first letter
+ * of their name.
+ */
 function renderContacts() {
     let list = document.getElementById("contact-list");
     list.innerHTML = "";
@@ -56,6 +76,13 @@ function renderContacts() {
     }
 }
 
+/**
+ * Renders a letter separator
+ * for grouping contacts alphabetically.
+ *
+ * @param {HTMLElement} list - The contact list container
+ * @param {string} letter - The current contact letter
+ */
 function renderContactLetter(list, letter) {
     list.innerHTML += `
         <div class="contact-letter-container">
@@ -70,6 +97,13 @@ function renderContactLetter(list, letter) {
     `;
 }
 
+/**
+ * Renders a single contact item
+ * into the contact list.
+ *
+ * @param {HTMLElement} list - The contact list container
+ * @param {Object} contact - The contact object
+ */
 function renderSingleContact(list, contact) {
     list.innerHTML += `
         <div class="contact-item">
@@ -85,6 +119,14 @@ function renderSingleContact(list, contact) {
     `;
 }
 
+/**
+ * Generates initials from a contact name.
+ * Returns the first letter of the first name
+ * and the first letter of the last name.
+ *
+ * @param {string} name - The full contact name
+ * @returns {string} The generated initials
+ */
 function getInitials(name) {
     let words = name.trim().split(" ").filter(word => word !== "");
 
@@ -102,6 +144,12 @@ function getInitials(name) {
     return firstLetter + lastLetter;
 }
 
+/**
+ * Returns a random color
+ * from the predefined color array.
+ *
+ * @returns {string} A random hex color value
+ */
 function getRandomColor() {
     const colors = [
         "#FF7A00",
