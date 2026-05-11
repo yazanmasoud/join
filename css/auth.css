@@ -1,155 +1,153 @@
 /* ===== BASE / LAYOUT ===== */
 .content-wrapper {
-    max-width: 1920px;
-    width: 100%;
-    height: 100vh;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-bg-tertiary);
+  max-width: 1920px;
+  width: 100%;
+  height: 100vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-tertiary);
 }
-
 
 /* ===== HEADER / TOP SECTION ===== */
 
 .welcome-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
 }
 
 .join-logo {
-    width: 100px;
+  width: 100px;
 }
 
 /* placeholder to preserve layout while the real image is positioned fixed */
 .logo-wrap {
-    width: 100px;
-    margin-top: 80px;
-    margin-left: 80px;
-    height: 100px;
-    /* reserve vertical space */
+  width: 100px;
+  margin-top: 80px;
+  margin-left: 80px;
+  height: 100px;
+  /* reserve vertical space */
 }
 
 .logo-start {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(2);
-    transition: transform 700ms cubic-bezier(.2, .9, .2, 1), left 700ms, top 700ms;
-    z-index: 1000;
-    pointer-events: none;
-    /* avoid capturing clicks while animating */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(2);
+  transition:
+    transform 700ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    left 700ms,
+    top 700ms;
+  z-index: 1000;
+  pointer-events: none;
+  /* avoid capturing clicks while animating */
 }
 
 /* Move to top-left while keeping the placeholder in the layout */
 .logo-start.shrink {
-    left: 80px;
-    /* final left gap, matches .logo-wrap margin-left */
-    top: 24px;
-    /* final top gap */
-    transform: translate(0, 0) scale(1);
+  left: 80px;
+  /* final left gap, matches .logo-wrap margin-left */
+  top: 24px;
+  /* final top gap */
+  transform: translate(0, 0) scale(1);
 }
 
 /* When final, keep it visible but let layout continue to use .logo-wrap */
 .logo-start.final {
-    /* keep fixed to avoid layout reflow; visual is same as final position */
-    position: fixed;
-    left: 80px;
-    top: 24px;
-    transform: translate(0, 0) scale(1);
-    pointer-events: auto;
+  /* keep fixed to avoid layout reflow; visual is same as final position */
+  position: fixed;
+  left: 80px;
+  top: 24px;
+  transform: translate(0, 0) scale(1);
+  pointer-events: auto;
 }
 
 .logo-wrap.layout-mode {
-    margin-top: 0;
-    margin-left: 0;
-    margin-bottom: 60px;
+  margin-top: 0;
+  margin-left: 0;
+  margin-bottom: 60px;
 }
 
 .logo-wrap.layout-mode .logo-start {
-    position: relative;
+  position: relative;
 }
 
 .signup-container {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-right: 80px;
-    gap: 36px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 80px;
+  gap: 36px;
 }
-
 
 /* ===== TYPOGRAPHY ===== */
 
 .p-welcome {
-    color: var(--color-text-main);
-    font-size: 20px;
-    font-weight: 400;
+  color: var(--color-text-main);
+  font-size: 20px;
+  font-weight: 400;
 }
 
 .h1-login-signup {
-    color: var(--color-text-main);
+  color: var(--color-text-main);
 }
-
 
 /* ===== LOGIN / SIGNUP CARD ===== */
 
 .login-signup-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-    width: 648px;
-    padding: 48px;
-    background-color: var(--color-bg-primary);
-    border-radius: 30px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 648px;
+  padding: 48px;
+  background-color: var(--color-bg-primary);
+  border-radius: 30px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* center form controls inside the card */
 .login-signup-section form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
 .login-signup-hr {
-    width: 140px;
-    border: 2px solid var(--color-highlights);
-    margin-top: 16px;
-    margin-bottom: 20px;
+  width: 140px;
+  border: 2px solid var(--color-highlights);
+  margin-top: 16px;
+  margin-bottom: 20px;
 }
-
 
 /* ===== SIGNUP HEADER (ARROW + TITLE) ===== */
 
 .signup-section-header {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: 0;
-    width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 0;
+  width: 100%;
 }
 
 .signup-section-header .btn {
-    position: absolute;
-    left: 0px;
+  position: absolute;
+  left: 0px;
 }
 
 .signup-container-mobile {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    margin-top: 60px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 60px;
 }
-
 
 /* ===== INPUT FIELDS ===== */
 
@@ -157,195 +155,195 @@
 .password,
 .email,
 .phone,
-.login-signup-section input[type="text"],
-.login-signup-section input[type="email"],
-.login-signup-section input[type="password"] {
-    min-width: 268px;
-    height: 48px;
-    padding: 8px;
-    margin-bottom: 20px;
-    border: 1px solid var(--color-link);
-    border-radius: 10px;
+.login-signup-section input[type='text'],
+.login-signup-section input[type='email'],
+.login-signup-section input[type='password'] {
+  min-width: 268px;
+  height: 48px;
+  padding: 8px;
+  margin-bottom: 20px;
+  border: 1px solid var(--color-link);
+  border-radius: 10px;
 }
 
 .username:focus,
 .password:focus,
 .email:focus,
 .phone:focus,
-.login-signup-section input[type="text"]:focus,
-.login-signup-section input[type="email"]:focus,
-.login-signup-section input[type="password"]:focus {
-    border-color: var(--color-highlights);
-    outline: none;
+.login-signup-section input[type='text']:focus,
+.login-signup-section input[type='email']:focus,
+.login-signup-section input[type='password']:focus {
+  border-color: var(--color-highlights);
+  outline: none;
 }
 
 .username {
-    background-image: url('../assets/icons/user-icon-register.svg');
-    background-position: right 10px center;
-    background-repeat: no-repeat;
+  background-image: url('../assets/icons/user-icon-register.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
 }
 
 .email {
-    background-image: url('../assets/icons/mail-icon-login.svg');
-    background-position: right 10px center;
-    background-repeat: no-repeat;
+  background-image: url('../assets/icons/mail-icon-login.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
 }
 
 .password {
-    background-image: url('../assets/icons/lock-icon-login.svg');
-    background-position: right 10px center;
-    background-repeat: no-repeat;
+  background-image: url('../assets/icons/lock-icon-login.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
 }
 
 .phone {
-    background-image: url('../assets/icons/call.svg');
-    background-position: right 10px center;
-    background-repeat: no-repeat;
+  background-image: url('../assets/icons/call.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
 }
 
 .form-error {
-    color: var(--color-error);
-    background: var(--color-error-bg);
-    border-radius: 10px;
-    padding: 12px;
-    margin: 6px 0px 12px 0px;
-    font-size: 15px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    border: 1px solid var(--color-error-border);
-    box-shadow: 0 6px 18px var(--color-error-shadow);
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  border-radius: 10px;
+  padding: 12px;
+  margin: 6px 0px 12px 0px;
+  font-size: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--color-error-border);
+  box-shadow: 0 6px 18px var(--color-error-shadow);
 }
-
 
 /* smaller description text */
 .form-error span {
-    display: block;
-    color: var(--color-error);
-    opacity: 0.95
+  display: block;
+  color: var(--color-error);
+  opacity: 0.95;
 }
 
 /* hidden helper class (keeps previous usage) */
 .hidden {
-    display: none !important
+  display: none !important;
 }
 
 .email {
-    background-image: url('../assets/icons/mail-icon-login.svg');
-    background-position: right 10px center;
-    background-repeat: no-repeat;
+  background-image: url('../assets/icons/mail-icon-login.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
 }
 
 /* ===== PRIVACY SECTION ===== */
 
 .privacy-container {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 16px auto 24px;
-    max-width: 268px;
-    font-size: 18px;
-    color: var(--color-text-secondary)
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px auto 24px;
+  max-width: 268px;
+  font-size: 18px;
+  color: var(--color-text-secondary);
 }
 
 .privacy-container a {
-    color: var(--color-highlights)
+  color: var(--color-highlights);
 }
 
-.privacy-container input[type="checkbox"] {
-    margin: 0;
-    width: 18px;
-    height: 18px
+.privacy-container input[type='checkbox'] {
+  margin: 0;
+  width: 18px;
+  height: 18px;
 }
 
 .privacy-container label {
-    white-space: nowrap;
-    margin: 0
+  white-space: nowrap;
+  margin: 0;
 }
 
 .login-signup-section input.error-input,
 .privacy-container input.error-input {
-    border-color: var(--color-error) !important;
-    box-shadow: 0 0 0 6px var(--color-error-shadow) !important;
-    transition: box-shadow .14s, border-color .14s
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 6px var(--color-error-shadow) !important;
+  transition:
+    box-shadow 0.14s,
+    border-color 0.14s;
 }
-
 
 /* ===== BUTTONS ===== */
 
 .login_btn-container {
-    display: flex;
-    justify-content: center;
-    gap: 35px;
-    margin-top: 20px;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin-top: 20px;
+  width: 100%;
 }
 
 /* ===== FOOTER ===== */
 
 footer {
-    color: var(--color-link);
-    font-size: 16px;
-    gap: 30px;
-    display: flex;
-    justify-content: center;
-    margin-top: auto;
-    /* push footer to bottom */
-    padding: 30px 0 30px 0;
+  color: var(--color-link);
+  font-size: 16px;
+  gap: 30px;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  /* push footer to bottom */
+  padding: 30px 0 30px 0;
 }
 
 footer a:hover {
-    color: var(--color-highlights);
-    text-shadow: 0 0 0.8px currentColor;
-    cursor: pointer;
+  color: var(--color-highlights);
+  text-shadow: 0 0 0.8px currentColor;
+  cursor: pointer;
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
 
 @media (max-width: 768px) {
-    body.mobile-splash .content-wrapper {
-        background: var(--color-bg-secondary);
-    }
+  body.mobile-splash .content-wrapper {
+    background: var(--color-bg-secondary);
+  }
 
-    .login_btn-container {
-        flex-direction: column;
-        width: 180px;
-        gap: 20px;
-    }
+  .login_btn-container {
+    flex-direction: column;
+    width: 180px;
+    gap: 20px;
+  }
 
-    .login-signup-section {
-        width: 300px;
-        padding: 32px 16px;
-    }
+  .login-signup-section {
+    width: 300px;
+    padding: 32px 16px;
+  }
 
-    .join-logo {
-        width: 64px;
-    }
+  .join-logo {
+    width: 64px;
+  }
 
-    .welcome-section {
-        margin-bottom: 0;
-    }
+  .welcome-section {
+    margin-bottom: 0;
+  }
 
-    .signup-container {
-        display: none;
-    }
+  .signup-container {
+    display: none;
+  }
 
-    .signup-container-mobile.visible {
+  .signup-container-mobile.visible {
     display: flex;
-    }
+  }
 
-    .h1-login-signup {
-        font-size: 48px;
-    }
+  .h1-login-signup {
+    font-size: 48px;
+  }
 
-    .btn-light,
-    .btn-dark {
-        font-size: 16px;
-    }
+  .btn-light,
+  .btn-dark {
+    font-size: 16px;
+  }
 
-    .logo-start.final {
-        left: 40px;
-        top: 40px;
-    }
+  .logo-start.final {
+    left: 40px;
+    top: 40px;
+  }
 }
