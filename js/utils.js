@@ -5,6 +5,15 @@ const CONTACT_OPTIONS = [
   'Benedikt Bauer',
 ];
 
+function getCurrentUserId() {
+  // 1. Prüfen, ob ein registrierter Firebase-User eingeloggt ist
+  const firebaseUser = firebase.auth().currentUser;
+  if (firebaseUser) {
+    return firebaseUser.uid;
+  }
+  return 'guest_user';
+}
+
 // Extrahiert den ersten Buchstaben des Vor- und Nachnamens und gibt sie in Großbuchstaben als Initialen zurück.
 function getInitials(name) {
   if (!name || typeof name !== 'string') return '??';

@@ -1,12 +1,25 @@
 async function initDashboard() {
   setGreeting();
-  fetchSummaryData();
+
+  // 1. Prüfen: Ist ein registrierter Firebase-User da?
+  const user = firebase.auth().currentUser;
+
+  // 2. Den Pfad bestimmen
+  let userId;
+  if (user) {
+    userId = user.uid; // Die echte ID vom Login
+  } else {
+    userId = 'guest_user'; // Fallback auf Gast
+  }
+
+  fetchSummaryData(userId);
 }
 
-function fetchSummaryData() {
-  const userId = getCurrentUserId();
-  const tasksRef = database.ref(`users/${userId}/tasks`);
+function fetchSummaryData(userId) {
+  // Pfad muss EXAKT wie in board.js sein: users/guest_user/tasks
+  const tasksRef = firebase.database().ref(`users/${userId}/tasks`);
 
+  // .on sorgt dafür, dass die Zahlen live springen, wenn du im Board schiebst
   tasksRef.on('value', (snapshot) => {
     const tasksData = snapshot.val() || {};
     const tasksArray = Object.values(tasksData);
@@ -34,30 +47,30 @@ function calculateMetrics(tasks) {
     done: tasks.filter((t) => t.status === 'done').length || 0,
     urgent: tasks.filter((t) => t.priority === 'Urgent').length || 0,
     tasksInBoard: tasks.length || 0,
-    tasksInProgress: tasks.filter((t) => t.status === 'inProgress').length || 0,
+    // WICHTIG: Prüfe in board.js ob der Status 'progress' oder 'inProgress' heißt!
+    // Wenn board.js 'progress' nutzt, hier auch 'progress' eintragen:
+    tasksInProgress:
+      tasks.filter((t) => t.status === 'progress' || t.status === 'inProgress')
+        .length || 0,
     awaitingFeedback:
-      tasks.filter((t) => t.status === 'awaitingFeedback').length || 0,
+      tasks.filter(
+        (t) => t.status === 'feedback' || t.status === 'awaitingFeedback',
+      ).length || 0,
     deadline: getNextDeadline(tasks),
-    userName: 'Guest', // Hier später den echten Usernamen aus Firebase Auth einsetzen
+    userName: 'Guest',
   };
 }
 
 function getNextDeadline(tasks) {
-  // 1. Filtere nur valide Daten, die nicht leer sind
   const validDates = tasks
     .map((t) => t.dueDate)
     .filter((dateStr) => dateStr && dateStr !== '');
 
   if (validDates.length === 0) return 'No upcoming deadline';
 
-  // 2. Sortiere alle Daten (das nächste zuerst)
-
   const sortedDates = validDates.sort((a, b) => new Date(a) - new Date(b));
-
-  // 3. Formatiere das nächste Datum
   const nextDate = new Date(sortedDates[0]);
 
-  // Check ob das Datum valide ist
   if (isNaN(nextDate.getTime())) return 'No upcoming deadline';
 
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -66,6 +79,8 @@ function getNextDeadline(tasks) {
 
 function updateUI(data) {
   const fields = document.querySelectorAll('[data-field]');
+  if (fields.length === 0) return; // Falls HTML noch nicht da ist, abbrechen
+
   fields.forEach((field) => {
     const key = field.getAttribute('data-field');
     if (data[key] !== undefined) {
@@ -77,13 +92,12 @@ function updateUI(data) {
 function setGreeting() {
   const hour = new Date().getHours();
   const greetingElement = document.querySelector('.greeting-time');
-  let greeting = 'Good night,';
+  if (!greetingElement) return;
 
+  let greeting = 'Good night,';
   if (hour >= 5 && hour < 12) greeting = 'Good morning,';
   else if (hour >= 12 && hour < 18) greeting = 'Good afternoon,';
   else if (hour >= 18 && hour < 22) greeting = 'Good evening,';
 
-  if (greetingElement) greetingElement.innerText = greeting;
+  greetingElement.innerText = greeting;
 }
-
-initDashboard();

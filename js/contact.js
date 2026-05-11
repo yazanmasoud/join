@@ -1,59 +1,62 @@
 let contacts = [];
 function openAddContact() {
-    document.getElementById("add-contact-popup").classList.remove("hidden");
+  document.getElementById('add-contact-popup').classList.remove('hidden');
 }
 
 function closeAddContact() {
-    document.getElementById("add-contact-popup").classList.add("hidden");
+  document.getElementById('add-contact-popup').classList.add('hidden');
 }
 
 function createContact() {
-    let name = document.getElementById("contact-name").value;
-    let email = document.getElementById("contact-email").value;
-    let phone = document.getElementById("contact-phone").value;
+  let name = document.getElementById('contact-name').value;
+  let email = document.getElementById('contact-email').value;
+  let phone = document.getElementById('contact-phone').value;
 
-    let initials = getInitials(name);
-    let color = getRandomColor();
+  let initials = getInitials(name);
+  let color = getRandomColor();
 
-    let contact = {
-        name,
-        email,
-        phone,
-        initials,
-        color
-    };
+  let contact = {
+    name,
+    email,
+    phone,
+    initials,
+    color,
+  };
 
-    contacts.push(contact);
-    contacts.sort((a, b) => a.name.localeCompare(b.name));
-    renderContacts();
+  contacts.push(contact);
+  contacts.sort((a, b) => a.name.localeCompare(b.name));
+  renderContacts();
 }
 
 function renderContacts() {
-    let list = document.getElementById("contact-list");
-    list.innerHTML = "";
-    let currentLetter = "";
+  let list = document.getElementById('contact-list');
+  if (!list) {
+    return;
+  }
+  list.innerHTML = '';
+  let currentLetter = '';
 
-    for (let i = 0; i < contacts.length; i++) {
-        let contact = contacts[i];
-        let firstLetter = contact.name[0].toUpperCase();
+  for (let i = 0; i < contacts.length; i++) {
+    let contact = contacts[i];
+    let firstLetter = contact.name[0].toUpperCase();
 
-        if (firstLetter !== currentLetter) {
-            renderContactLetter(list, firstLetter);
-            currentLetter = firstLetter;
-        }
-
-        renderSingleContact(list, contact);
+    if (firstLetter !== currentLetter) {
+      renderContactLetter(list, firstLetter);
+      currentLetter = firstLetter;
     }
+
+    renderSingleContact(list, contact);
+  }
 }
 
 function renderContactLetter(list, letter) {
-    list.innerHTML += `
+  list.innerHTML += `
         <div class="contact-letter">${letter}</div>
     `;
 }
 
 function renderSingleContact(list, contact) {
-    list.innerHTML += `
+  list.innerHTML += `
         <div class="contact-item">
             <div class="contact-avatar" style="background-color: ${contact.color}">
                 ${contact.initials}
@@ -68,36 +71,39 @@ function renderSingleContact(list, contact) {
 }
 
 function getInitials(name) {
-    let words = name.trim().split(" ").filter(word => word !== "");
+  let words = name
+    .trim()
+    .split(' ')
+    .filter((word) => word !== '');
 
-    if (words.length === 0) {
-        return "";
-    }
+  if (words.length === 0) {
+    return '';
+  }
 
-    if (words.length === 1) {
-        return words[0][0].toUpperCase();
-    }
+  if (words.length === 1) {
+    return words[0][0].toUpperCase();
+  }
 
-    let firstLetter = words[0][0].toUpperCase();
-    let lastLetter = words[words.length - 1][0].toUpperCase();
+  let firstLetter = words[0][0].toUpperCase();
+  let lastLetter = words[words.length - 1][0].toUpperCase();
 
-    return firstLetter + lastLetter;
+  return firstLetter + lastLetter;
 }
 
 function getRandomColor() {
-    const colors = [
-        "#FF7A00",
-        "#FF5EB3",
-        "#6E52FF",
-        "#9327FF",
-        "#00BEE8",
-        "#1FD7C1",
-        "#FF745E",
-        "#FFA35E",
-        "#FF5E5E",
-        "#FF5E9E"
-    ];
+  const colors = [
+    '#FF7A00',
+    '#FF5EB3',
+    '#6E52FF',
+    '#9327FF',
+    '#00BEE8',
+    '#1FD7C1',
+    '#FF745E',
+    '#FFA35E',
+    '#FF5E5E',
+    '#FF5E9E',
+  ];
 
-    let randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
+  let randomIndex = Math.floor(Math.random() * colors.length);
+  return colors[randomIndex];
 }

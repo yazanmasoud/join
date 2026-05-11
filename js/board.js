@@ -21,10 +21,12 @@ function initBoard() {
 // Leert die Spalten und zeichnet alle Tasks aus dem übergebenen Objekt neu
 function renderAllTasks(allTasks) {
   const cols = ['todo', 'progress', 'feedback', 'done'];
+  const firstCol = document.getElementById(cols[0]);
 
   // PRÜFUNG: Wenn die erste Spalte nicht existiert, sind wir nicht auf der Board-Seite
-  if (!document.getElementById(cols[0])) {
-    return;
+  if (!firstCol) {
+    console.warn('Board-Spalten noch nicht im DOM gefunden.');
+    return; // Bricht ab, wenn das HTML noch nicht da ist
   }
 
   cols.forEach((id) => {

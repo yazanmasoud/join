@@ -7,23 +7,28 @@ let currentPriority = 'Medium';
 function initAddTask() {
   renderPriorityButtons();
   renderCategories();
-  renderContacts();
+  renderAssignedToSelect(); // Umbenannt, um Konflikt mit contact.js zu lösen
   setPriority(currentPriority);
 }
 
 // Logik (Firebase & Daten)
 
-// Steuert den gesamten Speicherprozess, validiert die Daten und sendet das fertige Objekt an die Firebase-Datenbank.
+// Speichert den Task unter der richtigen ID (Gast oder User)
 async function createTask() {
   const task = getTaskObject();
   if (!validateTask(task)) return;
 
-  const userId = getCurrentUserId(); // Holt sich 'guest_user' oder die echte ID
+  // WICHTIG: Nutze die zentrale Funktion aus utils.js (siehe unten)
+  const userId = getCurrentUserId();
+
   try {
-    // Speichert unter users/ID/tasks -> so findet die Summary es auch!
+    // Speichert in users/guest_user/tasks oder users/UID/tasks
     await database.ref(`users/${userId}/tasks`).push(task);
     showSuccessToast();
     clearForm();
+
+    // Nach dem Speichern zum Board leiten
+    setTimeout(() => navigateTo('board'), 1500);
   } catch (e) {
     console.error('Fehler beim Speichern:', e);
   }
@@ -77,13 +82,15 @@ function renderCategories() {
 }
 
 // Lädt die verfügbaren Kontakte in das dafür vorgesehene Auswahlfeld der Benutzeroberfläche.
-function renderContacts() {
+function renderAssignedToSelect() {
   const select = document.getElementById('tasksAssigned');
-  if (select)
-    select.innerHTML = getSelectOptionsHTML(
-      CONTACT_OPTIONS,
-      'Select contacts to assign',
-    );
+  // Sicherheits-Check: Nur rendern, wenn wir auf der Add-Task Seite sind
+  if (!select) return;
+
+  select.innerHTML = getSelectOptionsHTML(
+    CONTACT_OPTIONS || [], // Fallback auf leeres Array
+    'Select contacts to assign',
+  );
 }
 
 // Subtask Logik

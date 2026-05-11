@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="de">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Join</title>
@@ -16,83 +15,127 @@
   </head>
   <body>
     <div class="content-wrapper">
+      <section class="welcome-section">
+        <!-- placeholder keeps space in layout while logo is animated as fixed -->
+        <div class="logo-wrap">
+          <img
+            id="logo"
+            class="join-logo logo-start"
+            src="./assets/logos/main-logo.svg"
+            alt="Join Logo"
+          />
+        </div>
+        <div id="signup-container" class="signup-container">
+          <p class="p-welcome">Not a Join User?</p>
+          <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
+        </div>
+      </section>
 
-        <section class="welcome-section">
-            <!-- placeholder keeps space in layout while logo is animated as fixed -->
-            <div class="logo-wrap">
-                <img id="logo" class="join-logo logo-start" src="./assets/logos/main-logo.svg" alt="Join Logo">
-            </div>
-            <div id="signup-container" class="signup-container">
-                <p class="p-welcome">Not a Join User?</p>
-                <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
-            </div>
-        </section>
+      <section id="login" class="login-signup-section hidden">
+        <h1 class="h1-login-signup">Log in</h1>
+        <hr class="login-signup-hr" />
+        <input
+          type="text"
+          id="username"
+          class="username"
+          placeholder="Username"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          class="password"
+          placeholder="Password"
+          required
+        />
 
-        <section id="login" class="login-signup-section hidden">
-            <h1 class="h1-login-signup">Log in</h1>
-            <hr class="login-signup-hr">
-            <input type="text" id="username" class="username" placeholder="Username" required>
-            <input type="password" id="password" class="password" placeholder="Password" required>
+        <div class="login_btn-container">
+          <button class="btn-dark">Log in</button>
+          <button class="btn-light" onclick="loginAsGuest()">
+            Guest Log in
+          </button>
+        </div>
+      </section>
 
-            <div class="login_btn-container">
-                <button class="btn-dark">Log in</button>
-                <button class="btn-light" onclick="loginAsGuest()">Guest Log in</button>
-            </div>
-        </section>
+      <div id="signup-container-mobile" class="signup-container-mobile">
+        <p class="p-welcome">Not a Join User?</p>
+        <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
+      </div>
 
-        <div id="signup-container-mobile" class="signup-container-mobile">
-                <p class="p-welcome">Not a Join User?</p>
-                <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
+      <section id="signup" class="login-signup-section hidden">
+        <div class="signup-section-header">
+          <button class="btn arrow-btn" onclick="openLogin()">
+            <img src="./assets/icons/arrow-left-line.svg" alt="arrow left" />
+          </button>
+          <h1 class="h1-login-signup">Sign Up</h1>
         </div>
 
-<section id="signup" class="login-signup-section hidden">
+        <hr class="login-signup-hr" />
 
-    <div class="signup-section-header">
-        <button class="btn arrow-btn" onclick="openLogin()">
-            <img src="./assets/icons/arrow-left-line.svg" alt="arrow left">
-        </button>
-        <h1 class="h1-login-signup">Sign Up</h1>
-    </div>
+        <form novalidate>
+          <input
+            oninput="validateForm()"
+            type="text"
+            id="signup-username"
+            placeholder="Username"
+          />
+          <input
+            oninput="validateForm()"
+            type="email"
+            id="signup-email"
+            placeholder="Email"
+          />
+          <input
+            oninput="validateForm()"
+            type="password"
+            id="signup-password"
+            placeholder="Password"
+          />
+          <input
+            oninput="validateForm()"
+            type="password"
+            id="signup-confirm-password"
+            placeholder="Confirm Password"
+          />
 
-    <hr class="login-signup-hr">
-
-    <form  novalidate>
-
-        <input oninput="validateForm()" type="text" id="signup-username" placeholder="Username">
-        <input oninput="validateForm()" type="email" id="signup-email" placeholder="Email">
-        <input oninput="validateForm()" type="password" id="signup-password" placeholder="Password">
-        <input oninput="validateForm()" type="password" id="signup-confirm-password" placeholder="Confirm Password">
-
-        <div class="privacy-container">
-            <input type="checkbox" id="privacy" onchange="validateForm()">
+          <div class="privacy-container">
+            <input type="checkbox" id="privacy" onchange="validateForm()" />
             <label for="privacy">
-                I accept the <a href="./pages/privacy.html">Privacy policy</a>
+              I accept the <a href="./pages/privacy.html">Privacy policy</a>
             </label>
-        </div>
+          </div>
 
-        <div id="password-error" class="form-error hidden">
+          <div id="password-error" class="form-error hidden">
             <span id="error-text"></span>
-        </div>
+          </div>
 
-        <button type="submit" class="btn-dark">Sign Up</button>
+          <button type="submit" class="btn-dark">Sign Up</button>
+        </form>
+      </section>
 
-    </form>
-
-</section>
-
-        <footer class="login-footer">
-            <a id="imprintLink" class="footer-link" href="./pages/loginlayout.html?page=imprint">Legal Notice</a>
-            <a id="privacyLink" class="footer-link" href="./pages/loginlayout.html?page=privacy">Privacy Policy</a>
-        </footer>
+      <footer class="login-footer">
+        <a
+          id="imprintLink"
+          class="footer-link"
+          href="./pages/loginlayout.html?page=imprint"
+          >Legal Notice</a
+        >
+        <a
+          id="privacyLink"
+          class="footer-link"
+          href="./pages/loginlayout.html?page=privacy"
+          >Privacy Policy</a
+        >
+      </footer>
     </div>
 
-    <script src="js/template.js" defer></script>
-    <script src="js/storage.js" defer></script>
-    <script src="js/task.js" defer></script>
-    <script src="js/contact.js" defer></script>
-    <script src="js/drag-and-drop.js" defer></script>
-    <script src="js/main.js" defer></script>
-    <script src="js/layout.js" defer></script>
-</body>
-
+    <script src="./js/template.js" defer></script>
+    <script src="./js/storage.js" defer></script>
+    <script src="./js/task.js" defer></script>
+    <script src="./js/contact.js" defer></script>
+    <script src="./js/drag-and-drop.js" defer></script>
+    <script src="./js/main.js" defer></script>
+    <script src="./js/layout.js" defer></script>
+    <script src="./js/login.js"></script>
+  </body>
 </html>
