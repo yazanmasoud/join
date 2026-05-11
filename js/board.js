@@ -3,14 +3,13 @@ let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
-// ZENTRALE PFAD-VARIABLE (Muss exakt wie in addTask/summary sein)
+/** ZENTRALE PFAD-VARIABLE */
 const GUEST_PATH = 'users/guest_user/tasks';
 
 /** --- INITIALISIERUNG & RENDERING --- */
 
-// Startet die App, abonniert Firebase-Daten und setzt Dialog-Events
+/** Startet die App, abonniert Firebase-Daten und setzt Dialog-Events */
 function initBoard() {
-  // Pfad angepasst: von 'tasks' auf GUEST_PATH
   database.ref(GUEST_PATH).on('value', (snapshot) => {
     CURRENT_TASKS = snapshot.val() || {};
     renderAllTasks(CURRENT_TASKS);
@@ -21,22 +20,18 @@ function initBoard() {
 // Leert die Spalten und zeichnet alle Tasks aus dem übergebenen Objekt neu
 function renderAllTasks(allTasks) {
   const cols = ['todo', 'progress', 'feedback', 'done'];
-
   // PRÜFUNG: Wenn die erste Spalte nicht existiert, sind wir nicht auf der Board-Seite
   if (!document.getElementById(cols[0])) {
     return;
   }
-
   cols.forEach((id) => {
     const colElement = document.getElementById(id);
     if (colElement) colElement.innerHTML = '';
   });
-
   Object.entries(allTasks).forEach(([id, task]) => {
     const container = document.getElementById(task.status || 'todo');
     if (container) container.innerHTML += generateTaskHTML(task, id);
   });
-
   cols.forEach((id) => checkPlaceholder(id));
 }
 
