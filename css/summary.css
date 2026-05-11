@@ -2,7 +2,7 @@
   padding: 60px;
 }
 
-/* GEMEINSAME KARTEN-BASIS (Wichtig für Junior Devs!) */
+/* GEMEINSAME KARTEN-BASIS  */
 .card-base {
   background-color: var(--color-bg-primary);
   border-radius: 20px;

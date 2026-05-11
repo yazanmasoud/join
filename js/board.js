@@ -3,14 +3,13 @@ let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
-// ZENTRALE PFAD-VARIABLE (Muss exakt wie in addTask/summary sein)
+/** ZENTRALE PFAD-VARIABLE */
 const GUEST_PATH = 'users/guest_user/tasks';
 
 /** --- INITIALISIERUNG & RENDERING --- */
 
-// Startet die App, abonniert Firebase-Daten und setzt Dialog-Events
+/** Startet die App, abonniert Firebase-Daten und setzt Dialog-Events */
 function initBoard() {
-  // Pfad angepasst: von 'tasks' auf GUEST_PATH
   database.ref(GUEST_PATH).on('value', (snapshot) => {
     CURRENT_TASKS = snapshot.val() || {};
     renderAllTasks(CURRENT_TASKS);
