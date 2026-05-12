@@ -65,3 +65,50 @@ function clearActivePrioClasses(selector) {
 function getCurrentUserId() {
   return localStorage.getItem('currentUserId') || 'guest_user';
 }
+
+/**Board.js */
+export function capitalizeFirstLetter(string) {
+  if (!string) return '';
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+/**Summary.js */
+/**
+ * Calculates total counts and status metrics from the task list.
+ * @param {Array} tasks - The list of tasks.
+ * @returns {Object} Calculated metrics and user information.
+ */
+export function calculateMetrics(tasks) {
+  return {
+    todo: tasks.filter((t) => t.status === 'todo').length || 0,
+    done: tasks.filter((t) => t.status === 'done').length || 0,
+    urgent: tasks.filter((t) => t.priority === 'Urgent').length || 0,
+    tasksInBoard: tasks.length || 0,
+    tasksInProgress: tasks.filter((t) => t.status === 'inProgress').length || 0,
+    awaitingFeedback:
+      tasks.filter((t) => t.status === 'awaitingFeedback').length || 0,
+    deadline: getNextDeadline(tasks),
+    userName: 'Guest',
+  };
+}
+
+/**
+ * Finds and formats the earliest upcoming task deadline.
+ * @param {Array} tasks - The list of tasks.
+ * @returns {string} Formatted date string or fallback message.
+ */
+export function getNextDeadline(tasks) {
+  const validDates = tasks
+    .map((t) => t.dueDate)
+    .filter((dateStr) => dateStr && dateStr !== '');
+
+  if (validDates.length === 0) return 'No upcoming deadline';
+
+  const sortedDates = validDates.sort((a, b) => new Date(a) - new Date(b));
+  const nextDate = new Date(sortedDates[0]);
+
+  if (isNaN(nextDate.getTime())) return 'No upcoming deadline';
+
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return nextDate.toLocaleDateString('en-US', options);
+}

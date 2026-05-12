@@ -2,6 +2,21 @@
  * @file Board management script handling task filtering, viewing, and state updates.
  */
 
+import {
+  highlight,
+  removeHighlight,
+  setEditPriority,
+  closeTaskDetail,
+  setupDialogClose,
+} from './ui.js';
+
+import {
+  getNoTaskPlaceholder,
+  generateTaskHTML,
+  generateTaskDetailHTML,
+  generateEditTaskHTML,
+} from './template.js';
+
 /** @section GLOBAL VARIABLES */
 let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
@@ -13,7 +28,7 @@ const GUEST_PATH = 'users/guest_user/tasks';
 /** @section INITIALIZATION & RENDERING */
 
 /**
- * Initializes the app and subscribes to Firebase data.
+ * Initializes the board and listens to Firebase data.
  */
 function initBoard() {
   database.ref(GUEST_PATH).on('value', (snapshot) => {
@@ -25,27 +40,28 @@ function initBoard() {
 
 /**
  * Renders all tasks into their respective columns.
- * @param {Object} allTasks - The object containing all tasks.
+ * @param {Object} allTasks - Object containing all tasks.
  */
 function renderAllTasks(allTasks) {
   const cols = ['todo', 'progress', 'feedback', 'done'];
-  if (!document.getElementById(cols[0])) {
-    return;
-  }
+  if (!document.getElementById(cols[0])) return;
+
   cols.forEach((id) => {
     const colElement = document.getElementById(id);
     if (colElement) colElement.innerHTML = '';
   });
+
   Object.entries(allTasks).forEach(([id, task]) => {
     const container = document.getElementById(task.status || 'todo');
     if (container) container.innerHTML += generateTaskHTML(task, id);
   });
+
   cols.forEach((id) => checkPlaceholder(id));
 }
 
 /**
- * Sets a placeholder if a column is empty.
- * @param {string} id - The column ID.
+ * Inserts a placeholder if a board column is empty.
+ * @param {string} id - The HTML column ID.
  */
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
@@ -55,7 +71,7 @@ function checkPlaceholder(id) {
 /** @section TASK DETAILS & DIALOG CONTROL */
 
 /**
- * Opens the task detail dialog using Firebase data.
+ * Opens the detailed view dialog for a specific task.
  * @param {string} id - The task ID.
  */
 async function openTaskDetail(id) {
@@ -74,28 +90,9 @@ async function openTaskDetail(id) {
 }
 
 /**
- * Closes the task detail dialog.
- */
-function closeTaskDetail() {
-  const dialog = document.getElementById('taskDetailDialog');
-  dialog.classList.remove('edit-mode-wide');
-  dialog.close();
-}
-
-/**
- * Enables closing the dialog by clicking the overlay backdrop.
- */
-function setupDialogClose() {
-  const dialog = document.getElementById('taskDetailDialog');
-  dialog?.addEventListener('click', (e) => {
-    if (e.target === dialog) closeTaskDetail();
-  });
-}
-
-/**
- * Toggles subtask completion status and updates Firebase.
+ * Toggles a subtask check status and updates Firebase.
  * @param {string} taskId - The task ID.
- * @param {number} index - The subtask index.
+ * @param {number} index - The subtask index array position.
  */
 async function toggleSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
@@ -110,40 +107,24 @@ async function toggleSubtask(taskId, index) {
 /** @section DRAG & DROP */
 
 /**
- * Stores the ID of the element being dragged.
- * @param {string} id - The element ID.
+ * Sets the ID of the task being dragged.
+ * @param {string} id - The task element ID.
  */
 function startDragging(id) {
   CURRENT_DRAGGED_ELEMENT = id;
 }
 
 /**
- * Allows dropping elements by preventing default browser behavior.
- * @param {Event} ev - The drag event.
+ * Prevents default handler to allow dropping elements.
+ * @param {Event} ev - The dragover event object.
  */
 function allowDrop(ev) {
   ev.preventDefault();
 }
 
 /**
- * Visually highlights the dropzone column.
- * @param {string} id - The column ID.
- */
-function highlight(id) {
-  document.getElementById(id)?.classList.add('drag-area-highlight');
-}
-
-/**
- * Removes the visual highlight from a column.
- * @param {string} id - The column ID.
- */
-function removeHighlight(id) {
-  document.getElementById(id)?.classList.remove('drag-area-highlight');
-}
-
-/**
- * Moves a task to a new status column in Firebase.
- * @param {string} status - The new task status.
+ * Updates a task status column value in Firebase.
+ * @param {string} status - Target status column key.
  */
 async function moveTo(status) {
   removeHighlight(status);
@@ -157,7 +138,7 @@ async function moveTo(status) {
 /** @section EDIT TASK (EDIT MODE) */
 
 /**
- * Activates edit mode and loads task data into the dialog.
+ * Enables edit mode view inside the open dialog.
  * @param {string} id - The task ID.
  */
 async function editTask(id) {
@@ -174,22 +155,7 @@ async function editTask(id) {
 }
 
 /**
- * Sets the edit priority level and updates the UI buttons.
- * @param {string} prio - The priority level (Urgent, Medium, Low).
- */
-function setEditPriority(prio) {
-  editPriority = prio;
-  ['Urgent', 'Medium', 'Low'].forEach((p) => {
-    const btn = document.getElementById('editPrio' + p);
-    if (btn)
-      btn.classList.remove('active-urgent', 'active-medium', 'active-low');
-  });
-  const activeBtn = document.getElementById('editPrio' + prio);
-  if (activeBtn) activeBtn.classList.add('active-' + prio.toLowerCase());
-}
-
-/**
- * Saves edited task fields to Firebase.
+ * Pushes edited task field values to Firebase.
  * @param {string} id - The task ID.
  */
 async function saveEdit(id) {
@@ -209,9 +175,9 @@ async function saveEdit(id) {
 /** @section EDITING SUBTASKS */
 
 /**
- * Handles the Enter key to trigger adding a new subtask.
- * @param {KeyboardEvent} event - The keyboard event.
- * @param {string} taskId - The task ID.
+ * Listens for the enter key to submit new subtasks.
+ * @param {KeyboardEvent} event - The keyboard event object.
+ * @param {string} taskId - The parent task ID.
  */
 function handleEditSubtaskKey(event, taskId) {
   if (event.key === 'Enter') {
@@ -221,8 +187,8 @@ function handleEditSubtaskKey(event, taskId) {
 }
 
 /**
- * Adds a new subtask to the list inside the editor.
- * @param {string} taskId - The task ID.
+ * Adds a subtask entry into the temporary local list.
+ * @param {string} taskId - The parent task ID.
  */
 async function addEditSubtask(taskId) {
   const input = document.getElementById('editSubtaskInput');
@@ -239,9 +205,9 @@ async function addEditSubtask(taskId) {
 }
 
 /**
- * Deletes a subtask from the list within the editor.
- * @param {string} id - The task ID.
- * @param {number} index - The subtask index.
+ * Deletes a subtask entry from the temporary editor view.
+ * @param {string} id - The parent task ID.
+ * @param {number} index - Subtask position index.
  */
 async function deleteEditSubtask(id, index) {
   CURRENT_TASKS[id].subtasks.splice(index, 1);
@@ -250,9 +216,9 @@ async function deleteEditSubtask(id, index) {
 }
 
 /**
- * Toggles subtask completion status locally inside the editor.
- * @param {string} taskId - The task ID.
- * @param {number} index - The subtask index.
+ * Switches a subtask checkmark status within the editor.
+ * @param {string} taskId - The parent task ID.
+ * @param {number} index - Subtask position index.
  */
 function toggleEditSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
@@ -266,7 +232,7 @@ function toggleEditSubtask(taskId, index) {
 /** @section MISCELLANEOUS ACTIONS */
 
 /**
- * Deletes a task from Firebase.
+ * Completely removes a task document from Firebase.
  * @param {string} id - The task ID.
  */
 async function deleteTask(id) {
@@ -275,10 +241,24 @@ async function deleteTask(id) {
 }
 
 /**
- * Redirects the browser to the task creation page.
- * @param {string} [status='todo'] - The initial column status.
+ * Navigates the window viewport to the creation view.
+ * @param {string} [status='todo'] - Initial status column value.
  */
 function openAddTask(status = 'todo') {
   localStorage.setItem('selectedStatus', status);
   window.location.href = 'add-task.html';
 }
+/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
+window.openAddTask = openAddTask;
+window.openTaskDetail = openTaskDetail;
+window.toggleSubtask = toggleSubtask;
+window.startDragging = startDragging;
+window.allowDrop = allowDrop;
+window.moveTo = moveTo;
+window.editTask = editTask;
+window.saveEdit = saveEdit;
+window.handleEditSubtaskKey = handleEditSubtaskKey;
+window.addEditSubtask = addEditSubtask;
+window.deleteEditSubtask = deleteEditSubtask;
+window.toggleEditSubtask = toggleEditSubtask;
+window.deleteTask = deleteTask;

@@ -1,8 +1,27 @@
+/**
+ * The currently active page identifier.
+ * @type {string|null}
+ */
 let currentPage = null;
+
+/**
+ * The previously active page identifier.
+ * @type {string|null}
+ */
 let previousPage = null;
+
+/**
+ * Array storing the navigation path history.
+ * @type {string[]}
+ */
 const pageHistory = [];
 
-
+/**
+ * Fetches an HTML template file and injects it into a DOM container.
+ * @param {string} containerId - The ID of the target DOM element.
+ * @param {string} templatePath - The path to the HTML template file.
+ * @returns {Promise<void>}
+ */
 async function loadTemplate(containerId, templatePath) {
   const container = document.getElementById(containerId);
 
@@ -14,24 +33,36 @@ async function loadTemplate(containerId, templatePath) {
   container.innerHTML = html;
 }
 
+/**
+ * Initializes the default main application layout structure.
+ */
 function initLayout() {
-  loadTemplate("headerContent", "../templates/header.html");
-  loadTemplate("sidebarContent", "../templates/aside.html");
-  loadTemplate("mainContent", "../pages/summary.html");
+  loadTemplate('headerContent', '../templates/header.html');
+  loadTemplate('sidebarContent', '../templates/aside.html');
+  loadTemplate('mainContent', '../pages/summary.html');
 }
 
+/**
+ * Initializes the auth layout components and loads the initial subpage from URL parameters.
+ * @returns {Promise<void>}
+ */
 async function initLoginLayout() {
-  await loadTemplate("headerLoginContent", "../templates/headerlogin.html");
-  await loadTemplate("sidebarLoginContent", "../templates/asidelogin.html");
+  await loadTemplate('headerLoginContent', '../templates/headerlogin.html');
+  await loadTemplate('sidebarLoginContent', '../templates/asidelogin.html');
 
   const params = new URLSearchParams(window.location.search);
-  const page = params.get("page") || "login";
+  const page = params.get('page') || 'login';
 
-  await loadTemplate("mainLoginContent", `../pages/${page}.html`);
+  await loadTemplate('mainLoginContent', `../pages/${page}.html`);
 
   setActiveLoginNavFromUrl(page);
 }
 
+/**
+ * Navigates to a specific subpage view and adds it to the page history stack.
+ * @param {string} page - The target page file prefix string.
+ * @returns {Promise<void>}
+ */
 async function navigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
 
@@ -43,11 +74,13 @@ async function navigateTo(page) {
   loadTemplate('mainLoginContent', `../pages/${page}.html`);
 }
 
+/**
+ * Returns to the previous page in history view stack or handles login redirection fallback layout.
+ */
 function goBack() {
-    // Sonderfall: loginlayout.html
-  if (window.location.pathname.includes("loginlayout.html")) {
-    sessionStorage.setItem("skipIntroAnimation", "true");
-    window.location.href = "../index.html";
+  if (window.location.pathname.includes('loginlayout.html')) {
+    sessionStorage.setItem('skipIntroAnimation', 'true');
+    window.location.href = '../index.html';
     return;
   }
   if (pageHistory.length > 1) {
@@ -55,82 +88,95 @@ function goBack() {
     const previousPage = pageHistory[pageHistory.length - 1];
     loadTemplate('mainContent', `../pages/${previousPage}.html`);
   }
-  //vergibt die Klasse "has-active-page" an den Body, damit das Hilfesymbol angezeigt wird, und entfernt die Klasse "help-open", damit das Hilfesymbol nicht mehr ausgeblendet wird
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
 
-// Ändert die Hintergundfarbe des Menüpunktes, der angeklickt wurde, und entfernt die Hintergundfarbe von den anderen Menüpunkten
+/**
+ * Updates navigation item visual states by assigning active styling classes.
+ * @param {HTMLElement} clickedItem - The navigation link node clicked by the user.
+ */
 function setActiveNavItem(clickedItem) {
-  document.querySelectorAll('.nav-link').forEach(item => {
+  document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
 
   clickedItem.classList.add('active');
 
-//vergibt die Klasse "has-active-page" an den Body, damit das Hilfesymbol angezeigt wird, und entfernt die Klasse "help-open", damit das Hilfesymbol nicht mehr ausgeblendet wird
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
 
-//Entfernt Menüppunkt Markierung beim öffnen der Hilfeseite
+/**
+ * Clears sidebar active navigation styling selections and displays the help page interface components.
+ */
 function openHelp() {
-  document.querySelectorAll('.nav-link').forEach(item => {
-
+  document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
 
-// vergibt die Klasse "help-open" an den Body, damit das Hilfesymbol ausgeblendet wird, und entfernt die Klasse "has-active-page", damit das Hilfesymbol nicht mehr angezeigt wird
   document.body.classList.add('help-open');
   document.body.classList.remove('has-active-page');
 }
 
-//öffnet das Dropdown-Menü, wenn auf den Avatar geklickt wird, und schließt es, wenn irgendwo anders auf der Seite geklickt wird
+/**
+ * Toggles the profile avatar element options dropdown container menu visibility status.
+ * @param {Event} event - The triggered DOM mouse pointer event object.
+ */
 function toggleAvatarDropdown(event) {
-  event.stopPropagation(); // verhindert sofortiges Schließen
+  event.stopPropagation();
 
   const dropdown = document.getElementById('avatarDropdown');
   dropdown.classList.toggle('open');
 }
 
-//schließt das Dropdown-Menü, wenn irgendwo anders auf der Seite geklickt wird
+/**
+ * Hides the profile avatar options interactive dropdown element overlay list.
+ */
 function closeAvatarDropdown() {
   const dropdown = document.getElementById('avatarDropdown');
   dropdown.classList.remove('open');
 }
 
-//function zum Ausloggen
+/**
+ * Clears authentication state parameters and redirects the browser window back to login view.
+ */
 function logOut() {
-  // Hier können Sie die Logik zum Ausloggen implementieren, z.B. Token löschen, Session beenden, etc.
-  console.log("User logged out");
-  // Nach dem Ausloggen können Sie den Benutzer zur Login-Seite weiterleiten oder die Seite neu laden
-  window.location.href = '../pages/login.html'; // Beispiel: Weiterleitung zur Login-Seite
+  console.log('User logged out');
+  window.location.href = '../pages/login.html';
 
-  closeAvatarDropdown(); // schließt dropdown nach dem Ausloggen
+  closeAvatarDropdown();
 }
 
-// Funktion zum Zurückkehren zur Login-Seite
+/**
+ * Redirects the main page location reference point back to the central index login gateway.
+ */
 function backToLogin() {
-  window.location.href = '../index.html'; // Weiterleitung zur Login-Seite
+  window.location.href = '../index.html';
 }
 
-//funktion schalten den zurück Pfeil aus wenn nicht eingeloggt ist
+/**
+ * Modifies visibility displays to remove unauthenticated navigation history back arrows.
+ */
 function turnOffBackarrow() {
   const backArrow = document.querySelector('.backarrow-placeholder');
-    backArrow.style.display = 'none';
+  if (backArrow) backArrow.style.display = 'none';
 }
 
-// Funktion zum Setzen des aktiven Navigationspunkts basierend auf der URL
+/**
+ * Highlights corresponding sidebar links dynamically according to current URL routing paths.
+ * @param {string} page - The current page parameter identifier key.
+ */
 function setActiveLoginNavFromUrl(page) {
-  document.querySelectorAll('.nav-link').forEach(item => {
+  document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
 
-  if (page === "imprint") {
-    document.getElementById("menuLegalLogin")?.classList.add("active");
+  if (page === 'imprint') {
+    document.getElementById('menuLegalLogin')?.classList.add('active');
   }
 
-  if (page === "privacy") {
-    document.getElementById("menuPrivacyLogin")?.classList.add("active");
+  if (page === 'privacy') {
+    document.getElementById('menuPrivacyLogin')?.classList.add('active');
   }
 }

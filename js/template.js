@@ -1,3 +1,7 @@
+/**
+ * @file Template management script handling board cards, task details, and editor HTML strings.
+ */
+
 /** --- BOARD TASK CARDS --- */
 
 /**
@@ -6,14 +10,16 @@
  * @param {string} id - The unique task ID.
  * @returns {string} The task card HTML string.
  */
-function generateTaskHTML(task, id) {
-  const catClass = task.category.replace(/\s+/g, '').toLowerCase();
+export function generateTaskHTML(task, id) {
+  const catClass = task.category
+    ? task.category.replace(/\s+/g, '').toLowerCase()
+    : '';
   return `
     <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" 
          onclick="openTaskDetail('${id}')">
-      <div class="task-category ${catClass}">${task.category}</div>
-      <h3>${task.title}</h3>
-      <p class="description-task-board">${task.description}</p>
+      <div class="task-category ${catClass}">${task.category || ''}</div>
+      <h3>${task.title || ''}</h3>
+      <p class="description-task-board">${task.description || ''}</p>
       ${renderSmallSubtaskInfo(task)}
     </div>`;
 }
@@ -23,7 +29,7 @@ function generateTaskHTML(task, id) {
  * @param {Object} task - The task data object.
  * @returns {string} The subtask info HTML or an empty string.
  */
-function renderSmallSubtaskInfo(task) {
+export function renderSmallSubtaskInfo(task) {
   if (!task.subtasks || task.subtasks.length === 0) return '';
   const done = task.subtasks.filter((s) => s.done).length;
   return `<small>${done}/${task.subtasks.length} Subtasks</small>`;
@@ -34,7 +40,7 @@ function renderSmallSubtaskInfo(task) {
  * @param {string} label - The text label of the empty column.
  * @returns {string} The placeholder element HTML string.
  */
-function getNoTaskPlaceholder(label) {
+export function getNoTaskPlaceholder(label) {
   return `<div class="no-tasks">No tasks ${label}</div>`;
 }
 
@@ -44,7 +50,7 @@ function getNoTaskPlaceholder(label) {
  * Generates HTML buttons for selecting task priority levels.
  * @returns {string} The combined priority buttons HTML string.
  */
-function getPriorityButtonsHTML() {
+export function getPriorityButtonsHTML() {
   return ['Urgent', 'Medium', 'Low']
     .map(
       (p) => `
@@ -61,7 +67,7 @@ function getPriorityButtonsHTML() {
  * @param {string} defaultText - The disabled placeholder text option.
  * @returns {string} The complete dropdown options HTML string.
  */
-function getSelectOptionsHTML(optionsArray, defaultText) {
+export function getSelectOptionsHTML(optionsArray, defaultText) {
   const def = `<option value="" disabled selected>${defaultText}</option>`;
   const opts = optionsArray
     .map((opt) => `<option value="${opt}">${opt}</option>`)
@@ -75,7 +81,7 @@ function getSelectOptionsHTML(optionsArray, defaultText) {
  * @param {number} index - The index array placement of the subtask.
  * @returns {string} The subtask list item HTML string.
  */
-function getSubtaskHTML(task, index) {
+export function getSubtaskHTML(task, index) {
   return `<li>${task.title}<button type="button" onclick="deleteSubtask(${index})">
           <img src="../assets/icons/delete-icon.svg"></button></li>`;
 }
@@ -88,15 +94,17 @@ function getSubtaskHTML(task, index) {
  * @param {string} id - The unique task ID.
  * @returns {string} The task detail layout HTML string.
  */
-function generateTaskDetailHTML(task, id) {
-  const catClass = task.category.replace(/\s+/g, '').toLowerCase();
+export function generateTaskDetailHTML(task, id) {
+  const catClass = task.category
+    ? task.category.replace(/\s+/g, '').toLowerCase()
+    : '';
   return `
     <div class="detail-view">
       <div class="detail-view-header">
-        <span class="task-category ${catClass}">${task.category}</span>
+        <span class="task-category ${catClass}">${task.category || ''}</span>
         <div class="detail-view-close" onclick="closeTaskDetail()">×</div></div>
-      <h3 class="detail-view-title">${task.title}</h3>
-      <p class="detail-view-description">${task.description}</p>
+      <h3 class="detail-view-title">${task.title || ''}</h3>
+      <p class="detail-view-description">${task.description || ''}</p>
       ${getDetailInfoRows(task)}
       <div class="assigned-section"><span class="detail-view-label">Assigned To:</span>
         <div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
@@ -110,13 +118,14 @@ function generateTaskDetailHTML(task, id) {
  * @param {Object} task - The task data object.
  * @returns {string} The info rows HTML snippet.
  */
-function getDetailInfoRows(task) {
+export function getDetailInfoRows(task) {
+  const prio = task.priority ? task.priority.toLowerCase() : 'medium';
   return `<div class="detail-view-info-row">
-      <span class="detail-view-label">Due date:</span> ${task.dueDate}</div>
+      <span class="detail-view-label">Due date:</span> ${task.dueDate || ''}</div>
     <div class="detail-view-info-row">
       <span class="detail-view-label">Priority:</span> 
-      <div class="detail-view-prio-badge">${task.priority} 
-        <img src="../assets/icons/prio-${task.priority.toLowerCase()}-icon.svg"></div>
+      <div class="detail-view-prio-badge">${task.priority || 'Medium'} 
+        <img src="../assets/icons/prio-${prio}-icon.svg"></div>
     </div>`;
 }
 
@@ -126,7 +135,7 @@ function getDetailInfoRows(task) {
  * @param {string} taskId - The unique target task ID.
  * @returns {string} The list of subtask checkbox items HTML string.
  */
-function getDetailSubtasksHTML(subtasks, taskId) {
+export function getDetailSubtasksHTML(subtasks, taskId) {
   if (!subtasks || !Array.isArray(subtasks) || subtasks.length === 0)
     return '<p>No subtasks</p>';
   return subtasks
@@ -146,7 +155,7 @@ function getDetailSubtasksHTML(subtasks, taskId) {
  * @param {string} id - The unique task ID.
  * @returns {string} The detail dialog footer menu HTML string.
  */
-function getDetailFooter(id) {
+export function getDetailFooter(id) {
   return `<div class="detail-view-footer">
       <button class="action-btn" onclick="deleteTask('${id}')">
         <img src="../assets/icons/delete-icon.svg"> Delete</button>
@@ -162,9 +171,10 @@ function getDetailFooter(id) {
  * @param {string} name - The full contact username.
  * @returns {string} The individual contact badge element HTML string.
  */
-function getAssignedUserHTML(name) {
-  const color = getContactColor(name);
-  const initials = getInitials(name);
+export function getAssignedUserHTML(name) {
+  const color =
+    typeof getContactColor === 'function' ? getContactColor(name) : '#ff7a00';
+  const initials = typeof getInitials === 'function' ? getInitials(name) : '??';
   return `<div class="assigned-user">
       <div class="user-badge" style="background-color: ${color}">${initials}</div>
       <span class="user-name">${name}</span></div>`;
@@ -175,7 +185,7 @@ function getAssignedUserHTML(name) {
  * @param {string|string[]} assignedTo - Assigned string name or collection array.
  * @returns {string} Consolidated contact list markup string.
  */
-function renderAssignedToDetail(assignedTo) {
+export function renderAssignedToDetail(assignedTo) {
   if (!assignedTo || assignedTo === 'Select contacts to assign') return '';
   const contacts = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
   return contacts.map((name) => getAssignedUserHTML(name)).join('');
@@ -189,7 +199,7 @@ function renderAssignedToDetail(assignedTo) {
  * @param {string} id - The targeted task identifier ID.
  * @returns {string} The editor structure view form HTML string.
  */
-function generateEditTaskHTML(task, id) {
+export function generateEditTaskHTML(task, id) {
   return `
     <div class="edit-mode-main">
       <div class="edit-content-wrapper">
@@ -208,96 +218,34 @@ function generateEditTaskHTML(task, id) {
  * @param {Object} task - The targeted active task data object.
  * @returns {string} HTML snippet wrapper input form elements.
  */
-function getEditLeftSection(task) {
+export function getEditLeftSection(task) {
   return `
     <div class="edit-section">
       <div class="input-group"><label>Title<span class="required">*</span></label>
-        <input type="text" id="editTitle" value="${task.title}"></div>
+        <input type="text" id="editTitle" value="${task.title || ''}"></div>
       <div class="input-group"><label>Description</label>
-        <textarea id="editDescription">${task.description}</textarea></div>
-      <div class="input-group"><label>Due date<span class="required">*</span></label>
-        <div class="input-wrapper">
-          <input type="date" id="editDate" value="${task.dueDate}">
-          <button type="button" onclick="document.getElementById('editDate').showPicker()">
-            <img src="../assets/icons/date-icon.svg" alt="Kalender"></button></div></div>
+        <textarea id="editDescription">${task.description || ''}</textarea></div>
     </div>`;
 }
 
 /**
  * Generates the layout view container structure for editor right sections.
  * @param {Object} task - The targeted active task data object.
- * @param {string} id - The specific task tracking id.
- * @returns {string} HTML snippet wrapper containing secondary form inputs.
+ * @param {string} id - The unique task ID.
+ * @returns {string} HTML snippet wrapper form elements.
  */
-function getEditRightSection(task, id) {
+export function getEditRightSection(task, id) {
   return `
     <div class="edit-section">
-      <div class="input-group"><label>Priority</label>
-        <div class="priority-btn-content">${getEditPrioBtns(task.priority)}</div></div>
-      <div class="input-group"><label>Assigned to</label>
-        <select id="editAssigned">${getSelectOptionsHTML(CONTACT_OPTIONS, task.assignedTo)}</select></div>
-      <div class="input-group"><label>Subtasks</label>
-        <input type="text" id="editSubtaskInput" placeholder="Add new subtask" 
-               onkeydown="handleEditSubtaskKey(event, '${id}')">
-        <ul id="editSubtasksList" class="subtasks-list-edit">${getEditSubtasksList(task.subtasks, id)}</ul></div>
+      <div class="input-group"><label>Due Date</label>
+        <input type="date" id="editDate" value="${task.dueDate || ''}"></div>
+      <div class="input-group"><label>Assigned To</label>
+        <input type="text" id="editAssigned" value="${task.assignedTo || ''}"></div>
     </div>`;
 }
 
-/**
- * Renders subtask entry lists containing action tags inside task editors.
- * @param {Object[]} subtasks - List of containing active task subtasks.
- * @param {string} id - Active element object code identification tracking string.
- * @returns {string} Evaluated checkbox list view template string.
- */
-function getEditSubtasksList(subtasks, id) {
-  if (!subtasks || subtasks.length === 0) return '';
-  return subtasks
-    .map(
-      (st, i) => `
-    <li class="subtask-item-edit">
-      <div class="subtask-left" onclick="toggleEditSubtask('${id}', ${i})">
-        <img src="../assets/icons/${st.done ? 'subtask-done-icon.svg' : 'check-empty.svg'}" 
-             class="subtask-check-icon">
-        <span>${st.title}</span>
-      </div>
-      <button onclick="deleteEditSubtask('${id}', ${i})">
-        <img src="../assets/icons/delete-icon.svg">
-      </button>
-    </li>`,
-    )
-    .join('');
-}
-
-/**
- * Builds standard action toggles mapping task priority settings within editors.
- * @param {string} current - Activated string priority values.
- * @returns {string} Converted option lists selector action elements HTML.
- */
-function getEditPrioBtns(current) {
-  const prios = ['Urgent', 'Medium', 'Low'];
-  return prios
-    .map((p) => {
-      const active = current === p ? `active-${p.toLowerCase()}` : '';
-      let iconName = `prio-${p.toLowerCase()}-icon`;
-      if (p === 'Medium') iconName = 'medium-icon-orange';
-
-      return `
-      <button type="button" id="editPrio${p}" onclick="setEditPriority('${p}')" 
-              class="prio-btn prio-btn-${p.toLowerCase()} ${active}">
-        ${p} <img src="../assets/icons/${iconName}.svg">
-      </button>`;
-    })
-    .join('');
-}
-
-/**
- * Generates submission form validation submit elements within edit views.
- * @param {string} id - Specific context task configuration unique identity tracking parameter.
- * @returns {string} Single complete key confirmation container element.
- */
-function getEditFooterButton(id) {
-  return `
-    <button class="btn-primary" onclick="saveEdit('${id}')">
-      Ok <img src="../assets/icons/check.svg">
-    </button>`;
-}
+/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
+window.generateTaskHTML = generateTaskHTML;
+window.getNoTaskPlaceholder = getNoTaskPlaceholder;
+window.generateTaskDetailHTML = generateTaskDetailHTML;
+window.generateEditTaskHTML = generateEditTaskHTML;
