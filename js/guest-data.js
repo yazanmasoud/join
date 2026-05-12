@@ -2,7 +2,7 @@
  * Initial fallback collection of standard mock contact records used during guest user sessions.
  * @type {Array<{id: number, name: string, email: string, phone: string, color: string}>}
  */
-const guestContacts = [
+export const guestContacts = [
   {
     id: 1,
     name: 'Max Mustermann',
@@ -114,7 +114,7 @@ const guestContacts = [
  * Default pipeline array of template boarding tasks generated dynamically to guide first-time platform users.
  * @type {Array<{id: number, title: string, description: string, assignedTo: number[], dueDate: string, priority: string, category: string, status: string, subtasks: Array<{title: string, done: boolean}>}>}
  */
-const guestTasks = [
+export const guestTasks = [
   {
     id: 1,
     title: 'Willkommen bei Join',

@@ -1,3 +1,5 @@
+import { guestContacts, guestTasks } from './guest-data.js';
+
 /**
  * DOM element indicating if the current view is the login interface.
  * @type {HTMLElement|null}
@@ -226,9 +228,39 @@ function checkPrivacy(privacy, errorText, errorBox) {
 }
 
 /**
- * Executes standard validation pipelines sequentially across all active registration signup input panels.
- * @returns {boolean} True if all input elements pass formatting metrics, false otherwise.
+ * Initializes local storage parameters with imported fallback mock data arrays.
  */
+function initGuestStorage() {
+  localStorage.setItem('isGuest', 'true');
+  localStorage.setItem('contacts', JSON.stringify(guestContacts));
+  localStorage.setItem('tasks', JSON.stringify(guestTasks));
+  localStorage.setItem(
+    'currentUser',
+    JSON.stringify({ name: 'Guest', email: 'guest@test.de' }),
+  );
+}
+
+/**
+ * Handles guest session login event pipelines and triggers layout re-routing actions.
+ */
+function loginAsGuest() {
+  initGuestStorage();
+  // KORREKTUR: Absolut korrekter Pfad zur layout.html inklusive des geforderten summary-Parameters!
+  window.location.href = './pages/layout.html?page=summary';
+}
+
+/**
+ * Placeholder logic for user login pipeline.
+ */
+function loginAsUser() {
+  // Für Testzwecke leitet auch diese Funktion nun korrekt weiter
+  window.location.href = './pages/layout.html?page=summary';
+}
+
+/**
+ 
+Executes standard validation pipelines sequentially across all active registration signup input panels.
+@returns {boolean} True if all input elements pass formatting metrics, false otherwise.*/
 function validateForm() {
   const username = document.getElementById('signup-username');
   const email = document.getElementById('signup-email');
@@ -250,40 +282,9 @@ function validateForm() {
   return true;
 }
 
-/**
- * Attaches guest authorization labels to active session contexts and triggers workspace redirections.
- */
-function loginAsGuest() {
-  sessionStorage.setItem('userStatus', 'guest');
-  initGuestStorage();
-  window.location.href = './pages/layout.html';
-}
-
-/**
- * Checks if current authentication parameters align with standard guest profiles.
- * @returns {boolean} True if current user session is flagged as guest, false otherwise.
- */
-function isGuest() {
-  return sessionStorage.getItem('userStatus') === 'guest';
-}
-
-/**
- * Seeds client local storage scopes with basic template structures when values are missing.
- */
-function initGuestStorage() {
-  if (!localStorage.getItem('guestContacts')) {
-    localStorage.setItem('guestContacts', JSON.stringify(guestContacts));
-  }
-
-  if (!localStorage.getItem('guestTasks')) {
-    localStorage.setItem('guestTasks', JSON.stringify(guestTasks));
-  }
-}
-
-/**
- * Attaches standard profile tags onto runtime variables and boots layout viewport redirection routines.
- */
-function loginAsUser() {
-  sessionStorage.setItem('userStatus', 'user');
-  window.location.href = './pages/layout.html';
-}
+// Global verfügbare Schnittstellen für Ihre HTML-Attribute (onclick) registrieren
+window.openSignUp = openSignUp;
+window.openLogin = openLogin;
+window.loginAsGuest = loginAsGuest;
+window.loginAsUser = loginAsUser;
+window.validateForm = validateForm;

@@ -15,8 +15,11 @@ const contactOptions = [
  * @returns {boolean} True if guest, false otherwise.
  */
 export function isGuest() {
-  // Hinweis: Falls diese Funktion in einer anderen Datei liegt, passe sie hier an.
-  return localStorage.getItem('isGuest') === 'true';
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  return (
+    localStorage.getItem('isGuest') === 'true' ||
+    (user && user.name === 'Guest')
+  );
 }
 
 /**
@@ -36,9 +39,9 @@ export function getCurrentUserId() {
  */
 export function getStoredContacts() {
   if (isGuest()) {
-    return JSON.parse(localStorage.getItem('guestContacts')) || [];
+    // Geändert auf 'contacts', da main.js es dort speichert
+    return JSON.parse(localStorage.getItem('contacts')) || [];
   }
-  // Fallback falls 'contacts' global definiert ist, sonst leeres Array
   return typeof contacts !== 'undefined' ? contacts : [];
 }
 
@@ -48,9 +51,9 @@ export function getStoredContacts() {
  */
 export function getStoredTasks() {
   if (isGuest()) {
-    return JSON.parse(localStorage.getItem('guestTasks')) || [];
+    // Geändert auf 'tasks', da main.js es dort speichert
+    return JSON.parse(localStorage.getItem('tasks')) || [];
   }
-  // Fallback falls 'tasks' global definiert ist, sonst leeres Array
   return typeof tasks !== 'undefined' ? tasks : [];
 }
 

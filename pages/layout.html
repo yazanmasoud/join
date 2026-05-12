@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="../js/layout.js" defer></script>
+    <!-- KORREKTUR: layout.js aus dem Head entfernt, da es unten als Modul geladen wird -->
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/root.css" />
@@ -21,7 +21,8 @@
     <title>Join</title>
   </head>
 
-  <body onload="initLayout()" onclick="closeAvatarDropdown()">
+  <!-- KORREKTUR: onload entfernt, da der Aufruf jetzt über das Modul-Script unten erfolgt -->
+  <body onclick="closeAvatarDropdown()">
     <div class="layout">
       <header id="headerContent" class="headerContent">
         <!-- hier Header Template -->
@@ -35,17 +36,30 @@
         <!-- hier Content Window -->
       </main>
     </div>
+
     <!-- Firebase App (Basis-SDK) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <!-- Firebase Database -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="../js/firebase-config.js"></script>
-    <!--Logik -->
+    <!-- KORREKTUR 1: Firebase Auth SDK hinzugefügt -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <!-- KORREKTUR 2: Von regulärem Script zu type="module" geändert -->
+    <script type="module" src="../js/firebase-config.js"></script>
+
+    <!-- Logik & Module -->
     <script type="module" src="../js/utils.js"></script>
     <script type="module" src="../js/template.js"></script>
     <script type="module" src="../js/summary.js"></script>
     <script type="module" src="../js/board.js"></script>
     <script type="module" src="../js/task.js"></script>
     <script type="module" src="../js/contact.js"></script>
+    <script type="module" src="../js/layout.js"></script>
+    <script type="module" src="../js/main.js"></script>
+
+    <!-- Startet das Layout sicher, nachdem alle JS-Module geladen wurden -->
+    <script type="module">
+      initLayout();
+    </script>
   </body>
 </html>

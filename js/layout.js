@@ -36,10 +36,11 @@ async function loadTemplate(containerId, templatePath) {
 /**
  * Initializes the default main application layout structure.
  */
-function initLayout() {
-  loadTemplate('headerContent', '../templates/header.html');
-  loadTemplate('sidebarContent', '../templates/aside.html');
-  loadTemplate('mainContent', '../pages/summary.html');
+async function initLayout() {
+  // Pfade korrigiert, da layout.html bereits im Ordner 'pages' liegt!
+  await loadTemplate('headerContent', '../templates/header.html');
+  await loadTemplate('sidebarContent', '../templates/aside.html');
+  await loadTemplate('mainContent', './summary.html');
 }
 
 /**
@@ -53,7 +54,7 @@ async function initLoginLayout() {
   const params = new URLSearchParams(window.location.search);
   const page = params.get('page') || 'login';
 
-  await loadTemplate('mainLoginContent', `../pages/${page}.html`);
+  await loadTemplate('mainLoginContent', `./${page}.html`);
 
   setActiveLoginNavFromUrl(page);
 }
@@ -70,8 +71,9 @@ async function navigateTo(page) {
     pageHistory.push(page);
   }
 
-  loadTemplate('mainContent', `../pages/${page}.html`);
-  loadTemplate('mainLoginContent', `../pages/${page}.html`);
+  // Pfade angepasst an Ordnerstruktur
+  loadTemplate('mainContent', `./${page}.html`);
+  loadTemplate('mainLoginContent', `./${page}.html`);
 }
 
 /**
@@ -86,7 +88,7 @@ function goBack() {
   if (pageHistory.length > 1) {
     pageHistory.pop();
     const previousPage = pageHistory[pageHistory.length - 1];
-    loadTemplate('mainContent', `../pages/${previousPage}.html`);
+    loadTemplate('mainContent', `./${previousPage}.html`);
   }
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
@@ -143,8 +145,8 @@ function closeAvatarDropdown() {
  */
 function logOut() {
   console.log('User logged out');
-  window.location.href = '../pages/login.html';
-
+  localStorage.removeItem('currentUser'); // Löscht Login-Status
+  window.location.href = '../index.html'; // Zurück zur Haupt-Login-Seite
   closeAvatarDropdown();
 }
 
@@ -180,3 +182,12 @@ function setActiveLoginNavFromUrl(page) {
     document.getElementById('menuPrivacyLogin')?.classList.add('active');
   }
 }
+
+// Funktionen global verfügbar machen
+window.initLayout = initLayout;
+window.initLoginLayout = initLoginLayout;
+window.navigateTo = navigateTo;
+window.logOut = logOut;
+window.toggleAvatarDropdown = toggleAvatarDropdown;
+window.closeAvatarDropdown = closeAvatarDropdown;
+window.setActiveNavItem = setActiveNavItem;

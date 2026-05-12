@@ -22,5 +22,9 @@ if (!firebase.apps.length) {
  * Global entry point instance reference for real-time Firebase Database transaction operations.
  * @type {firebase.database.Database}
  */
-const database = firebase.database();
-const auth = firebase.auth();
+// HIER DAS EXPORT HINZUFÜGEN:
+export const database = firebase.database();
+export const auth = firebase.auth();
+
+window.database = database;
+window.auth = auth;

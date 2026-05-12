@@ -162,3 +162,5 @@ function showSuccessToast() {
     setTimeout(() => toast.classList.add('d-none'), 2000);
   }
 }
+
+window.createTask = createTask;
