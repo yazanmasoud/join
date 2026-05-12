@@ -1,4 +1,9 @@
-let contacts = [];
+/**
+ * @file Template management script handling board cards, task details, and editor HTML strings.
+ */
+import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
+
+export let contacts = [];
 
 /**
  * Opens the add contact dialog with an animation effect.
@@ -72,74 +77,12 @@ function renderContacts() {
     let firstLetter = contact.name[0].toUpperCase();
 
     if (firstLetter !== currentLetter) {
-      renderContactLetter(list, firstLetter);
+      getContactLetter(list, firstLetter);
       currentLetter = firstLetter;
     }
 
-    renderSingleContact(list, contact,i);
+    getSingleContact(list, contact,i);
   }
-}
-
-/**
- * Renders a letter separator
- * for grouping contacts alphabetically.
- *
- * @param {HTMLElement} list - The contact list container
- * @param {string} letter - The current contact letter
- */
-function renderContactLetter(list, letter) {
-  list.innerHTML += `
-        <div class="contact-letter-container">
-
-            <div class="contact-letter">
-                ${letter}
-            </div>
-
-            <div class="contact-divider"></div>
-
-        </div>
-    `;
-}
-
-/**
- * Renders a single contact item
- * into the contact list.
- *
- * @param {HTMLElement} list - The contact list container
- * @param {Object} contact - The contact object
- * @param {number} i - The index of the contact in the contacts array
- */
-function renderSingleContact(list, contact, i) {
-  list.innerHTML += `
-        <div onclick="renderContactDetails(${i})" class="contact-item">
-            <div class="contact-avatar" style="background-color: ${contact.color}">
-                ${contact.initials}
-            </div>
-
-            <div>
-                <div>${contact.name}</div>
-                <div>${contact.email}</div>
-            </div>
-        </div>
-    `;
-}
-
-function renderContactDetails(i) {
-    const contact = contacts[i];
-    const detailsSection = document.getElementById('contact-details');
-    detailsSection.innerHTML = `
-        <div class="contact-details-content">
-        <div
-            <div class="contact-avatar contact-avatar-large" style="background-color: ${contact.color}">
-                ${contact.initials}
-            </div>
-            <div>
-                <h3>${contact.name}</h3>
-                <button class="btn edit-delete-btn"><img src="../assets/icons/edit-icon.svg" alt=""><p>Edit</p></button>
-                <button class="btn edit-delete-btn"><img src="../assets/icons/delete-icon.svg" alt=""><p>Delete</p></button>
-            </div>
-        </div>
-    `;
 }
 
 /**
@@ -196,4 +139,4 @@ function getRandomColor() {
 window.openAddContact = openAddContact;
 window.createContact = createContact;
 window.closeAddContact = closeAddContact;
-window.renderContactDetails = renderContactDetails;
+window.getContactDetails = getContactDetails;

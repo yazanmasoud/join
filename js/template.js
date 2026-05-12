@@ -1,6 +1,7 @@
 /**
  * @file Template management script handling board cards, task details, and editor HTML strings.
  */
+import { contacts } from './contact.js';
 
 /** --- BOARD TASK CARDS --- */
 
@@ -245,6 +246,67 @@ export function getEditRightSection(task, id) {
 }
 
 /* Contacts Template */
+/**
+ * Gets a letter separator
+ * for grouping contacts alphabetically.
+ *
+ * @param {HTMLElement} list - The contact list container
+ * @param {string} letter - The current contact letter
+ */
+export function getContactLetter(list, letter) {
+  list.innerHTML += `
+        <div class="contact-letter-container">
+
+            <div class="contact-letter">
+                ${letter}
+            </div>
+
+            <div class="contact-divider"></div>
+
+        </div>
+    `;
+}
+
+/**
+ * Gets a single contact item
+ * for rendering in the contact list.
+ *
+ * @param {HTMLElement} list - The contact list container
+ * @param {Object} contact - The contact object
+ * @param {number} i - The index of the contact in the contacts array
+ */
+export function getSingleContact(list, contact, i) {
+  list.innerHTML += `
+        <div onclick="getContactDetails(${i})" class="contact-item">
+            <div class="contact-avatar" style="background-color: ${contact.color}">
+                ${contact.initials}
+            </div>
+
+            <div>
+                <div>${contact.name}</div>
+                <div>${contact.email}</div>
+            </div>
+        </div>
+    `;
+}
+
+export function getContactDetails(i) {
+    const contact = contacts[i];
+    const detailsSection = document.getElementById('contact-details');
+    detailsSection.innerHTML = `
+        <div class="contact-details-content">
+        <div
+            <div class="contact-avatar contact-avatar-large" style="background-color: ${contact.color}">
+                ${contact.initials}
+            </div>
+            <div>
+                <h3>${contact.name}</h3>
+                <button class="btn edit-delete-btn"><img src="../assets/icons/edit-icon.svg" alt=""><p>Edit</p></button>
+                <button class="btn edit-delete-btn"><img src="../assets/icons/delete-icon.svg" alt=""><p>Delete</p></button>
+            </div>
+        </div>
+    `;
+}
 
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
