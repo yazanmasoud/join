@@ -244,6 +244,9 @@ export function getEditRightSection(task, id) {
     </div>`;
 }
 
+/* Contacts Template */
+
+
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.generateTaskHTML = generateTaskHTML;
 window.getNoTaskPlaceholder = getNoTaskPlaceholder;

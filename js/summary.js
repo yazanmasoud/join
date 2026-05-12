@@ -7,6 +7,7 @@ import { calculateMetrics } from './utils.js';
 import { setGreeting, updateUI } from './ui.js';
 import { database } from './firebase-config.js';
 
+
 /**
  * Initializes the dashboard by setting the greeting and fetching data.
  */

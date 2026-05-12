@@ -1,4 +1,9 @@
 /**
+ * @file Summary management script handling dashboard state and real-time metrics data.
+ */
+import { toggleElement, closeElement } from './ui.js';
+
+/**
  * The currently active page identifier.
  * @type {string|null}
  */
@@ -121,25 +126,6 @@ function openHelp() {
 }
 
 /**
- * Toggles the profile avatar element options dropdown container menu visibility status.
- * @param {Event} event - The triggered DOM mouse pointer event object.
- */
-function toggleAvatarDropdown(event) {
-  event.stopPropagation();
-
-  const dropdown = document.getElementById('avatarDropdown');
-  dropdown.classList.toggle('open');
-}
-
-/**
- * Hides the profile avatar options interactive dropdown element overlay list.
- */
-function closeAvatarDropdown() {
-  const dropdown = document.getElementById('avatarDropdown');
-  dropdown.classList.remove('open');
-}
-
-/**
  * Clears authentication state parameters and redirects the browser window back to login view.
  */
 function logOut() {
@@ -187,6 +173,6 @@ window.initLayout = initLayout;
 window.initLoginLayout = initLoginLayout;
 window.navigateTo = navigateTo;
 window.logOut = logOut;
-window.toggleAvatarDropdown = toggleAvatarDropdown;
-window.closeAvatarDropdown = closeAvatarDropdown;
+window.toggleElement = toggleElement;
+window.closeElement = closeElement;
 window.setActiveNavItem = setActiveNavItem;

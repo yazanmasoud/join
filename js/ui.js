@@ -81,3 +81,24 @@ export function handleGuestLogin(dashboardData) {
     if (nameElement) nameElement.innerText = dashboardData.userName;
   }
 }
+
+/**
+ * Toggles the profile avatar element options dropdown container menu visibility status.
+ * @param {Event} event - The triggered DOM mouse pointer event object.
+ */
+export function toggleElement(event) {
+  event.stopPropagation();
+
+  const dropdown = document.getElementById('avatarDropdown');
+  dropdown.classList.toggle('open');
+}
+
+/**
+ * Hides the profile avatar options interactive dropdown element overlay list.
+ */
+export function closeElement() {
+  const dropdown = document.getElementById('avatarDropdown');
+  dropdown.classList.remove('open');
+}
+
+/** --- GLOBAL EXPORTS FOR HTML --- */
