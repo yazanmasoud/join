@@ -54,14 +54,14 @@ textarea {
   height: 120px;
 }
 
-.input-wrapper {
+.input-wrapper-task {
   position: relative;
   width: 100%;
   display: flex;
   align-items: center;
 }
 
-.input-wrapper button {
+.input-wrapper-task button {
   position: absolute;
   right: 12px;
   background: none;

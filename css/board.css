@@ -1,6 +1,4 @@
-
-
-/* Hilfsklassen für Flex-Zentrierung */
+/* --- 1. GENERAL & HELPERS --- */
 .board-header,
 .board-header-right,
 .search-container,
@@ -9,10 +7,8 @@
 .detail-view-prio-badge,
 .action-btn,
 .assigned-user,
-.subtask-item,
 .input-wrapper,
-.sidebar-placeholder,
-.header-placeholder {
+.subtask-item {
   display: flex;
   align-items: center;
 }
@@ -34,6 +30,17 @@
   color: var(--color-text-main);
 }
 
+/* Schriftart-Vererbung für Dialoge und Formulare */
+.detail-dialog-frame,
+.task-detail-content-style,
+.edit-mode-main,
+.edit-mode-main input,
+.edit-mode-main textarea,
+.edit-mode-main select,
+.edit-mode-main button {
+  font-family: 'Inter', sans-serif;
+}
+
 /* --- 2. HEADER & SEARCH --- */
 .board-header {
   justify-content: space-between;
@@ -48,6 +55,7 @@
 .search-container {
   position: relative;
 }
+
 .search-container input {
   width: 312px;
   padding: 8px 50px 8px 16px;
@@ -90,6 +98,7 @@
   padding: 0 10px;
   margin-bottom: 16px;
 }
+
 .column-header span {
   font-size: 20px;
   font-weight: 700;
@@ -104,18 +113,6 @@
   gap: 16px;
 }
 
-.add-task-small {
-  border: 2px solid var(--color-bg-secondary);
-  border-radius: 8px;
-  background: transparent;
-  cursor: pointer;
-  padding: 3px;
-  transition: all 0.1s ease-in-out;
-}
-.add-task-small:hover {
-  border-color: var(--color-highlights);
-}
-
 /* --- 4. TASK CARDS & CATEGORIES --- */
 .task-card {
   background: var(--color-bg-primary);
@@ -128,13 +125,14 @@
   width: 100%;
 }
 
-.description-task-board {
-  color: var(--color-text-secondary);
-  font-size: 20px;
-}
 .task-card:active {
   transform: rotate(2deg);
   cursor: grabbing;
+}
+
+.description-task-board {
+  color: var(--color-text-secondary);
+  font-size: 20px;
 }
 
 .task-category {
@@ -145,6 +143,7 @@
   font-size: 16px;
   margin-bottom: 12px;
 }
+
 .task-category.userstory {
   background-color: var(--color-category-story);
 }
@@ -155,12 +154,14 @@
   background-color: var(--color-category-feature);
 }
 
+/* Gemeinsame Layout-Basis für Platzhalter */
 .no-tasks,
 .drag-area-highlight {
   border: 1px dashed var(--color-text-secondary);
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.05);
 }
+
 .no-tasks {
   background: var(--color-bg-tertiary);
   height: 35px;
@@ -172,8 +173,8 @@
   font-size: 16px;
   white-space: nowrap;
 }
+
 .drag-area-highlight {
-  background-color: rgba(0, 0, 0, 0.05);
   border-color: var(--color-menu-button-text);
   min-height: 50px;
 }
@@ -192,102 +193,13 @@
   transition: max-width 0.2s ease-in-out;
 }
 
+.detail-dialog-frame::backdrop {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 .detail-dialog-frame.edit-mode-wide {
   max-width: 1100px;
   width: 95%;
-}
-
-.edit-vertical-divider {
-  width: 1px;
-  background-color: var(--color-divider);
-  align-self: stretch;
-  margin: 0 20px;
-}
-
-.subtask-check-icon {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  object-fit: contain;
-}
-
-.subtask-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
-
-/* Erzwingt Inter für den gesamten Dialog-Inhalt */
-.detail-dialog-frame,
-.task-detail-content-style,
-.edit-mode-main {
-  font-family: 'Inter', sans-serif;
-}
-
-.edit-mode-main {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Wichtig: Formularelemente müssen explizit angewiesen werden */
-.edit-mode-main input,
-.edit-mode-main textarea,
-.edit-mode-main select,
-.edit-mode-main button {
-  font-family: 'Inter', sans-serif;
-}
-
-.subtasks-list-edit {
-  padding: 0;
-  margin-top: 10px;
-  list-style: none;
-  max-height: 100px;
-  overflow-y: auto;
-}
-
-.subtask-item-edit {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-  font-size: 16px;
-}
-
-.subtask-item-edit button {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.edit-content-wrapper {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  gap: 40px;
-}
-
-.edit-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.edit-footer-action {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 32px;
-}
-
-/* Scrollbar für kleinere Bildschirme */
-.task-detail-content-style {
-  width: 100%;
-}
-
-.detail-dialog-frame::backdrop {
-  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .task-detail-content-style {
@@ -298,6 +210,7 @@
   flex-direction: column;
   max-height: 90vh;
   overflow-y: auto;
+  width: 100%;
 }
 
 .detail-view {
@@ -305,17 +218,21 @@
   flex-direction: column;
   gap: 24px;
 }
+
 .detail-view-header {
   justify-content: space-between;
 }
+
 .detail-view-close {
   cursor: pointer;
   border-radius: 50%;
   padding: 4px;
 }
+
 .detail-view-close:hover {
   background: var(--color-bg-tertiary);
 }
+
 .detail-view-title {
   font-size: 36px;
   font-weight: 700;
@@ -325,22 +242,27 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .detail-view-description {
   font-size: 24px;
 }
+
 .detail-view-info-row {
   gap: 20px;
   display: flex;
 }
+
 .detail-view-label {
   color: var(--color-bg-secondary);
   width: 120px;
   font-size: 24px;
 }
+
 .detail-view-prio-badge {
   gap: 10px;
   text-transform: capitalize;
 }
+
 .detail-view-prio-badge img {
   width: 20px;
 }
@@ -351,6 +273,7 @@
   gap: 8px;
   margin-top: 16px;
 }
+
 .action-btn {
   gap: 8px;
   cursor: pointer;
@@ -360,10 +283,12 @@
   background: none;
   color: var(--color-bg-secondary);
 }
+
 .action-btn:hover {
   color: var(--color-highlights);
   font-weight: 700;
 }
+
 .divider {
   width: 1px;
   height: 24px;
@@ -396,16 +321,51 @@
 }
 
 /* --- 6. FORMS & EDIT MODE --- */
+.edit-mode-main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-content-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.edit-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.edit-vertical-divider {
+  width: 1px;
+  background-color: var(--color-divider);
+  align-self: stretch;
+  margin: 0 20px;
+}
+
+.edit-footer-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
 .input-group {
   margin-bottom: 24px;
   width: 100%;
 }
+
 .input-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
   font-size: 20px;
 }
+
 .required {
   color: var(--color-required);
 }
@@ -421,160 +381,54 @@ select {
   outline: none;
   background-color: var(--color-bg-primary);
 }
+
 textarea {
   resize: none;
   height: 120px;
 }
 
-.input-wrapper {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
 .input-wrapper button {
   position: absolute;
-  right: 12px; /* Schiebt das Icon nach innen auf die Position des alten Icons */
-  background: var(--color-bg-primary); /* Überdeckt das Standard-Icon vom Browser */
+  right: 12px;
+  background: var(--color-bg-primary);
   border: none;
   cursor: pointer;
   display: flex;
   padding: 0;
 }
 
-/* Hover für Urgent (leichtes Rot) */
-.prio-btn-urgent:not(.active-urgent):hover {
-  background-color: #ff3d001a; /* 1A entspricht ca. 10% Transparenz */
-  border-color: var(--color-required);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Hover für Medium (leichtes Orange) */
-.prio-btn-medium:not(.active-medium):hover {
-  background-color: #ffa8001a;
-  border-color: var(--color-btn-medium);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Hover für Low (leichtes Grün) */
-.prio-btn-low:not(.active-low):hover {
-  background-color: #7ae2291a;
-  border-color: var(--color-category-feature);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Gemeinsame Transition für weiche Übergänge */
-.prio-btn {
-  transition: all 0.1s ease-in-out;
-}
-
-/* Versteckt das Standard-Browser-Icon (für Chrome/Edge/Safari) */
-input[type='date']::-webkit-calendar-picker-indicator {
-  opacity: 0;
+.subtask-check-icon {
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  object-fit: contain;
 }
 
-.edit-mode-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 10px 0;
-}
-
-/* Verwendet das Styling deiner Add-Task Inputs */
-.edit-mode-container input,
-.edit-mode-container textarea {
-  border: 1px solid var(--color-divider);
-  border-radius: 10px;
-  padding: 12px 21px;
-  font-size: 20px;
-}
-
-.edit-mode-container .btn-save-edit {
-  align-self: flex-end;
-  background-color: var(--color-bg-secondary);
-  color: var(--color-bg-primary);
-  padding: 12px 24px;
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  border: none;
-}
-
-.edit-mode-container .btn-save-edit:hover {
-  background-color: var(--color-highlights);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-/* Date-Input Styling */
-input[type='date'] {
-  color: var(--color-text-secondary);
-}
-input[type='date']:focus,
-input[type='date']:valid {
-  color: var(--color-text-primary);
-}
-
-/* Edit Mode Specials */
-.edit-mode {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.edit-mode .vertical-divider {
-  display: none;
-}
-
-.priority-btn-content {
-  display: flex;
-  gap: 16px;
-}
-
-.priority-btn-content button[class*='active-'] img {
-  filter: brightness(0) invert(1);
-}
-.prio-btn {
-  flex: 1;
-  padding: 16px;
-  border: 1px solid var(--color-divider);
-  border-radius: 10px;
-  cursor: pointer;
+.subtask-left {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.active-urgent {
-  background-color: var(--color-required);
-  color: var(--color-bg-primary);
-}
-.active-medium {
-  background-color: var(--color-btn-medium);
-  color: var(--color-bg-primary);
-}
-.active-low {
-  background-color: var(--color-category-feature);
-  color: var(--color-bg-primary);
+  gap: 12px;
+  cursor: pointer;
 }
 
-.btn-save-edit {
-  align-self: flex-end;
-  padding: 12px 24px;
-  background-color: var(--color-bg-secondary);
-  color: var(--color-bg-primary);
-  border-radius: 10px;
+.subtasks-list-edit {
+  padding: 0;
+  margin-top: 10px;
+  list-style: none;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.subtask-item-edit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 16px;
+}
+
+.subtask-item-edit button {
+  background: none;
   border: none;
   cursor: pointer;
-  font-weight: 700;
-}
-.btn-save-edit:hover {
-  background-color: var(--color-highlights);
-}
-
-.sidebar-placeholder,
-.header-placeholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
