@@ -129,13 +129,14 @@ function renderContactDetails(i) {
     const detailsSection = document.getElementById('contact-details');
     detailsSection.innerHTML = `
         <div class="contact-details-content">
+        <div
             <div class="contact-avatar contact-avatar-large" style="background-color: ${contact.color}">
                 ${contact.initials}
             </div>
             <div>
                 <h3>${contact.name}</h3>
-        <button class="btn edit-delete-btn"><img src="../assets/icons/edit-icon.svg" alt=""><p>Edit</p></button>
-        <button class="btn edit-delete-btn"><img src="../assets/icons/delete-icon.svg" alt=""><p>Delete</p></button>
+                <button class="btn edit-delete-btn"><img src="../assets/icons/edit-icon.svg" alt=""><p>Edit</p></button>
+                <button class="btn edit-delete-btn"><img src="../assets/icons/delete-icon.svg" alt=""><p>Delete</p></button>
             </div>
         </div>
     `;
