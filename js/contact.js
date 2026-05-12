@@ -76,7 +76,7 @@ function renderContacts() {
       currentLetter = firstLetter;
     }
 
-    renderSingleContact(list, contact);
+    renderSingleContact(list, contact,i);
   }
 }
 
@@ -107,10 +107,11 @@ function renderContactLetter(list, letter) {
  *
  * @param {HTMLElement} list - The contact list container
  * @param {Object} contact - The contact object
+ * @param {number} i - The index of the contact in the contacts array
  */
-function renderSingleContact(list, contact) {
+function renderSingleContact(list, contact, i) {
   list.innerHTML += `
-        <div class="contact-item">
+        <div onclick="renderContactDetails(${i})" class="contact-item">
             <div class="contact-avatar" style="background-color: ${contact.color}">
                 ${contact.initials}
             </div>
@@ -118,6 +119,23 @@ function renderSingleContact(list, contact) {
             <div>
                 <div>${contact.name}</div>
                 <div>${contact.email}</div>
+            </div>
+        </div>
+    `;
+}
+
+function renderContactDetails(i) {
+    const contact = contacts[i];
+    const detailsSection = document.getElementById('contact-details');
+    detailsSection.innerHTML = `
+        <div class="contact-details-content">
+            <div class="contact-avatar contact-avatar-large" style="background-color: ${contact.color}">
+                ${contact.initials}
+            </div>
+            <div>
+                <h3>${contact.name}</h3>
+        <button class="btn edit-delete-btn"><img src="../assets/icons/edit-icon.svg" alt=""><p>Edit</p></button>
+        <button class="btn edit-delete-btn"><img src="../assets/icons/delete-icon.svg" alt=""><p>Delete</p></button>
             </div>
         </div>
     `;
@@ -177,3 +195,4 @@ function getRandomColor() {
 window.openAddContact = openAddContact;
 window.createContact = createContact;
 window.closeAddContact = closeAddContact;
+window.renderContactDetails = renderContactDetails;

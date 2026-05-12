@@ -114,3 +114,10 @@ button {
   justify-content: space-between;
   gap: 55px;
 }
+
+.edit-delete-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
