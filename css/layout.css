@@ -6,10 +6,6 @@ body.help-open .help-icon {
   display: none;
 }
 
-.aside {
-  display: flex;
-}
-
 .layout {
   position: relative;
   z-index: 0;

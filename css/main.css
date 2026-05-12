@@ -29,3 +29,12 @@ h3 {
 .hidden {
   display: none !important;
 }
+
+p {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.aside {
+  display: flex;
+}

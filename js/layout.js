@@ -37,7 +37,7 @@ async function loadTemplate(containerId, templatePath) {
  * Initializes the default main application layout structure.
  */
 async function initLayout() {
-  // Pfade korrigiert, da layout.html bereits im Ordner 'pages' liegt!
+  
   await loadTemplate('headerContent', '../templates/header.html');
   await loadTemplate('sidebarContent', '../templates/aside.html');
   await loadTemplate('mainContent', './summary.html');
@@ -71,7 +71,6 @@ async function navigateTo(page) {
     pageHistory.push(page);
   }
 
-  // Pfade angepasst an Ordnerstruktur
   loadTemplate('mainContent', `./${page}.html`);
   loadTemplate('mainLoginContent', `./${page}.html`);
 }
