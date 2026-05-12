@@ -1,14 +1,20 @@
-/** --- GLOBALE VARIABLEN --- */
+/**
+ * @file Board management script handling task filtering, viewing, and state updates.
+ */
+
+/** @section GLOBAL VARIABLES */
 let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
-/** ZENTRALE PFAD-VARIABLE */
+/** @section CENTRAL PATH VARIABLE */
 const GUEST_PATH = 'users/guest_user/tasks';
 
-/** --- INITIALISIERUNG & RENDERING --- */
+/** @section INITIALIZATION & RENDERING */
 
-/** Startet die App, abonniert Firebase-Daten und setzt Dialog-Events */
+/**
+ * Initializes the app and subscribes to Firebase data.
+ */
 function initBoard() {
   database.ref(GUEST_PATH).on('value', (snapshot) => {
     CURRENT_TASKS = snapshot.val() || {};
@@ -17,10 +23,12 @@ function initBoard() {
   setupDialogClose();
 }
 
-// Leert die Spalten und zeichnet alle Tasks aus dem übergebenen Objekt neu
+/**
+ * Renders all tasks into their respective columns.
+ * @param {Object} allTasks - The object containing all tasks.
+ */
 function renderAllTasks(allTasks) {
   const cols = ['todo', 'progress', 'feedback', 'done'];
-  // PRÜFUNG: Wenn die erste Spalte nicht existiert, sind wir nicht auf der Board-Seite
   if (!document.getElementById(cols[0])) {
     return;
   }
@@ -35,20 +43,25 @@ function renderAllTasks(allTasks) {
   cols.forEach((id) => checkPlaceholder(id));
 }
 
-// Prüft, ob eine Spalte leer ist und fügt ggf. den "No Tasks"-Platzhalter ein
+/**
+ * Sets a placeholder if a column is empty.
+ * @param {string} id - The column ID.
+ */
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
   if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
 }
 
-/** --- TASK DETAILS & DIALOG-STEUERUNG --- */
+/** @section TASK DETAILS & DIALOG CONTROL */
 
-// Holt Task-Daten aus Firebase, füllt das Template und öffnet den Dialog
+/**
+ * Opens the task detail dialog using Firebase data.
+ * @param {string} id - The task ID.
+ */
 async function openTaskDetail(id) {
   const dialog = document.getElementById('taskDetailDialog');
   const content = document.getElementById('taskDetailContent');
   try {
-    // Pfad angepasst
     const snap = await database.ref(`${GUEST_PATH}/${id}`).once('value');
     const task = snap.val();
     if (task) {
@@ -60,14 +73,18 @@ async function openTaskDetail(id) {
   }
 }
 
-// Schließt das geöffnete Dialog-Fenster und entfernt den Bearbeitungs-Modus
+/**
+ * Closes the task detail dialog.
+ */
 function closeTaskDetail() {
   const dialog = document.getElementById('taskDetailDialog');
   dialog.classList.remove('edit-mode-wide');
   dialog.close();
 }
 
-// Ermöglicht das Schließen des Dialogs durch Klick auf den Hintergrund (Overlay)
+/**
+ * Enables closing the dialog by clicking the overlay backdrop.
+ */
 function setupDialogClose() {
   const dialog = document.getElementById('taskDetailDialog');
   dialog?.addEventListener('click', (e) => {
@@ -75,11 +92,14 @@ function setupDialogClose() {
   });
 }
 
-// Ändert den Erledigungsstatus eines Subtasks in der Detailansicht und in Firebase
+/**
+ * Toggles subtask completion status and updates Firebase.
+ * @param {string} taskId - The task ID.
+ * @param {number} index - The subtask index.
+ */
 async function toggleSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
   task.subtasks[index].done = !task.subtasks[index].done;
-  // Pfad angepasst
   await database.ref(`${GUEST_PATH}/${taskId}/subtasks/${index}`).update({
     done: task.subtasks[index].done,
   });
@@ -87,45 +107,61 @@ async function toggleSubtask(taskId, index) {
     generateTaskDetailHTML(task, taskId);
 }
 
-/** --- DRAG & DROP --- */
+/** @section DRAG & DROP */
 
-// Speichert die ID des gewählten Elements beim Start des Ziehvorgangs
+/**
+ * Stores the ID of the element being dragged.
+ * @param {string} id - The element ID.
+ */
 function startDragging(id) {
   CURRENT_DRAGGED_ELEMENT = id;
 }
 
-// Erlaubt das Ablegen von Elementen durch Verhindern des Standard-Browserverhaltens
+/**
+ * Allows dropping elements by preventing default browser behavior.
+ * @param {Event} ev - The drag event.
+ */
 function allowDrop(ev) {
   ev.preventDefault();
 }
 
-// Fügt einer Spalte beim Drüberziehen eine visuelle Markierung (Highlight) hinzu
+/**
+ * Visually highlights the dropzone column.
+ * @param {string} id - The column ID.
+ */
 function highlight(id) {
   document.getElementById(id)?.classList.add('drag-area-highlight');
 }
 
-// Entfernt die visuelle Markierung einer Spalte wieder
+/**
+ * Removes the visual highlight from a column.
+ * @param {string} id - The column ID.
+ */
 function removeHighlight(id) {
   document.getElementById(id)?.classList.remove('drag-area-highlight');
 }
 
-// Ändert den Status des gezogenen Tasks in Firebase und beendet das Highlighting
+/**
+ * Moves a task to a new status column in Firebase.
+ * @param {string} status - The new task status.
+ */
 async function moveTo(status) {
   removeHighlight(status);
   if (CURRENT_DRAGGED_ELEMENT) {
-    // Pfad angepasst
     await database
       .ref(`${GUEST_PATH}/${CURRENT_DRAGGED_ELEMENT}`)
       .update({ status });
   }
 }
 
-/** --- TASK BEARBEITEN (EDIT MODE) --- */
+/** @section EDIT TASK (EDIT MODE) */
 
-// Wechselt die Dialogansicht in den Editiermodus und lädt die aktuellen Task-Daten
+/**
+ * Activates edit mode and loads task data into the dialog.
+ * @param {string} id - The task ID.
+ */
 async function editTask(id) {
   const dialog = document.getElementById('taskDetailDialog');
-  // Pfad angepasst
   const task =
     CURRENT_TASKS[id] ||
     (await database.ref(`${GUEST_PATH}/${id}`).once('value')).val();
@@ -137,7 +173,10 @@ async function editTask(id) {
   }
 }
 
-// Speichert die im Editiermodus gewählte Priorität und aktualisiert die Button-Vorschau
+/**
+ * Sets the edit priority level and updates the UI buttons.
+ * @param {string} prio - The priority level (Urgent, Medium, Low).
+ */
 function setEditPriority(prio) {
   editPriority = prio;
   ['Urgent', 'Medium', 'Low'].forEach((p) => {
@@ -149,7 +188,10 @@ function setEditPriority(prio) {
   if (activeBtn) activeBtn.classList.add('active-' + prio.toLowerCase());
 }
 
-// Übernimmt alle Änderungen aus dem Formular und aktualisiert den Task in Firebase
+/**
+ * Saves edited task fields to Firebase.
+ * @param {string} id - The task ID.
+ */
 async function saveEdit(id) {
   const task = CURRENT_TASKS[id];
   const updates = {
@@ -160,14 +202,17 @@ async function saveEdit(id) {
     assignedTo: document.getElementById('editAssigned').value,
     subtasks: task.subtasks || [],
   };
-  // Pfad angepasst
   await database.ref(`${GUEST_PATH}/${id}`).update(updates);
   closeTaskDetail();
 }
 
-/** --- EDITIER-SUBTASKS --- */
+/** @section EDITING SUBTASKS */
 
-// Prüft, ob im Subtask-Eingabefeld Enter gedrückt wurde, um einen neuen Subtask hinzuzufügen
+/**
+ * Handles the Enter key to trigger adding a new subtask.
+ * @param {KeyboardEvent} event - The keyboard event.
+ * @param {string} taskId - The task ID.
+ */
 function handleEditSubtaskKey(event, taskId) {
   if (event.key === 'Enter') {
     event.preventDefault();
@@ -175,7 +220,10 @@ function handleEditSubtaskKey(event, taskId) {
   }
 }
 
-// Fügt einen neuen Subtask zur Liste im Bearbeitungsmodus hinzu und aktualisiert die Anzeige
+/**
+ * Adds a new subtask to the list inside the editor.
+ * @param {string} taskId - The task ID.
+ */
 async function addEditSubtask(taskId) {
   const input = document.getElementById('editSubtaskInput');
   const title = input.value.trim();
@@ -190,14 +238,22 @@ async function addEditSubtask(taskId) {
   );
 }
 
-// Entfernt einen Subtask aus der Liste während des Bearbeitungsvorgangs
+/**
+ * Deletes a subtask from the list within the editor.
+ * @param {string} id - The task ID.
+ * @param {number} index - The subtask index.
+ */
 async function deleteEditSubtask(id, index) {
   CURRENT_TASKS[id].subtasks.splice(index, 1);
   const content = document.getElementById('taskDetailContent');
   content.innerHTML = generateEditTaskHTML(CURRENT_TASKS[id], id);
 }
 
-// Schaltet den Status eines Subtasks innerhalb der Bearbeitungs-Ansicht um
+/**
+ * Toggles subtask completion status locally inside the editor.
+ * @param {string} taskId - The task ID.
+ * @param {number} index - The subtask index.
+ */
 function toggleEditSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
   task.subtasks[index].done = !task.subtasks[index].done;
@@ -207,16 +263,21 @@ function toggleEditSubtask(taskId, index) {
   );
 }
 
-/** --- SONSTIGE AKTIONEN --- */
+/** @section MISCELLANEOUS ACTIONS */
 
-// Löscht einen Task unwiderruflich aus der Firebase-Datenbank
+/**
+ * Deletes a task from Firebase.
+ * @param {string} id - The task ID.
+ */
 async function deleteTask(id) {
-  // Pfad angepasst
   await database.ref(`${GUEST_PATH}/${id}`).remove();
   closeTaskDetail();
 }
 
-// Speichert die gewünschte Zielspalte im lokalen Speicher und wechselt zum Add-Task Formular
+/**
+ * Redirects the browser to the task creation page.
+ * @param {string} [status='todo'] - The initial column status.
+ */
 function openAddTask(status = 'todo') {
   localStorage.setItem('selectedStatus', status);
   window.location.href = 'add-task.html';

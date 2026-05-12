@@ -3,6 +3,11 @@ button {
   border-radius: 10px;
 }
 
+.btn {
+  border: none;
+  background: none;
+}
+
 .btn-dark {
   padding: 15px 24px;
   background-color: var(--color-bg-secondary);
@@ -52,4 +57,60 @@ button {
 .btn-board:hover {
   background-color: var(--color-highlights);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== CONTACT BUTTONS ===== */
+
+.add-contact-btn {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-bg-primary);
+  width: 300px;
+  height: 56px;
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 12px;
+}
+
+.contact-dialog-close-button {
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.contact-dialog-cancel-button {
+  width: 130px;
+  height: 45px;
+  font-size: 18px;
+  font-weight: 400;
+  display: flex;
+  align-items: anchor-center;
+  background-image: url('../assets/icons/Close.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+}
+
+.contact-dialog-create-button {
+  height: 45px;
+  width: 200px;
+  font-size: 18px;
+  display: flex;
+  align-items: anchor-center;
+  background-image: url('../assets/icons/create-task.svg');
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+}
+
+.contact-input-and-close-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 55px;
 }

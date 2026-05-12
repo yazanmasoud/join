@@ -5,7 +5,11 @@ const CONTACT_OPTIONS = [
   'Benedikt Bauer',
 ];
 
-// Extrahiert den ersten Buchstaben des Vor- und Nachnamens und gibt sie in Großbuchstaben als Initialen zurück.
+/**
+ * Extracts and returns capitalized initials from a full name.
+ * @param {string} name - The full name.
+ * @returns {string} The uppercase initials or fallback characters.
+ */
 function getInitials(name) {
   if (!name || typeof name !== 'string') return '??';
   const parts = name.trim().split(' ');
@@ -14,7 +18,11 @@ function getInitials(name) {
   return (first + last).toUpperCase();
 }
 
-// Erzeugt basierend auf dem Namen einen eindeutigen Farbcode aus einer Liste, damit jeder Kontakt immer dieselbe Farbe behält.
+/**
+ * Generates a deterministic background color hex code based on a name string.
+ * @param {string} name - The contact name.
+ * @returns {string} A CSS hex color string.
+ */
 function getContactColor(name) {
   const colors = [
     '#FF7A00',
@@ -30,11 +38,19 @@ function getContactColor(name) {
   return colors[Math.abs(hash) % colors.length];
 }
 
-// Erstellt einen Klassennamen wie "active-urgent", um die gewählte Priorität im CSS hervorzuheben.
+/**
+ * Constructs a CSS class name mapped to a priority level.
+ * @param {string} prio - The priority level string.
+ * @returns {string} The formatted active priority class name.
+ */
 function getPrioClass(prio) {
   return 'active-' + prio.toLowerCase();
 }
-// Entfernt Prioritäts-Statusklassen von den ausgewählten Elementen, um die visuelle Auswahl zurückzusetzen.
+
+/**
+ * Resets priority button styles by removing all active priority CSS classes.
+ * @param {string} selector - The CSS selector for the targets.
+ */
 function clearActivePrioClasses(selector) {
   const btns = document.querySelectorAll(selector);
   btns.forEach((b) =>
@@ -42,9 +58,10 @@ function clearActivePrioClasses(selector) {
   );
 }
 
-// Diese Funktion gibt immer die richtige ID zurück
+/**
+ * Retrieves the current authenticated user ID or returns a fallback guest ID.
+ * @returns {string} The Firebase user ID or guest fallback token.
+ */
 function getCurrentUserId() {
-  // Wenn wir später Firebase Auth nutzen, steht hier: firebase.auth().currentUser?.uid
-  // Solange das im Aufbau ist, nutzen wir den Fallback:
   return localStorage.getItem('currentUserId') || 'guest_user';
 }

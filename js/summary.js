@@ -1,8 +1,14 @@
+/**
+ * Initializes the dashboard by setting the greeting and fetching data.
+ */
 async function initDashboard() {
   setGreeting();
   fetchSummaryData();
 }
 
+/**
+ * Fetches task data from Firebase and updates metrics in real-time.
+ */
 function fetchSummaryData() {
   const userId = getCurrentUserId();
   const tasksRef = database.ref(`users/${userId}/tasks`);
@@ -15,19 +21,27 @@ function fetchSummaryData() {
   });
 }
 
+/**
+ * Adjusts the UI layout and elements based on guest status.
+ */
 function handleGuestLogin() {
   const container = document.getElementById('greeting-container');
   const nameElement = document.querySelector('[data-field="userName"]');
 
   if (dashboardData.isGuest || !dashboardData.userName) {
     container.classList.add('is-guest');
-    if (nameElement) nameElement.innerText = ''; // Name löschen im Gast-Modus
+    if (nameElement) nameElement.innerText = '';
   } else {
     container.classList.remove('is-guest');
-    if (nameElement) nameElement.innerText = dashboardData.userName; // Name setzen
+    if (nameElement) nameElement.innerText = dashboardData.userName;
   }
 }
 
+/**
+ * Calculates total counts and status metrics from the task list.
+ * @param {Array} tasks - The list of tasks.
+ * @returns {Object} Calculated metrics and user information.
+ */
 function calculateMetrics(tasks) {
   return {
     todo: tasks.filter((t) => t.status === 'todo').length || 0,
@@ -38,32 +52,35 @@ function calculateMetrics(tasks) {
     awaitingFeedback:
       tasks.filter((t) => t.status === 'awaitingFeedback').length || 0,
     deadline: getNextDeadline(tasks),
-    userName: 'Guest', // Hier später den echten Usernamen aus Firebase Auth einsetzen
+    userName: 'Guest',
   };
 }
 
+/**
+ * Finds and formats the earliest upcoming task deadline.
+ * @param {Array} tasks - The list of tasks.
+ * @returns {string} Formatted date string or fallback message.
+ */
 function getNextDeadline(tasks) {
-  // 1. Filtere nur valide Daten, die nicht leer sind
   const validDates = tasks
     .map((t) => t.dueDate)
     .filter((dateStr) => dateStr && dateStr !== '');
 
   if (validDates.length === 0) return 'No upcoming deadline';
 
-  // 2. Sortiere alle Daten (das nächste zuerst)
-
   const sortedDates = validDates.sort((a, b) => new Date(a) - new Date(b));
-
-  // 3. Formatiere das nächste Datum
   const nextDate = new Date(sortedDates[0]);
 
-  // Check ob das Datum valide ist
   if (isNaN(nextDate.getTime())) return 'No upcoming deadline';
 
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return nextDate.toLocaleDateString('en-US', options);
 }
 
+/**
+ * Updates DOM text elements mapped to metric keys.
+ * @param {Object} data - The calculated metrics object.
+ */
 function updateUI(data) {
   const fields = document.querySelectorAll('[data-field]');
   fields.forEach((field) => {
@@ -74,6 +91,9 @@ function updateUI(data) {
   });
 }
 
+/**
+ * Sets a time-dependent greeting message in the DOM.
+ */
 function setGreeting() {
   const hour = new Date().getHours();
   const greetingElement = document.querySelector('.greeting-time');
