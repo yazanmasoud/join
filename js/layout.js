@@ -186,3 +186,7 @@ window.toggleElement = toggleElement;
 window.closeElement = closeElement;
 window.setActiveNavItem = setActiveNavItem;
 window.goBack = goBack;
+window.openHelp = openHelp;
+window.backToLogin = backToLogin;
+window.turnOffBackarrow = turnOffBackarrow; 
+window.loadTemplate = loadTemplate;
