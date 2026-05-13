@@ -42,7 +42,6 @@ async function loadTemplate(containerId, templatePath) {
  * Initializes the default main application layout structure.
  */
 async function initLayout() {
-  
   await loadTemplate('headerContent', '../templates/header.html');
   await loadTemplate('sidebarContent', '../templates/aside.html');
   await loadTemplate('mainContent', './summary.html');
@@ -70,14 +69,24 @@ async function initLoginLayout() {
  * @returns {Promise<void>}
  */
 async function navigateTo(page) {
-  const currentPage = pageHistory[pageHistory.length - 1];
+  // Wartet sicher, bis das HTML vollständig geladen und eingefügt wurde
+  await loadTemplate('mainContent', `../pages/${page}.html`);
 
-  if (currentPage !== page) {
-    pageHistory.push(page);
+  // Wird sofort und sicher ausgeführt, NACHDEM das HTML existiert
+  if (page === 'summary') {
+    if (typeof initDashboard === 'function') initDashboard();
+  } else if (page === 'board') {
+    if (typeof initBoard === 'function') initBoard();
+  } else if (page === 'add-task') {
+    // Falls die Funktion über window registriert wurde:
+    if (typeof window.initAddTask === 'function') {
+      window.initAddTask();
+    } else if (typeof initAddTask === 'function') {
+      initAddTask();
+    }
+  } else if (page === 'contacts') {
+    if (typeof initContacts === 'function') initContacts();
   }
-
-  loadTemplate('mainContent', `./${page}.html`);
-  loadTemplate('mainLoginContent', `./${page}.html`);
 }
 
 /**

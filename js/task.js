@@ -1,3 +1,17 @@
+import {
+  getPriorityButtonsHTML,
+  getSelectOptionsHTML,
+  getSubtaskHTML,
+} from './template.js';
+
+import {
+  CATEGORY_OPTIONS,
+  CONTACT_OPTIONS,
+  getPrioClass,
+  clearActivePrioClasses,
+  getCurrentUserId,
+} from './utils.js';
+
 let subtasks = [];
 let currentPriority = 'Medium';
 
@@ -63,9 +77,21 @@ function getTaskObject() {
 function setPriority(prio) {
   currentPriority = prio;
   clearActivePrioClasses('.prio-btn');
+
+  const mediumIcon = document.getElementById('prioMediumIcon');
+  if (mediumIcon) {
+    mediumIcon.src = '../assets/icons/medium-icon-orange.svg';
+  }
+
   const active = document.getElementById('prio' + prio);
-  if (active) active.classList.add(getPrioClass(prio));
-}
+  if (active) {
+    active.classList.add(getPrioClass(prio));
+
+    if (prio === 'Medium' && mediumIcon) {
+      mediumIcon.src = '../assets/icons/prio-medium-icon.svg';
+    }
+  }
+} // <-- KORREKTUR: Hier schließt jetzt die Funktion setPriority() sauber ab!
 
 /**
  * Generates and renders HTML buttons inside the priority container.
@@ -164,3 +190,8 @@ function showSuccessToast() {
 }
 
 window.createTask = createTask;
+window.initAddTask = initAddTask;
+window.setPriority = setPriority;
+window.handleSubtaskKey = handleSubtaskKey;
+window.deleteSubtask = deleteSubtask;
+window.clearForm = clearForm;

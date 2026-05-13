@@ -53,12 +53,18 @@ export function getNoTaskPlaceholder(label) {
  */
 export function getPriorityButtonsHTML() {
   return ['Urgent', 'Medium', 'Low']
-    .map(
-      (p) => `
+    .map((p) => {
+      // Wenn es der Medium-Button ist, laden wir standardmäßig das orangefarbene Icon
+      const iconSrc =
+        p === 'Medium'
+          ? './assets/icons/medium-icon-orange.svg'
+          : `../assets/icons/prio-${p.toLowerCase()}-icon.svg`;
+
+      return `
     <button type="button" class="prio-btn" id="prio${p}" onclick="setPriority('${p}')">
-      ${p} <img src="../assets/icons/prio-${p.toLowerCase()}-icon.svg">
-    </button>`,
-    )
+      ${p} <img id="prio${p}Icon" src="${iconSrc}">
+    </button>`;
+    })
     .join('');
 }
 
@@ -291,9 +297,9 @@ export function getSingleContact(list, contact, i) {
 }
 
 export function getContactDetails(i) {
-    const contact = contacts[i];
-    const detailsSection = document.getElementById('contact-details');
-    detailsSection.innerHTML = `
+  const contact = contacts[i];
+  const detailsSection = document.getElementById('contact-details');
+  detailsSection.innerHTML = `
         <div class="contact-details-content">
         <div
             <div class="contact-avatar contact-avatar-large" style="background-color: ${contact.color}">
@@ -308,9 +314,9 @@ export function getContactDetails(i) {
     `;
 }
 
-
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.generateTaskHTML = generateTaskHTML;
 window.getNoTaskPlaceholder = getNoTaskPlaceholder;
 window.generateTaskDetailHTML = generateTaskDetailHTML;
 window.generateEditTaskHTML = generateEditTaskHTML;
+window.getPriorityButtonsHTML = getPriorityButtonsHTML;
