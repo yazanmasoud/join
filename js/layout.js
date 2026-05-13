@@ -78,7 +78,7 @@ async function navigateTo(page) {
 /**
  * Returns to the previous page in history view stack or handles login redirection fallback layout.
  */
-function goBack() {
+export function goBack() {
   if (window.location.pathname.includes('loginlayout.html')) {
     sessionStorage.setItem('skipIntroAnimation', 'true');
     window.location.href = '../index.html';
@@ -190,3 +190,4 @@ window.logOut = logOut;
 window.toggleAvatarDropdown = toggleAvatarDropdown;
 window.closeAvatarDropdown = closeAvatarDropdown;
 window.setActiveNavItem = setActiveNavItem;
+window.goBack = goBack;
