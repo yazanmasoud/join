@@ -69,23 +69,15 @@ async function initLoginLayout() {
  * @returns {Promise<void>}
  */
 async function navigateTo(page) {
-  // Wartet sicher, bis das HTML vollständig geladen und eingefügt wurde
+  if (pageHistory[pageHistory.length - 1] !== page) pageHistory.push(page);
   await loadTemplate('mainContent', `../pages/${page}.html`);
-
-  // Wird sofort und sicher ausgeführt, NACHDEM das HTML existiert
-  if (page === 'summary') {
-    if (typeof initDashboard === 'function') initDashboard();
-  } else if (page === 'board') {
-    if (typeof initBoard === 'function') initBoard();
-  } else if (page === 'add-task') {
-    // Falls die Funktion über window registriert wurde:
-    if (typeof window.initAddTask === 'function') {
-      window.initAddTask();
-    } else if (typeof initAddTask === 'function') {
-      initAddTask();
-    }
-  } else if (page === 'contacts') {
-    if (typeof initContacts === 'function') initContacts();
+  if (page === 'summary' && typeof initDashboard === 'function')
+    initDashboard();
+  if (page === 'board' && typeof initBoard === 'function') initBoard();
+  if (page === 'contacts' && typeof initContacts === 'function') initContacts();
+  if (page === 'add-task') {
+    if (typeof window.initAddTask === 'function') window.initAddTask();
+    else if (typeof initAddTask === 'function') initAddTask();
   }
 }
 
@@ -95,13 +87,16 @@ async function navigateTo(page) {
 export function goBack() {
   if (window.location.pathname.includes('loginlayout.html')) {
     sessionStorage.setItem('skipIntroAnimation', 'true');
-    window.location.href = '../index.html';
-    return;
+    return (window.location.href = '../index.html');
   }
   if (pageHistory.length > 1) {
     pageHistory.pop();
-    const previousPage = pageHistory[pageHistory.length - 1];
-    loadTemplate('mainContent', `./${previousPage}.html`);
+    loadTemplate(
+      'mainContent',
+      `../pages/${pageHistory[pageHistory.length - 1]}.html`,
+    );
+  } else {
+    loadTemplate('mainContent', '../pages/summary.html');
   }
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
@@ -186,3 +181,7 @@ window.toggleElement = toggleElement;
 window.closeElement = closeElement;
 window.setActiveNavItem = setActiveNavItem;
 window.goBack = goBack;
+window.openHelp = openHelp;
+window.backToLogin = backToLogin;
+window.turnOffBackarrow = turnOffBackarrow;
+window.loadTemplate = loadTemplate;
