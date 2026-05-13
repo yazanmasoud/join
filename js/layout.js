@@ -2,18 +2,7 @@
  * @file Summary management script handling dashboard state and real-time metrics data.
  */
 import { toggleElement, closeElement } from './ui.js';
-
-/**
- * The currently active page identifier.
- * @type {string|null}
- */
-let currentPage = null;
-
-/**
- * The previously active page identifier.
- * @type {string|null}
- */
-let previousPage = null;
+import { loadData } from './storage.js';
 
 /**
  * Array storing the navigation path history.
@@ -29,22 +18,33 @@ const pageHistory = [];
  */
 async function loadTemplate(containerId, templatePath) {
   const container = document.getElementById(containerId);
-
   if (!container) return;
-
-  const response = await fetch(templatePath);
-  const html = await response.text();
-
-  container.innerHTML = html;
+  try {
+    const response = await fetch(templatePath);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const html = await response.text();
+    container.innerHTML = html;
+  } catch (error) {
+    console.error(`Failed to load template ${templatePath}:`, error);
+  }
 }
 
 /**
- * Initializes the default main application layout structure.
+ * Initializes the default main application layout structure and avatar initials.
+ * @returns {Promise<void>}
  */
 async function initLayout() {
   await loadTemplate('headerContent', '../templates/header.html');
   await loadTemplate('sidebarContent', '../templates/aside.html');
-  await loadTemplate('mainContent', './summary.html');
+  const page =
+    new URLSearchParams(window.location.search).get('page') || 'summary';
+  await navigateTo(page);
+  const avatar = document.getElementById('headerAvatar');
+  if (avatar) {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const isG = localStorage.getItem('isGuest') === 'true';
+    avatar.innerText = isG || !user?.name ? 'G' : window.getInitials(user.name);
+  }
 }
 
 /**
@@ -54,31 +54,54 @@ async function initLayout() {
 async function initLoginLayout() {
   await loadTemplate('headerLoginContent', '../templates/headerlogin.html');
   await loadTemplate('sidebarLoginContent', '../templates/asidelogin.html');
-
   const params = new URLSearchParams(window.location.search);
   const page = params.get('page') || 'login';
-
   await loadTemplate('mainLoginContent', `./${page}.html`);
-
   setActiveLoginNavFromUrl(page);
 }
 
 /**
- * Navigates to a specific subpage view and adds it to the page history stack.
+ * Navigates to a specific subpage view, adds it to history, and injects fresh storage data.
  * @param {string} page - The target page file prefix string.
  * @returns {Promise<void>}
  */
 async function navigateTo(page) {
   if (pageHistory[pageHistory.length - 1] !== page) pageHistory.push(page);
-  await loadTemplate('mainContent', `../pages/${page}.html`);
-  if (page === 'summary' && typeof initDashboard === 'function')
-    initDashboard();
-  if (page === 'board' && typeof initBoard === 'function') initBoard();
-  if (page === 'contacts' && typeof initContacts === 'function') initContacts();
-  if (page === 'add-task') {
-    if (typeof window.initAddTask === 'function') window.initAddTask();
-    else if (typeof initAddTask === 'function') initAddTask();
+  await loadTemplate('mainContent', `./${page}.html`);
+
+  // KORREKTUR: Daten werden JETZT geladen, BEVOR die init-Skripte der Unterseiten feuern!
+  const currentData = await syncPageData(page);
+
+  if (page === 'summary' && typeof window.initDashboard === 'function')
+    window.initDashboard(currentData);
+  if (page === 'board' && typeof window.initBoard === 'function')
+    window.initBoard(currentData);
+  if (page === 'contacts' && typeof window.initContacts === 'function')
+    window.initContacts(currentData);
+  if (page === 'add-task' && typeof window.initAddTask === 'function')
+    window.initAddTask();
+}
+
+/**
+ * Core function syncing backend database values with newly loaded DOM context containers.
+ * KORREKTUR: Gibt das geladene Array zurück, damit navigateTo() es direkt an das Board übergeben kann.
+ * @param {string} page - The current page parameter identifier key.
+ * @returns {Promise<Array>} The active datasets loaded from memory.
+ */
+async function syncPageData(page) {
+  if (page === 'summary' || page === 'board') {
+    const tasks = await loadData('tasks');
+    if (typeof window.renderBoardTasks === 'function')
+      window.renderBoardTasks(tasks);
+    return tasks;
   }
+  if (page === 'contacts') {
+    const contacts = await loadData('contacts');
+    if (typeof window.renderContactList === 'function')
+      window.renderContactList(contacts);
+    return contacts;
+  }
+  return [];
 }
 
 /**
@@ -93,10 +116,10 @@ export function goBack() {
     pageHistory.pop();
     loadTemplate(
       'mainContent',
-      `../pages/${pageHistory[pageHistory.length - 1]}.html`,
+      `./${pageHistory[pageHistory.length - 1]}.html`,
     );
   } else {
-    loadTemplate('mainContent', '../pages/summary.html');
+    loadTemplate('mainContent', './summary.html');
   }
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
@@ -110,9 +133,7 @@ function setActiveNavItem(clickedItem) {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
   clickedItem.classList.add('active');
-
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
@@ -124,7 +145,6 @@ function openHelp() {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
   document.body.classList.add('help-open');
   document.body.classList.remove('has-active-page');
 }
@@ -134,9 +154,10 @@ function openHelp() {
  */
 function logOut() {
   console.log('User logged out');
-  localStorage.removeItem('currentUser'); // Löscht Login-Status
-  window.location.href = '../index.html'; // Zurück zur Haupt-Login-Seite
-  closeAvatarDropdown();
+  localStorage.removeItem('currentUser');
+  localStorage.removeItem('isGuest');
+  localStorage.removeItem('currentUserId');
+  window.location.href = '../index.html';
 }
 
 /**
@@ -162,26 +183,19 @@ function setActiveLoginNavFromUrl(page) {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
-  if (page === 'imprint') {
+  if (page === 'imprint')
     document.getElementById('menuLegalLogin')?.classList.add('active');
-  }
-
-  if (page === 'privacy') {
+  if (page === 'privacy')
     document.getElementById('menuPrivacyLogin')?.classList.add('active');
-  }
 }
 
-// Funktionen global verfügbar machen
+/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.initLayout = initLayout;
 window.initLoginLayout = initLoginLayout;
 window.navigateTo = navigateTo;
-window.logOut = logOut;
-window.toggleElement = toggleElement;
-window.closeElement = closeElement;
-window.setActiveNavItem = setActiveNavItem;
 window.goBack = goBack;
+window.setActiveNavItem = setActiveNavItem;
 window.openHelp = openHelp;
+window.logOut = logOut;
 window.backToLogin = backToLogin;
 window.turnOffBackarrow = turnOffBackarrow;
-window.loadTemplate = loadTemplate;

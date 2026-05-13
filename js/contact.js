@@ -1,142 +1,113 @@
 /**
  * @file Template management script handling board cards, task details, and editor HTML strings.
  */
-import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
+import {
+  getContactDetails,
+  getSingleContact,
+  getContactLetter,
+} from './template.js';
+import { saveData } from './storage.js';
 
 export let contacts = [];
+
+/**
+ * Initializes the contacts section with preloaded layout manager pipeline data.
+ * @param {Array} preloadedContacts - Dataset array loaded from the storage layer.
+ */
+function initContacts(preloadedContacts) {
+  contacts = Array.isArray(preloadedContacts)
+    ? preloadedContacts
+    : Object.values(preloadedContacts || []);
+  contacts.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  renderContacts();
+}
 
 /**
  * Opens the add contact dialog with an animation effect.
  */
 function openAddContact() {
   const dialog = document.getElementById('add-contact-popup');
-
+  if (!dialog) return;
   dialog.classList.remove('contact-dialog-open');
-
   dialog.showModal();
-
-  setTimeout(() => {
-    dialog.classList.add('contact-dialog-open');
-  }, 10);
+  setTimeout(() => dialog.classList.add('contact-dialog-open'), 10);
 }
 
 /**
- * Closes the add contact dialog
- * and removes the animation class.
+ * Closes the add contact dialog and removes the animation class.
  */
 function closeAddContact() {
   const dialog = document.getElementById('add-contact-popup');
+  if (!dialog) return;
   dialog.classList.remove('contact-dialog-open');
   dialog.close();
 }
 
 /**
- * Creates a new contact object
- * from the input values and adds it
- * to the contacts array.
- * Afterwards the contacts get sorted
- * alphabetically and rendered again.
+ * Creates a new contact object, pushes it to storage, and resets inputs.
  */
-function createContact() {
+async function createContact() {
   let name = document.getElementById('contact-name').value;
   let email = document.getElementById('contact-email').value;
   let phone = document.getElementById('contact-phone').value;
-
-  let initials = getInitials(name);
-  let color = getRandomColor();
-
-  let contact = {
-    name,
-    email,
-    phone,
-    initials,
-    color,
-  };
-
-  contacts.push(contact);
-  contacts.sort((a, b) => a.name.localeCompare(b.name));
+  if (!name || !email) return;
+  const color =
+    typeof window.getRandomColor === 'function'
+      ? window.getRandomColor()
+      : '#FF7A00';
+  contacts.push({ name, email, phone, initials: getInitials(name), color });
+  contacts.sort((a, b) => name.localeCompare(b.name));
+  await saveData('contacts', contacts);
   renderContacts();
-  document.getElementById('contact-name').value = '';
-  document.getElementById('contact-email').value = '';
-  document.getElementById('contact-phone').value = '';
+  ['contact-name', 'contact-email', 'contact-phone'].forEach(
+    (id) => (document.getElementById(id).value = ''),
+  );
   closeAddContact();
 }
 
 /**
- * Renders all contacts into the contact list.
- * Contacts are grouped by the first letter
- * of their name.
+ * Renders all contacts into the contact list grouped alphabetically without duplicates.
+ * KORREKTUR: Die Zuweisung von currentLetter verhindert doppelte Buchstaben-Köpfe!
  */
 function renderContacts() {
   let list = document.getElementById('contact-list');
+  if (!list) return;
   list.innerHTML = '';
   let currentLetter = '';
-
-  for (let i = 0; i < contacts.length; i++) {
-    let contact = contacts[i];
-    let firstLetter = contact.name[0].toUpperCase();
-
+  contacts.forEach((contact, i) => {
+    let firstLetter =
+      contact.name && contact.name[0] ? contact.name[0].toUpperCase() : '?';
     if (firstLetter !== currentLetter) {
       getContactLetter(list, firstLetter);
-      currentLetter = firstLetter;
+      currentLetter = firstLetter; // Verhindert doppelte Buchstaben-Titel
     }
-
-    getSingleContact(list, contact,i);
-  }
+    if (!contact.initials || contact.initials === 'undefined')
+      contact.initials = getInitials(contact.name || '');
+    getSingleContact(list, contact, i);
+  });
 }
 
 /**
- * Generates initials from a contact name.
- * Returns the first letter of the first name
- * and the first letter of the last name.
- *
+ * Generates initials from a contact name safely.
  * @param {string} name - The full contact name
  * @returns {string} The generated initials
  */
 function getInitials(name) {
-  let words = name
+  const words = name
     .trim()
     .split(' ')
-    .filter((word) => word !== '');
-
-  if (words.length === 0) {
-    return '';
-  }
-
-  if (words.length === 1) {
-    return words[0][0].toUpperCase();
-  }
-
-  let firstLetter = words[0][0].toUpperCase();
-  let lastLetter = words[words.length - 1][0].toUpperCase();
-
-  return firstLetter + lastLetter;
+    .filter((w) => w !== '');
+  if (words.length === 0) return '';
+  const first = words[0][0] || '';
+  const last = words.length > 1 ? words[words.length - 1][0] : '';
+  return (first + last).toUpperCase();
 }
 
-/**
- * Returns a random color
- * from the predefined color array.
- *
- * @returns {string} A random hex color value
- */
-function getRandomColor() {
-  const colors = [
-    '#FF7A00',
-    '#FF5EB3',
-    '#6E52FF',
-    '#9327FF',
-    '#00BEE8',
-    '#1FD7C1',
-    '#FF745E',
-    '#FFA35E',
-    '#FF5E5E',
-    '#FF5E9E',
-  ];
-
-  let randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
-}
+/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
+window.initContacts = initContacts;
+window.renderContactList = renderContacts;
 window.openAddContact = openAddContact;
 window.createContact = createContact;
 window.closeAddContact = closeAddContact;
 window.getContactDetails = getContactDetails;
+window.getInitials = getInitials;

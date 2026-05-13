@@ -1,52 +1,33 @@
 /**
  * @file Summary management script handling dashboard state and real-time metrics data.
  */
-
-import { getCurrentUserId } from './storage.js';
+import { getCurrentUserId, isGuest, loadData } from './storage.js';
 import { calculateMetrics } from './utils.js';
 import { setGreeting, updateUI } from './ui.js';
-import { database } from './firebase-config.js';
-
 
 /**
  * Initializes the dashboard by setting the greeting and fetching data.
+ * @param {Array} [preloadedTasks] - Optional preloaded task dataset array.
  */
-async function initDashboard() {
+export async function initDashboard(preloadedTasks) {
   setGreeting();
-  fetchSummaryData();
+  if (preloadedTasks && Array.isArray(preloadedTasks)) {
+    updateUI(calculateMetrics(preloadedTasks));
+  } else {
+    await fetchSummaryData();
+  }
 }
 
 /**
- * Fetches task data from Firebase or LocalStorage (for guests) and updates metrics.
+ * Fetches task data from the unified storage layer and updates metrics interface.
+ * @returns {Promise<void>}
  */
-function fetchSummaryData() {
-  const userId = getCurrentUserId();
-
-  if (!userId || userId === 'guest_user') {
-    console.log('Loading summary data from LocalStorage (Guest Session)...');
-    const localTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const tasksArray = Array.isArray(localTasks)
-      ? localTasks
-      : Object.values(localTasks);
-    const summaryMetrics = calculateMetrics(tasksArray);
-    updateUI(summaryMetrics);
-    return;
-  }
-
-  // Für registrierte Firebase-Nutzer: Live-Daten laden
-  console.log(`Connecting to Firebase Realtime Database for User: ${userId}`);
-  const tasksRef = database.ref(`users/${userId}/tasks`);
-
-  tasksRef.on('value', (snapshot) => {
-    const tasksData = snapshot.val() || {};
-    const tasksArray = Object.values(tasksData);
-    const summaryMetrics = calculateMetrics(tasksArray);
-    updateUI(summaryMetrics);
-  });
+async function fetchSummaryData() {
+  const tasks = await loadData('tasks');
+  const tasksArray = Array.isArray(tasks) ? tasks : Object.values(tasks);
+  updateUI(calculateMetrics(tasksArray));
 }
-
-// Sofortiger Start beim Laden des Moduls
-initDashboard();
 
 /** @section GLOBAL EXPORTS FOR HTML */
 window.initDashboard = initDashboard;
+window.fetchSummaryData = fetchSummaryData;

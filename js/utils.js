@@ -8,38 +8,41 @@ export const CONTACT_OPTIONS = [
   'Sofia Schneider',
   'Benedikt Bauer',
 ];
+export const CONTACT_COLORS = [
+  '#FF7A00',
+  '#FF5EB3',
+  '#6E52FF',
+  '#9327FF',
+  '#00BEE8',
+  '#1FD7C1',
+  '#FF745E',
+  '#FFA35E',
+  '#FF5E5E',
+  '#FF5E9E',
+];
 
 /**
- * Extracts and returns capitalized initials from a full name.
- * @param {string} name - The full name.
+ * Extracts and returns capitalized initials from a full name string.
+ * @param {string} name - The full name to parse.
  * @returns {string} The uppercase initials or fallback characters.
  */
-function getInitials(name) {
+export function getInitials(name) {
   if (!name || typeof name !== 'string') return '??';
-  const parts = name.trim().split(' ');
+  const parts = name
+    .trim()
+    .split(' ')
+    .filter((w) => w !== '');
   const first = parts[0]?.charAt(0) || '';
   const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
   return (first + last).toUpperCase();
 }
 
 /**
- * Generates a deterministic background color hex code based on a name string.
- * @param {string} name - The contact name.
+ * Picks a random hex color code from the unified platform color pool array.
  * @returns {string} A CSS hex color string.
  */
-function getContactColor(name) {
-  const colors = [
-    '#FF7A00',
-    '#FF5EB3',
-    '#61BEFF',
-    '#9327FF',
-    '#00BEE8',
-    '#FFBB2B',
-  ];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++)
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return colors[Math.abs(hash) % colors.length];
+export function getRandomColor() {
+  return CONTACT_COLORS[Math.floor(Math.random() * CONTACT_COLORS.length)];
 }
 
 /**
@@ -70,29 +73,40 @@ export function getCurrentUserId() {
   return localStorage.getItem('currentUserId') || 'guest_user';
 }
 
-/**Board.js */
+/**
+ * Capitalizes the very first character of an alphanumeric input string.
+ * @param {string} string - The target input string.
+ * @returns {string} The modified text with an uppercase start.
+ */
 export function capitalizeFirstLetter(string) {
   if (!string) return '';
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-/**Summary.js */
 /**
  * Calculates total counts and status metrics from the task list.
+ * KORREKTUR: Extrahiert den echten Vornamen des Users aus dem Speicher.
  * @param {Array} tasks - The list of tasks.
  * @returns {Object} Calculated metrics and user information.
  */
 export function calculateMetrics(tasks) {
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  const isG = localStorage.getItem('isGuest') === 'true';
+  const rawName = isG || !user?.name ? 'Guest' : user.name;
+  const firstName = rawName.split(' ')[0]; // Schneidet den Nachnamen ab (z.B. Max Mustermann -> Max)
   return {
     todo: tasks.filter((t) => t.status === 'todo').length || 0,
     done: tasks.filter((t) => t.status === 'done').length || 0,
-    urgent: tasks.filter((t) => t.priority === 'Urgent').length || 0,
+    urgent:
+      tasks.filter((t) => t.priority && t.priority.toLowerCase() === 'urgent')
+        .length || 0,
     tasksInBoard: tasks.length || 0,
-    tasksInProgress: tasks.filter((t) => t.status === 'inProgress').length || 0,
-    awaitingFeedback:
-      tasks.filter((t) => t.status === 'awaitingFeedback').length || 0,
+    tasksInProgress:
+      tasks.filter((t) => t.status === 'progress' || t.status === 'inProgress')
+        .length || 0,
+    awaitingFeedback: tasks.filter((t) => t.status === 'feedback').length || 0,
     deadline: getNextDeadline(tasks),
-    userName: 'Guest',
+    userName: firstName, // Übergibt den dynamischen Vornamen an die UI
   };
 }
 
@@ -102,17 +116,22 @@ export function calculateMetrics(tasks) {
  * @returns {string} Formatted date string or fallback message.
  */
 export function getNextDeadline(tasks) {
-  const validDates = tasks
-    .map((t) => t.dueDate)
-    .filter((dateStr) => dateStr && dateStr !== '');
-
+  const validDates = tasks.map((t) => t.dueDate).filter((d) => d && d !== '');
   if (validDates.length === 0) return 'No upcoming deadline';
-
   const sortedDates = validDates.sort((a, b) => new Date(a) - new Date(b));
   const nextDate = new Date(sortedDates[0]);
-
   if (isNaN(nextDate.getTime())) return 'No upcoming deadline';
-
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return nextDate.toLocaleDateString('en-US', options);
 }
+
+/** --- GLOBAL EXPORTS FOR HTML --- */
+window.getInitials = getInitials;
+window.getContactColor = getRandomColor; // Abwärtskompatibler Alias-Export für das Template!
+window.getRandomColor = getRandomColor;
+window.getPrioClass = getPrioClass;
+window.clearActivePrioClasses = clearActivePrioClasses;
+window.getCurrentUserId = getCurrentUserId;
+window.capitalizeFirstLetter = capitalizeFirstLetter;
+window.calculateMetrics = calculateMetrics;
+window.getNextDeadline = getNextDeadline;

@@ -13,7 +13,6 @@ const firebaseConfig = {
   appId: '1:60415195264:web:0f08ac935b01a66ab44e65',
 };
 
-// Initialisierung
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
@@ -22,8 +21,12 @@ if (!firebase.apps.length) {
  * Global entry point instance reference for real-time Firebase Database transaction operations.
  * @type {firebase.database.Database}
  */
-// HIER DAS EXPORT HINZUFÜGEN:
 export const database = firebase.database();
+
+/**
+ * Global entry point instance reference for Firebase Authentication services.
+ * @type {firebase.auth.Auth}
+ */
 export const auth = firebase.auth();
 
 window.database = database;

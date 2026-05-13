@@ -1,7 +1,6 @@
 /**
  * @file Board management script handling task filtering, viewing, and state updates.
  */
-
 import {
   highlight,
   removeHighlight,
@@ -9,53 +8,47 @@ import {
   closeTaskDetail,
   setupDialogClose,
 } from './ui.js';
-
 import {
   getNoTaskPlaceholder,
   generateTaskHTML,
   generateTaskDetailHTML,
   generateEditTaskHTML,
 } from './template.js';
+import { loadData, saveData } from './storage.js';
 
 /** @section GLOBAL VARIABLES */
-let CURRENT_TASKS = {};
+let CURRENT_TASKS = [];
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
-/** @section CENTRAL PATH VARIABLE */
-const GUEST_PATH = 'users/guest_user/tasks';
-
-/** @section INITIALIZATION & RENDERING */
-
 /**
- * Initializes the board and listens to Firebase data.
+ * Initializes the board using the centralized layout system data.
+ * @param {Array} tasks - Dataset array loaded from the storage layer.
  */
-function initBoard() {
-  database.ref(GUEST_PATH).on('value', (snapshot) => {
-    CURRENT_TASKS = snapshot.val() || {};
-    renderAllTasks(CURRENT_TASKS);
-  });
-  setupDialogClose();
+function initBoard(tasks) {
+  CURRENT_TASKS = Array.isArray(tasks) ? tasks : Object.values(tasks || []);
+  renderAllTasks(CURRENT_TASKS);
+  setupDialogClose(closeTaskDetail);
 }
 
 /**
- * Renders all tasks into their respective columns.
- * @param {Object} allTasks - Object containing all tasks.
+ * Renders all tasks into their respective status columns.
+ * KORREKTUR: Map-Weiche korrigiert Status-Strings automatisch auf eure Spalten-IDs!
+ * @param {Array} allTasks - Array containing all task entities.
  */
 function renderAllTasks(allTasks) {
   const cols = ['todo', 'progress', 'feedback', 'done'];
   if (!document.getElementById(cols[0])) return;
-
   cols.forEach((id) => {
-    const colElement = document.getElementById(id);
-    if (colElement) colElement.innerHTML = '';
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '';
   });
-
-  Object.entries(allTasks).forEach(([id, task]) => {
-    const container = document.getElementById(task.status || 'todo');
+  allTasks.forEach((task, id) => {
+    let status = task.status || 'todo';
+    if (status === 'inProgress') status = 'progress'; // Behebt den Spalten-Konflikt!
+    const container = document.getElementById(status);
     if (container) container.innerHTML += generateTaskHTML(task, id);
   });
-
   cols.forEach((id) => checkPlaceholder(id));
 }
 
@@ -65,46 +58,35 @@ function renderAllTasks(allTasks) {
  */
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
-  if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
+  if (el && !el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
 }
-
-/** @section TASK DETAILS & DIALOG CONTROL */
 
 /**
  * Opens the detailed view dialog for a specific task.
- * @param {string} id - The task ID.
+ * @param {number} id - The task index position.
  */
-async function openTaskDetail(id) {
+function openTaskDetail(id) {
   const dialog = document.getElementById('taskDetailDialog');
   const content = document.getElementById('taskDetailContent');
-  try {
-    const snap = await database.ref(`${GUEST_PATH}/${id}`).once('value');
-    const task = snap.val();
-    if (task) {
-      content.innerHTML = generateTaskDetailHTML(task, id);
-      dialog.showModal();
-    }
-  } catch (error) {
-    console.error('Fehler beim Öffnen des Tasks:', error);
+  const task = CURRENT_TASKS[id];
+  if (task && dialog && content) {
+    content.innerHTML = generateTaskDetailHTML(task, id);
+    dialog.showModal();
   }
 }
 
 /**
- * Toggles a subtask check status and updates Firebase.
- * @param {string} taskId - The task ID.
+ * Toggles a subtask check status and updates the storage layer.
+ * @param {number} taskId - The task index position.
  * @param {number} index - The subtask index array position.
  */
 async function toggleSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
   task.subtasks[index].done = !task.subtasks[index].done;
-  await database.ref(`${GUEST_PATH}/${taskId}/subtasks/${index}`).update({
-    done: task.subtasks[index].done,
-  });
+  await saveData('tasks', CURRENT_TASKS);
   document.getElementById('taskDetailContent').innerHTML =
     generateTaskDetailHTML(task, taskId);
 }
-
-/** @section DRAG & DROP */
 
 /**
  * Sets the ID of the task being dragged.
@@ -123,61 +105,57 @@ function allowDrop(ev) {
 }
 
 /**
- * Updates a task status column value in Firebase.
+ * Updates a task status column value in the central storage layer.
  * @param {string} status - Target status column key.
  */
 async function moveTo(status) {
   removeHighlight(status);
-  if (CURRENT_DRAGGED_ELEMENT) {
-    await database
-      .ref(`${GUEST_PATH}/${CURRENT_DRAGGED_ELEMENT}`)
-      .update({ status });
+  if (
+    CURRENT_DRAGGED_ELEMENT !== undefined &&
+    CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT]
+  ) {
+    // Wandelt die HTML-ID beim Speichern zurück in euren DB-Standard um
+    CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT].status =
+      status === 'progress' ? 'inProgress' : status;
+    await saveData('tasks', CURRENT_TASKS);
+    renderAllTasks(CURRENT_TASKS);
   }
 }
 
-/** @section EDIT TASK (EDIT MODE) */
-
 /**
  * Enables edit mode view inside the open dialog.
- * @param {string} id - The task ID.
+ * @param {number} id - The task index position.
  */
-async function editTask(id) {
+function editTask(id) {
   const dialog = document.getElementById('taskDetailDialog');
-  const task =
-    CURRENT_TASKS[id] ||
-    (await database.ref(`${GUEST_PATH}/${id}`).once('value')).val();
+  const task = CURRENT_TASKS[id];
   if (task) {
     document.getElementById('taskDetailContent').innerHTML =
       generateEditTaskHTML(task, id);
-    dialog.classList.add('edit-mode-wide');
+    dialog?.classList.add('edit-mode-wide');
     editPriority = task.priority;
   }
 }
 
 /**
- * Pushes edited task field values to Firebase.
- * @param {string} id - The task ID.
+ * Pushes edited task field values to the storage layer.
+ * @param {number} id - The task index position.
  */
 async function saveEdit(id) {
   const task = CURRENT_TASKS[id];
-  const updates = {
-    title: document.getElementById('editTitle').value,
-    description: document.getElementById('editDescription').value,
-    dueDate: document.getElementById('editDate').value,
-    priority: editPriority,
-    assignedTo: document.getElementById('editAssigned').value,
-    subtasks: task.subtasks || [],
-  };
-  await database.ref(`${GUEST_PATH}/${id}`).update(updates);
+  task.title = document.getElementById('editTitle').value;
+  task.description = document.getElementById('editDescription').value;
+  task.dueDate = document.getElementById('editDate').value;
+  task.priority = editPriority;
+  await saveData('tasks', CURRENT_TASKS);
+  renderAllTasks(CURRENT_TASKS);
   closeTaskDetail();
 }
-
-/** @section EDITING SUBTASKS */
 
 /**
  * Listens for the enter key to submit new subtasks.
  * @param {KeyboardEvent} event - The keyboard event object.
- * @param {string} taskId - The parent task ID.
+ * @param {number} taskId - The parent task index.
  */
 function handleEditSubtaskKey(event, taskId) {
   if (event.key === 'Enter') {
@@ -187,16 +165,15 @@ function handleEditSubtaskKey(event, taskId) {
 }
 
 /**
- * Adds a subtask entry into the temporary local list.
- * @param {string} taskId - The parent task ID.
+ * Adds a subtask entry into the active task data object.
+ * @param {number} taskId - The parent task index.
  */
 async function addEditSubtask(taskId) {
   const input = document.getElementById('editSubtaskInput');
-  const title = input.value.trim();
   const task = CURRENT_TASKS[taskId];
-  if (title === '' || !task) return;
+  if (!input?.value.trim() || !task) return;
   if (!task.subtasks) task.subtasks = [];
-  task.subtasks.push({ title: title, done: false });
+  task.subtasks.push({ title: input.value.trim(), done: false });
   input.value = '';
   document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(
     task,
@@ -205,38 +182,40 @@ async function addEditSubtask(taskId) {
 }
 
 /**
- * Deletes a subtask entry from the temporary editor view.
- * @param {string} id - The parent task ID.
+ * Deletes a subtask entry from the active task editor.
+ * @param {number} id - The parent task index.
  * @param {number} index - Subtask position index.
  */
-async function deleteEditSubtask(id, index) {
+function deleteEditSubtask(id, index) {
   CURRENT_TASKS[id].subtasks.splice(index, 1);
-  const content = document.getElementById('taskDetailContent');
-  content.innerHTML = generateEditTaskHTML(CURRENT_TASKS[id], id);
+  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(
+    CURRENT_TASKS[id],
+    id,
+  );
 }
 
 /**
  * Switches a subtask checkmark status within the editor.
- * @param {string} taskId - The parent task ID.
+ * @param {number} taskId - The parent task index.
  * @param {number} index - Subtask position index.
  */
 function toggleEditSubtask(taskId, index) {
-  const task = CURRENT_TASKS[taskId];
-  task.subtasks[index].done = !task.subtasks[index].done;
+  CURRENT_TASKS[taskId].subtasks[index].done =
+    !CURRENT_TASKS[taskId].subtasks[index].done;
   document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(
-    task,
+    CURRENT_TASKS[taskId],
     taskId,
   );
 }
 
-/** @section MISCELLANEOUS ACTIONS */
-
 /**
- * Completely removes a task document from Firebase.
- * @param {string} id - The task ID.
+ * Completely removes a task document from the storage layer.
+ * @param {number} id - The task index position.
  */
 async function deleteTask(id) {
-  await database.ref(`${GUEST_PATH}/${id}`).remove();
+  CURRENT_TASKS.splice(id, 1);
+  await saveData('tasks', CURRENT_TASKS);
+  renderAllTasks(CURRENT_TASKS);
   closeTaskDetail();
 }
 
@@ -246,9 +225,12 @@ async function deleteTask(id) {
  */
 function openAddTask(status = 'todo') {
   localStorage.setItem('selectedStatus', status);
-  window.location.href = 'add-task.html';
+  window.location.href = './layout.html?page=add-task';
 }
+
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
+window.initBoard = initBoard;
+window.renderBoardTasks = renderAllTasks;
 window.openAddTask = openAddTask;
 window.openTaskDetail = openTaskDetail;
 window.toggleSubtask = toggleSubtask;

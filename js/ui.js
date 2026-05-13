@@ -1,4 +1,5 @@
 /** UI Helper Functions */
+
 /**board.js*/
 export function closeTaskDetail() {
   const dialog = document.getElementById('taskDetailDialog');
@@ -83,22 +84,40 @@ export function handleGuestLogin(dashboardData) {
 }
 
 /**
- * Toggles the profile avatar element options dropdown container menu visibility status.
- * @param {Event} event - The triggered DOM mouse pointer event object.
+ * Toggles the profile avatar element options dropdown visibility status.
+ * @param {Event} [event] - The triggered DOM event object.
  */
 export function toggleElement(event) {
-  event.stopPropagation();
-
-  const dropdown = document.getElementById('avatarDropdown');
-  dropdown.classList.toggle('open');
+  if (event?.stopPropagation) event.stopPropagation();
+  const dropdown =
+    document.getElementById('avatarDropdown') ||
+    document.getElementById('avatar-dropdown');
+  if (dropdown) {
+    const isHidden = dropdown.classList.toggle('hidden');
+    dropdown.classList.toggle('open', !isHidden);
+  }
 }
 
 /**
- * Hides the profile avatar options interactive dropdown element overlay list.
+ * Hides the profile avatar options interactive dropdown element.
  */
 export function closeElement() {
-  const dropdown = document.getElementById('avatarDropdown');
-  dropdown.classList.remove('open');
+  const dropdown =
+    document.getElementById('avatarDropdown') ||
+    document.getElementById('avatar-dropdown');
+  if (dropdown) {
+    dropdown.classList.remove('open');
+    dropdown.classList.add('hidden');
+  }
 }
 
 /** --- GLOBAL EXPORTS FOR HTML --- */
+window.closeTaskDetail = closeTaskDetail;
+window.highlight = highlight;
+window.removeHighlight = removeHighlight;
+window.setEditPriority = setEditPriority;
+window.updateUI = updateUI;
+window.setGreeting = setGreeting;
+window.handleGuestLogin = handleGuestLogin;
+window.toggleElement = toggleElement;
+window.closeElement = closeElement;

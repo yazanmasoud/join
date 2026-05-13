@@ -37,10 +37,14 @@
     </div>
     <!-- Firebase App (Basis-SDK) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
     <!-- Firebase Database -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="../js/firebase-config.js"></script>
-    <!--Logik -->
+
+    <!-- Firebase Auth SDK (Wichtig gegen den "firebase.auth" Fehler!) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <!-- Logik & Module (Alle strictly als type="module") -->
     <script src="../js/firebase-config.js" type="module"></script>
     <script src="../js/utils.js" type="module"></script>
     <script src="../js/template.js" type="module"></script>
@@ -50,5 +54,12 @@
     <script src="../js/contact.js" type="module"></script>
     <script src="../js/layout.js" type="module"></script>
     <script src="../js/main.js" type="module"></script>
+
+    <!-- Startet die Login-Layout-Komponenten sicher -->
+    <script type="module">
+      if (typeof window.initLoginLayout === 'function') {
+        window.initLoginLayout();
+      }
+    </script>
   </body>
 </html>

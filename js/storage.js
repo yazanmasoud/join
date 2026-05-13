@@ -1,9 +1,7 @@
-/**
- * @file Storage management script handling local storage and user state retrieval.
- */
+import { guestContacts, guestTasks } from './guest-data.js';
+import { database } from './firebase-config.js';
 
 const categoryOptions = ['Technical Task', 'User Story', 'Feature Task'];
-
 const contactOptions = [
   'Maximilian Müller',
   'Sofia Schneider',
@@ -18,7 +16,7 @@ export function isGuest() {
   const user = JSON.parse(localStorage.getItem('currentUser'));
   return (
     localStorage.getItem('isGuest') === 'true' ||
-    (user && user.name === 'Guest')
+    (user && (user.name === 'Guest' || user === 'Gast'))
   );
 }
 
@@ -27,34 +25,80 @@ export function isGuest() {
  * @returns {string} The active user identifier.
  */
 export function getCurrentUserId() {
-  if (isGuest()) {
-    return 'guest_user';
-  }
-  return localStorage.getItem('currentUserId') || 'guest_user';
+  return isGuest()
+    ? 'guest_user'
+    : localStorage.getItem('currentUserId') || 'guest_user';
 }
 
 /**
- * Retrieves contacts from local storage or returns the default contact array.
- * @returns {Array} List of stored or default contacts.
+ * Fetches default guest templates from Firebase and mirrors them into LocalStorage.
+ * @returns {Promise<boolean>} True when synchronization finishes.
+ */
+export async function initializeGuestData() {
+  if (!localStorage.getItem('tasks') || !localStorage.getItem('contacts')) {
+    try {
+      const snap = await database.ref('defaultGuestData').once('value');
+      const dbData = snap.val();
+      localStorage.setItem(
+        'tasks',
+        JSON.stringify(dbData?.tasks || guestTasks),
+      );
+      localStorage.setItem(
+        'contacts',
+        JSON.stringify(dbData?.contacts || guestContacts),
+      );
+    } catch (e) {
+      localStorage.setItem('tasks', JSON.stringify(guestTasks));
+      localStorage.setItem('contacts', JSON.stringify(guestContacts));
+    }
+  }
+  return true;
+}
+
+/**
+ * Saves data safely to either LocalStorage or Firebase Realtime Database.
+ * @param {string} key - The data path key ('tasks' or 'contacts').
+ * @param {Array} data - The array containing the updated elements.
+ */
+export async function saveData(key, data) {
+  if (isGuest()) {
+    localStorage.setItem(key, JSON.stringify(data));
+  } else {
+    await database.ref(`${getCurrentUserId()}/${key}`).set(data);
+  }
+}
+
+/**
+ * Loads data from LocalStorage or Firebase based on user authentication.
+ * KORREKTUR: Sicherer JSON.parse Fallback verhindert Anwendungsabstürze bei leeren Keys.
+ * @param {string} key - The data path key ('tasks' or 'contacts').
+ * @returns {Promise<Array>} The retrieved array of elements.
+ */
+export async function loadData(key) {
+  if (isGuest()) {
+    const localData = localStorage.getItem(key);
+    return localData ? JSON.parse(localData) : [];
+  }
+  const snapshot = await database
+    .ref(`${getCurrentUserId()}/${key}`)
+    .once('value');
+  return snapshot.val() || [];
+}
+
+/**
+ * Backward-compatible helper to synchronously retrieve contacts.
  */
 export function getStoredContacts() {
-  if (isGuest()) {
-    // Geändert auf 'contacts', da main.js es dort speichert
-    return JSON.parse(localStorage.getItem('contacts')) || [];
-  }
-  return typeof contacts !== 'undefined' ? contacts : [];
+  const data = localStorage.getItem('contacts');
+  return data ? JSON.parse(data) : [];
 }
 
 /**
- * Retrieves tasks from local storage or returns the default task array.
- * @returns {Array} List of stored or default tasks.
+ * Backward-compatible helper to synchronously retrieve tasks.
  */
 export function getStoredTasks() {
-  if (isGuest()) {
-    // Geändert auf 'tasks', da main.js es dort speichert
-    return JSON.parse(localStorage.getItem('tasks')) || [];
-  }
-  return typeof tasks !== 'undefined' ? tasks : [];
+  const data = localStorage.getItem('tasks');
+  return data ? JSON.parse(data) : [];
 }
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
@@ -62,3 +106,6 @@ window.getCurrentUserId = getCurrentUserId;
 window.getStoredContacts = getStoredContacts;
 window.getStoredTasks = getStoredTasks;
 window.isGuest = isGuest;
+window.saveData = saveData;
+window.loadData = loadData;
+window.initializeGuestData = initializeGuestData;

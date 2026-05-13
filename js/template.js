@@ -3,22 +3,19 @@
  */
 import { contacts } from './contact.js';
 
-/** --- BOARD TASK CARDS --- */
-
 /**
  * Generates the HTML structure for a board task card.
  * @param {Object} task - The task data object.
- * @param {string} id - The unique task ID.
+ * @param {number} id - The unique task array index ID.
  * @returns {string} The task card HTML string.
  */
 export function generateTaskHTML(task, id) {
-  const catClass = task.category
+  const cat = task.category
     ? task.category.replace(/\s+/g, '').toLowerCase()
     : '';
   return `
-    <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" 
-         onclick="openTaskDetail('${id}')">
-      <div class="task-category ${catClass}">${task.category || ''}</div>
+    <div class="task-card" draggable="true" ondragstart="window.startDragging(${id})" onclick="window.openTaskDetail(${id})">
+      <div class="task-category ${cat}">${task.category || ''}</div>
       <h3>${task.title || ''}</h3>
       <p class="description-task-board">${task.description || ''}</p>
       ${renderSmallSubtaskInfo(task)}
@@ -45,8 +42,6 @@ export function getNoTaskPlaceholder(label) {
   return `<div class="no-tasks">No tasks ${label}</div>`;
 }
 
-/** --- ADD TASK TEMPLATES --- */
-
 /**
  * Generates HTML buttons for selecting task priority levels.
  * @returns {string} The combined priority buttons HTML string.
@@ -54,16 +49,12 @@ export function getNoTaskPlaceholder(label) {
 export function getPriorityButtonsHTML() {
   return ['Urgent', 'Medium', 'Low']
     .map((p) => {
-      // Wenn es der Medium-Button ist, laden wir standardmäßig das orangefarbene Icon
-      const iconSrc =
+      const src =
         p === 'Medium'
           ? './assets/icons/medium-icon-orange.svg'
           : `../assets/icons/prio-${p.toLowerCase()}-icon.svg`;
-
-      return `
-    <button type="button" class="prio-btn" id="prio${p}" onclick="setPriority('${p}')">
-      ${p} <img id="prio${p}Icon" src="${iconSrc}">
-    </button>`;
+      return `<button type="button" class="prio-btn" id="prio${p}" onclick="setPriority('${p}')">
+      ${p} <img id="prio${p}Icon" src="${src}"></button>`;
     })
     .join('');
 }
@@ -93,8 +84,6 @@ export function getSubtaskHTML(task, index) {
           <img src="../assets/icons/delete-icon.svg"></button></li>`;
 }
 
-/** --- TASK DETAIL DIALOG --- */
-
 /**
  * Generates the full HTML markup template for the task detail view dialog.
  * @param {Object} task - The task data object.
@@ -102,17 +91,15 @@ export function getSubtaskHTML(task, index) {
  * @returns {string} The task detail layout HTML string.
  */
 export function generateTaskDetailHTML(task, id) {
-  const catClass = task.category
+  const cat = task.category
     ? task.category.replace(/\s+/g, '').toLowerCase()
     : '';
   return `
     <div class="detail-view">
-      <div class="detail-view-header">
-        <span class="task-category ${catClass}">${task.category || ''}</span>
+      <div class="detail-view-header"><span class="task-category ${cat}">${task.category || ''}</span>
         <div class="detail-view-close" onclick="closeTaskDetail()">×</div></div>
       <h3 class="detail-view-title">${task.title || ''}</h3>
-      <p class="detail-view-description">${task.description || ''}</p>
-      ${getDetailInfoRows(task)}
+      <p class="detail-view-description">${task.description || ''}</p>${getDetailInfoRows(task)}
       <div class="assigned-section"><span class="detail-view-label">Assigned To:</span>
         <div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
       <div class="subtasks-section"><span class="detail-view-label">Subtasks</span>
@@ -127,12 +114,9 @@ export function generateTaskDetailHTML(task, id) {
  */
 export function getDetailInfoRows(task) {
   const prio = task.priority ? task.priority.toLowerCase() : 'medium';
-  return `<div class="detail-view-info-row">
-      <span class="detail-view-label">Due date:</span> ${task.dueDate || ''}</div>
-    <div class="detail-view-info-row">
-      <span class="detail-view-label">Priority:</span> 
-      <div class="detail-view-prio-badge">${task.priority || 'Medium'} 
-        <img src="../assets/icons/prio-${prio}-icon.svg"></div>
+  return `<div class="detail-view-info-row"><span class="detail-view-label">Due date:</span> ${task.dueDate || ''}</div>
+    <div class="detail-view-info-row"><span class="detail-view-label">Priority:</span> 
+      <div class="detail-view-prio-badge">${task.priority || 'Medium'} <img src="../assets/icons/prio-${prio}-icon.svg"></div>
     </div>`;
 }
 
@@ -148,11 +132,8 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
   return subtasks
     .map((st, i) => {
       const icon = st.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
-      return `
-      <li class="subtask-item" onclick="toggleSubtask('${taskId}', ${i})">
-        <img src="../assets/icons/${icon}" class="subtask-check-icon">
-        <span class="subtask-text">${st.title}</span>
-      </li>`;
+      return `<li class="subtask-item" onclick="toggleSubtask('${taskId}', ${i})">
+        <img src="../assets/icons/${icon}" class="subtask-check-icon"><span class="subtask-text">${st.title}</span></li>`;
     })
     .join('');
 }
@@ -164,188 +145,112 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
  */
 export function getDetailFooter(id) {
   return `<div class="detail-view-footer">
-      <button class="action-btn" onclick="deleteTask('${id}')">
-        <img src="../assets/icons/delete-icon.svg"> Delete</button>
+      <button class="action-btn" onclick="deleteTask('${id}')"><img src="../assets/icons/delete-icon.svg"> Delete</button>
       <div class="divider"></div>
-      <button class="action-btn" onclick="editTask('${id}')">
-        <img src="../assets/icons/edit-icon.svg"> Edit</button></div>`;
+      <button class="action-btn" onclick="editTask('${id}')"><img src="../assets/icons/edit-icon.svg"> Edit</button></div>`;
 }
-
-/** --- ASSIGNED USERS --- */
 
 /**
  * Generates an assigned user element containing initials badges and names.
- * @param {string} name - The full contact username.
+ * @param {Object} c - The concrete contact object context containing name and color.
  * @returns {string} The individual contact badge element HTML string.
  */
-export function getAssignedUserHTML(name) {
-  const color =
-    typeof getContactColor === 'function' ? getContactColor(name) : '#ff7a00';
-  const initials = typeof getInitials === 'function' ? getInitials(name) : '??';
+export function getAssignedUserHTML(c) {
+  const color = c?.color || '#ff7a00';
+  const initials =
+    typeof window.getInitials === 'function'
+      ? window.getInitials(c?.name || '')
+      : '??';
   return `<div class="assigned-user">
       <div class="user-badge" style="background-color: ${color}">${initials}</div>
-      <span class="user-name">${name}</span></div>`;
+      <span class="user-name">${c?.name || 'Unknown'}</span></div>`;
 }
 
 /**
- * Iterates over contacts list parameters and generates detail row HTML output.
- * @param {string|string[]} assignedTo - Assigned string name or collection array.
+ * Iterates over contacts list parameters and generates detail row HTML output mapping IDs to names.
+ * @param {number[]|string[]} assignedTo - Assigned identification collection array.
  * @returns {string} Consolidated contact list markup string.
  */
 export function renderAssignedToDetail(assignedTo) {
   if (!assignedTo || assignedTo === 'Select contacts to assign') return '';
-  const contacts = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
-  return contacts.map((name) => getAssignedUserHTML(name)).join('');
+  const arr = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
+  return arr
+    .map((id) => {
+      if (typeof id === 'string' && isNaN(Number(id)))
+        return getAssignedUserHTML({ name: id, color: '#ff7a00' });
+      const found = contacts.find((c) => Number(c.id) === Number(id));
+      return getAssignedUserHTML(
+        found || { name: 'Unknown', color: '#ff7a00' },
+      );
+    })
+    .join('');
 }
 
-/** --- EDIT MODE --- */
+/**
+ * Injects a big alphabetical grouping letter heading into the DOM container.
+ * @param {HTMLElement} list - The DOM target list node wrapper.
+ * @param {string} letter - The capitalized single string character.
+ */
+export function getContactLetter(list, letter) {
+  list.innerHTML += `<div class="contact-letter-header">${letter}</div><hr class="contact-hr">`;
+}
 
 /**
- * Generates the full framework block wrapper structure for task editor view.
- * @param {Object} task - The active task object.
- * @param {string} id - The targeted task identifier ID.
+ * Injects a single clickable contact row entry element snippet into the list.
+ * KORREKTUR: Erzwingt kreisrunde Avatare direkt via Inline-CSS, um CSS-Konflikte zu umgehen.
+ * @param {HTMLElement} list - The DOM target list node wrapper.
+ * @param {Object} contact - The active user contact profile data container.
+ * @param {number} index - Unique internal identification position index.
+ */
+export function getSingleContact(list, contact, index) {
+  list.innerHTML += `
+    <div class="contact-list-item" onclick="window.getContactDetails(${index})" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; cursor: pointer;">
+      <div class="contact-avatar-small" style="background-color: ${contact.color || '#ff7a00'}; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
+        ${contact.initials || '??'}
+      </div>
+      <div class="contact-info-small" style="display: flex; flex-direction: column;">
+        <h4 style="margin: 0; font-size: 16px; color: #2A3647;">${contact.name || ''}</h4>
+        <p style="margin: 0; font-size: 14px; color: #a8a8a8;">${contact.email || ''}</p>
+      </div>
+    </div>`;
+}
+
+/**
+ * Generates the full HTML markup template component for a contact's profile detailed view workspace card.
+ * @param {Object} contact - The targeted contact node record dataset.
+ * @returns {string} Complete interactive details wrapper markup string.
+ */
+export function getContactDetails(contact) {
+  return `
+    <div class="contact-detail-card">
+      <div class="contact-detail-header">
+        <div class="contact-avatar-big" style="background-color: ${contact.color}">${contact.initials}</div>
+        <h2>${contact.name}</h2></div>
+      <div class="contact-detail-body"><h3>Contact Information</h3>
+        <p><b>Email:</b> <a href="mailto:${contact.email}">${contact.email}</a></p>
+        <p><b>Phone:</b> ${contact.phone || 'No phone number'}</p></div>
+    </div>`;
+}
+
+/**
+ * Generates the full interactive editor form structure for editing tasks.
+ * @param {Object} task - The active task data object.
+ * @param {number} id - The task index position.
  * @returns {string} The editor structure view form HTML string.
  */
 export function generateEditTaskHTML(task, id) {
   return `
-    <div class="edit-mode-main">
-      <div class="edit-content-wrapper">
-        ${getEditLeftSection(task)}
-        <div class="edit-vertical-divider"></div>
-        ${getEditRightSection(task, id)}
-      </div>
-      <div class="edit-footer-action">
-        <button class="btn-primary" onclick="saveEdit('${id}')">Ok 🗸</button>
-      </div>
+    <div class="edit-task-form">
+      <input type="text" id="editTitle" class="edit-input" value="${task.title || ''}" placeholder="Title">
+      <textarea id="editDescription" class="edit-textarea" placeholder="Description">${task.description || ''}</textarea>
+      <input type="date" id="editDate" class="edit-input" value="${task.dueDate || ''}">
+      <div class="edit-prio-row">${['Urgent', 'Medium', 'Low']
+        .map(
+          (p) => `
+        <button type="button" class="prio-btn" id="editPrio${p}" onclick="window.setEditPriority('${p}')">${p}</button>
+      `,
+        )
+        .join('')}</div>
+      <button class="btn-dark save-edit-btn" onclick="window.saveEdit(${id})">Ok <img src="../assets/icons/check.svg"></button>
     </div>`;
 }
-
-/**
- * Generates the layout view container structure for editor left sections.
- * @param {Object} task - The targeted active task data object.
- * @returns {string} HTML snippet wrapper input form elements.
- */
-export function getEditLeftSection(task) {
-  return `
-    <div class="edit-section">
-      <div class="input-group"><label>Title<span class="required">*</span></label>
-        <input type="text" id="editTitle" value="${task.title || ''}"></div>
-      <div class="input-group"><label>Description</label>
-        <textarea id="editDescription">${task.description || ''}</textarea></div>
-    </div>`;
-}
-
-/**
- * Generates the layout view container structure for editor right sections.
- * @param {Object} task - The targeted active task data object.
- * @param {string} id - The unique task ID.
- * @returns {string} HTML snippet wrapper form elements.
- */
-export function getEditRightSection(task, id) {
-  return `
-    <div class="edit-section">
-      <div class="input-group"><label>Due Date</label>
-        <input type="date" id="editDate" value="${task.dueDate || ''}"></div>
-      <div class="input-group"><label>Assigned To</label>
-        <input type="text" id="editAssigned" value="${task.assignedTo || ''}"></div>
-    </div>`;
-}
-
-/* Contacts Template */
-/**
- * Gets a letter separator
- * for grouping contacts alphabetically.
- *
- * @param {HTMLElement} list - The contact list container
- * @param {string} letter - The current contact letter
- */
-export function getContactLetter(list, letter) {
-  list.innerHTML += `
-        <div class="contact-letter-container">
-
-            <div class="contact-letter">
-                ${letter}
-            </div>
-
-            <div class="contact-divider"></div>
-
-        </div>
-    `;
-}
-
-/**
- * Gets a single contact item
- * for rendering in the contact list.
- *
- * @param {HTMLElement} list - The contact list container
- * @param {Object} contact - The contact object
- * @param {number} i - The index of the contact in the contacts array
- */
-export function getSingleContact(list, contact, i) {
-  list.innerHTML += `
-        <div onclick="getContactDetails(${i})" class="contact-item">
-            <div class="contact-avatar" style="background-color: ${contact.color}">
-                ${contact.initials}
-            </div>
-
-            <div>
-                <div>${contact.name}</div>
-                <div>${contact.email}</div>
-            </div>
-        </div>
-    `;
-}
-
-export function getContactDetails(i) {
-  const contact = contacts[i];
-  const detailsSection = document.getElementById('contact-details');
-
-  detailsSection.innerHTML = `
-    <div class="contact-details-content">
-      <div class="contact-details-header">
-        <div 
-          class="contact-avatar contact-avatar-large"
-          style="background-color: ${contact.color}">
-          ${contact.initials}
-        </div>
-
-        <div class="contact-details-header-info">
-          <h3>${contact.name}</h3>
-
-          <div class="contact-details-actions">
-            <button class="btn edit-delete-btn">
-              <img src="../assets/icons/edit-icon.svg" alt="">
-              <p>Edit</p>
-            </button>
-
-            <button class="btn edit-delete-btn">
-              <img src="../assets/icons/delete-icon.svg" alt="">
-              <p>Delete</p>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="contact-details-informations">
-        <span>Contact information</span>
-
-        <div class="contact-details-email-phone">
-          <span>Email</span>
-          <p>${contact.email}</p>
-        </div>
-
-        <div class="contact-details-email-phone">
-          <span>Phone</span>
-          <p>${contact.phone}</p>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
-window.generateTaskHTML = generateTaskHTML;
-window.getNoTaskPlaceholder = getNoTaskPlaceholder;
-window.generateTaskDetailHTML = generateTaskDetailHTML;
-window.generateEditTaskHTML = generateEditTaskHTML;
-window.getPriorityButtonsHTML = getPriorityButtonsHTML;

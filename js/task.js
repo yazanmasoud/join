@@ -91,7 +91,7 @@ function setPriority(prio) {
       mediumIcon.src = '../assets/icons/prio-medium-icon.svg';
     }
   }
-} // <-- KORREKTUR: Hier schließt jetzt die Funktion setPriority() sauber ab!
+}
 
 /**
  * Generates and renders HTML buttons inside the priority container.

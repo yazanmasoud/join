@@ -1,22 +1,62 @@
 <header>
   <div class="header-left">
     <div class="header-left-wrapper">
-      <img src="../assets/logos/main-logo.svg" alt="Logo" class="header-logo">
+      <img src="../assets/logos/main-logo.svg" alt="Logo" class="header-logo" />
       <p class="header-headline">Kanban Project Management Tool</p>
     </div>
     <div class="header-right">
-      <div class="help-icon" onclick="navigateTo('help'); openHelp();">
-        <img src="../assets/icons/help-icon.svg" alt="Help">
+      <div
+        class="help-icon"
+        onclick="
+          window.navigateTo('help');
+          window.openHelp();
+        "
+      >
+        <img src="../assets/icons/help-icon.svg" alt="Help" />
       </div>
-      <div id="headerAvatar" class="header-avatar" onclick="toggleElement(event)">SM</div>
-      <div id="avatarDropdown" onclick="event.stopPropagation()" class="avatar-dropdown">
-        <a class="avatar-dropdown-item hide-menu-help" href="#"
-          onclick="navigateTo('help'); closeElement();">Help</a>
-        <a class="avatar-dropdown-item" href="#" onclick="navigateTo('imprint'); closeElement();">Legal
-          Notice</a>
-        <a class="avatar-dropdown-item" href="#" onclick="navigateTo('privacy'); closeElement();">Privacy
-          Policy</a>
-        <a class="avatar-dropdown-item" href="#" onclick="logOut()">Log out</a>
+
+      <div
+        id="headerAvatar"
+        class="header-avatar"
+        onclick="window.toggleElement(event)"
+      >
+        SM
+      </div>
+      <div
+        id="avatarDropdown"
+        onclick="event.stopPropagation()"
+        class="avatar-dropdown hidden"
+      >
+        <a
+          class="avatar-dropdown-item hide-menu-help"
+          href="#"
+          onclick="
+            window.navigateTo('help');
+            window.closeElement();
+          "
+          >Help</a
+        >
+        <a
+          class="avatar-dropdown-item"
+          href="#"
+          onclick="
+            window.navigateTo('imprint');
+            window.closeElement();
+          "
+          >Legal Notice</a
+        >
+        <a
+          class="avatar-dropdown-item"
+          href="#"
+          onclick="
+            window.navigateTo('privacy');
+            window.closeElement();
+          "
+          >Privacy Policy</a
+        >
+        <a class="avatar-dropdown-item" href="#" onclick="window.logOut()"
+          >Log out</a
+        >
       </div>
     </div>
   </div>
