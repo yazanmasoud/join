@@ -128,3 +128,41 @@
 .contact-details-content{
   padding: 24px;
 }
+
+.contact-details-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 60px;
+}
+
+.contact-details-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-details-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+
+.edit-delete-btn{
+display:flex;
+flex-direction: row;
+gap: 12px;
+}
+
+.contact-details-informations{
+display: flex;
+flex-direction: column;
+gap: 30px;
+margin-top: 20px;
+}
+
+.contact-details-email-phone{
+display: flex;
+flex-direction: column;
+gap: 12px;
+}

@@ -299,19 +299,48 @@ export function getSingleContact(list, contact, i) {
 export function getContactDetails(i) {
   const contact = contacts[i];
   const detailsSection = document.getElementById('contact-details');
+
   detailsSection.innerHTML = `
-        <div class="contact-details-content">
-        <div
-            <div class="contact-avatar contact-avatar-large" style="background-color: ${contact.color}">
-                ${contact.initials}
-            </div>
-            <div>
-                <h3>${contact.name}</h3>
-                <button class="btn edit-delete-btn"><img src="../assets/icons/edit-icon.svg" alt=""><p>Edit</p></button>
-                <button class="btn edit-delete-btn"><img src="../assets/icons/delete-icon.svg" alt=""><p>Delete</p></button>
-            </div>
+    <div class="contact-details-content">
+      <div class="contact-details-header">
+        <div 
+          class="contact-avatar contact-avatar-large"
+          style="background-color: ${contact.color}">
+          ${contact.initials}
         </div>
-    `;
+
+        <div class="contact-details-header-info">
+          <h3>${contact.name}</h3>
+
+          <div class="contact-details-actions">
+            <button class="btn edit-delete-btn">
+              <img src="../assets/icons/edit-icon.svg" alt="">
+              <p>Edit</p>
+            </button>
+
+            <button class="btn edit-delete-btn">
+              <img src="../assets/icons/delete-icon.svg" alt="">
+              <p>Delete</p>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-details-informations">
+        <span>Contact information</span>
+
+        <div class="contact-details-email-phone">
+          <span>Email</span>
+          <p>${contact.email}</p>
+        </div>
+
+        <div class="contact-details-email-phone">
+          <span>Phone</span>
+          <p>${contact.phone}</p>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
