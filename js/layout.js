@@ -176,3 +176,6 @@ window.logOut = logOut;
 window.toggleElement = toggleElement;
 window.closeElement = closeElement;
 window.setActiveNavItem = setActiveNavItem;
+window.goBack = goBack;
+window.openHelp = openHelp;
+
