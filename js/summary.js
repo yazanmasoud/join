@@ -50,3 +50,20 @@ initDashboard();
 
 /** @section GLOBAL EXPORTS FOR HTML */
 window.initDashboard = initDashboard;
+
+if (window.innerWidth <= 1100) {
+    setTimeout(() => {
+        const element = document.getElementById("mobile-greeting");
+
+        if (!element) return;
+
+        element.style.opacity = "0";
+
+        setTimeout(() => {
+            element.remove();
+        }, 300);
+
+    }, 2000);
+} else {
+    document.getElementById("mobile-greeting")?.remove();
+}

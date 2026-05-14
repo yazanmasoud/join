@@ -167,16 +167,33 @@
   margin: 0;
 }
 
+.mobile-greeting-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    background-color: #f6f7f8;
+
+    z-index: 9999;
+
+    opacity: 1;
+    transition: opacity 300ms ease;
+}
+
 /* --- RESPONSIVE MEDIA QUERIES --- */
 
-@media (min-width: 1100px) {
+@media (min-width: 1101px) {
   .dashboard-grid {
     grid-template-columns: 1.5fr 1fr;
   }
 }
 
 @media (max-width: 1100px) {
-  .greeting-section {
+  .desktop-greeting {
     display: none;
   }
 }
@@ -214,5 +231,15 @@
   .urgent-right {
     align-items: center;
     padding-left: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .summary-card-content {
+    padding: 20px;
+  }
+
+  .top-row {
+    flex-direction: column;
   }
 }
