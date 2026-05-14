@@ -224,7 +224,7 @@ export function getContactDetails(contact) {
   return `
     <div class="contact-details-content">
       <div class="contact-details-header">
-        <div class="contact-avatar contact-avatar-big" style="background-color: ${contact.color}">${contact.initials}</div>
+        <div class="contact-avatar contact-avatar--big" style="background-color: ${contact.color}">${contact.initials}</div>
         <div class="contact-details-header-info">
           <h3>${contact.name}</h3>
             <div class="contact-details-actions">
@@ -241,7 +241,7 @@ export function getContactDetails(contact) {
         </div> 
       </div>
 
-      <div class="contact-details-informations">
+      <div class="contact-details-information">
         <span>Contact Information</span>
         <span><b>Email:</b> <a class="contact-email" href="mailto:${contact.email}">${contact.email}</a></span>
         <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div>

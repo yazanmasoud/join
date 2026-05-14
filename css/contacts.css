@@ -8,25 +8,24 @@
 }
 
 .contact-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 18px 0px 18px 0px;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 12px;
+    cursor: pointer;
 }
 
 .contact-item:hover {
   background-color: var(--color-bg-secondary);
-  padding: 8px 12px;
   border-radius: 8px;
 }
 
-.contact-item:hover h4 {
-  color: white;
+.contact-item:hover .contact-name {
+  color: var(--color-bg-primary);
 }
 
-.contact-item:hover p {
-  color: white;
+.contact-item:hover .contact-email {
+  color: var(--color-category-story);
 }
 
 .contact-avatar {
@@ -40,7 +39,7 @@
   color: white;
 }
 
-.contact-avatar-big {
+.contact-avatar--big {
   width: 120px;
   height: 120px;
   font-size: 40px;
@@ -101,6 +100,12 @@
   background-color: var(--color-divider);
 }
 
+.divider {
+  width: 2px;
+  height: 60px;
+  background-color: var(--color-highlights);
+}
+
 /* ===== POPUP / DIALOG ===== */
 
 .contact-dialog {
@@ -153,16 +158,21 @@
 
 /* ===== CONTACT DETAILS ===== */
 .contact-details {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    padding: 80px;
 }
 
 .contact-details-title {
-  padding: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+  
 }
 
 .contact-details-content {
-  padding: 24px;
+  padding-top: 30px;
 }
 
 .contact-details-header {
@@ -181,7 +191,7 @@
 .contact-details-actions {
   display: flex;
   flex-direction: row;
-  gap: 50px;
+  gap: 40px;
 }
 
 .edit-delete-btn {
@@ -190,15 +200,9 @@
   gap: 12px;
 }
 
-.contact-details-informations {
+.contact-details-information {
   display: flex;
   flex-direction: column;
   gap: 30px;
   margin-top: 20px;
-}
-
-.contact-details-email-phone {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
