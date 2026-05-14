@@ -204,13 +204,13 @@ export function getContactLetter(list, letter) {
  */
 export function getSingleContact(list, contact, index) {
   list.innerHTML += `
-    <div class="contact-list-item" onclick="window.getContactDetails(${index})" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; cursor: pointer;">
-      <div class="contact-avatar-small" style="background-color: ${contact.color || '#ff7a00'}; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
+    <div class="contact-item" onclick="window.renderContactDetails(${index})">
+      <div class="contact-avatar" style="background-color: ${contact.color}">
         ${contact.initials || '??'}
       </div>
-      <div class="contact-info-small" style="display: flex; flex-direction: column;">
-        <h4 style="margin: 0; font-size: 16px; color: #2A3647;">${contact.name || ''}</h4>
-        <p style="margin: 0; font-size: 14px; color: #a8a8a8;">${contact.email || ''}</p>
+      <div class="contact-information">
+        <h4 class="contact-name">${contact.name || ''}</h4>
+        <p class="contact-email">${contact.email || ''}</p>
       </div>
     </div>`;
 }
@@ -222,14 +222,31 @@ export function getSingleContact(list, contact, index) {
  */
 export function getContactDetails(contact) {
   return `
-    <div class="contact-detail-card">
-      <div class="contact-detail-header">
-        <div class="contact-avatar-big" style="background-color: ${contact.color}">${contact.initials}</div>
-        <h2>${contact.name}</h2></div>
-      <div class="contact-detail-body"><h3>Contact Information</h3>
-        <p><b>Email:</b> <a href="mailto:${contact.email}">${contact.email}</a></p>
-        <p><b>Phone:</b> ${contact.phone || 'No phone number'}</p></div>
-    </div>`;
+    <div class="contact-details-content">
+      <div class="contact-details-header">
+        <div class="contact-avatar contact-avatar-big" style="background-color: ${contact.color}">${contact.initials}</div>
+        <div class="contact-details-header-info">
+          <h3>${contact.name}</h3>
+            <div class="contact-details-actions">
+              <button class="btn edit-delete-btn">
+                <img src="../assets/icons/edit-icon.svg" alt="">
+                <p>Edit</p>
+              </button>
+
+              <button class="btn edit-delete-btn">
+                <img src="../assets/icons/delete-icon.svg" alt="">
+                <p>Delete</p>
+              </button>
+            </div>
+        </div> 
+      </div>
+
+      <div class="contact-details-informations">
+        <span>Contact Information</span>
+        <span><b>Email:</b> <a class="contact-email" href="mailto:${contact.email}">${contact.email}</a></span>
+        <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div>
+      </div>
+    `;
 }
 
 /**
