@@ -288,7 +288,7 @@ export function getSingleContact(list, contact, index) {
     </div>`;
 }
 
-export function getContactDetails(contact) {
+export function getContactDetails(contact, index) {
   return `
     <div class="contact-details-content">
       <div class="contact-details-header">
@@ -296,7 +296,7 @@ export function getContactDetails(contact) {
         <div class="contact-details-header-info">
           <h3>${contact.name}</h3>
             <div class="contact-details-actions">
-              <button class="btn edit-delete-btn">
+              <button onclick="window.openEditContact(${index})" class="btn edit-delete-btn">
                 <img src="../assets/icons/edit-icon.svg" alt="">
                 <p>Edit</p>
               </button>
@@ -324,3 +324,4 @@ window.getNoTaskPlaceholder = getNoTaskPlaceholder;
 window.generateTaskDetailHTML = generateTaskDetailHTML;
 window.generateEditTaskHTML = generateEditTaskHTML;
 window.getContactDetails = getContactDetails;
+window.openEditContact = openEditContact;
