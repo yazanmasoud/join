@@ -9,6 +9,9 @@ button {
 }
 
 .btn-dark {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 15px 24px;
   background-color: var(--color-bg-secondary);
   color: var(--color-bg-primary);
@@ -24,6 +27,9 @@ button {
 }
 
 .btn-light {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 15px 24px;
   background-color: var(--color-bg-primary);
   color: var(--color-bg-secondary);
