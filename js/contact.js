@@ -22,7 +22,12 @@ function openContactDialog() {
  */
 function openAddContact() {
     const sidebarImage = document.getElementById('contact-dialog-sidebar-image');
+    const createSaveButton = document.getElementById('create-save-button');
+    const cancelDelteButton = document.getElementById('cancel-delete-button');
     sidebarImage.src = '../assets/img/Frame-add-contact.png';
+    createSaveButton.innerHTML = 'Create Contact';
+    cancelDelteButton.innerHTML = 'Cancel';
+    createSaveButton.classList.remove('save-button');
     openContactDialog();
 }
 
@@ -34,6 +39,7 @@ function openEditContact() {
     sidebarImage.src = '../assets/img/Frame-edit-contact.png';
     createSaveButton.innerHTML = 'Save';
     cancelDelteButton.innerHTML = 'Delete';
+    createSaveButton.classList.add('save-button');
     openContactDialog();
 }
 
