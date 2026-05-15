@@ -241,20 +241,40 @@ function initGuestStorage() {
 }
 
 /**
- * Handles guest session login event pipelines and triggers layout re-routing actions.
+ * Display a success overlay with the provided message, then navigate to the summary page.
+ * @param {string} message - The success message to show in the overlay.
+ * @returns {void}
  */
-function loginAsGuest() {
-  initGuestStorage();
-  // KORREKTUR: Absolut korrekter Pfad zur layout.html inklusive des geforderten summary-Parameters!
-  window.location.href = './pages/layout.html?page=summary';
+function loginSuccess(message) {
+  showOverlay(message);
+
+  setTimeout(() => {
+    hideOverlay();
+
+    setTimeout(() => {
+      window.location.href = './pages/layout.html?page=summary';
+    }, 300);
+
+  }, 1200);
 }
 
 /**
- * Placeholder logic for user login pipeline.
- */
+Initialize guest session data in localStorage (contacts, tasks, currentUser) and
+perform the guest login flow by showing a success overlay and redirecting.
+@returns {void}
+*/
+function loginAsGuest() {
+  initGuestStorage();
+  loginSuccess("Logged in as Guest!");
+}
+
+/**
+Perform the standard user login flow by showing a success overlay and redirecting.
+Does not modify localStorage (intended for authenticated users).
+@returns {void}
+*/
 function loginAsUser() {
-  // Für Testzwecke leitet auch diese Funktion nun korrekt weiter
-  window.location.href = './pages/layout.html?page=summary';
+  loginSuccess("Logged in as User!");
 }
 
 /**
@@ -288,3 +308,23 @@ window.openLogin = openLogin;
 window.loginAsGuest = loginAsGuest;
 window.loginAsUser = loginAsUser;
 window.validateForm = validateForm;
+
+// Overlay-Element for displaying success message after signup
+const overlay = document.getElementById('overlay');
+
+function showOverlay(message = "Success!") {
+  const text = overlay.querySelector(".success-message");
+
+  text.textContent = message;
+
+  overlay.classList.remove("hidden");
+  overlay.style.opacity = "1";
+}
+
+function hideOverlay() {
+  overlay.style.opacity = "0";
+
+  setTimeout(() => {
+    overlay.classList.add("hidden");
+  }, 300);
+}
