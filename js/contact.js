@@ -85,6 +85,12 @@ function renderContacts() {
   }
 }
 
+function renderContactDetails(index) {
+    const contact = contacts[index];
+    const detailsContainer = document.getElementById('contact-details');
+    detailsContainer.innerHTML = getContactDetails(contact);
+}
+
 /**
  * Generates initials from a contact name.
  * Returns the first letter of the first name
@@ -140,3 +146,4 @@ window.openAddContact = openAddContact;
 window.createContact = createContact;
 window.closeAddContact = closeAddContact;
 window.getContactDetails = getContactDetails;
+window.renderContactDetails = renderContactDetails;

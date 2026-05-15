@@ -275,36 +275,45 @@ export function getContactLetter(list, letter) {
  * @param {Object} contact - The contact object
  * @param {number} i - The index of the contact in the contacts array
  */
-export function getSingleContact(list, contact, i) {
+export function getSingleContact(list, contact, index) {
   list.innerHTML += `
-        <div onclick="getContactDetails(${i})" class="contact-item">
-            <div class="contact-avatar" style="background-color: ${contact.color}">
-                ${contact.initials}
-            </div>
-
-            <div>
-                <div>${contact.name}</div>
-                <div>${contact.email}</div>
-            </div>
-        </div>
-    `;
+    <div class="contact-item" onclick="window.renderContactDetails(${index})">
+      <div class="contact-avatar" style="background-color: ${contact.color}">
+        ${contact.initials || '??'}
+      </div>
+      <div class="contact-information">
+        <h4 class="contact-name">${contact.name || ''}</h4>
+        <p class="contact-email">${contact.email || ''}</p>
+      </div>
+    </div>`;
 }
 
-export function getContactDetails(i) {
-    const contact = contacts[i];
-    const detailsSection = document.getElementById('contact-details');
-    detailsSection.innerHTML = `
-        <div class="contact-details-content">
-        <div
-            <div class="contact-avatar contact-avatar-large" style="background-color: ${contact.color}">
-                ${contact.initials}
+export function getContactDetails(contact) {
+  return `
+    <div class="contact-details-content">
+      <div class="contact-details-header">
+        <div class="contact-avatar contact-avatar--big" style="background-color: ${contact.color}">${contact.initials}</div>
+        <div class="contact-details-header-info">
+          <h3>${contact.name}</h3>
+            <div class="contact-details-actions">
+              <button class="btn edit-delete-btn">
+                <img src="../assets/icons/edit-icon.svg" alt="">
+                <p>Edit</p>
+              </button>
+
+              <button class="btn edit-delete-btn">
+                <img src="../assets/icons/delete-icon.svg" alt="">
+                <p>Delete</p>
+              </button>
             </div>
-            <div>
-                <h3>${contact.name}</h3>
-                <button class="btn edit-delete-btn"><img src="../assets/icons/edit-icon.svg" alt=""><p>Edit</p></button>
-                <button class="btn edit-delete-btn"><img src="../assets/icons/delete-icon.svg" alt=""><p>Delete</p></button>
-            </div>
-        </div>
+        </div> 
+      </div>
+
+      <div class="contact-details-information">
+        <span>Contact Information</span>
+        <span><b>Email:</b> <a class="contact-email" href="mailto:${contact.email}">${contact.email}</a></span>
+        <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div>
+      </div>
     `;
 }
 
@@ -314,3 +323,4 @@ window.generateTaskHTML = generateTaskHTML;
 window.getNoTaskPlaceholder = getNoTaskPlaceholder;
 window.generateTaskDetailHTML = generateTaskDetailHTML;
 window.generateEditTaskHTML = generateEditTaskHTML;
+window.getContactDetails = getContactDetails;
