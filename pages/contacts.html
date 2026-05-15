@@ -10,9 +10,9 @@
 
     <dialog id="add-contact-popup" class="contact-dialog">
         <div class="contact-dialog-content">
-            <img class="contact-dialog-sidebar" src="../assets/img/Frame-add-contact.png"
+            <img id="contact-dialog-sidebar-image" class="contact-dialog-sidebar" src="../assets/img/Frame-add-contact.png"
                 alt="Add contact dialog frame">
-            <img class="contact-dialog-avatar" src="../assets/img/add-contact-profile-icon.png" alt="Profile icon">
+            <img id="contact-dialog-avatar" class="contact-dialog-avatar" src="../assets/img/add-contact-profile-icon.png" alt="Profile icon">
 
             <div class="contact-dialog-form">
                 <div class="contact-input-and-close-button">
@@ -26,20 +26,25 @@
                     </div>
                 </div>
                 <div class="contact-dialog-actions">
-                    <button class="contact-dialog-cancel-button btn-light" onclick="closeAddContact()">
+                    <button id="cancel-delete-button" class="contact-dialog-cancel-button btn-light" onclick="closeAddContact()">
                         <span>cancel</span>
                     </button>
 
-                    <button class="contact-dialog-create-button btn-dark" onclick="createContact()">
+                    <button id="create-save-button" class="contact-dialog-create-button btn-dark" onclick="createContact()">
                         <span>Create Contact</span>
                     </button>
                 </div>
             </div>
         </div>
     </dialog>
-    <section>
-        <h2 class="contact-details-title">Contacts</h2>
-        <div id="contact-details" class="contact-details"></div>
+    <section class="contact-details">
+        <div class="contact-details-title">
+            <h2 class="contact-details-title">Contacts</h2>
+            <div class="divider"></div>
+            <span class="contact-name">Better with a team</span>
+        </div>
+
+        <div id="contact-details"></div>
     </section>
 
 
