@@ -2,6 +2,9 @@
  * @file Board management script handling task filtering, viewing, and state updates.
  */
 
+import { ref, onValue, get, child, update, remove } from 'firebase/database';
+import { database } from './firebase-config.js';
+
 import {
   highlight,
   removeHighlight,
@@ -30,11 +33,15 @@ const GUEST_PATH = 'users/guest_user/tasks';
 /**
  * Initializes the board and listens to Firebase data.
  */
-function initBoard() {
-  database.ref(GUEST_PATH).on('value', (snapshot) => {
+export function initBoard() {
+  const tasksRef = ref(database, GUEST_PATH);
+
+  // v9+ Echtzeit-Listener
+  onValue(tasksRef, (snapshot) => {
     CURRENT_TASKS = snapshot.val() || {};
     renderAllTasks(CURRENT_TASKS);
   });
+
   setupDialogClose();
 }
 
@@ -78,8 +85,8 @@ async function openTaskDetail(id) {
   const dialog = document.getElementById('taskDetailDialog');
   const content = document.getElementById('taskDetailContent');
   try {
-    const snap = await database.ref(`${GUEST_PATH}/${id}`).once('value');
-    const task = snap.val();
+    const snapshot = await get(child(ref(database), `${GUEST_PATH}/${id}`));
+    const task = snapshot.val();
     if (task) {
       content.innerHTML = generateTaskDetailHTML(task, id);
       dialog.showModal();
@@ -97,7 +104,8 @@ async function openTaskDetail(id) {
 async function toggleSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
   task.subtasks[index].done = !task.subtasks[index].done;
-  await database.ref(`${GUEST_PATH}/${taskId}/subtasks/${index}`).update({
+  const subtaskRef = ref(database, `${GUEST_PATH}/${taskId}/subtasks/${index}`);
+  await update(subtaskRef, {
     done: task.subtasks[index].done,
   });
   document.getElementById('taskDetailContent').innerHTML =
@@ -129,9 +137,8 @@ function allowDrop(ev) {
 async function moveTo(status) {
   removeHighlight(status);
   if (CURRENT_DRAGGED_ELEMENT) {
-    await database
-      .ref(`${GUEST_PATH}/${CURRENT_DRAGGED_ELEMENT}`)
-      .update({ status });
+    const taskRef = ref(database, `${GUEST_PATH}/${CURRENT_DRAGGED_ELEMENT}`);
+    await update(taskRef, { status });
   }
 }
 
@@ -143,9 +150,12 @@ async function moveTo(status) {
  */
 async function editTask(id) {
   const dialog = document.getElementById('taskDetailDialog');
-  const task =
-    CURRENT_TASKS[id] ||
-    (await database.ref(`${GUEST_PATH}/${id}`).once('value')).val();
+  const task = CURRENT_TASKS[id];
+  if (!task) {
+    const snapshot = await get(child(ref(database), `${GUEST_PATH}/${id}`));
+    task = snapshot.val();
+  }
+
   if (task) {
     document.getElementById('taskDetailContent').innerHTML =
       generateEditTaskHTML(task, id);
@@ -168,7 +178,7 @@ async function saveEdit(id) {
     assignedTo: document.getElementById('editAssigned').value,
     subtasks: task.subtasks || [],
   };
-  await database.ref(`${GUEST_PATH}/${id}`).update(updates);
+  await update(ref(database, `${GUEST_PATH}/${id}`), updates);
   closeTaskDetail();
 }
 
@@ -236,7 +246,7 @@ function toggleEditSubtask(taskId, index) {
  * @param {string} id - The task ID.
  */
 async function deleteTask(id) {
-  await database.ref(`${GUEST_PATH}/${id}`).remove();
+  await remove(ref(database, `${GUEST_PATH}/${id}`));
   closeTaskDetail();
 }
 
@@ -249,6 +259,7 @@ function openAddTask(status = 'todo') {
   window.location.href = 'add-task.html';
 }
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
+window.initBoard = initBoard;
 window.openAddTask = openAddTask;
 window.openTaskDetail = openTaskDetail;
 window.toggleSubtask = toggleSubtask;
