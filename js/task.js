@@ -1,10 +1,17 @@
+import { getPriorityButtonsHTML } from './template.js';
+import { getSelectOptionsHTML } from './template.js';
+import { clearActivePrioClasses } from './utils.js';
+import { getPrioClass } from './utils.js';
+import { CATEGORY_OPTIONS } from './utils.js';
+import { CONTACT_OPTIONS } from './utils.js';
+
 let subtasks = [];
 let currentPriority = 'Medium';
 
 /**
  * Initializes the page by rendering dropdowns, buttons, and setting the default priority.
  */
-function initAddTask() {
+export function initAddTask() {
   renderPriorityButtons();
   renderCategories();
   renderContacts();
@@ -164,3 +171,4 @@ function showSuccessToast() {
 }
 
 window.createTask = createTask;
+window.setPriority = setPriority;

@@ -1,5 +1,5 @@
-const CATEGORY_OPTIONS = ['Technical Task', 'User Story', 'Feature Task'];
-const CONTACT_OPTIONS = [
+export const CATEGORY_OPTIONS = ['Technical Task', 'User Story', 'Feature Task'];
+export const CONTACT_OPTIONS = [
   'Maximilian Müller',
   'Sofia Schneider',
   'Benedikt Bauer',
@@ -43,7 +43,7 @@ function getContactColor(name) {
  * @param {string} prio - The priority level string.
  * @returns {string} The formatted active priority class name.
  */
-function getPrioClass(prio) {
+export function getPrioClass(prio) {
   return 'active-' + prio.toLowerCase();
 }
 
@@ -51,7 +51,7 @@ function getPrioClass(prio) {
  * Resets priority button styles by removing all active priority CSS classes.
  * @param {string} selector - The CSS selector for the targets.
  */
-function clearActivePrioClasses(selector) {
+export function clearActivePrioClasses(selector) {
   const btns = document.querySelectorAll(selector);
   btns.forEach((b) =>
     b.classList.remove('active-urgent', 'active-medium', 'active-low'),

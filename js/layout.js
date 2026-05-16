@@ -2,6 +2,7 @@
  * @file Summary management script handling dashboard state and real-time metrics data.
  */
 import { toggleElement, closeElement } from './ui.js';
+import { initAddTask } from './task.js';
 
 /**
  * The currently active page identifier.
@@ -42,7 +43,6 @@ async function loadTemplate(containerId, templatePath) {
  * Initializes the default main application layout structure.
  */
 async function initLayout() {
-  
   await loadTemplate('headerContent', '../templates/header.html');
   await loadTemplate('sidebarContent', '../templates/aside.html');
   await loadTemplate('mainContent', './summary.html');
@@ -76,8 +76,11 @@ async function navigateTo(page) {
     pageHistory.push(page);
   }
 
-  loadTemplate('mainContent', `./${page}.html`);
-  loadTemplate('mainLoginContent', `./${page}.html`);
+  await loadTemplate('mainContent', `./${page}.html`);
+      if (page === 'add-task') {
+    initAddTask();
+  }
+  await loadTemplate('mainLoginContent', `./${page}.html`);
 }
 
 /**
