@@ -17,30 +17,63 @@ function openContactDialog() {
     }, 10);
 }
 
-/**
- * Opens the add contact dialog with an animation effect.
- */
-function openAddContact() {
+function setupContactDialog(sidebarSrc, imageSrc, buttonText, cancelText, isEditMode) {
     const sidebarImage = document.getElementById('contact-dialog-sidebar-image');
     const createSaveButton = document.getElementById('create-save-button');
-    const cancelDelteButton = document.getElementById('cancel-delete-button');
-    sidebarImage.src = '../assets/img/Frame-add-contact.png';
-    createSaveButton.innerHTML = 'Create Contact';
-    cancelDelteButton.innerHTML = 'Cancel';
-    createSaveButton.classList.remove('save-button');
+    const cancelDeleteButton = document.getElementById('cancel-delete-button');
+    const avatarImage = document.getElementById('contact-dialog-avatar');
+
+    sidebarImage.src = sidebarSrc;
+
+    createSaveButton.innerHTML = buttonText;
+
+    cancelDeleteButton.innerHTML = cancelText;
+
+    if (imageSrc) {
+        avatarImage.style.backgroundImage = `url('${imageSrc}')`;
+    }
+
+    createSaveButton.classList.toggle('save-button', isEditMode);
+
     openContactDialog();
 }
 
-function openEditContact() {
-    const sidebarImage = document.getElementById('contact-dialog-sidebar-image');
-    const createSaveButton = document.getElementById('create-save-button');
-    const cancelDelteButton = document.getElementById('cancel-delete-button');
 
-    sidebarImage.src = '../assets/img/Frame-edit-contact.png';
-    createSaveButton.innerHTML = 'Save';
-    cancelDelteButton.innerHTML = 'Delete';
-    createSaveButton.classList.add('save-button');
-    openContactDialog();
+function openAddContact() {
+    const avatar = document.getElementById('contact-dialog-avatar');
+
+    avatar.innerHTML = '';
+
+    avatar.style.backgroundColor = 'transparent';
+
+    setupContactDialog(
+        '../assets/img/Frame-add-contact.png',
+        '../assets/img/add-contact-profile-icon.png',
+        'Create Contact',
+        'Cancel',
+        false
+    );
+}
+
+
+function openEditContact(index) {
+    const contact = contacts[index];
+
+    setupContactDialog(
+        '../assets/img/Frame-edit-contact.png',
+        null,
+        'Save',
+        'Delete',
+        true
+    );
+
+    const avatar = document.getElementById('contact-dialog-avatar');
+
+    avatar.innerHTML = contact.initials;
+
+    avatar.style.backgroundColor = contact.color;
+
+    avatar.style.backgroundImage = 'none';
 }
 
 /**

@@ -8,11 +8,11 @@
 }
 
 .contact-item {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 8px 12px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 12px;
+  cursor: pointer;
 }
 
 .contact-item:hover {
@@ -156,14 +156,15 @@
   margin-top: 24px;
 }
 
-.save-button{
+.save-button {
   width: 110px;
 }
+
 /* ===== CONTACT DETAILS ===== */
 .contact-details {
-    display: flex;
-    flex-direction: column;
-    padding: 80px;
+  display: flex;
+  flex-direction: column;
+  padding: 80px;
 }
 
 .contact-details-title {
@@ -171,7 +172,7 @@
   flex-direction: row;
   align-items: center;
   gap: 30px;
-  
+
 }
 
 .contact-details-content {
@@ -208,4 +209,12 @@
   flex-direction: column;
   gap: 30px;
   margin-top: 20px;
+}
+
+.contact-dialog-avatar {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+      width: 120px;
+    height: 120px;
 }
