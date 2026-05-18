@@ -7,13 +7,13 @@ import { calculateMetrics } from './utils.js';
 import { setGreeting, updateUI } from './ui.js';
 import { database } from './firebase-config.js';
 
-
 /**
  * Initializes the dashboard by setting the greeting and fetching data.
  */
 export async function initSummary() {
   setGreeting();
   fetchSummaryData();
+  handleMobileGreeting();
 }
 
 /**
@@ -48,19 +48,21 @@ function fetchSummaryData() {
 /** @section GLOBAL EXPORTS FOR HTML */
 window.initSummary = initSummary;
 
-if (window.innerWidth <= 1100) {
+function handleMobileGreeting() {
+  const mobileGreeting = document.getElementById('mobile-greeting');
+
+  if (!mobileGreeting) return;
+
+  if (window.innerWidth > 1100) {
+    mobileGreeting.remove();
+    return;
+  }
+
+  setTimeout(() => {
+    mobileGreeting.style.opacity = '0';
+
     setTimeout(() => {
-        const element = document.getElementById("mobile-greeting");
-
-        if (!element) return;
-
-        element.style.opacity = "0";
-
-        setTimeout(() => {
-            element.remove();
-        }, 300);
-
-    }, 2000);
-} else {
-    document.getElementById("mobile-greeting")?.remove();
+      mobileGreeting.remove();
+    }, 300);
+  }, 2000);
 }

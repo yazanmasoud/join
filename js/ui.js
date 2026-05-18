@@ -53,14 +53,17 @@ export function updateUI(data) {
  */
 export function setGreeting() {
   const hour = new Date().getHours();
-  const greetingElement = document.querySelector('.greeting-time');
-  let greeting = 'Good night,';
+  const greetingElements = document.querySelectorAll('.greeting-time');
+
+  let greeting;
 
   if (hour >= 5 && hour < 12) greeting = 'Good morning,';
   else if (hour >= 12 && hour < 18) greeting = 'Good afternoon,';
   else if (hour >= 18 && hour < 22) greeting = 'Good evening,';
 
-  if (greetingElement) greetingElement.innerText = greeting;
+  greetingElements.forEach((element) => {
+    element.innerHTML = greeting;
+  });
 }
 
 /**
@@ -129,3 +132,4 @@ function handleBackArrow() {
 
 /** --- GLOBAL EXPORTS FOR HTML --- */
 window.handleBackArrow = handleBackArrow;
+window.setGreeting = setGreeting;

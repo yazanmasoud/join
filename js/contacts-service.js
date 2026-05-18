@@ -15,7 +15,7 @@ import { isGuestUser, generateLocalId } from './utils.js';
 import {
   getGuestContacts,
   saveGuestContacts,
-} from './guest-storage.js';
+} from './guest-data.js';
 
 export async function getContacts() {
   if (isGuestUser()) {

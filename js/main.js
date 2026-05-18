@@ -228,56 +228,6 @@ function checkPrivacy(privacy, errorText, errorBox) {
 }
 
 /**
- * Initializes local storage parameters with imported fallback mock data arrays.
- */
-function initGuestStorage() {
-  localStorage.setItem('isGuest', 'true');
-  localStorage.setItem('contacts', JSON.stringify(guestContacts));
-  localStorage.setItem('tasks', JSON.stringify(guestTasks));
-  localStorage.setItem(
-    'currentUser',
-    JSON.stringify({ name: 'Guest', email: 'guest@test.de' }),
-  );
-}
-
-/**
- * Display a success overlay with the provided message, then navigate to the summary page.
- * @param {string} message - The success message to show in the overlay.
- * @returns {void}
- */
-function loginSuccess(message) {
-  showOverlay(message);
-
-  setTimeout(() => {
-    hideOverlay();
-
-    setTimeout(() => {
-      window.location.href = './pages/layout.html?page=summary';
-    }, 300);
-
-  }, 1200);
-}
-
-/**
-Initialize guest session data in localStorage (contacts, tasks, currentUser) and
-perform the guest login flow by showing a success overlay and redirecting.
-@returns {void}
-*/
-function loginAsGuest() {
-  initGuestStorage();
-  loginSuccess("Logged in as Guest!");
-}
-
-/**
-Perform the standard user login flow by showing a success overlay and redirecting.
-Does not modify localStorage (intended for authenticated users).
-@returns {void}
-*/
-function loginAsUser() {
-  loginSuccess("Logged in as User!");
-}
-
-/**
  
 Executes standard validation pipelines sequentially across all active registration signup input panels.
 @returns {boolean} True if all input elements pass formatting metrics, false otherwise.*/
@@ -302,17 +252,11 @@ function validateForm() {
   return true;
 }
 
-// Global verfügbare Schnittstellen für Ihre HTML-Attribute (onclick) registrieren
-window.openSignUp = openSignUp;
-window.openLogin = openLogin;
-window.loginAsGuest = loginAsGuest;
-window.loginAsUser = loginAsUser;
-window.validateForm = validateForm;
 
 // Overlay-Element for displaying success message after signup
 const overlay = document.getElementById('overlay');
 
-function showOverlay(message = "Success!") {
+export function showOverlay(message = "Success!") {
   const text = overlay.querySelector(".success-message");
 
   text.textContent = message;
@@ -321,10 +265,15 @@ function showOverlay(message = "Success!") {
   overlay.style.opacity = "1";
 }
 
-function hideOverlay() {
+export function hideOverlay() {
   overlay.style.opacity = "0";
 
   setTimeout(() => {
     overlay.classList.add("hidden");
   }, 300);
 }
+
+// Global verfügbare Schnittstellen für Ihre HTML-Attribute (onclick) registrieren
+window.openSignUp = openSignUp;
+window.openLogin = openLogin;
+window.validateForm = validateForm;

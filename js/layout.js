@@ -232,4 +232,4 @@ window.goBack = goBack;
 window.openHelp = openHelp;
 window.loginNavigateTo = loginNavigateTo;
 window.backToLogin = backToLogin;
-
+window.pageHistory = pageHistory;

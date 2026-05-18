@@ -11,8 +11,9 @@ import {
   set,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-import { setGuestUser, setRegisteredUser } from './utils.js';
-import { initGuestData } from './guest-storage.js';
+import { initSummary } from './summary.js'
+
+import { showOverlay, hideOverlay } from './main.js'
 
 export async function registerUser(name, email, password) {
   const userCredential = await createUserWithEmailAndPassword(
@@ -28,8 +29,6 @@ export async function registerUser(name, email, password) {
     email,
   });
 
-  setRegisteredUser();
-
   return user;
 }
 
@@ -40,7 +39,7 @@ export async function loginUser(email, password) {
     password
   );
 
-  setRegisteredUser();
+  initSummary();
 
   return userCredential.user;
 }
@@ -50,7 +49,56 @@ export async function logoutUser() {
   localStorage.removeItem('join_user_type');
 }
 
-export function loginAsGuest() {
-  setGuestUser();
-  initGuestData();
+/**
+ * Initializes local storage parameters with imported fallback mock data arrays.
+ */
+function initGuestStorage() {
+  localStorage.setItem('isGuest', 'true');
+  localStorage.setItem('contacts', JSON.stringify(guestContacts));
+  localStorage.setItem('tasks', JSON.stringify(guestTasks));
+  localStorage.setItem(
+    'currentUser',
+    JSON.stringify({ name: 'Guest', email: 'guest@test.de' }),
+  );
 }
+
+/**
+ * Display a success overlay with the provided message, then navigate to the summary page.
+ * @param {string} message - The success message to show in the overlay.
+ * @returns {void}
+ */
+function loginSuccess(message) {
+  showOverlay(message);
+
+  setTimeout(() => {
+    hideOverlay();
+
+    setTimeout(() => {
+      window.location.href = './pages/layout.html?page=summary';
+      initLayout();
+    }, 300);
+
+  }, 1200);
+}
+
+/**
+Initialize guest session data in localStorage (contacts, tasks, currentUser) and
+perform the guest login flow by showing a success overlay and redirecting.
+@returns {void}
+*/
+export async function loginAsGuest() {
+  initGuestStorage();
+  loginSuccess("Logged in as Guest!");
+}
+
+/**
+Perform the standard user login flow by showing a success overlay and redirecting.
+Does not modify localStorage (intended for authenticated users).
+@returns {void}
+*/
+function loginAsUser() {
+  loginSuccess("Logged in as User!");
+}
+
+window.loginAsGuest = loginAsGuest;
+window.loginAsUser = loginAsUser;
