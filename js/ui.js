@@ -105,6 +105,14 @@ export function closeOpenElements() {
   });
 }
 
+
+/**
+ * Handles back arrow navigation behavior depending on the currently active layout context.
+ * Within the main application layout, the function navigates back to the previously visited app page.
+ * If no previous page exists, the summary page is loaded as a fallback.
+ * Within the login layout, the function redirects the user back to the main index login page.
+ * @return {void}
+ */
 function handleBackArrow() {
   const isLoginLayout = window.location.pathname.includes('loginlayout.html');
 

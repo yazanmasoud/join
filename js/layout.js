@@ -183,7 +183,7 @@ function openHelp() {
 function logOut() {
   console.log('User logged out');
   localStorage.removeItem('currentUser'); // Löscht Login-Status
-  closeElement();
+  closeOpenElements();
   window.location.href = '../index.html'; // Zurück zur Haupt-Login-Seite
 }
 
