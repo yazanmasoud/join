@@ -1,7 +1,6 @@
 /**
  * @file Storage management script handling local storage and user state retrieval.
  */
-
 const categoryOptions = ['Technical Task', 'User Story', 'Feature Task'];
 
 const contactOptions = [

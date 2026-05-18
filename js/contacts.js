@@ -5,6 +5,10 @@ import { getContactDetails, getSingleContact, getContactLetter } from './templat
 
 export let contacts = [];
 
+export function initContacts() {
+    console.log('Aktuell keine initContacts() Funktionen');
+}
+
 function openContactDialog() {
     const dialog = document.getElementById('add-contact-popup');
 

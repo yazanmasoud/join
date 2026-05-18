@@ -83,22 +83,41 @@ export function handleGuestLogin(dashboardData) {
 }
 
 /**
- * Toggles the profile avatar element options dropdown container menu visibility status.
- * @param {Event} event - The triggered DOM mouse pointer event object.
+ * Set the visibility state of the profile avatar dropdown menu to visible.
+ *
+ * @param {Event} event - The triggered DOM click event.
  */
-export function toggleElement(event) {
+export function openAvatarDropdown(event) {
   event.stopPropagation();
 
   const dropdown = document.getElementById('avatarDropdown');
-  dropdown.classList.toggle('open');
+
+  if (!dropdown) return;
+
+  dropdown.classList.add('open');
+}
+/**
+ * Closes all currently open elements by removing the open class.
+ */
+export function closeOpenElements() {
+  document.querySelectorAll('.open').forEach((element) => {
+    element.classList.remove('open');
+  });
 }
 
-/**
- * Hides the profile avatar options interactive dropdown element overlay list.
- */
-export function closeElement() {
-  const dropdown = document.getElementById('avatarDropdown');
-  dropdown.classList.remove('open');
+function handleBackArrow() {
+  const isLoginLayout = window.location.pathname.includes('loginlayout.html');
+
+  if (isLoginLayout) {
+    backToLogin();
+    return;
+  }
+
+  const previousPage = pageHistory[pageHistory.length - 2] || 'summary';
+  navigateTo(previousPage);
 }
+
+
 
 /** --- GLOBAL EXPORTS FOR HTML --- */
+window.handleBackArrow = handleBackArrow;

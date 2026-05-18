@@ -11,7 +11,7 @@ import { database } from './firebase-config.js';
 /**
  * Initializes the dashboard by setting the greeting and fetching data.
  */
-async function initDashboard() {
+export async function initSummary() {
   setGreeting();
   fetchSummaryData();
 }
@@ -45,11 +45,8 @@ function fetchSummaryData() {
   });
 }
 
-// Sofortiger Start beim Laden des Moduls
-initDashboard();
-
 /** @section GLOBAL EXPORTS FOR HTML */
-window.initDashboard = initDashboard;
+window.initSummary = initSummary;
 
 if (window.innerWidth <= 1100) {
     setTimeout(() => {

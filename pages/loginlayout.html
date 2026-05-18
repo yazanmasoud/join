@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/root.css" />
@@ -18,37 +19,34 @@
     <link rel="stylesheet" href="../css/add-task.css" />
     <link rel="stylesheet" href="../css/layoutlogin.css" />
 
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="../assets/logos/main-logo-white.svg"
+    />
+
     <title>Join</title>
   </head>
 
   <body>
     <div class="layout-login">
       <header id="headerLoginContent" class="header-login-content">
-        <!-- hier Header Template -->
+        <!-- Header Login Template -->
       </header>
 
       <aside id="sidebarLoginContent" class="sidebar-login-content">
-        <!-- hier Sidebar Template -->
+        <!-- Sidebar Login Template -->
       </aside>
 
       <main id="mainLoginContent" class="main-login-content">
-        <!-- hier Content Window -->
+        <!-- Login / Imprint / Privacy Content -->
       </main>
     </div>
-    <!-- Firebase App (Basis-SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <!-- Firebase Database -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="../js/firebase-config.js"></script>
-    <!--Logik -->
-    <script src="../js/firebase-config.js" type="module"></script>
-    <script src="../js/utils.js" type="module"></script>
-    <script src="../js/template.js" type="module"></script>
-    <script src="../js/board.js" type="module"></script>
-    <script src="../js/summary.js" type="module"></script>
-    <script src="../js/task.js" type="module"></script>
-    <script src="../js/contact.js" type="module"></script>
-    <script src="../js/layout.js" type="module"></script>
-    <script src="../js/main.js" type="module"></script>
+
+    <script type="module">
+      import { initLoginLayout } from '../js/layout.js';
+
+      initLoginLayout();
+    </script>
   </body>
 </html>

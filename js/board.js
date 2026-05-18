@@ -2,7 +2,7 @@
  * @file Board management script handling task filtering, viewing, and state updates.
  */
 
-import { ref, onValue, get, child, update, remove } from 'firebase/database';
+import { ref, onValue, get, child, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { database } from './firebase-config.js';
 
 import {

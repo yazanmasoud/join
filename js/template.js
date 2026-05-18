@@ -1,7 +1,7 @@
 /**
  * @file Template management script handling board cards, task details, and editor HTML strings.
  */
-import { contacts } from './contact.js';
+import { contacts } from './contacts.js';
 
 /** --- BOARD TASK CARDS --- */
 

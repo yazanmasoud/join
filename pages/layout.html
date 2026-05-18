@@ -25,9 +25,7 @@
 
     <title>Join</title>
   </head>
-
-  <!-- KORREKTUR: onload entfernt, da der Aufruf jetzt über das Modul-Script unten erfolgt -->
-  <body onclick="closeElement()">
+  <body onclick="closeOpenElements()">
     <div class="layout">
       <header id="headerContent" class="headerContent">
         <!-- hier Header Template -->
@@ -46,10 +44,10 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <!-- Firebase Database -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <!-- KORREKTUR 1: Firebase Auth SDK hinzugefügt -->
+    <!-- Firebase Auth SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
-    <!-- KORREKTUR 2: Von regulärem Script zu type="module" geändert -->
+    <!-- Modulare Firebase Configuration-->
     <script type="module" src="../js/firebase-config.js"></script>
 
     <!-- Logik & Module -->
@@ -58,7 +56,7 @@
     <script type="module" src="../js/summary.js"></script>
     <script type="module" src="../js/board.js"></script>
     <script type="module" src="../js/task.js"></script>
-    <script type="module" src="../js/contact.js"></script>
+    <script type="module" src="../js/contacts.js"></script>
     <script type="module" src="../js/layout.js"></script>
     <script type="module" src="../js/main.js"></script>
 
