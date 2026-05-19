@@ -55,8 +55,13 @@ export async function loginAsGuest() {
 
 
 export async function logoutUser() {
-  await signOut(auth);
+  if (!isGuestUser()) {
+    await signOut(auth);
+  }
+
   localStorage.clear();
+
+  window.location.href = '../index.html';
 }
 
 

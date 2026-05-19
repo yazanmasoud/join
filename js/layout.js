@@ -9,7 +9,7 @@ import { initContacts } from './contacts.js';
 import { toggleAvatarDropdown } from './header.js';
 import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { isGuestUser } from './auth-service.js';
+import { isGuestUser } from './storage.js';
 
 /**
  * Redirect to login if not logged in
