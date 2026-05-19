@@ -252,27 +252,6 @@ function validateForm() {
   return true;
 }
 
-
-// Overlay-Element for displaying success message after signup
-const overlay = document.getElementById('overlay');
-
-export function showOverlay(message = "Success!") {
-  const text = overlay.querySelector(".success-message");
-
-  text.textContent = message;
-
-  overlay.classList.remove("hidden");
-  overlay.style.opacity = "1";
-}
-
-export function hideOverlay() {
-  overlay.style.opacity = "0";
-
-  setTimeout(() => {
-    overlay.classList.add("hidden");
-  }, 300);
-}
-
 // Global verfügbare Schnittstellen für Ihre HTML-Attribute (onclick) registrieren
 window.openSignUp = openSignUp;
 window.openLogin = openLogin;

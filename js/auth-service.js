@@ -1,59 +1,68 @@
 import { auth, database } from './firebase-config.js';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { ref, set } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { hideOverlay, showOverlay } from './utils.js';
+import { guestContacts, guestTasks } from './guest-data.js';
 
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-
-import {
-  ref,
-  set,
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-
-import { initSummary } from './summary.js'
-
-import { showOverlay, hideOverlay } from './main.js'
 
 export async function registerUser(name, email, password) {
-  const userCredential = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
-  const user = userCredential.user;
+    const user = userCredential.user;
 
-  await set(ref(database, `users/${user.uid}`), {
-    name,
-    email,
-  });
+    await set(ref(database, `users/${user.uid}`), {
+      name,
+      email,
+    });
 
-  return user;
+    await signOut(auth);
+
+    showOverlay('Account created. Please log in.');
+
+    return user;
+  } catch (error) {
+    console.error(error);
+    showSignupFailed();   //hier der Platzhalter für die Loginfehleranzeige
+  }
 }
 
-export async function loginUser(email, password) {
-  const userCredential = await signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
 
-  initSummary();
+export async function loginAsUser(email, password) {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
 
-  return userCredential.user;
+    localStorage.setItem('isGuest', 'false');
+
+    loginSuccess('Logged in as User!');
+// hier kann man später if (error.code === 'auth/wrong-password') {} verwenden statt catch(error)
+  } catch (error) {
+    console.error(error);
+
+    showWrongCredentials();
+  }
 }
+
+
+export async function loginAsGuest() {
+  initGuestStorage();
+  loginSuccess('Logged in as Guest!');
+}
+
 
 export async function logoutUser() {
   await signOut(auth);
-  localStorage.removeItem('join_user_type');
+  localStorage.clear();
 }
 
-/**
- * Initializes local storage parameters with imported fallback mock data arrays.
- */
+
 function initGuestStorage() {
   localStorage.setItem('isGuest', 'true');
+  localStorage.setItem('currentUserId', 'guest_user');
   localStorage.setItem('contacts', JSON.stringify(guestContacts));
   localStorage.setItem('tasks', JSON.stringify(guestTasks));
   localStorage.setItem(
@@ -62,11 +71,7 @@ function initGuestStorage() {
   );
 }
 
-/**
- * Display a success overlay with the provided message, then navigate to the summary page.
- * @param {string} message - The success message to show in the overlay.
- * @returns {void}
- */
+
 function loginSuccess(message) {
   showOverlay(message);
 
@@ -75,30 +80,10 @@ function loginSuccess(message) {
 
     setTimeout(() => {
       window.location.href = './pages/layout.html?page=summary';
-      initLayout();
     }, 300);
-
   }, 1200);
 }
 
-/**
-Initialize guest session data in localStorage (contacts, tasks, currentUser) and
-perform the guest login flow by showing a success overlay and redirecting.
-@returns {void}
-*/
-export async function loginAsGuest() {
-  initGuestStorage();
-  loginSuccess("Logged in as Guest!");
-}
-
-/**
-Perform the standard user login flow by showing a success overlay and redirecting.
-Does not modify localStorage (intended for authenticated users).
-@returns {void}
-*/
-function loginAsUser() {
-  loginSuccess("Logged in as User!");
-}
 
 window.loginAsGuest = loginAsGuest;
 window.loginAsUser = loginAsUser;

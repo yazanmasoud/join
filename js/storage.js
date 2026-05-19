@@ -61,3 +61,25 @@ window.getCurrentUserId = getCurrentUserId;
 window.getStoredContacts = getStoredContacts;
 window.getStoredTasks = getStoredTasks;
 window.isGuest = isGuest;
+
+
+//----------Hier die Sachen für Datenbank Handling-------------//
+// prüft ob der User Gast ist
+export function isGuestUser() {
+  return localStorage.getItem('isGuest') === 'true';
+}
+
+// holt die User ID
+export function getCurrentUserId() {
+  return localStorage.getItem('currentUserId');
+}
+
+//holt die Tasks aus dem Local Storage für den Gast
+export function getLocalTasks() {
+  return JSON.parse(localStorage.getItem('tasks')) || [];
+}
+
+//Speichert eine Task in Local Storage für den Gast
+export function setLocalTasks(tasks) {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}

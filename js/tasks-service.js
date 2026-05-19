@@ -1,4 +1,4 @@
-import { auth, database } from './firebase-config.js';
+import { database } from './firebase-config.js';
 
 import {
   ref,
@@ -10,32 +10,37 @@ import {
   onValue,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-import { isGuestUser, generateLocalId } from './utils.js';
+import { generateLocalId } from './utils.js';
 
-import {
-  getGuestTasks,
-  saveGuestTasks,
-} from './guest-storage.js';
+import { isGuestUser, getCurrentUserId, getLocalTasks, setLocalTasks } from './storage.js';
+
 
 export async function getTasks() {
   if (isGuestUser()) {
-    return getGuestTasks();
+    return getLocalTasks();
   }
 
   const uid = auth.currentUser.uid;
   const snapshot = await get(ref(database, `tasks/${uid}`));
 
   if (!snapshot.exists()) return [];
-
-  return Object.entries(snapshot.val()).map(([id, task]) => ({
-    id,
+  
+  //Kurzschreibweise wäre: return Object.entries(snapshot.val()).map(([id, task]) => ({id,  ...task,}));
+  return Object.entries(snapshot.val()).map(function (entry) {
+  const id = entry[0];
+  const task = entry[1];
+  //hier nicht ausgeschrieben da es sonst festvorgegeben wäre ...task, ist flexibler
+  return {
+    id: id,
     ...task,
-  }));
+  };
+});
 }
+
 
 export async function createTask(taskData) {
   if (isGuestUser()) {
-    const tasks = getGuestTasks();
+    const tasks = getLocalTasks();
 
     const newTask = {
       id: generateLocalId(tasks),
@@ -43,7 +48,8 @@ export async function createTask(taskData) {
     };
 
     tasks.push(newTask);
-    saveGuestTasks(tasks);
+
+    setLocalTasks(tasks);
 
     return newTask;
   }
@@ -59,14 +65,21 @@ export async function createTask(taskData) {
   };
 }
 
+
 export async function getTaskById(taskId) {
   if (isGuestUser()) {
-    const tasks = getGuestTasks();
-    return tasks.find(task => String(task.id) === String(taskId));
+    const tasks = getLocalTasks();
+
+    return tasks.find(function (task) {
+      return String(task.id) === String(taskId);
+    });
   }
 
   const uid = auth.currentUser.uid;
-  const snapshot = await get(ref(database, `tasks/${uid}/${taskId}`));
+
+  const snapshot = await get(
+    ref(database, `tasks/${uid}/${taskId}`)
+  );
 
   if (!snapshot.exists()) return null;
 
@@ -76,34 +89,41 @@ export async function getTaskById(taskId) {
   };
 }
 
+
 export async function updateTask(taskId, updatedData) {
   if (isGuestUser()) {
-    const tasks = getGuestTasks();
+    const tasks = getLocalTasks();
 
-    const updatedTasks = tasks.map(task =>
+    const updatedTasks = tasks.map((task) =>
       String(task.id) === String(taskId)
         ? { ...task, ...updatedData }
         : task
     );
 
-    saveGuestTasks(updatedTasks);
+    setLocalTasks(updatedTasks);
+
     return;
   }
 
   const uid = auth.currentUser.uid;
 
-  await update(ref(database, `tasks/${uid}/${taskId}`), updatedData);
+  await update(
+    ref(database, `tasks/${uid}/${taskId}`),
+    updatedData
+  );
 }
+
 
 export async function deleteTask(taskId) {
   if (isGuestUser()) {
-    const tasks = getGuestTasks();
+    const tasks = getLocalTasks();
 
     const filteredTasks = tasks.filter(
-      task => String(task.id) !== String(taskId)
+      (task) => String(task.id) !== String(taskId)
     );
 
-    saveGuestTasks(filteredTasks);
+    setLocalTasks(filteredTasks);
+
     return;
   }
 
@@ -112,15 +132,16 @@ export async function deleteTask(taskId) {
   await remove(ref(database, `tasks/${uid}/${taskId}`));
 }
 
+
 export function listenToTasks(callback) {
   if (isGuestUser()) {
-    callback(getGuestTasks());
+    callback(getLocalTasks());
     return;
   }
 
   const uid = auth.currentUser.uid;
 
-  return onValue(ref(database, `tasks/${uid}`), snapshot => {
+  return onValue(ref(database, `tasks/${uid}`), (snapshot) => {
     if (!snapshot.exists()) {
       callback([]);
       return;
