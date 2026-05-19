@@ -7,6 +7,30 @@ import { initSummary } from './summary.js';
 import { initBoard } from './board.js';
 import { initContacts } from './contacts.js';
 import { toggleAvatarDropdown } from './header.js';
+import { auth } from './firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { isGuestUser } from './auth-service.js';
+
+/**
+ * Redirect to login if not logged in
+ */
+export function checkSession() {
+  return new Promise((resolve) => {
+    if (isGuestUser()) {
+      resolve(true);
+      return;
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = '../index.html';
+        return;
+      }
+
+      resolve(true);
+    });
+  });
+}
 
 /**
  * Array storing the navigation path history.
@@ -68,6 +92,7 @@ function getInitialPage() {
  * Initializes the default main application layout structure.
  */
 export async function initLayout() {
+  await checkSession();
   await loadTemplate('headerContent', '../templates/header.html');
   await loadTemplate('sidebarContent', '../templates/aside.html');
 
