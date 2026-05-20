@@ -149,6 +149,45 @@ export function normalizeObjectToArray(data) {
   }));
 }
 
+/**
+ * Sets the initials for avatar.
+ * @param {string} initials - User initials.
+ */
+export function setAvatarInitials(elementId, initials) {
+  const avatarElement = document.getElementById(elementId);
+
+  if (!avatarElement) return;
+
+  avatarElement.innerText = initials;
+}
+
+
+/**
+ * Sets the user name inside the header.
+ * @param {string} name - User name.
+ */
+export function setGreetingName(name) {
+  const greetingName = document.querySelector(
+    '[data-field="userName"]'
+  );
+
+  if (!greetingName) return;
+
+  greetingName.innerText = name;
+}
+
+
+/**
+ * Renders the authenticated user's avatar initials.
+ */
+export function renderAvatar(elementId, name) {
+  const avatarElement = document.getElementById(elementId);
+
+  if (!avatarElement) return;
+
+  avatarElement.innerText = getInitials(name);
+}
+
 
 /** --- GLOBAL EXPORTS FOR HTML --- */
 window.handleBackArrow = handleBackArrow;
