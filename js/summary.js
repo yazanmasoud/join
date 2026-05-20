@@ -2,10 +2,11 @@
  * @file Summary management script handling dashboard state and real-time metrics data.
  */
 
-import { getCurrentUserId } from './storage.js';
+import { getCurrentUserId, isGuestUser } from './storage.js';
 import { calculateMetrics } from './utils.js';
-import { setGreeting, updateUI } from './ui.js';
+import { setGreeting, updateUI, setGreetingName } from './ui.js';
 import { database } from './firebase-config.js';
+import { getCurrentUserData } from './auth-service.js'
 
 /**
  * Initializes the dashboard by setting the greeting and fetching data.
@@ -14,6 +15,7 @@ export async function initSummary() {
   setGreeting();
   fetchSummaryData();
   handleMobileGreeting();
+  await renderGreetingName();
 }
 
 /**
@@ -65,4 +67,18 @@ function handleMobileGreeting() {
       mobileGreeting.remove();
     }, 300);
   }, 2000);
+}
+
+
+/**
+ * Renders the authenticated user's greeting name.
+ */
+async function renderGreetingName() {
+  if (isGuestUser()) return;
+
+  const userData = await getCurrentUserData();
+
+  if (!userData) return;
+
+  setGreetingName(userData.name);
 }

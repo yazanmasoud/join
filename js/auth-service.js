@@ -1,9 +1,11 @@
 import { auth, database } from './firebase-config.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { ref, set } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { ref, set, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { hideOverlay, showOverlay } from './utils.js';
 import { guestContacts, guestTasks } from './guest-data.js';
 import { closeSignUp, clearSignupInputs } from './main.js';
+import { getCurrentUserId, isGuestUser } from './storage.js';
+
 
 //handles the complete registration flow
 export async function registerUser(name, email, password) {
@@ -121,6 +123,21 @@ async function handleLogin() {
   const password = document.getElementById('password').value;
 
   await loginAsUser(email, password);
+}
+
+
+/**
+ * Retrieves the authenticated user's database entry.
+ * @returns {Object|null} User data object or null.
+ */
+export async function getCurrentUserData() {
+  const uid = getCurrentUserId();
+
+  const snapshot = await get(ref(database, `users/${uid}`));
+
+  if (!snapshot.exists()) return null;
+
+  return snapshot.val();
 }
 
 

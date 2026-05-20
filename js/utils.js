@@ -10,7 +10,7 @@ export const CONTACT_OPTIONS = [
  * @param {string} name - The full name.
  * @returns {string} The uppercase initials or fallback characters.
  */
-function getInitials(name) {
+export function getInitials(name) {
   if (!name || typeof name !== 'string') return '??';
   const parts = name.trim().split(' ');
   const first = parts[0]?.charAt(0) || '';
@@ -136,3 +136,4 @@ export function hideOverlay() {
 
 window.hideOverlay = hideOverlay;
 window.showOverlay = showOverlay;
+window.getInitials = getInitials;

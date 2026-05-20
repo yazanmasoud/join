@@ -1,15 +1,19 @@
 /**
  * @file Summary management script handling dashboard state and real-time metrics data.
  */
-import { closeOpenElements} from './ui.js';
+import { closeOpenElements, setAvatarInitials, setGreetingName, renderAvatar } from './ui.js';
 import { initAddTask } from './task.js';
 import { initSummary } from './summary.js';
 import { initBoard } from './board.js';
 import { initContacts } from './contacts.js';
 import { toggleAvatarDropdown } from './header.js';
-import { auth } from './firebase-config.js';
+import { auth, database } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { isGuestUser } from './storage.js';
+import { ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getInitials } from './utils.js';
+import { getCurrentUserData } from './auth-service.js';
+
 
 /**
  * Redirect to login if not logged in
@@ -60,6 +64,7 @@ function initPage(page) {
   }
 }
 
+
 /**
  * Fetches an HTML template file and injects it into a DOM container.
  * @param {string} containerId - The ID of the target DOM element.
@@ -95,6 +100,12 @@ export async function initLayout() {
   await checkSession();
   await loadTemplate('headerContent', '../templates/header.html');
   await loadTemplate('sidebarContent', '../templates/aside.html');
+
+  const userData = await getCurrentUserData();
+
+  if (userData) {
+    renderAvatar('headerAvatar', userData.name);
+  }
 
   const initialPage = getInitialPage();
 
@@ -217,7 +228,7 @@ function logOut() {
  */
 function backToLogin() {
   window.location.href = '../index.html';
-  }
+}
 
 /**
  * Modifies visibility displays to remove unauthenticated navigation history back arrows.
@@ -244,6 +255,7 @@ function setActiveLoginNavFromUrl(page) {
     document.getElementById('menuPrivacyLogin')?.classList.add('active');
   }
 }
+
 
 // Funktionen global verfügbar machen
 window.initLayout = initLayout;
