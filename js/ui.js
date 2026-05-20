@@ -153,3 +153,5 @@ export function normalizeObjectToArray(data) {
 /** --- GLOBAL EXPORTS FOR HTML --- */
 window.handleBackArrow = handleBackArrow;
 window.setGreeting = setGreeting;
+window.removeHighlight = removeHighlight;
+window.highlight = highlight;
