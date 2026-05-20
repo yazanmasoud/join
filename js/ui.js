@@ -1,3 +1,5 @@
+import { isGuestUser } from './storage.js';
+
 /** UI Helper Functions */
 /**board.js*/
 export function closeTaskDetail() {
@@ -76,7 +78,7 @@ export function handleGuestLogin(dashboardData) {
 
   if (!container) return;
 
-  if (dashboardData.isGuest || !dashboardData.userName) {
+  if (isGuestUser() || !dashboardData.userName) {
     container.classList.add('is-guest');
     if (nameElement) nameElement.innerText = '';
   } else {
@@ -128,6 +130,24 @@ function handleBackArrow() {
   navigateTo(previousPage);
 }
 
+// Helper function which resets the innerHTML to prevent double content
+export function clearElementsByIds(ids) {
+  ids.forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) element.innerHTML = '';
+  });
+}
+
+
+//guarantees an array -  doesnt matter if the input is an object or an array
+export function normalizeObjectToArray(data) {
+  if (Array.isArray(data)) return data;
+
+  return Object.entries(data || {}).map(([id, item]) => ({
+    id,
+    ...item,
+  }));
+}
 
 
 /** --- GLOBAL EXPORTS FOR HTML --- */

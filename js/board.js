@@ -3,7 +3,7 @@
  */
 
 import { ref, onValue, get, child, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-import { database } from './firebase-config.js';
+import { auth, database } from './firebase-config.js';
 
 import {
   highlight,
@@ -11,6 +11,8 @@ import {
   setEditPriority,
   closeTaskDetail,
   setupDialogClose,
+  clearElementsByIds,
+  normalizeObjectToArray,
 } from './ui.js';
 
 import {
@@ -20,51 +22,63 @@ import {
   generateEditTaskHTML,
 } from './template.js';
 
+import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
+
+
 /** @section GLOBAL VARIABLES */
 let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
-/** @section CENTRAL PATH VARIABLE */
-const GUEST_PATH = 'users/guest_user/tasks';
 
 /** @section INITIALIZATION & RENDERING */
 
 /**
- * Initializes the board and listens to Firebase data.
+ * Initializes the board and loads tasks
+ * depending on the current session type.
  */
 export function initBoard() {
-  const tasksRef = ref(database, GUEST_PATH);
+  if (isGuestUser()) {
+    CURRENT_TASKS = convertTaskArrayToObject(getLocalTasks());
 
-  // v9+ Echtzeit-Listener
+    renderAllTasks(CURRENT_TASKS);
+    setupDialogClose(closeTaskDetail);
+    return;
+  }
+
+  const uid = auth.currentUser.uid;
+
+  const tasksRef = ref(database, `tasks/${uid}`);
+
   onValue(tasksRef, (snapshot) => {
     CURRENT_TASKS = snapshot.val() || {};
+
     renderAllTasks(CURRENT_TASKS);
   });
 
-  setupDialogClose();
+  setupDialogClose(closeTaskDetail);
 }
 
-/**
- * Renders all tasks into their respective columns.
- * @param {Object} allTasks - Object containing all tasks.
- */
+
 function renderAllTasks(allTasks) {
-  const cols = ['todo', 'progress', 'feedback', 'done'];
-  if (!document.getElementById(cols[0])) return;
+  const columns = ['todo', 'progress', 'feedback', 'done'];
 
-  cols.forEach((id) => {
-    const colElement = document.getElementById(id);
-    if (colElement) colElement.innerHTML = '';
-  });
+  if (!document.getElementById(columns[0])) return;
+  clearElementsByIds(columns);
 
-  Object.entries(allTasks).forEach(([id, task]) => {
+  const tasksArray = normalizeObjectToArray(allTasks);
+
+  tasksArray.forEach((task) => {
     const container = document.getElementById(task.status || 'todo');
-    if (container) container.innerHTML += generateTaskHTML(task, id);
+
+    if (container) {
+      container.innerHTML += generateTaskHTML(task, task.id);
+    }
   });
 
-  cols.forEach((id) => checkPlaceholder(id));
+  columns.forEach((id) => checkPlaceholder(id));
 }
+
 
 /**
  * Inserts a placeholder if a board column is empty.
@@ -74,6 +88,7 @@ function checkPlaceholder(id) {
   const el = document.getElementById(id);
   if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
 }
+
 
 /** @section TASK DETAILS & DIALOG CONTROL */
 
@@ -136,10 +151,34 @@ function allowDrop(ev) {
  */
 async function moveTo(status) {
   removeHighlight(status);
-  if (CURRENT_DRAGGED_ELEMENT) {
-    const taskRef = ref(database, `${GUEST_PATH}/${CURRENT_DRAGGED_ELEMENT}`);
-    await update(taskRef, { status });
+  if (!CURRENT_DRAGGED_ELEMENT) return
+
+  if (isGuestUser()) {
+    moveGuestTaskTo(status);
+    return;
   }
+  await moveFirebaseTaskTo(status);
+}
+
+
+//Guest Task wird bewegt
+function moveGuestTaskTo(status) {
+  CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT] = {
+    ...CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT],
+    status,
+  };
+
+  setLocalTasks(convertTaskObjectToArray(CURRENT_TASKS));
+
+  renderAllTasks(CURRENT_TASKS);
+}
+
+// User Task wird bewegt
+async function moveFirebaseTaskTo(status) {
+  const uid = auth.currentUser.uid;
+  const taskRef = ref(database, `tasks/${uid}/${CURRENT_DRAGGED_ELEMENT}`);
+
+  await update(taskRef, { status });
 }
 
 /** @section EDIT TASK (EDIT MODE) */
@@ -258,6 +297,20 @@ function openAddTask(status = 'todo') {
   localStorage.setItem('selectedStatus', status);
   window.location.href = 'add-task.html';
 }
+
+
+function convertTaskArrayToObject(tasks) {
+  return tasks.reduce((taskObject, task) => {
+    taskObject[task.id] = task;
+    return taskObject;
+  }, {});
+}
+
+function convertTaskObjectToArray(tasksObject) {
+  return Object.values(tasksObject);
+}
+
+
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.initBoard = initBoard;
 window.openAddTask = openAddTask;

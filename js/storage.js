@@ -28,7 +28,7 @@ export function isGuestUser() {
  * @returns {string} The active user identifier.
  */
 export function getCurrentUserId() {
-  if (isGuest()) {
+  if (isGuestUser()) {
     return 'guest_user';
   }
   return localStorage.getItem('currentUserId') || 'guest_user';
@@ -60,6 +60,16 @@ export function getLocalContacts() {
  */
 export function setLocalContacts(contacts) {
   localStorage.setItem('contacts', JSON.stringify(contacts));
+}
+
+
+/**
+ * Saves guest tasks to localStorage.
+ * @param {Array} contacts - Updated guest contact array.
+ * @returns {void}
+ */
+export function setLocalTasks(tasks) {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
 
