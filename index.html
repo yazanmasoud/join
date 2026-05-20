@@ -50,7 +50,7 @@
         />
 
         <div class="login_btn-container">
-          <button class="btn-dark" onclick="loginAsUser()">Log in</button>
+          <button class="btn-dark" onclick="handleLogin()">Log in</button>
           <button class="btn-light" onclick="loginAsGuest()">
             Guest Log in
           </button>
@@ -76,7 +76,7 @@
 
         <hr class="login-signup-hr" />
 
-        <form novalidate>
+        <form novalidate onsubmit="handleSignup(event)">
           <input
             oninput="validateForm()"
             type="text"

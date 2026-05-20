@@ -3,8 +3,9 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } f
 import { ref, set } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { hideOverlay, showOverlay } from './utils.js';
 import { guestContacts, guestTasks } from './guest-data.js';
+import { closeSignUp, clearSignupInputs } from './main.js';
 
-
+//handles the complete registration flow
 export async function registerUser(name, email, password) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -13,22 +14,47 @@ export async function registerUser(name, email, password) {
       password
     );
 
-    const user = userCredential.user;
-
-    await set(ref(database, `users/${user.uid}`), {
-      name,
-      email,
-    });
-
+    await saveUserProfile(userCredential.user, name, email);
     await signOut(auth);
 
-    showOverlay('Account created. Please log in.');
+    handleSignupSuccess();
 
-    return user;
   } catch (error) {
     console.error(error);
-    showSignupFailed();   //hier der Platzhalter für die Loginfehleranzeige
+    showSignupFailed(); //hier müssen die Fehlercodes ausgewertet und angezeigt werden.
   }
+}
+
+// saves the user profile to the database
+async function saveUserProfile(user, name, email) {
+  await set(ref(database, `users/${user.uid}`), {
+    name,
+    email,
+  });
+}
+
+// resets the UI after successful signup
+function handleSignupSuccess() {
+  showOverlay('Account created. Please log in.');
+
+  setTimeout(() => {
+    hideOverlay();
+  }, 2000);
+
+  closeSignUp();
+  clearSignupInputs();
+}
+
+
+// get signup information and start signup flow
+async function handleSignup(event) {
+  event.preventDefault();
+  const name = document.getElementById('signup-username').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+  await registerUser(name, email, password);
 }
 
 
@@ -89,6 +115,17 @@ function loginSuccess(message) {
   }, 1200);
 }
 
+//holt die input werte
+async function handleLogin() {
+  const email = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  await loginAsUser(email, password);
+}
+
 
 window.loginAsGuest = loginAsGuest;
 window.loginAsUser = loginAsUser;
+window.handleLogin = handleLogin;
+window.registerUser = registerUser;
+window.handleSignup = handleSignup;
