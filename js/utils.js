@@ -5,18 +5,35 @@ export const CONTACT_OPTIONS = [
   'Benedikt Bauer',
 ];
 
+
 /**
- * Extracts and returns capitalized initials from a full name.
- * @param {string} name - The full name.
- * @returns {string} The uppercase initials or fallback characters.
+ * Generates initials from a contact name.
+ * Returns the first letter of the first name
+ * and the first letter of the last name.
+ *
+ * @param {string} name - The full contact name
+ * @returns {string} The generated initials
  */
-export function getInitials(name) {
-  if (!name || typeof name !== 'string') return '??';
-  const parts = name.trim().split(' ');
-  const first = parts[0]?.charAt(0) || '';
-  const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
-  return (first + last).toUpperCase();
+function getInitials(name) {
+    let words = name
+        .trim()
+        .split(' ')
+        .filter((word) => word !== '');
+
+    if (words.length === 0) {
+        return '';
+    }
+
+    if (words.length === 1) {
+        return words[0][0].toUpperCase();
+    }
+
+    let firstLetter = words[0][0].toUpperCase();
+    let lastLetter = words[words.length - 1][0].toUpperCase();
+
+    return firstLetter + lastLetter;
 }
+
 
 /**
  * Generates a deterministic background color hex code based on a name string.

@@ -149,18 +149,6 @@ export function normalizeObjectToArray(data) {
   }));
 }
 
-/**
- * Sets the initials for avatar.
- * @param {string} initials - User initials.
- */
-export function setAvatarInitials(elementId, initials) {
-  const avatarElement = document.getElementById(elementId);
-
-  if (!avatarElement) return;
-
-  avatarElement.innerText = initials;
-}
-
 
 /**
  * Sets the user name inside the header.

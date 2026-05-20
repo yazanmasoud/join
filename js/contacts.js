@@ -1,3 +1,7 @@
+import { getInitials, getCurrentUserId } from './utils.js';
+import { renderAvatar, clearElementsByIds } from './ui.js';
+
+
 /**
  * @file Template management script handling board cards, task details, and editor HTML strings.
  */
@@ -156,34 +160,6 @@ function renderContactDetails(index) {
     const contact = contacts[index];
     const detailsContainer = document.getElementById('contact-details');
     detailsContainer.innerHTML = getContactDetails(contact, index);
-}
-
-/**
- * Generates initials from a contact name.
- * Returns the first letter of the first name
- * and the first letter of the last name.
- *
- * @param {string} name - The full contact name
- * @returns {string} The generated initials
- */
-function getInitials(name) {
-    let words = name
-        .trim()
-        .split(' ')
-        .filter((word) => word !== '');
-
-    if (words.length === 0) {
-        return '';
-    }
-
-    if (words.length === 1) {
-        return words[0][0].toUpperCase();
-    }
-
-    let firstLetter = words[0][0].toUpperCase();
-    let lastLetter = words[words.length - 1][0].toUpperCase();
-
-    return firstLetter + lastLetter;
 }
 
 /**
