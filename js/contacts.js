@@ -21,29 +21,60 @@ function openContactDialog() {
     }, 10);
 }
 
-/**
- * Opens the add contact dialog with an animation effect.
- */
+function getContactDialogElements() {
+    return {
+        sidebarImage: document.getElementById('contact-dialog-sidebar-image'),
+        createSaveButton: document.getElementById('create-save-button'),
+        cancelDeleteButton: document.getElementById('cancel-delete-button'),
+        avatar: document.getElementById('contact-dialog-avatar'),
+        avatarImg: document.getElementById('contact-dialog-avatar-img'),
+        avatarInitials: document.getElementById('contact-dialog-avatar-initials'),
+        nameInput: document.getElementById('contact-name'),
+        emailInput: document.getElementById('contact-email'),
+        phoneInput: document.getElementById('contact-phone')
+    };
+}
+
+
 function openAddContact() {
-    const sidebarImage = document.getElementById('contact-dialog-sidebar-image');
-    const createSaveButton = document.getElementById('create-save-button');
-    const cancelDelteButton = document.getElementById('cancel-delete-button');
-    sidebarImage.src = '../assets/img/Frame-add-contact.png';
-    createSaveButton.innerHTML = 'Create Contact';
-    cancelDelteButton.innerHTML = 'Cancel';
-    createSaveButton.classList.remove('save-button');
+    const elements = getContactDialogElements();
+
+    elements.sidebarImage.src = '../assets/img/Frame-add-contact.png';
+    elements.createSaveButton.innerHTML = 'Create Contact';
+    elements.cancelDeleteButton.innerHTML = 'Cancel';
+    elements.createSaveButton.classList.remove('save-button');
+
+    elements.nameInput.value = '';
+    elements.emailInput.value = '';
+    elements.phoneInput.value = '';
+
+    elements.avatarImg.style.display = 'block';
+    elements.avatarInitials.style.display = 'none';
+    elements.avatarInitials.innerHTML = '';
+    elements.avatar.style.backgroundColor = '';
+
     openContactDialog();
 }
 
-function openEditContact() {
-    const sidebarImage = document.getElementById('contact-dialog-sidebar-image');
-    const createSaveButton = document.getElementById('create-save-button');
-    const cancelDelteButton = document.getElementById('cancel-delete-button');
 
-    sidebarImage.src = '../assets/img/Frame-edit-contact.png';
-    createSaveButton.innerHTML = 'Save';
-    cancelDelteButton.innerHTML = 'Delete';
-    createSaveButton.classList.add('save-button');
+function openEditContact(index) {
+    const contact = contacts[index];
+    const elements = getContactDialogElements();
+
+    elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
+    elements.createSaveButton.innerHTML = 'Save';
+    elements.cancelDeleteButton.innerHTML = 'Delete';
+    elements.createSaveButton.classList.add('save-button');
+
+    elements.nameInput.value = contact.name || '';
+    elements.emailInput.value = contact.email || '';
+    elements.phoneInput.value = contact.phone || '';
+
+    elements.avatarImg.style.display = 'none';
+    elements.avatarInitials.style.display = 'flex';
+    elements.avatarInitials.innerHTML = contact.initials || '';
+    elements.avatar.style.backgroundColor = contact.color || '#ccc';
+
     openContactDialog();
 }
 
@@ -69,18 +100,27 @@ function createContact() {
     let email = document.getElementById('contact-email').value;
     let phone = document.getElementById('contact-phone').value;
 
-    let initials = getInitials(name);
-    let color = getRandomColor();
-
-    let contact = {
-        name,
-        email,
-        phone,
-        initials,
-        color,
-    };
-
-    contacts.push(contact);
+    // if editing an existing contact, update it; otherwise create new
+    const editing = window._editingContactIndex;
+    let savedContactRef = null;
+    if (editing !== undefined && editing !== null) {
+        const existing = contacts[editing] || {};
+        const newInitials = getInitials(name);
+        existing.name = name;
+        existing.email = email;
+        existing.phone = phone;
+        existing.initials = newInitials;
+        // keep existing.color
+        contacts[editing] = existing;
+        savedContactRef = existing;
+        window._editingContactIndex = null;
+    } else {
+        let initials = getInitials(name);
+        let color = getRandomColor();
+        let contact = { name, email, phone, initials, color };
+        contacts.push(contact);
+        savedContactRef = contact;
+    }
     contacts.sort((a, b) => a.name.localeCompare(b.name));
     renderContacts();
     document.getElementById('contact-name').value = '';
@@ -115,7 +155,7 @@ function renderContacts() {
 function renderContactDetails(index) {
     const contact = contacts[index];
     const detailsContainer = document.getElementById('contact-details');
-    detailsContainer.innerHTML = getContactDetails(contact);
+    detailsContainer.innerHTML = getContactDetails(contact, index);
 }
 
 /**
