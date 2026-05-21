@@ -50,7 +50,8 @@ async function getFirebaseTasks() {
 async function renderGreetingName() {
   if (isGuestUser()) {throw new Error('User is wrongly cosidered as Guest.')};
   const userData = await getCurrentUserData();
-  if (userData) setGreetingName(userData.name);
+    if (!userData) {throw new Error('No user data available.')};
+  setGreetingName(userData.name);
 }
 
 /**
