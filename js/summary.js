@@ -48,7 +48,7 @@ async function getFirebaseTasks() {
  * @returns {Promise<void>}
  */
 async function renderGreetingName() {
-  if (isGuestUser()) {throw new Error('User is wrongly cosidered as Guest.')};
+  if (isGuestUser()) return;
   const userData = await getCurrentUserData();
     if (!userData) {throw new Error('No user data available.')};
   setGreetingName(userData.name);
@@ -59,11 +59,11 @@ async function renderGreetingName() {
  * @returns {void}
  */
 function handleMobileGreeting() {
-  const el = document.getElementById('mobile-greeting');
-  if (!el || window.innerWidth > 1100) return el?.remove();
+  const element = document.getElementById('mobile-greeting');
+  if (!element || window.innerWidth > 1100) return element?.remove();
   setTimeout(() => {
-    el.style.opacity = '0';
-    setTimeout(() => el.remove(), 300);
+    element.style.opacity = '0';
+    setTimeout(() => element.remove(), 300);
   }, 2000);
 }
 

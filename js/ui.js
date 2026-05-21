@@ -147,17 +147,19 @@ export function normalizeObjectToArray(data) {
   }));
 }
 
+
 /**
- * Sets the user name inside the header.
+ * Sets the user name inside all greeting elements.
  * @param {string} name - User name.
  */
 export function setGreetingName(name) {
-  const greetingName = document.querySelector('[data-field="userName"]');
-
-  if (!greetingName) return;
-
-  greetingName.innerText = name;
+  const greetingElements = document.querySelectorAll('[data-field="userName"]');
+  if (!greetingElements.length) return;
+  greetingElements.forEach((element) => {
+    element.innerText = name;
+  });
 }
+
 
 /**
  * Renders the authenticated user's avatar initials.
