@@ -73,11 +73,8 @@ function handleMobileGreeting() {
  * Renders the authenticated user's greeting name.
  */
 async function renderGreetingName() {
-  if (isGuestUser()) return;
-
+  if (isGuestUser()) {throw new Error('User is wrongly cosidered as Guest.')};
   const userData = await getCurrentUserData();
-
-  if (!userData) return;
-
+  if (!userData) {throw new Error('No user data available.')};
   setGreetingName(userData.name);
 }

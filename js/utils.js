@@ -75,13 +75,6 @@ export function clearActivePrioClasses(selector) {
   );
 }
 
-/**
- * Retrieves the current authenticated user ID or returns a fallback guest ID.
- * @returns {string} The Firebase user ID or guest fallback token.
- */
-function getCurrentUserId() {
-  return localStorage.getItem('currentUserId') || 'guest_user';
-}
 
 /**Board.js */
 export function capitalizeFirstLetter(string) {

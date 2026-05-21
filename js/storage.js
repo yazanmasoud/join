@@ -15,11 +15,7 @@ const contactOptions = [
  * @returns {boolean} True if guest, false otherwise.
  */
 export function isGuestUser() {
-  const user = JSON.parse(localStorage.getItem('currentUser'));
-  return (
-    localStorage.getItem('isGuest') === 'true' ||
-    (user && user.name === 'Guest')
-  );
+  return localStorage.getItem('isGuest') === 'true';
 }
 
 
