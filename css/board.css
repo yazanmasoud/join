@@ -369,18 +369,6 @@
   color: var(--color-required);
 }
 
-input,
-textarea,
-select {
-  width: 100%;
-  padding: 12px 21px;
-  border: 1px solid var(--color-divider);
-  border-radius: 10px;
-  font-size: 20px;
-  outline: none;
-  background-color: var(--color-bg-primary);
-}
-
 textarea {
   resize: none;
   height: 120px;
