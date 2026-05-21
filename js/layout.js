@@ -1,7 +1,7 @@
 /**
  * @file Summary management script handling dashboard state and real-time metrics data.
  */
-import { closeOpenElements, setAvatarInitials, setGreetingName, renderAvatar } from './ui.js';
+import { closeOpenElements, setGreetingName, renderAvatar } from './ui.js';
 import { initAddTask } from './task.js';
 import { initSummary } from './summary.js';
 import { initBoard } from './board.js';

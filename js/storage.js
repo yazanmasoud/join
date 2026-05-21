@@ -31,7 +31,14 @@ export function getCurrentUserId() {
   if (isGuestUser()) {
     return 'guest_user';
   }
-  return localStorage.getItem('currentUserId') || 'guest_user';
+
+  const userId = localStorage.getItem('currentUserId');
+
+  if (!userId) {
+    throw new Error('No authenticated user ID found.');
+  }
+
+  return userId;
 }
 
 

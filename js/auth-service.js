@@ -62,9 +62,10 @@ async function handleSignup(event) {
 
 export async function loginAsUser(email, password) {
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
     localStorage.setItem('isGuest', 'false');
+    localStorage.setItem('currentUserId', userCredential.user.uid);
 
     loginSuccess('Logged in as User!');
 // hier kann man später if (error.code === 'auth/wrong-password') {} verwenden statt catch(error)
@@ -131,11 +132,17 @@ async function handleLogin() {
  * @returns {Object|null} User data object or null.
  */
 export async function getCurrentUserData() {
+  if (isGuestUser()) {
+    return JSON.parse(localStorage.getItem('currentUser'));
+  }
+
   const uid = getCurrentUserId();
 
   const snapshot = await get(ref(database, `users/${uid}`));
 
-  if (!snapshot.exists()) return null;
+  if (!snapshot.exists()) {
+    throw new Error('Authenticated user data not found.');
+  }
 
   return snapshot.val();
 }

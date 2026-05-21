@@ -1,5 +1,6 @@
-import { getInitials, getCurrentUserId } from './utils.js';
+import { getInitials } from './utils.js';
 import { renderAvatar, clearElementsByIds } from './ui.js';
+import { getCurrentUserId } from './storage.js';
 
 
 /**

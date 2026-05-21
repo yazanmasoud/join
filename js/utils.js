@@ -14,7 +14,7 @@ export const CONTACT_OPTIONS = [
  * @param {string} name - The full contact name
  * @returns {string} The generated initials
  */
-function getInitials(name) {
+export function getInitials(name) {
     let words = name
         .trim()
         .split(' ')
