@@ -162,7 +162,6 @@ async function moveTo(status) {
   await moveFirebaseTaskTo(status);
 }
 
-//Guest Task wird bewegt
 function moveGuestTaskTo(status) {
   CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT] = {
     ...CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT],
@@ -174,7 +173,6 @@ function moveGuestTaskTo(status) {
   renderAllTasks(CURRENT_TASKS);
 }
 
-// User Task wird bewegt
 async function moveFirebaseTaskTo(status) {
   const uid = auth.currentUser.uid;
   const taskRef = ref(database, `tasks/${uid}/${CURRENT_DRAGGED_ELEMENT}`);
@@ -184,23 +182,15 @@ async function moveFirebaseTaskTo(status) {
 
 /** @section EDIT TASK (EDIT MODE) */
 
-/**
- * Enables edit mode view inside the open dialog using local data.
- * @param {string} id - The task ID.
- */
-async function editTask(id) {
+export async function editTask(id) {
   const task = CURRENT_TASKS[id];
   if (task) {
-    const content = document.getElementById('taskDetailContent');
-    content.innerHTML = generateEditTaskHTML(task, id);
-    document.getElementById('taskDetailDialog').classList.add('edit-mode-wide');
-    editPriority = task.priority;
+    localStorage.setItem('editTaskId', id);
+    localStorage.setItem('editTaskData', JSON.stringify(task));
+    window.location.href = 'add-task.html';
   }
 }
 
-/**
- * Saves edited task data and refreshes the board view.
- */
 export async function saveEdit(id) {
   const updates = {
     title: document.getElementById('editTitle').value,
@@ -328,3 +318,4 @@ window.deleteEditSubtask = deleteEditSubtask;
 window.toggleEditSubtask = toggleEditSubtask;
 window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
+window.deleteTask = deleteTask;
