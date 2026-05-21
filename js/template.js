@@ -26,14 +26,21 @@ export function generateTaskHTML(task, id) {
 }
 
 /**
- * Renders a brief summary of subtask completion progress.
+ * Renders a progress bar and subtask completion text.
  * @param {Object} task - The task data object.
- * @returns {string} The subtask info HTML or an empty string.
+ * @returns {string} The progress bar and text HTML string.
  */
 export function renderSmallSubtaskInfo(task) {
   if (!task.subtasks || task.subtasks.length === 0) return '';
   const done = task.subtasks.filter((s) => s.done).length;
-  return `<small>${done}/${task.subtasks.length} Subtasks</small>`;
+  const percent = (done / task.subtasks.length) * 100;
+  return `
+    <div class="subtask-progress-container">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: ${percent}%"></div>
+      </div>
+      <small>${done}/${task.subtasks.length} Subtasks</small>
+    </div>`;
 }
 
 /**
@@ -157,39 +164,54 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
  * @returns {string} The detail dialog footer menu HTML string.
  */
 export function getDetailFooter(id) {
-  return `<div class="detail-view-footer">
+  return `
+    <div class="detail-view-footer">
       <button class="action-btn" onclick="deleteTask('${id}')">
-        <img src="../assets/icons/delete-icon.svg"> Delete</button>
-      <div class="divider"></div>
+        <img src="../assets/icons/delete-icon.svg"> Delete
+      </button>
       <button class="action-btn" onclick="editTask('${id}')">
-        <img src="../assets/icons/edit-icon.svg"> Edit</button></div>`;
+        <img src="../assets/icons/edit-icon.svg"> Edit
+      </button>
+    </div>`;
 }
 
 /** --- ASSIGNED USERS --- */
 
 /**
  * Generates an assigned user element containing initials badges and names.
- * @param {string} name - The full contact username.
+ * @param {any} name - The contact name or object.
  * @returns {string} The individual contact badge element HTML string.
  */
 export function getAssignedUserHTML(name) {
+  const safeName = typeof name === 'string' ? name : name?.name || 'Guest';
   const color =
-    typeof getContactColor === 'function' ? getContactColor(name) : '#ff7a00';
-  const initials = typeof getInitials === 'function' ? getInitials(name) : '??';
+    typeof getContactColor === 'function'
+      ? getContactColor(safeName)
+      : '#ff7a00';
+  const initials =
+    typeof getInitials === 'function' ? getInitials(safeName) : '??';
+
   return `<div class="assigned-user">
       <div class="user-badge" style="background-color: ${color}">${initials}</div>
-      <span class="user-name">${name}</span></div>`;
+      <span class="user-name">${safeName}</span></div>`;
 }
 
 /**
  * Iterates over contacts list parameters and generates detail row HTML output.
- * @param {string|string[]} assignedTo - Assigned string name or collection array.
+ * @param {any} assignedTo - Assigned string name or collection array.
  * @returns {string} Consolidated contact list markup string.
  */
 export function renderAssignedToDetail(assignedTo) {
   if (!assignedTo || assignedTo === 'Select contacts to assign') return '';
-  const contacts = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
-  return contacts.map((name) => getAssignedUserHTML(name)).join('');
+  const list = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
+
+  return list
+    .map((contact) => {
+      // Falls contact ein Objekt ist {name: "Max", ...}, nimm nur den Namen
+      const nameOnly = typeof contact === 'object' ? contact.name : contact;
+      return getAssignedUserHTML(nameOnly);
+    })
+    .join('');
 }
 
 /** --- EDIT MODE --- */
@@ -316,7 +338,6 @@ export function getContactDetails(contact, index) {
       </div>
     `;
 }
-
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.generateTaskHTML = generateTaskHTML;
