@@ -2,7 +2,14 @@
  * @file Board management script handling task filtering, viewing, and state updates.
  */
 
-import { ref, onValue, get, child, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import {
+  ref,
+  onValue,
+  get,
+  child,
+  update,
+  remove,
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { auth, database } from './firebase-config.js';
 
 import {
@@ -24,12 +31,10 @@ import {
 
 import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
 
-
 /** @section GLOBAL VARIABLES */
 let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
-
 
 /** @section INITIALIZATION & RENDERING */
 
@@ -59,7 +64,6 @@ export function initBoard() {
   setupDialogClose(closeTaskDetail);
 }
 
-
 function renderAllTasks(allTasks) {
   const columns = ['todo', 'progress', 'feedback', 'done'];
 
@@ -79,7 +83,6 @@ function renderAllTasks(allTasks) {
   columns.forEach((id) => checkPlaceholder(id));
 }
 
-
 /**
  * Inserts a placeholder if a board column is empty.
  * @param {string} id - The HTML column ID.
@@ -89,40 +92,39 @@ function checkPlaceholder(id) {
   if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
 }
 
-
 /** @section TASK DETAILS & DIALOG CONTROL */
 
 /**
- * Opens the detailed view dialog for a specific task.
- * @param {string} id - The task ID.
+ * Opens the task detail dialog using locally stored task data.
+ * @param {string} id - The unique ID of the task.
  */
-async function openTaskDetail(id) {
+export async function openTaskDetail(id) {
   const dialog = document.getElementById('taskDetailDialog');
   const content = document.getElementById('taskDetailContent');
-  try {
-    const snapshot = await get(child(ref(database), `${GUEST_PATH}/${id}`));
-    const task = snapshot.val();
-    if (task) {
-      content.innerHTML = generateTaskDetailHTML(task, id);
-      dialog.showModal();
-    }
-  } catch (error) {
-    console.error('Fehler beim Öffnen des Tasks:', error);
+  const task = CURRENT_TASKS[id];
+
+  if (task) {
+    content.innerHTML = generateTaskDetailHTML(task, id);
+    dialog.showModal();
+  } else {
+    console.error('Task not found in CURRENT_TASKS:', id);
   }
 }
+window.openTaskDetail = openTaskDetail;
 
 /**
- * Toggles a subtask check status and updates Firebase.
- * @param {string} taskId - The task ID.
- * @param {number} index - The subtask index array position.
+ * Toggles a subtask and re-renders the board to update the progress bar.
  */
-async function toggleSubtask(taskId, index) {
+export async function toggleSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
   task.subtasks[index].done = !task.subtasks[index].done;
-  const subtaskRef = ref(database, `${GUEST_PATH}/${taskId}/subtasks/${index}`);
-  await update(subtaskRef, {
-    done: task.subtasks[index].done,
-  });
+  if (isGuestUser()) {
+    setLocalTasks(Object.values(CURRENT_TASKS));
+    renderAllTasks(CURRENT_TASKS); // Sofortiges Update für Gäste
+  } else {
+    const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
+    await update(ref(database, path), { done: task.subtasks[index].done });
+  }
   document.getElementById('taskDetailContent').innerHTML =
     generateTaskDetailHTML(task, taskId);
 }
@@ -151,7 +153,7 @@ function allowDrop(ev) {
  */
 async function moveTo(status) {
   removeHighlight(status);
-  if (!CURRENT_DRAGGED_ELEMENT) return
+  if (!CURRENT_DRAGGED_ELEMENT) return;
 
   if (isGuestUser()) {
     moveGuestTaskTo(status);
@@ -159,7 +161,6 @@ async function moveTo(status) {
   }
   await moveFirebaseTaskTo(status);
 }
-
 
 //Guest Task wird bewegt
 function moveGuestTaskTo(status) {
@@ -184,40 +185,36 @@ async function moveFirebaseTaskTo(status) {
 /** @section EDIT TASK (EDIT MODE) */
 
 /**
- * Enables edit mode view inside the open dialog.
+ * Enables edit mode view inside the open dialog using local data.
  * @param {string} id - The task ID.
  */
 async function editTask(id) {
-  const dialog = document.getElementById('taskDetailDialog');
   const task = CURRENT_TASKS[id];
-  if (!task) {
-    const snapshot = await get(child(ref(database), `${GUEST_PATH}/${id}`));
-    task = snapshot.val();
-  }
-
   if (task) {
-    document.getElementById('taskDetailContent').innerHTML =
-      generateEditTaskHTML(task, id);
-    dialog.classList.add('edit-mode-wide');
+    const content = document.getElementById('taskDetailContent');
+    content.innerHTML = generateEditTaskHTML(task, id);
+    document.getElementById('taskDetailDialog').classList.add('edit-mode-wide');
     editPriority = task.priority;
   }
 }
 
 /**
- * Pushes edited task field values to Firebase.
- * @param {string} id - The task ID.
+ * Saves edited task data and refreshes the board view.
  */
-async function saveEdit(id) {
-  const task = CURRENT_TASKS[id];
+export async function saveEdit(id) {
   const updates = {
     title: document.getElementById('editTitle').value,
     description: document.getElementById('editDescription').value,
     dueDate: document.getElementById('editDate').value,
     priority: editPriority,
-    assignedTo: document.getElementById('editAssigned').value,
-    subtasks: task.subtasks || [],
   };
-  await update(ref(database, `${GUEST_PATH}/${id}`), updates);
+  if (isGuestUser()) {
+    Object.assign(CURRENT_TASKS[id], updates);
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), updates);
+  }
+  renderAllTasks(CURRENT_TASKS); // Board aktualisieren
   closeTaskDetail();
 }
 
@@ -281,12 +278,18 @@ function toggleEditSubtask(taskId, index) {
 /** @section MISCELLANEOUS ACTIONS */
 
 /**
- * Completely removes a task document from Firebase.
- * @param {string} id - The task ID.
+ * Deletes a task from the respective data source.
+ * @param {string} id - The task ID to delete.
  */
-async function deleteTask(id) {
-  await remove(ref(database, `${GUEST_PATH}/${id}`));
+export async function deleteTask(id) {
+  if (isGuestUser()) {
+    delete CURRENT_TASKS[id];
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    await remove(ref(database, `tasks/${auth.currentUser.uid}/${id}`));
+  }
   closeTaskDetail();
+  renderAllTasks(CURRENT_TASKS);
 }
 
 /**
@@ -298,7 +301,6 @@ function openAddTask(status = 'todo') {
   window.location.href = 'add-task.html';
 }
 
-
 function convertTaskArrayToObject(tasks) {
   return tasks.reduce((taskObject, task) => {
     taskObject[task.id] = task;
@@ -309,7 +311,6 @@ function convertTaskArrayToObject(tasks) {
 function convertTaskObjectToArray(tasksObject) {
   return Object.values(tasksObject);
 }
-
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.initBoard = initBoard;
@@ -326,3 +327,4 @@ window.addEditSubtask = addEditSubtask;
 window.deleteEditSubtask = deleteEditSubtask;
 window.toggleEditSubtask = toggleEditSubtask;
 window.deleteTask = deleteTask;
+window.closeTaskDetail = closeTaskDetail;
