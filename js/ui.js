@@ -110,7 +110,6 @@ export function closeOpenElements() {
   });
 }
 
-
 /**
  * Handles back arrow navigation behavior depending on the currently active layout context.
  * Within the main application layout, the function navigates back to the previously visited app page.
@@ -138,7 +137,6 @@ export function clearElementsByIds(ids) {
   });
 }
 
-
 //guarantees an array -  doesnt matter if the input is an object or an array
 export function normalizeObjectToArray(data) {
   if (Array.isArray(data)) return data;
@@ -151,17 +149,15 @@ export function normalizeObjectToArray(data) {
 
 
 /**
- * Sets the user name inside the header.
+ * Sets the user name inside all greeting elements.
  * @param {string} name - User name.
  */
 export function setGreetingName(name) {
-  const greetingName = document.querySelector(
-    '[data-field="userName"]'
-  );
-
-  if (!greetingName) return;
-
-  greetingName.innerText = name;
+  const greetingElements = document.querySelectorAll('[data-field="userName"]');
+  if (!greetingElements.length) return;
+  greetingElements.forEach((element) => {
+    element.innerText = name;
+  });
 }
 
 
@@ -175,7 +171,6 @@ export function renderAvatar(elementId, name) {
 
   avatarElement.innerText = getInitials(name);
 }
-
 
 /** --- GLOBAL EXPORTS FOR HTML --- */
 window.handleBackArrow = handleBackArrow;

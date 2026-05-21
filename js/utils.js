@@ -1,10 +1,13 @@
-export const CATEGORY_OPTIONS = ['Technical Task', 'User Story', 'Feature Task'];
+export const CATEGORY_OPTIONS = [
+  'Technical Task',
+  'User Story',
+  'Feature Task',
+];
 export const CONTACT_OPTIONS = [
   'Maximilian Müller',
   'Sofia Schneider',
   'Benedikt Bauer',
 ];
-
 
 /**
  * Generates initials from a contact name.
@@ -15,44 +18,23 @@ export const CONTACT_OPTIONS = [
  * @returns {string} The generated initials
  */
 export function getInitials(name) {
-    let words = name
-        .trim()
-        .split(' ')
-        .filter((word) => word !== '');
+  let words = name
+    .trim()
+    .split(' ')
+    .filter((word) => word !== '');
 
-    if (words.length === 0) {
-        return '';
-    }
+  if (words.length === 0) {
+    return '';
+  }
 
-    if (words.length === 1) {
-        return words[0][0].toUpperCase();
-    }
+  if (words.length === 1) {
+    return words[0][0].toUpperCase();
+  }
 
-    let firstLetter = words[0][0].toUpperCase();
-    let lastLetter = words[words.length - 1][0].toUpperCase();
+  let firstLetter = words[0][0].toUpperCase();
+  let lastLetter = words[words.length - 1][0].toUpperCase();
 
-    return firstLetter + lastLetter;
-}
-
-
-/**
- * Generates a deterministic background color hex code based on a name string.
- * @param {string} name - The contact name.
- * @returns {string} A CSS hex color string.
- */
-function getContactColor(name) {
-  const colors = [
-    '#FF7A00',
-    '#FF5EB3',
-    '#61BEFF',
-    '#9327FF',
-    '#00BEE8',
-    '#FFBB2B',
-  ];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++)
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return colors[Math.abs(hash) % colors.length];
+  return firstLetter + lastLetter;
 }
 
 /**
@@ -75,13 +57,6 @@ export function clearActivePrioClasses(selector) {
   );
 }
 
-/**
- * Retrieves the current authenticated user ID or returns a fallback guest ID.
- * @returns {string} The Firebase user ID or guest fallback token.
- */
-function getCurrentUserId() {
-  return localStorage.getItem('currentUserId') || 'guest_user';
-}
 
 /**Board.js */
 export function capitalizeFirstLetter(string) {
@@ -91,21 +66,19 @@ export function capitalizeFirstLetter(string) {
 
 /**Summary.js */
 /**
- * Calculates total counts and status metrics from the task list.
- * @param {Array} tasks - The list of tasks.
- * @returns {Object} Calculated metrics and user information.
+ * Berechnet die Metriken für die Summary Seite.
+ * @param {Array} tasks - Liste der Tasks als Array.
  */
 export function calculateMetrics(tasks) {
   return {
     todo: tasks.filter((t) => t.status === 'todo').length || 0,
     done: tasks.filter((t) => t.status === 'done').length || 0,
-    urgent: tasks.filter((t) => t.priority === 'Urgent').length || 0,
+    urgent:
+      tasks.filter((t) => t.priority?.toLowerCase() === 'urgent').length || 0,
     tasksInBoard: tasks.length || 0,
-    tasksInProgress: tasks.filter((t) => t.status === 'inProgress').length || 0,
-    awaitingFeedback:
-      tasks.filter((t) => t.status === 'awaitingFeedback').length || 0,
+    tasksInProgress: tasks.filter((t) => t.status === 'progress').length || 0,
+    awaitingFeedback: tasks.filter((t) => t.status === 'feedback').length || 0,
     deadline: getNextDeadline(tasks),
-    userName: 'Guest',
   };
 }
 
@@ -133,23 +106,34 @@ export function getNextDeadline(tasks) {
 // Overlay-Element for displaying success message after signup
 const overlay = document.getElementById('overlay');
 
-export function showOverlay(message = "Success!") {
-  const text = overlay.querySelector(".success-message");
+export function showOverlay(message = 'Success!') {
+  const text = overlay.querySelector('.success-message');
 
   text.textContent = message;
 
-  overlay.classList.remove("hidden");
-  overlay.style.opacity = "1";
+  overlay.classList.remove('hidden');
+  overlay.style.opacity = '1';
 }
 
 export function hideOverlay() {
-  overlay.style.opacity = "0";
+  overlay.style.opacity = '0';
 
   setTimeout(() => {
-    overlay.classList.add("hidden");
+    overlay.classList.add('hidden');
   }, 300);
 }
 
+/**
+ * Returns the correct Firebase reference path for a task.
+ * @param {string} taskId - The ID of the task.
+ * @returns {string} The database path.
+ */
+function getTaskRefPath(taskId) {
+  const uid = auth.currentUser?.uid;
+  return isGuestUser() || !uid
+    ? `guest/tasks/${taskId}`
+    : `tasks/${uid}/${taskId}`;
+}
 
 window.hideOverlay = hideOverlay;
 window.showOverlay = showOverlay;

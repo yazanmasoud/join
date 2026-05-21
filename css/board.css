@@ -1,4 +1,4 @@
-/* --- 1. GENERAL & HELPERS --- */
+/* --- 1. GLOBAL COMPONENTS & FLEX RESET --- */
 .board-header,
 .board-header-right,
 .search-container,
@@ -8,83 +8,55 @@
 .action-btn,
 .assigned-user,
 .input-wrapper,
-.subtask-item {
+.subtask-item,
+.subtask-left,
+.detail-view-info-row {
   display: flex;
   align-items: center;
 }
 
-.subtask-item {
-  padding: 6px 0;
-  cursor: pointer;
-}
-
-.subtask-item input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-
-.subtask-text {
-  margin-left: 20px;
-  font-size: 16px;
-  color: var(--color-text-main);
-}
-
-/* Schriftart-Vererbung für Dialoge und Formulare */
+/* Box-Sizing für alle Dialog-Komponenten */
 .detail-dialog-frame,
 .task-detail-content-style,
+.detail-view,
+.detail-view *,
 .edit-mode-main,
-.edit-mode-main input,
-.edit-mode-main textarea,
-.edit-mode-main select,
-.edit-mode-main button {
+.edit-mode-main * {
+  box-sizing: border-box;
   font-family: 'Inter', sans-serif;
 }
 
-/* --- 2. HEADER & SEARCH --- */
+/* --- 2. BOARD LAYOUT --- */
 .board-header {
   justify-content: space-between;
   margin-bottom: 40px;
   gap: 20px;
 }
-
 .board-header-right {
   gap: 32px;
-}
-
-.search-container {
-  position: relative;
 }
 
 .search-container input {
   width: 312px;
   padding: 8px 50px 8px 16px;
+  font-size: 20px;
   border: 1px solid var(--color-divider);
   border-radius: 10px;
-  font-size: 20px;
 }
 
 .search-divider {
   width: 1px;
   height: 31px;
-  background-color: var(--color-divider);
+  background: var(--color-divider);
   position: absolute;
   right: 48px;
 }
 
-.search-icon {
-  position: absolute;
-  right: 16px;
-  cursor: pointer;
-}
-
-/* --- 3. BOARD COLUMNS --- */
 .board-columns {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
 }
-
 .column {
   flex: 1;
   min-width: 250px;
@@ -92,17 +64,12 @@
   display: flex;
   flex-direction: column;
 }
-
 .column-header {
   justify-content: space-between;
   padding: 0 10px;
   margin-bottom: 16px;
-}
-
-.column-header span {
-  font-size: 20px;
   font-weight: 700;
-  color: var(--color-menu-headline);
+  font-size: 20px;
 }
 
 .task-container {
@@ -113,23 +80,21 @@
   gap: 16px;
 }
 
-/* --- 4. TASK CARDS & CATEGORIES --- */
+/* --- 3. TASK CARDS --- */
 .task-card {
   background: var(--color-bg-primary);
   border-radius: 24px;
   padding: 16px;
   box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.08);
   cursor: grab;
-  user-select: none;
-  max-width: 252px;
   width: 100%;
+  max-width: 252px;
 }
 
 .task-card:active {
   transform: rotate(2deg);
   cursor: grabbing;
 }
-
 .description-task-board {
   color: var(--color-text-secondary);
 }
@@ -142,128 +107,65 @@
   font-size: 16px;
   margin-bottom: 12px;
 }
-
-.task-category.userstory {
-  background-color: var(--color-category-story);
+.userstory {
+  background: var(--color-category-story);
 }
-.task-category.technicaltask {
-  background-color: var(--color-category-technical);
+.technicaltask {
+  background: var(--color-category-technical);
 }
-.task-category.featuretask {
-  background-color: var(--color-category-feature);
-}
-
-/* Gemeinsame Layout-Basis für Platzhalter */
-.no-tasks,
-.drag-area-highlight {
-  border: 1px dashed var(--color-text-secondary);
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.05);
+.featuretask {
+  background: var(--color-category-feature);
 }
 
-.no-tasks {
-  background: var(--color-bg-tertiary);
-  height: 35px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--color-text-secondary);
-  font-size: 16px;
-  white-space: nowrap;
-}
-
-.drag-area-highlight {
-  border-color: var(--color-menu-button-text);
-  min-height: 50px;
-}
-
-/* --- 5. DIALOG & DETAILS --- */
+/* --- 4. DIALOG & DETAIL VIEW --- */
 .detail-dialog-frame {
   border: none;
-  border-radius: 12px;
+  border-radius: 30px;
   padding: 0;
-  max-width: 526px;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-width: 525px;
   width: 90%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  margin: auto;
-  inset: 0;
-  transition: max-width 0.2s ease-in-out;
+  overflow: hidden;
 }
 
 .detail-dialog-frame::backdrop {
-  background-color: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
-
 .detail-dialog-frame.edit-mode-wide {
   max-width: 1100px;
   width: 95%;
 }
 
 .task-detail-content-style {
-  background-color: var(--color-bg-primary);
-  border-radius: 12px;
-  padding: 30px 40px;
+  background: var(--color-bg-primary);
+  padding: 40px;
   display: flex;
   flex-direction: column;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow: auto;
   width: 100%;
 }
 
-.detail-view {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.detail-view-header {
-  justify-content: space-between;
-}
-
-.detail-view-close {
-  cursor: pointer;
-  border-radius: 50%;
-  padding: 4px;
-}
-
-.detail-view-close:hover {
-  background: var(--color-bg-tertiary);
-}
-
 .detail-view-title {
-  font-size: 36px;
+  font-size: 42px;
   font-weight: 700;
-  line-height: 1.2;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  line-height: 1.1;
+  margin: 12px 0;
+  text-align: left;
+  word-wrap: break-word;
 }
-
 .detail-view-description {
   font-size: 24px;
+  line-height: 1.3;
 }
-
-.detail-view-info-row {
-  gap: 20px;
-  display: flex;
-}
-
 .detail-view-label {
   color: var(--color-bg-secondary);
   width: 120px;
   font-size: 24px;
-}
-
-.detail-view-prio-badge {
-  gap: 10px;
-  text-transform: capitalize;
-}
-
-.detail-view-prio-badge img {
-  width: 20px;
+  flex-shrink: 0;
 }
 
 .detail-view-footer {
@@ -272,7 +174,6 @@
   gap: 8px;
   margin-top: 16px;
 }
-
 .action-btn {
   gap: 8px;
   cursor: pointer;
@@ -282,68 +183,57 @@
   background: none;
   color: var(--color-bg-secondary);
 }
-
 .action-btn:hover {
   color: var(--color-highlights);
-  font-weight: 700;
+  background: var(--color-bg-tertiary);
+  border-radius: 8px;
 }
 
-.divider {
-  width: 1px;
-  height: 24px;
-  background: var(--color-divider);
-}
-
-.assigned-list-detail {
+/* --- 5. PROGRESS & SUBTASKS --- */
+.subtask-progress-container {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 150px;
-  overflow-y: auto;
-}
-
-.user-badge {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  color: var(--color-bg-primary);
-  display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 14px;
-  border: 2px solid var(--color-bg-primary);
-}
-
-.user-name {
-  font-size: 19px;
-  margin-left: 16px;
-}
-
-/* --- 6. FORMS & EDIT MODE --- */
-.edit-mode-main {
+  gap: 10px;
+  margin-top: 8px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
+}
+.progress-bar-bg {
+  background: #f4f4f4;
+  border-radius: 8px;
+  height: 8px;
+  flex-grow: 1;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  background: #4589ff;
+  height: 100%;
+  transition: width 0.3s;
 }
 
+.subtask-item {
+  padding: 6px 0;
+  cursor: pointer;
+}
+.subtask-text {
+  margin-left: 20px;
+  font-size: 16px;
+}
+
+/* --- 6. EDIT MODE & INPUTS --- */
 .edit-content-wrapper {
   display: flex;
-  width: 100%;
-  justify-content: space-between;
   gap: 40px;
+  width: 100%;
 }
-
 .edit-section {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
-
 .edit-vertical-divider {
   width: 1px;
-  background-color: var(--color-divider);
-  align-self: stretch;
+  background: var(--color-divider);
   margin: 0 20px;
 }
 
@@ -369,53 +259,29 @@
   color: var(--color-required);
 }
 
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px 21px;
+  border: 1px solid var(--color-divider);
+  border-radius: 10px;
+  font-size: 20px;
+  outline: none;
+  background: var(--color-bg-primary);
+}
 textarea {
   resize: none;
   height: 120px;
 }
-
-.input-wrapper button {
-  position: absolute;
-  right: 12px;
-  background: var(--color-bg-primary);
-  border: none;
-  cursor: pointer;
+.user-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #fff;
   display: flex;
-  padding: 0;
-}
-
-.subtask-check-icon {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  object-fit: contain;
-}
-
-.subtask-left {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
-
-.subtasks-list-edit {
-  padding: 0;
-  margin-top: 10px;
-  list-style: none;
-  max-height: 100px;
-  overflow-y: auto;
-}
-
-.subtask-item-edit {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-  font-size: 16px;
-}
-
-.subtask-item-edit button {
-  background: none;
-  border: none;
-  cursor: pointer;
+  border: 2px solid #fff;
 }
