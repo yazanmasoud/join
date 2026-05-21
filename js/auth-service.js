@@ -15,17 +15,15 @@ export async function registerUser(name, email, password) {
       email,
       password
     );
-
     await saveUserProfile(userCredential.user, name, email);
     await signOut(auth);
-
     handleSignupSuccess();
-
   } catch (error) {
     console.error(error);
     showSignupFailed(); //hier müssen die Fehlercodes ausgewertet und angezeigt werden.
   }
 }
+
 
 // saves the user profile to the database
 async function saveUserProfile(user, name, email) {
@@ -35,14 +33,13 @@ async function saveUserProfile(user, name, email) {
   });
 }
 
+
 // resets the UI after successful signup
 function handleSignupSuccess() {
   showOverlay('Account created. Please log in.');
-
   setTimeout(() => {
     hideOverlay();
   }, 2000);
-
   closeSignUp();
   clearSignupInputs();
 }
@@ -55,23 +52,20 @@ async function handleSignup(event) {
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
   const confirmPassword = document.getElementById('signup-confirm-password').value;
-
   await registerUser(name, email, password);
 }
 
 
 export async function loginAsUser(email, password) {
+  localStorage.clear();
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
     localStorage.setItem('isGuest', 'false');
     localStorage.setItem('currentUserId', userCredential.user.uid);
-
     loginSuccess('Logged in as User!');
-// hier kann man später if (error.code === 'auth/wrong-password') {} verwenden statt catch(error)
+    // hier kann man später if (error.code === 'auth/wrong-password') {} verwenden statt catch(error)
   } catch (error) {
     console.error(error);
-
     showWrongCredentials();
   }
 }
@@ -87,9 +81,7 @@ export async function logoutUser() {
   if (!isGuestUser()) {
     await signOut(auth);
   }
-
   localStorage.clear();
-
   window.location.href = '../index.html';
 }
 
@@ -108,21 +100,19 @@ function initGuestStorage() {
 
 function loginSuccess(message) {
   showOverlay(message);
-
   setTimeout(() => {
     hideOverlay();
-
     setTimeout(() => {
       window.location.href = './pages/layout.html?page=summary';
     }, 300);
   }, 1200);
 }
 
+
 //holt die input werte
 async function handleLogin() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-
   await loginAsUser(email, password);
 }
 
@@ -135,15 +125,11 @@ export async function getCurrentUserData() {
   if (isGuestUser()) {
     return JSON.parse(localStorage.getItem('currentUser'));
   }
-
   const uid = getCurrentUserId();
-
   const snapshot = await get(ref(database, `users/${uid}`));
-
   if (!snapshot.exists()) {
     throw new Error('Authenticated user data not found.');
   }
-
   return snapshot.val();
 }
 

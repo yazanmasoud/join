@@ -93,6 +93,7 @@ function getInitialPage() {
   return params.get('page') || 'summary';
 }
 
+
 /**
  * Initializes the default main application layout structure.
  */
@@ -100,21 +101,16 @@ export async function initLayout() {
   await checkSession();
   await loadTemplate('headerContent', '../templates/header.html');
   await loadTemplate('sidebarContent', '../templates/aside.html');
-
   const userData = await getCurrentUserData();
-
   if (userData) {
     renderAvatar('headerAvatar', userData.name);
   }
-
   const initialPage = getInitialPage();
-
   await loadTemplate('mainContent', `./${initialPage}.html`);
-
   pageHistory.push(initialPage);
-
   initPage(initialPage);
 }
+
 
 /**
  * Handles client-side page navigation by updating the page history,

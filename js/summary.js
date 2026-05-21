@@ -1,10 +1,18 @@
 /**
  * @file Summary management script handling dashboard state and real-time metrics data.
  */
-
+import {
+  ref,
+  onValue,
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { getCurrentUserId, isGuestUser, getLocalTasks } from './storage.js';
 import { calculateMetrics } from './utils.js';
-import { setGreeting, updateUI, setGreetingName } from './ui.js';
+import {
+  setGreeting,
+  updateUI,
+  setGreetingName,
+  normalizeObjectToArray,
+} from './ui.js';
 import { auth, database } from './firebase-config.js';
 import { getCurrentUserData } from './auth-service.js';
 import {
