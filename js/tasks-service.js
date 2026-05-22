@@ -10,8 +10,6 @@ import {
   onValue,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-import { generateLocalId } from './utils.js';
-
 import {
   isGuestUser,
   getCurrentUserId,

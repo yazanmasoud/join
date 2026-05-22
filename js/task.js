@@ -1,10 +1,16 @@
+import {
+  createTask as serviceCreateTask,
+  updateTask as serviceUpdateTask,
+} from './tasks-service.js';
 import { getPriorityButtonsHTML } from './template.js';
 import { getSelectOptionsHTML } from './template.js';
 import { getSubtaskHTML } from './template.js';
-import { clearActivePrioClasses } from './utils.js';
-import { getPrioClass } from './utils.js';
-import { CATEGORY_OPTIONS } from './utils.js';
-import { CONTACT_OPTIONS } from './utils.js';
+import {
+  clearActivePrioClasses,
+  getPrioClass,
+  CATEGORY_OPTIONS,
+  CONTACT_OPTIONS,
+} from './utils.js';
 
 let subtasks = [];
 let currentPriority = 'Medium';
@@ -14,7 +20,6 @@ export async function initAddTask() {
   renderCategories();
   renderContacts();
   setPriority(currentPriority);
-
   const editId = localStorage.getItem('editTaskId');
   if (editId) {
     const editData = JSON.parse(localStorage.getItem('editTaskData'));
@@ -37,8 +42,7 @@ function fillFormForEdit(data) {
 function updateButtonToSaveMode() {
   const btn = document.querySelector('.btn-dark');
   if (btn) {
-    btn.innerHTML = 'Save Changes <img src="../assets/icons/check.svg">';
-
+    btn.innerHTML = 'Save Changes <img src="../assets/icons/create-task.svg">';
     btn.onclick = createTask;
   }
   const headline = document.querySelector('h2');
@@ -54,9 +58,11 @@ async function createTask() {
   const editId = localStorage.getItem('editTaskId');
   try {
     if (editId) {
-      await service.updateTask(editId, task);
+      // Nutzt jetzt den Alias aus dem Import
+      await serviceUpdateTask(editId, task);
     } else {
-      await service.createTask(task);
+      // Nutzt jetzt den Alias aus dem Import
+      await serviceCreateTask(task);
     }
     handleSuccess();
   } catch (e) {
@@ -68,7 +74,7 @@ function handleSuccess() {
   showSuccessToast();
   localStorage.removeItem('editTaskId');
   localStorage.removeItem('editTaskData');
-  setTimeout(() => (window.location.href = 'board.html'), 1000);
+  setTimeout(() => (window.location.href = 'layout.html?page=board'), 1000);
 }
 
 /**
@@ -86,6 +92,7 @@ function validateTask(task) {
  * @returns {Object} The generated task object.
  */
 function getTaskObject() {
+  const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
   return {
     title: document.getElementById('taskTitle').value,
     description: document.getElementById('taskDescription').value,
@@ -94,8 +101,8 @@ function getTaskObject() {
     priority: currentPriority,
     assignedTo: document.getElementById('tasksAssigned').value,
     subtasks: subtasks,
-    status: 'todo',
-    createdAt: Date.now(),
+    status: editData.status || 'todo',
+    createdAt: editData.createdAt || Date.now(),
   };
 }
 
@@ -211,6 +218,12 @@ function showSuccessToast() {
   }
 }
 
+function toggleSubtaskStatus(index) {
+  subtasks[index].done = !subtasks[index].done;
+  renderSubtasks();
+}
+window.toggleSubtaskStatus = toggleSubtaskStatus;
+window.initAddTask = initAddTask;
 window.createTask = createTask;
 window.setPriority = setPriority;
 window.handleSubtaskKey = handleSubtaskKey;

@@ -17,7 +17,7 @@ export function generateTaskHTML(task, id) {
     : '';
   return `
     <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" 
-         onclick="openTaskDetail('${id}')">
+         onclick="editTask('${id}')"> 
       <div class="task-category ${catClass}">${task.category || ''}</div>
       <h3>${task.title || ''}</h3>
       <p class="description-task-board">${task.description || ''}</p>
@@ -90,8 +90,17 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
  * @returns {string} The subtask list item HTML string.
  */
 export function getSubtaskHTML(task, index) {
-  return `<li>${task.title}<button type="button" onclick="deleteSubtask(${index})">
-          <img src="../assets/icons/delete-icon.svg"></button></li>`;
+  const icon = task.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
+  return `
+    <li class="subtask-edit-item">
+      <div class="subtask-left" onclick="toggleSubtaskStatus(${index})">
+        <img src="../assets/icons/${icon}" class="subtask-check-icon">
+        <span>${task.title}</span>
+      </div>
+      <button type="button" class="delete-sub-btn" onclick="deleteSubtask(${index})">
+        <img src="../assets/icons/delete-icon.svg">
+      </button>
+    </li>`;
 }
 
 /** --- TASK DETAIL DIALOG --- */

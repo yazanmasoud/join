@@ -1,7 +1,3 @@
-/**
- * @file Board management script handling task filtering, viewing, and state updates.
- */
-
 import {
   ref,
   onValue,
@@ -36,12 +32,6 @@ let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
-/** @section INITIALIZATION & RENDERING */
-
-/**
- * Initializes the board and loads tasks
- * depending on the current session type.
- */
 export function initBoard() {
   if (isGuestUser()) {
     CURRENT_TASKS = convertTaskArrayToObject(getLocalTasks());
@@ -83,10 +73,6 @@ function renderAllTasks(allTasks) {
   columns.forEach((id) => checkPlaceholder(id));
 }
 
-/**
- * Inserts a placeholder if a board column is empty.
- * @param {string} id - The HTML column ID.
- */
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
   if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
@@ -187,7 +173,7 @@ export async function editTask(id) {
   if (task) {
     localStorage.setItem('editTaskId', id);
     localStorage.setItem('editTaskData', JSON.stringify(task));
-    window.location.href = 'add-task.html';
+    window.location.href = 'layout.html?page=add-task';
   }
 }
 
@@ -288,7 +274,7 @@ export async function deleteTask(id) {
  */
 function openAddTask(status = 'todo') {
   localStorage.setItem('selectedStatus', status);
-  window.location.href = 'add-task.html';
+  window.location.href = 'layout.html?page=add-task';
 }
 
 function convertTaskArrayToObject(tasks) {
