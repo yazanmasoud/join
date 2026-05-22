@@ -1,80 +1,84 @@
 <main class="content-area">
-    <h2>Add Task</h2>
-    <div class="add-task">
-      <div class="add-section-left">
-        <div class="input-group">
-          <label for="taskTitle">Title<span class="required">*</span></label>
-          <input type="text" id="taskTitle" placeholder="Enter a title" />
-        </div>
-        <div class="input-group">
-          <label for="taskDescription">Description</label>
-          <textarea
-            id="taskDescription"
-            placeholder="Enter a Description"
-          ></textarea>
-        </div>
-        <div class="input-group">
-          <label for="taskDate">Due date<span class="required">*</span></label>
-          <div class="input-wrapper-task">
-            <input type="date" id="taskDate" placeholder="dd/mm/yyyy" />
-            <button
-              type="button"
-              onclick="document.getElementById('taskDate').showPicker()"
-            >
-              <img src="../assets/icons/date-icon.svg" alt="Kalender öffnen" />
-            </button>
-          </div>
-        </div>
+  <h2>Add Task</h2>
+  <div class="add-task">
+    <div class="add-section-left">
+      <div class="input-group">
+        <label for="taskTitle">Title<span class="required">*</span></label>
+        <input type="text" id="taskTitle" placeholder="Enter a title" />
       </div>
-      <div class="vertical-divider"></div>
-      <div class="add-section-left">
-        <div class="input-group">
-          <label>Priority</label>
-          <div class="priority-btn-content" id="prioContainer"></div>
-        </div>
-
-        <div class="input-group">
-          <label for="tasksAssigned">Assigned to</label>
-          <select id="tasksAssigned">
-            <option>Select contacts to assign</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label for="taskCategory"
-            >Category<span class="required">*</span></label
+      <div class="input-group">
+        <label for="taskDescription">Description</label>
+        <textarea
+          id="taskDescription"
+          placeholder="Enter a Description"
+        ></textarea>
+      </div>
+      <div class="input-group">
+        <label for="taskDate">Due date<span class="required">*</span></label>
+        <div class="input-wrapper-task">
+          <input type="date" id="taskDate" placeholder="dd/mm/yyyy" />
+          <button
+            type="button"
+            onclick="document.getElementById('taskDate').showPicker()"
           >
-          <select id="taskCategory">
-            <option>Select task category</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label for="subtasks">Subtasks</label>
-          <input
-            type="text"
-            id="subtasks"
-            placeholder="Add new subtask"
-            onkeydown="handleSubtaskKey(event)"
-          />
-          <ul id="subtasksList"></ul>
+            <img src="../assets/icons/date-icon.svg" alt="Kalender öffnen" />
+          </button>
         </div>
       </div>
     </div>
-    <div class="form-bottom">
-      <p class="required-hint">
-        <span class="required">*</span>This field is required
-      </p>
-      <div class="form-actions">
-        <button type="button" class="btn-light" onclick="clearForm()">
-          Clear <span></span>
-          <img
-            src="../assets/icons/cancle-icon.svg"
-            alt="Verwerfe den Entwurf Button"
-          />
-        </button>
-        <button type="submit" class="btn-dark" onclick="createTask()">
-          Create Task
-          <img src="../assets/icons/create-task.svg" alt="speichere den Task" />
-        </button>
+    <div class="vertical-divider"></div>
+    <div class="add-section-left">
+      <div class="input-group">
+        <label>Priority</label>
+        <div class="priority-btn-content" id="prioContainer"></div>
+      </div>
+
+      <div class="input-group">
+        <label for="tasksAssigned">Assigned to</label>
+        <select id="tasksAssigned">
+          <option>Select contacts to assign</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="taskCategory"
+          >Category<span class="required">*</span></label
+        >
+        <select id="taskCategory">
+          <option>Select task category</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="subtasks">Subtasks</label>
+        <input
+          type="text"
+          id="subtasks"
+          placeholder="Add new subtask"
+          onkeydown="handleSubtaskKey(event)"
+        />
+        <ul id="subtasksList"></ul>
       </div>
     </div>
+  </div>
+  <div class="form-bottom">
+    <p class="required-hint">
+      <span class="required">*</span>This field is required
+    </p>
+    <div class="form-actions">
+      <button type="button" class="btn-light" onclick="clearForm()">
+        Clear <span></span>
+        <img
+          src="../assets/icons/cancle-icon.svg"
+          alt="Verwerfe den Entwurf Button"
+        />
+      </button>
+      <button type="submit" class="btn-dark" onclick="createTask()">
+        Create Task
+        <img src="../assets/icons/create-task.svg" alt="speichere den Task" />
+      </button>
+    </div>
+  </div>
+  <div id="successMessage" class="success-toast d-none">
+    <span>Task added to board</span>
+    <img src="../assets/icons/nav-board-icon.svg" alt="" />
+  </div>
 </main>
