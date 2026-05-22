@@ -332,7 +332,7 @@ export function getContactDetails(contact, index) {
                 <p>Edit</p>
               </button>
 
-              <button class="btn edit-delete-btn">
+              <button onclick="deleteContact('${contact.id}')" class="btn edit-delete-btn">
                 <img src="../assets/icons/delete-icon.svg" alt="">
                 <p>Delete</p>
               </button>
