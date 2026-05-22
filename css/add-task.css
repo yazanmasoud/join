@@ -204,6 +204,31 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   color: var(--color-bg-secondary);
 }
 
+.success-toast {
+  position: fixed;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2a3647;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: bottom 0.5s ease-in-out;
+}
+
+.success-toast:not(.d-none) {
+  bottom: 50px;
+}
+
+.d-none {
+  display: none;
+}
+
 @media (max-width: 600px) {
   .form-bottom {
     flex-direction: column;
@@ -218,6 +243,6 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   }
 
   .form-actions {
-    gap: 8px
-}
+    gap: 8px;
+  }
 }
