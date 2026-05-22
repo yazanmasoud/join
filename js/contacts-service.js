@@ -32,7 +32,7 @@ export async function getContacts() {
   }));
 }
 
-export async function createContactService(contactData) {
+export async function createContact(contactData) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
 
@@ -94,7 +94,7 @@ export async function updateContact(contactId, updatedData) {
   await update(ref(database, `contacts/${uid}/${contactId}`), updatedData);
 }
 
-export async function deleteContactService(contactId) {
+export async function deleteContact(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
 
