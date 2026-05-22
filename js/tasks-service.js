@@ -1,6 +1,5 @@
 import { database, auth } from './firebase-config.js';
 import { ref, get, set, update, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-import { generateLocalId } from './utils.js';
 import { isGuestUser, getCurrentUserId, getLocalTasks, setLocalTasks } from './storage.js';
 import { normalizeObjectToArray } from './ui.js';
 
