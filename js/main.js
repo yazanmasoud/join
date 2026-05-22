@@ -2,17 +2,26 @@ import { guestContacts, guestTasks } from './guest-data.js';
 import { showInputError, clearInputError } from './ui.js';
 
 
-/**
- * DOM element indicating if the current view is the login interface.
- * @type {HTMLElement|null}
- */
 const isLoginPage = document.getElementById('login');
 const wrapper = document.querySelector('.content-wrapper');
 
-if (document.documentElement.classList.contains('show-start-animation')) {
-  wrapper.classList.add('is-loading');
-} else {
-  wrapper.classList.add('is-ready', 'no-animation');
+if (isLoginPage && wrapper) {
+  initMainLoginPage();
+}
+
+function initMainLoginPage() {
+  if (document.documentElement.classList.contains('show-start-animation')) {
+    wrapper.classList.add('is-loading');
+  } else {
+    wrapper.classList.add('is-ready', 'no-animation');
+  }
+
+  initStartAnimation();
+
+  window.openSignUp = openSignUp;
+  window.openLogin = openLogin;
+  window.validateForm = validateForm;
+  window.handleSignup = handleSignup;
 }
 
 
@@ -54,7 +63,6 @@ function finishLogoAnimation(logo, login) {
  * @param {HTMLElement} login - The login main interaction wrapper container.
  */
 function activateFinalLogoState(logo, login) {
-  const wrapper = document.querySelector('.content-wrapper');
   logo.classList.add('final');
 }
 
@@ -282,15 +290,4 @@ async function handleSignup(event) {
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
   await registerUser(name, email, password);
-}
-
-
-// Global verfügbare Schnittstellen für Ihre HTML-Attribute (onclick) registrieren
-window.openSignUp = openSignUp;
-window.openLogin = openLogin;
-window.validateForm = validateForm;
-
-
-if (isLoginPage) {
-  initStartAnimation();
 }

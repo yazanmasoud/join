@@ -14,12 +14,12 @@
   <link rel="stylesheet" href="./css/add-task.css" />
   <link rel="stylesheet" href="./css/contacts.css" />
   <script>
-  if (!sessionStorage.getItem('startAnimationPlayed')) {
-    document.documentElement.classList.add('show-start-animation');
-  } else {
-    document.documentElement.classList.add('skip-start-animation');
-  }
-</script>
+    if (!sessionStorage.getItem('startAnimationPlayed')) {
+      document.documentElement.classList.add('show-start-animation');
+    } else {
+      document.documentElement.classList.add('skip-start-animation');
+    }
+  </script>
 </head>
 
 <body>
@@ -119,24 +119,16 @@
       <a id="privacyLink" class="footer-link" href="./pages/loginlayout.html?page=privacy">Privacy Policy</a>
     </footer>
   </div>
-  <!-- 1. Firebase Core (Basis-SDK) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-
-  <!-- 2. Firebase Database -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-  <!-- 3. Firebase Auth SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
   <script type="module" src="./js/firebase-config.js"></script>
-  <script type="module" src="../js/utils.js"></script>
-  <script type="module" src="../js/template.js"></script>
-  <script type="module" src="../js/summary.js"></script>
-  <script type="module" src="../js/board.js"></script>
-  <script type="module" src="../js/task.js"></script>
-  <script type="module" src="../js/contacts.js"></script>
-  <script type="module" src="../js/layout.js"></script>
-  <script type="module" src="../js/main.js"></script>
-  <script type="module" src="../js/auth-service.js"></script>
+  <script type="module" src="./js/storage.js"></script>
+  <script type="module" src="./js/ui.js"></script>
+  <script type="module" src="./js/guest-data.js"></script>
+  <script type="module" src="./js/auth-service.js"></script>
+  <script type="module" src="./js/main.js"></script>
 </body>
 
 </html>

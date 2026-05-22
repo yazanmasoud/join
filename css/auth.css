@@ -1,9 +1,5 @@
 /* ===== BASE / LAYOUT ===== */
 
-.show-start-animation .content-wrapper {
-  pointer-events: none;
-}
-
 .show-start-animation .content-wrapper #signup-container,
 .show-start-animation .content-wrapper #login,
 .show-start-animation .content-wrapper footer {
@@ -82,6 +78,13 @@
   pointer-events: none;
 }
 
+.skip-start-animation .logo-start {
+  transition: none !important;
+  left: 80px;
+  top: 80px;
+  transform: translate(0, 0) scale(1);
+}
+
 .logo-start.no-animation {
   transition: none !important;
 }
@@ -117,21 +120,12 @@
 }
 
 .logo-dark {
-  opacity: 0;
+  opacity: 1;
 }
 
 .logo-white {
-  opacity: 1;
-}
-
-.content-wrapper.is-ready .logo-dark {
-  opacity: 1;
-}
-
-.content-wrapper.is-ready .logo-white {
   opacity: 0;
 }
-
 
 .signup-container {
   display: flex;
@@ -415,21 +409,34 @@ footer a:hover {
 /* ===== RESPONSIVE DESIGN ===== */
 
 @media (max-width: 768px) {
-
   .show-start-animation .content-wrapper {
     background-color: var(--color-bg-secondary);
   }
 
-  .skip-start-animation .content-wrapper {
-    background-color: var(--color-bg-tertiary);
-  }
-
-  .content-wrapper.is-loading {
-    background-color: var(--color-bg-secondary);
+  .skip-start-animation .logo-start {
+    left: 40px;
+    top: 40px;
+    transform: translate(0, 0) scale(1);
   }
 
   .content-wrapper.is-ready {
     background-color: var(--color-bg-tertiary);
+  }
+
+  .show-start-animation .logo-dark {
+    opacity: 0;
+  }
+
+  .show-start-animation .logo-white {
+    opacity: 1;
+  }
+
+  .content-wrapper.is-ready .logo-dark {
+    opacity: 1;
+  }
+
+  .content-wrapper.is-ready .logo-white {
+    opacity: 0;
   }
 
   .logo-start.shrink,
@@ -439,16 +446,16 @@ footer a:hover {
     transform: translate(0, 0) scale(1);
   }
 
-  .logo-wrap {
+  .logo-wrap,
+  .logo-start,
+  .join-logo {
     width: 64px;
     height: 64px;
-    margin-top: 40px;
-    margin-left: 40px;
   }
 
-  .logo-start {
-    width: 64px;
-    height: 64px;
+  .logo-wrap {
+    margin-top: 40px;
+    margin-left: 40px;
   }
 
   .login_btn-container {
@@ -460,10 +467,6 @@ footer a:hover {
   .login-signup-section {
     width: 270px;
     padding: 32px 16px;
-  }
-
-  .join-logo {
-    width: 64px;
   }
 
   .welcome-section {
@@ -486,5 +489,4 @@ footer a:hover {
   .btn-dark {
     font-size: 16px;
   }
-
 }

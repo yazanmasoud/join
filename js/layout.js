@@ -265,3 +265,11 @@ window.openHelp = openHelp;
 window.loginNavigateTo = loginNavigateTo;
 window.backToLogin = backToLogin;
 window.pageHistory = pageHistory;
+
+if (document.querySelector('.layout')) {
+  initLayout();
+}
+
+if (document.querySelector('.layout-login')) {
+  initLoginLayout();
+}
