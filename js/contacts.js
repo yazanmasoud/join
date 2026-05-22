@@ -13,10 +13,9 @@ export let contacts = [];
 
 export async function initContacts() {
     contacts = await getContacts();
-    console.log(contacts);
+    contacts.sort((a, b) => a.name.localeCompare(b.name));
 
     renderContacts();
-    console.log('Aktuell keine initContacts() Funktionen');
 }
 
 function openContactDialog() {
@@ -113,13 +112,13 @@ async function createContact() {
     let initials = getInitials(name);
     let color = getRandomColor();
 
-    let contactData = {name, email, phone, initials, color};
+    let contactData = { name, email, phone, initials, color };
 
     let savedContact = await createContactService(contactData);
 
     contacts.push(savedContact);
     contacts.sort((a, b) => a.name.localeCompare(b.name));
-
+    console.log(contacts.map(c => c.name));
     renderContacts();
 
     document.getElementById('contact-name').value = '';
