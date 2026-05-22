@@ -111,7 +111,6 @@ export async function initLayout() {
   initPage(initialPage);
 }
 
-
 /**
  * Handles client-side page navigation by updating the page history,
  * loading the target page template,

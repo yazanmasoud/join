@@ -1,6 +1,7 @@
 import { getInitials } from './utils.js';
 import { renderAvatar, clearElementsByIds } from './ui.js';
 import { getCurrentUserId } from './storage.js';
+import { getContacts, createContactService } from './contacts-service.js';
 
 
 /**
@@ -10,7 +11,11 @@ import { getContactDetails, getSingleContact, getContactLetter } from './templat
 
 export let contacts = [];
 
-export function initContacts() {
+export async function initContacts() {
+    contacts = await getContacts();
+    console.log(contacts);
+
+    renderContacts();
     console.log('Aktuell keine initContacts() Funktionen');
 }
 
@@ -100,37 +105,27 @@ function closeAddContact() {
  * Afterwards the contacts get sorted
  * alphabetically and rendered again.
  */
-function createContact() {
+async function createContact() {
     let name = document.getElementById('contact-name').value;
     let email = document.getElementById('contact-email').value;
     let phone = document.getElementById('contact-phone').value;
 
-    // if editing an existing contact, update it; otherwise create new
-    const editing = window._editingContactIndex;
-    let savedContactRef = null;
-    if (editing !== undefined && editing !== null) {
-        const existing = contacts[editing] || {};
-        const newInitials = getInitials(name);
-        existing.name = name;
-        existing.email = email;
-        existing.phone = phone;
-        existing.initials = newInitials;
-        // keep existing.color
-        contacts[editing] = existing;
-        savedContactRef = existing;
-        window._editingContactIndex = null;
-    } else {
-        let initials = getInitials(name);
-        let color = getRandomColor();
-        let contact = { name, email, phone, initials, color };
-        contacts.push(contact);
-        savedContactRef = contact;
-    }
+    let initials = getInitials(name);
+    let color = getRandomColor();
+
+    let contactData = {name, email, phone, initials, color};
+
+    let savedContact = await createContactService(contactData);
+
+    contacts.push(savedContact);
     contacts.sort((a, b) => a.name.localeCompare(b.name));
+
     renderContacts();
+
     document.getElementById('contact-name').value = '';
     document.getElementById('contact-email').value = '';
     document.getElementById('contact-phone').value = '';
+
     closeAddContact();
 }
 

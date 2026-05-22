@@ -10,12 +10,9 @@ import {
   onValue,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-import { isGuestUser, generateLocalId } from './utils.js';
+import { isGuestUser} from './storage.js';
 
-import {
-  getGuestContacts,
-  saveGuestContacts,
-} from './guest-data.js';
+
 
 export async function getContacts() {
   if (isGuestUser()) {
@@ -23,7 +20,9 @@ export async function getContacts() {
   }
 
   const uid = auth.currentUser.uid;
+  console.log(uid);
   const snapshot = await get(ref(database, `contacts/${uid}`));
+  console.log(snapshot.val());
 
   if (!snapshot.exists()) return [];
 
@@ -33,7 +32,7 @@ export async function getContacts() {
   }));
 }
 
-export async function createContact(contactData) {
+export async function createContactService(contactData) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
 
