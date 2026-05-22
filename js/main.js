@@ -1,30 +1,36 @@
 import { guestContacts, guestTasks } from './guest-data.js';
 import { showInputError, clearInputError } from './ui.js';
 
+
 /**
  * DOM element indicating if the current view is the login interface.
  * @type {HTMLElement|null}
  */
 const isLoginPage = document.getElementById('login');
+const wrapper = document.querySelector('.content-wrapper');
+const animationAlreadyPlayed = sessionStorage.getItem('startAnimationPlayed');
+
+if (window.innerWidth <= 768 && !animationAlreadyPlayed) {
+  wrapper.classList.add('mobile-splash');
+}
+
 
 /**
  * Applies the mobile splash layout styling and switches to the white logo variant.
  * @param {HTMLImageElement} logo - The logo image element.
  */
-function setMobileSplash(logo) {
+function setMobileSplash() {
   if (!isMobile()) return;
-  document.body.classList.add('mobile-splash');
-  logo.src = './assets/logos/main-logo-white.svg';
+  wrapper.classList.add('mobile-splash');
 }
 
 /**
  * Removes the mobile splash layout styling and switches back to the default dark logo variant.
  * @param {HTMLImageElement} logo - The logo image element.
  */
-function resetMobileSplash(logo) {
+function resetMobileSplash() {
   if (!isMobile()) return;
-  document.body.classList.remove('mobile-splash');
-  logo.src = './assets/logos/main-logo.svg';
+  wrapper.classList.remove('mobile-splash');
 }
 
 /**
@@ -35,15 +41,16 @@ function animateLogo(delay = 0) {
   const logo = document.getElementById('logo');
   const login = document.getElementById('login');
   if (!logo || !login || logo.classList.contains('shrink')) return;
-  setMobileSplash(logo);
+  setMobileSplash();
   setTimeout(() => {
-    resetMobileSplash(logo);
     login.classList.remove('hidden');
-    const wrapper = document.querySelector('.content-wrapper');
     wrapper.classList.remove('is-loading');
     wrapper.classList.add('is-ready');
     logo.classList.add('shrink');
     finishLogoAnimation(logo, login);
+    setTimeout(() => {
+      resetMobileSplash();
+    }, 1200);
   }, delay);
 }
 
@@ -97,7 +104,6 @@ function isMobile() {
 }
 
 function initStartAnimation() {
-  const wrapper = document.querySelector('.content-wrapper');
   const logo = document.getElementById('logo');
   const login = document.getElementById('login');
   if (!wrapper || !logo || !login) return;
@@ -105,6 +111,9 @@ function initStartAnimation() {
   if (animationAlreadyPlayed) {
     showStartPageWithoutAnimation(wrapper, logo, login);
     return;
+  }
+  if (isMobile()) {
+    wrapper.classList.add('mobile-splash');
   }
   sessionStorage.setItem('startAnimationPlayed', 'true');
   animateLogo(500);
