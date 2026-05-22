@@ -16,11 +16,14 @@
 </head>
 
 <body>
-  <div class="content-wrapper is-loading">
+  <div id="content-wrapper" class="content-wrapper is-loading">
     <section class="welcome-section">
       <!-- placeholder keeps space in layout while logo is animated as fixed -->
       <div class="logo-wrap">
-        <img id="logo" class="join-logo logo-start" src="./assets/logos/main-logo.svg" alt="Join Logo" />
+        <div id="logo" class="join-logo logo-start">
+          <img class="logo-dark" src="./assets/logos/main-logo.svg" alt="Join Logo" />
+          <img class="logo-white" src="./assets/logos/main-logo-white.svg" alt="Join Logo" />
+        </div>
       </div>
       <div id="signup-container" class="signup-container">
         <p class="p-welcome">Not a Join User?</p>
@@ -76,23 +79,22 @@
 
       <form novalidate onsubmit="handleSignup(event)">
         <div class="username-input-area">
-          <input oninput="validateForm();" type="text"
-            id="signup-username" class="username" placeholder="Name" required/>
+          <input oninput="validateForm();" type="text" id="signup-username" class="username" placeholder="Name"
+            required />
           <p id="error-text-signup-username" class="form-error"></p>
         </div>
         <div class="email-input-area">
-          <input oninput="validateForm();" type="email"
-            id="signup-email" class="email" placeholder="Email" required />
+          <input oninput="validateForm();" type="email" id="signup-email" class="email" placeholder="Email" required />
           <p id="error-text-signup-email" class="form-error"></p>
         </div>
         <div class="password-input-area">
-          <input oninput="validateForm();"
-            type="password" id="signup-password" class="password" placeholder="Password" required />
+          <input oninput="validateForm();" type="password" id="signup-password" class="password" placeholder="Password"
+            required />
           <p id="error-text-signup-password" class="form-error"></p>
         </div>
         <div class="confirm-password-input-area">
-          <input oninput="validateForm();"
-            type="password" id="signup-confirm-password" class="password" placeholder="Confirm Password" required />
+          <input oninput="validateForm();" type="password" id="signup-confirm-password" class="password"
+            placeholder="Confirm Password" required />
           <p id="error-text-confirm-password" class="form-error"></p>
         </div>
         <div class="privacy-container">
