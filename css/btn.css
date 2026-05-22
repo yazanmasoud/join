@@ -26,6 +26,12 @@ button {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.btn-dark:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .btn-light {
   display: flex;
   justify-content: center;

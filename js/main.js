@@ -1,4 +1,5 @@
 import { guestContacts, guestTasks } from './guest-data.js';
+import { showInputError, clearInputError } from './ui.js';
 
 /**
  * DOM element indicating if the current view is the login interface.
@@ -34,11 +35,13 @@ function animateLogo(delay = 0) {
   const logo = document.getElementById('logo');
   const login = document.getElementById('login');
   if (!logo || !login || logo.classList.contains('shrink')) return;
-
   setMobileSplash(logo);
-
   setTimeout(() => {
     resetMobileSplash(logo);
+    login.classList.remove('hidden');
+    const wrapper = document.querySelector('.content-wrapper');
+    wrapper.classList.remove('is-loading');
+    wrapper.classList.add('is-ready');
     logo.classList.add('shrink');
     finishLogoAnimation(logo, login);
   }, delay);
@@ -55,7 +58,6 @@ function finishLogoAnimation(logo, login) {
   setTimeout(() => {
     activateFinalLogoState(logo, login);
     showMobileSignup();
-    switchLogoToLayoutMode();
   }, delay);
 }
 
@@ -65,8 +67,13 @@ function finishLogoAnimation(logo, login) {
  * @param {HTMLElement} login - The login main interaction wrapper container.
  */
 function activateFinalLogoState(logo, login) {
+  const wrapper = document.querySelector('.content-wrapper');
+
   logo.classList.add('final');
   login.classList.remove('hidden');
+
+  wrapper.classList.remove('is-loading');
+  wrapper.classList.add('is-ready');
 }
 
 /**
@@ -80,16 +87,6 @@ function showMobileSignup() {
   }
 }
 
-/**
- * Transitions the logo container configuration wrapper into standard page flow layout positioning rules.
- */
-function switchLogoToLayoutMode() {
-  const logoWrap = document.querySelector('.logo-wrap');
-
-  setTimeout(() => {
-    logoWrap?.classList.add('layout-mode');
-  }, 700);
-}
 
 /**
  * Evaluates current browser window dimensions to determine if viewport behaves as mobile scale.
@@ -99,9 +96,35 @@ function isMobile() {
   return window.innerWidth <= 768;
 }
 
-if (isLoginPage) {
+function initStartAnimation() {
+  const wrapper = document.querySelector('.content-wrapper');
+  const logo = document.getElementById('logo');
+  const login = document.getElementById('login');
+  if (!wrapper || !logo || !login) return;
+  const animationAlreadyPlayed = sessionStorage.getItem('startAnimationPlayed');
+  if (animationAlreadyPlayed) {
+    showStartPageWithoutAnimation(wrapper, logo, login);
+    return;
+  }
+  sessionStorage.setItem('startAnimationPlayed', 'true');
   animateLogo(500);
 }
+
+
+function showStartPageWithoutAnimation(wrapper, logo, login) {
+  wrapper.classList.add('no-animation');
+  logo.classList.add('no-animation');
+  wrapper.classList.remove('is-loading');
+  wrapper.classList.add('is-ready');
+  login.classList.remove('hidden');
+  logo.classList.add('shrink', 'final');
+  showMobileSignup();
+  requestAnimationFrame(() => {
+    wrapper.classList.remove('no-animation');
+    logo.classList.remove('no-animation');
+  });
+}
+
 
 /**
  * Hides login interface input panels and switches viewport visibility focus onto signup configuration cards.
@@ -138,7 +161,6 @@ export function closeSignUp() {
 
   signupContainer.classList.remove('hidden');
   signupContainerMobile.classList.remove('hidden');
-
   signup.classList.add('hidden');
   login.classList.remove('hidden');
 }
@@ -162,116 +184,100 @@ function openLogin() {
   login.classList.remove('hidden');
 }
 
-/**
- * Verifies if the username field contains characters and modifies error notifications accordingly.
- * @param {HTMLInputElement} username - The target username text field node.
- * @param {HTMLElement} errorText - The display container node for active validation warnings.
- * @param {HTMLElement} errorBox - The structural panel node wrapping warning alert components.
- * @returns {boolean} True if field is valid, false if entry is missing.
- */
-function checkUsername(username, errorText, errorBox) {
+
+function checkUsername(username) {
   if (username.value.trim() === '') {
-    errorText.innerText = 'please enter a username';
-    errorBox.classList.remove('hidden');
-    username.classList.add('error-input');
+    showInputError('signup-username', 'error-text-signup-username', 'Please enter a username.');
     return false;
   }
-  username.classList.remove('error-input');
   return true;
 }
 
-/**
- * Assesses structural compliance of input text syntax against expected basic electronic mail formats.
- * @param {HTMLInputElement} email - The email input field node.
- * @param {HTMLElement} errorText - The display container node for active validation warnings.
- * @param {HTMLElement} errorBox - The structural panel node wrapping warning alert components.
- * @returns {boolean} True if valid structure, false if parameter checks fail.
- */
-function checkEmail(email, errorText, errorBox) {
-  if (!email.value.includes('@')) {
-    errorText.innerText = 'Invalid email address';
-    errorBox.classList.remove('hidden');
-    email.classList.add('error-input');
-    return false;
-  }
-  email.classList.remove('error-input');
+
+function checkPassword(password, confirmPassword) {
+  if (!hasPassword(password)) return false;
+  if (!hasValidPasswordLength(password)) return false;
+  if (!hasConfirmPassword(confirmPassword)) return false;
+  if (!passwordsMatch(password, confirmPassword)) return false;
   return true;
 }
 
-/**
- * Compares primary passphrase entries against duplicate verification entries to confirm characters align.
- * @param {HTMLInputElement} password - The primary password text input node.
- * @param {HTMLInputElement} confirmPassword - The double-check confirmation input field node.
- * @param {HTMLElement} errorText - The display container node for active validation warnings.
- * @param {HTMLElement} errorBox - The structural panel node wrapping warning alert components.
- * @returns {boolean} True if parameters match and contain data, false otherwise.
- */
-function checkPassword(password, confirmPassword, errorText, errorBox) {
-  if (password.value === '' || confirmPassword.value === '') {
-    errorText.innerText = 'please enter a password';
-    errorBox.classList.remove('hidden');
-    password.classList.add('error-input');
-    confirmPassword.classList.add('error-input');
-    return false;
-  }
 
-  if (password.value !== confirmPassword.value) {
-    errorText.innerText = 'Passwords do not match';
-    errorBox.classList.remove('hidden');
-    password.classList.add('error-input');
-    confirmPassword.classList.add('error-input');
-    return false;
-  }
-
-  password.classList.remove('error-input');
-  confirmPassword.classList.remove('error-input');
-  return true;
+function hasPassword(password) {
+  if (password.value.trim()) return true;
+  showInputError('signup-password', 'error-text-signup-password', 'Please enter a password.');
+  return false;
 }
 
-/**
- * Assures privacy terms authorization check boxes have been confirmed active before proceeding.
- * @param {HTMLInputElement} privacy - The target structural checkbox DOM node.
- * @param {HTMLElement} errorText - The display container node for active validation warnings.
- * @param {HTMLElement} errorBox - The structural panel node wrapping warning alert components.
- * @returns {boolean} True if checkbox is checked, false otherwise.
- */
-function checkPrivacy(privacy, errorText, errorBox) {
+
+function hasValidPasswordLength(password) {
+  if (password.value.length >= 6) return true;
+  showInputError('signup-password', 'error-text-signup-password', 'Password must be at least 6 characters.');
+  return false;
+}
+
+
+function hasConfirmPassword(confirmPassword) {
+  if (confirmPassword.value.trim()) return true;
+  showInputError('signup-confirm-password', 'error-text-confirm-password', 'Please confirm your password.');
+  return false;
+}
+
+
+function passwordsMatch(password, confirmPassword) {
+  if (password.value === confirmPassword.value) return true;
+  showInputError('signup-confirm-password', 'error-text-confirm-password', 'Passwords do not match.');
+  return false;
+}
+
+
+function checkPrivacy(privacy) {
   if (!privacy.checked) {
-    errorText.innerText = 'Please accept the Privacy Policy';
-    errorBox.classList.remove('hidden');
-    const privacyCheckbox = document.getElementById('privacy');
-    if (privacyCheckbox) privacyCheckbox.classList.add('error-input');
+    privacy.classList.add('input-error');
     return false;
   }
-  const privacyCheckbox = document.getElementById('privacy');
-  if (privacyCheckbox) privacyCheckbox.classList.remove('error-input');
+  privacy.classList.remove('input-error');
   return true;
 }
 
-/**
- 
-Executes standard validation pipelines sequentially across all active registration signup input panels.
-@returns {boolean} True if all input elements pass formatting metrics, false otherwise.*/
+
+function isValidEmail(emailValue) {
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(emailValue);
+}
+
+
+function checkEmail(email) {
+  const emailValue = email.value.trim();
+  if (!emailValue) {
+    showInputError('signup-email', 'error-text-signup-email', 'Please enter your email.');
+    return false;
+  }
+
+  if (!isValidEmail(emailValue)) {
+    showInputError('signup-email', 'error-text-signup-email', 'Invalid email address.');
+    return false;
+  }
+  return true;
+}
+
+
 function validateForm() {
+  clearSignupErrors();
   const username = document.getElementById('signup-username');
   const email = document.getElementById('signup-email');
   const password = document.getElementById('signup-password');
   const confirmPassword = document.getElementById('signup-confirm-password');
   const privacy = document.getElementById('privacy');
-  const errorBox = document.getElementById('password-error');
-  const errorText = document.getElementById('error-text');
-
-  errorBox.classList.add('hidden');
-  errorText.innerText = '';
-
-  if (!checkUsername(username, errorText, errorBox)) return false;
-  if (!checkEmail(email, errorText, errorBox)) return false;
-  if (!checkPassword(password, confirmPassword, errorText, errorBox))
-    return false;
-  if (!checkPrivacy(privacy, errorText, errorBox)) return false;
-
-  return true;
+  const signupButton = document.getElementById('signup-button');
+  const isValid =
+    checkUsername(username) &&
+    checkEmail(email) &&
+    checkPassword(password, confirmPassword) &&
+    checkPrivacy(privacy);
+  signupButton.disabled = !isValid;
+  return isValid;
 }
+
 
 /**
  * Cleares the Input fields after Signup
@@ -285,7 +291,37 @@ export function clearSignupInputs() {
 }
 
 
+function clearSignupErrors() {
+  clearInputError('signup-username', 'error-text-signup-username');
+  clearInputError('signup-email', 'error-text-signup-email');
+  clearInputError('signup-password', 'error-text-signup-password');
+  clearInputError('signup-confirm-password', 'error-text-confirm-password');
+  const privacy = document.getElementById('privacy');
+  if (privacy) {
+    privacy.classList.remove('input-error');
+  }
+}
+
+
+async function handleSignup(event) {
+  event.preventDefault();
+
+  if (!validateForm()) return;
+
+  const name = document.getElementById('signup-username').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+
+  await registerUser(name, email, password);
+}
+
+
 // Global verfügbare Schnittstellen für Ihre HTML-Attribute (onclick) registrieren
 window.openSignUp = openSignUp;
 window.openLogin = openLogin;
 window.validateForm = validateForm;
+
+
+if (isLoginPage) {
+  initStartAnimation();
+}
