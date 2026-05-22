@@ -13,10 +13,17 @@
   <link rel="stylesheet" href="./css/summary.css" />
   <link rel="stylesheet" href="./css/add-task.css" />
   <link rel="stylesheet" href="./css/contacts.css" />
+  <script>
+  if (!sessionStorage.getItem('startAnimationPlayed')) {
+    document.documentElement.classList.add('show-start-animation');
+  } else {
+    document.documentElement.classList.add('skip-start-animation');
+  }
+</script>
 </head>
 
 <body>
-  <div id="content-wrapper" class="content-wrapper is-loading">
+  <div id="content-wrapper" class="content-wrapper">
     <section class="welcome-section">
       <!-- placeholder keeps space in layout while logo is animated as fixed -->
       <div class="logo-wrap">
@@ -31,7 +38,7 @@
       </div>
     </section>
 
-    <section id="login" class="login-signup-section hidden">
+    <section id="login" class="login-signup-section">
       <h1 class="h1-login-signup">Log in</h1>
       <hr class="login-signup-hr" />
       <form novalidate onsubmit="handleLogin(event)">

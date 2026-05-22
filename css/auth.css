@@ -1,9 +1,22 @@
 /* ===== BASE / LAYOUT ===== */
+
+.show-start-animation .content-wrapper {
+  pointer-events: none;
+}
+
+.show-start-animation .content-wrapper #signup-container,
+.show-start-animation .content-wrapper #login,
+.show-start-animation .content-wrapper footer {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .content-wrapper {
   max-width: 1920px;
   width: 100%;
   height: 100vh;
   flex: 1;
+  gap: 32px;
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg-tertiary);
@@ -33,9 +46,6 @@
   animation: none !important;
 }
 
-.content-wrapper.mobile-splash {
-  background-color: var(--color-bg-secondary);
-}
 
 /* ===== HEADER / TOP SECTION ===== */
 
@@ -70,28 +80,22 @@
     top 700ms;
   z-index: 1000;
   pointer-events: none;
-  /* avoid capturing clicks while animating */
 }
 
 .logo-start.no-animation {
   transition: none !important;
 }
 
-/* Move to top-left while keeping the placeholder in the layout */
 .logo-start.shrink {
   left: 80px;
-  /* final left gap, matches .logo-wrap margin-left */
-  top: 24px;
-  /* final top gap */
+  top: 80px;
   transform: translate(0, 0) scale(1);
 }
 
-/* When final, keep it visible but let layout continue to use .logo-wrap */
 .logo-start.final {
-  /* keep fixed to avoid layout reflow; visual is same as final position */
   position: fixed;
   left: 80px;
-  top: 24px;
+  top: 80px;
   transform: translate(0, 0) scale(1);
   pointer-events: auto;
 }
@@ -112,13 +116,22 @@
   transition: opacity 1200ms ease;
 }
 
-.content-wrapper.mobile-splash .logo-white {
+.logo-dark {
+  opacity: 0;
+}
+
+.logo-white {
   opacity: 1;
 }
 
-.content-wrapper.mobile-splash .logo-dark {
+.content-wrapper.is-ready .logo-dark {
+  opacity: 1;
+}
+
+.content-wrapper.is-ready .logo-white {
   opacity: 0;
 }
+
 
 .signup-container {
   display: flex;
@@ -147,7 +160,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: auto;
+  margin: 0 auto;
   width: 648px;
   padding: 48px;
   background-color: var(--color-bg-primary);
@@ -210,22 +223,27 @@
   border: 1px solid var(--color-link);
   border-radius: 10px;
   transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .input-area-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   justify-content: center;
 }
 
 .email-input-area,
 .password-input-area,
-.confirm-password-input-area {
+.confirm-password-input-area,
+.username-input-area {
   display: flex;
   flex-direction: column;
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
 /* ===== INPUT FOCUS ===== */
@@ -397,8 +415,21 @@ footer a:hover {
 /* ===== RESPONSIVE DESIGN ===== */
 
 @media (max-width: 768px) {
-  body.mobile-splash .content-wrapper {
-    background: var(--color-bg-secondary);
+
+  .show-start-animation .content-wrapper {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .skip-start-animation .content-wrapper {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  .content-wrapper.is-loading {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .content-wrapper.is-ready {
+    background-color: var(--color-bg-tertiary);
   }
 
   .logo-start.shrink,
@@ -455,4 +486,5 @@ footer a:hover {
   .btn-dark {
     font-size: 16px;
   }
+
 }

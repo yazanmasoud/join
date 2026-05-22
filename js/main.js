@@ -8,30 +8,13 @@ import { showInputError, clearInputError } from './ui.js';
  */
 const isLoginPage = document.getElementById('login');
 const wrapper = document.querySelector('.content-wrapper');
-const animationAlreadyPlayed = sessionStorage.getItem('startAnimationPlayed');
 
-if (window.innerWidth <= 768 && !animationAlreadyPlayed) {
-  wrapper.classList.add('mobile-splash');
+if (document.documentElement.classList.contains('show-start-animation')) {
+  wrapper.classList.add('is-loading');
+} else {
+  wrapper.classList.add('is-ready', 'no-animation');
 }
 
-
-/**
- * Applies the mobile splash layout styling and switches to the white logo variant.
- * @param {HTMLImageElement} logo - The logo image element.
- */
-function setMobileSplash() {
-  if (!isMobile()) return;
-  wrapper.classList.add('mobile-splash');
-}
-
-/**
- * Removes the mobile splash layout styling and switches back to the default dark logo variant.
- * @param {HTMLImageElement} logo - The logo image element.
- */
-function resetMobileSplash() {
-  if (!isMobile()) return;
-  wrapper.classList.remove('mobile-splash');
-}
 
 /**
  * Triggers the main interface entry logo scaling animation after an optional timeout delay.
@@ -41,18 +24,14 @@ function animateLogo(delay = 0) {
   const logo = document.getElementById('logo');
   const login = document.getElementById('login');
   if (!logo || !login || logo.classList.contains('shrink')) return;
-  setMobileSplash();
   setTimeout(() => {
-    login.classList.remove('hidden');
     wrapper.classList.remove('is-loading');
     wrapper.classList.add('is-ready');
     logo.classList.add('shrink');
     finishLogoAnimation(logo, login);
-    setTimeout(() => {
-      resetMobileSplash();
-    }, 1200);
   }, delay);
 }
+
 
 /**
  * Schedules the concluding transition phases of the logo scaling layout animation sequence.
@@ -68,6 +47,7 @@ function finishLogoAnimation(logo, login) {
   }, delay);
 }
 
+
 /**
  * Updates CSS configuration classes to establish the permanent non-animated resting state of the logo graphics.
  * @param {HTMLElement} logo - The logo graphics element container.
@@ -75,20 +55,15 @@ function finishLogoAnimation(logo, login) {
  */
 function activateFinalLogoState(logo, login) {
   const wrapper = document.querySelector('.content-wrapper');
-
   logo.classList.add('final');
-  login.classList.remove('hidden');
-
-  wrapper.classList.remove('is-loading');
-  wrapper.classList.add('is-ready');
 }
+
 
 /**
  * Displays the specific contextual signup button row layout variants tailored for mobile viewport width states.
  */
 function showMobileSignup() {
   const signupMobile = document.querySelector('.signup-container-mobile');
-
   if (isMobile() && signupMobile) {
     signupMobile.classList.add('visible');
   }
@@ -103,6 +78,7 @@ function isMobile() {
   return window.innerWidth <= 768;
 }
 
+
 function initStartAnimation() {
   const logo = document.getElementById('logo');
   const login = document.getElementById('login');
@@ -111,9 +87,6 @@ function initStartAnimation() {
   if (animationAlreadyPlayed) {
     showStartPageWithoutAnimation(wrapper, logo, login);
     return;
-  }
-  if (isMobile()) {
-    wrapper.classList.add('mobile-splash');
   }
   sessionStorage.setItem('startAnimationPlayed', 'true');
   animateLogo(500);
@@ -145,48 +118,39 @@ function openSignUp() {
   );
   const signup = document.getElementById('signup');
   const login = document.getElementById('login');
-
   if (!signup || !login) return;
-
   signupContainer.classList.add('hidden');
   signupContainerMobile.classList.add('hidden');
   signup.classList.remove('hidden');
   login.classList.add('hidden');
 }
 
+
 /**
  * Resets the changes from openSignUp()
  */
 export function closeSignUp() {
   const signupContainer = document.getElementById('signup-container');
-  const signupContainerMobile = document.getElementById(
-    'signup-container-mobile',
-  );
-
+  const signupContainerMobile = document.getElementById('signup-container-mobile');
   const signup = document.getElementById('signup');
   const login = document.getElementById('login');
-
   if (!signup || !login) return;
-
   signupContainer.classList.remove('hidden');
   signupContainerMobile.classList.remove('hidden');
   signup.classList.add('hidden');
   login.classList.remove('hidden');
 }
 
+
 /**
  * Hides active signup form fields and returns layout viewport visibility states back onto default login forms.
  */
 function openLogin() {
   const signupContainer = document.getElementById('signup-container');
-  const signupContainerMobile = document.getElementById(
-    'signup-container-mobile',
-  );
+  const signupContainerMobile = document.getElementById('signup-container-mobile');
   const signup = document.getElementById('signup');
   const login = document.getElementById('login');
-
   if (!signup || !login) return;
-
   signupContainer.classList.remove('hidden');
   signupContainerMobile.classList.remove('hidden');
   signup.classList.add('hidden');
@@ -261,7 +225,6 @@ function checkEmail(email) {
     showInputError('signup-email', 'error-text-signup-email', 'Please enter your email.');
     return false;
   }
-
   if (!isValidEmail(emailValue)) {
     showInputError('signup-email', 'error-text-signup-email', 'Invalid email address.');
     return false;
@@ -314,13 +277,10 @@ function clearSignupErrors() {
 
 async function handleSignup(event) {
   event.preventDefault();
-
   if (!validateForm()) return;
-
   const name = document.getElementById('signup-username').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
-
   await registerUser(name, email, password);
 }
 
