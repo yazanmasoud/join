@@ -1,7 +1,7 @@
 import { getInitials } from './utils.js';
 import { renderAvatar, clearElementsByIds } from './ui.js';
 import { getCurrentUserId } from './storage.js';
-import { getContacts, createContactService } from './contacts-service.js';
+import { getContacts, createContactService, deleteContactService } from './contacts-service.js';
 
 
 /**
@@ -17,6 +17,46 @@ export async function initContacts() {
 
     renderContacts();
 }
+
+/**
+ * Creates a new contact object
+ * from the input values and adds it
+ * to the contacts array.
+ * Afterwards the contacts get sorted
+ * alphabetically and rendered again.
+ */
+async function createContact() {
+    let name = document.getElementById('contact-name').value;
+    let email = document.getElementById('contact-email').value;
+    let phone = document.getElementById('contact-phone').value;
+
+    let initials = getInitials(name);
+    let color = getRandomColor();
+
+    let contactData = { name, email, phone, initials, color };
+
+    let savedContact = await createContactService(contactData);
+
+    contacts.push(savedContact);
+    contacts.sort((a, b) => a.name.localeCompare(b.name));
+    renderContacts();
+
+    document.getElementById('contact-name').value = '';
+    document.getElementById('contact-email').value = '';
+    document.getElementById('contact-phone').value = '';
+
+    closeAddContact();
+}
+
+async function deleteContact(contactId) {
+    // Implement delete functionality here
+
+    await deleteContactService(contactId);
+    contacts = contacts.filter(contact => String(contact.id) !== String(contactId));
+    renderContacts();
+        document.getElementById('contact-details').innerHTML = '';
+}
+
 
 function openContactDialog() {
     const dialog = document.getElementById('add-contact-popup');
@@ -97,35 +137,7 @@ function closeAddContact() {
     dialog.close();
 }
 
-/**
- * Creates a new contact object
- * from the input values and adds it
- * to the contacts array.
- * Afterwards the contacts get sorted
- * alphabetically and rendered again.
- */
-async function createContact() {
-    let name = document.getElementById('contact-name').value;
-    let email = document.getElementById('contact-email').value;
-    let phone = document.getElementById('contact-phone').value;
 
-    let initials = getInitials(name);
-    let color = getRandomColor();
-
-    let contactData = { name, email, phone, initials, color };
-
-    let savedContact = await createContactService(contactData);
-
-    contacts.push(savedContact);
-    contacts.sort((a, b) => a.name.localeCompare(b.name));
-    renderContacts();
-
-    document.getElementById('contact-name').value = '';
-    document.getElementById('contact-email').value = '';
-    document.getElementById('contact-phone').value = '';
-
-    closeAddContact();
-}
 
 /**
  * Renders all contacts into the contact list.
@@ -185,3 +197,4 @@ window.closeAddContact = closeAddContact;
 window.getContactDetails = getContactDetails;
 window.renderContactDetails = renderContactDetails;
 window.openEditContact = openEditContact;
+window.deleteContact = deleteContact;

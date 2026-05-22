@@ -94,7 +94,7 @@ export async function updateContact(contactId, updatedData) {
   await update(ref(database, `contacts/${uid}/${contactId}`), updatedData);
 }
 
-export async function deleteContact(contactId) {
+export async function deleteContactService(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
 
