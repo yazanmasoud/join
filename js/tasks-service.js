@@ -42,28 +42,17 @@ export async function getTasks() {
 export async function createTask(taskData) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
-
-    const newTask = {
-      id: generateLocalId(tasks),
-      ...taskData,
-    };
-
+    const maxId =
+      tasks.length > 0 ? Math.max(...tasks.map((t) => t.id || 0)) : 0;
+    const newTask = { id: maxId + 1, ...taskData };
     tasks.push(newTask);
-
     setLocalTasks(tasks);
-
     return newTask;
   }
-
   const uid = auth.currentUser.uid;
   const newTaskRef = push(ref(database, `tasks/${uid}`));
-
   await set(newTaskRef, taskData);
-
-  return {
-    id: newTaskRef.key,
-    ...taskData,
-  };
+  return { id: newTaskRef.key, ...taskData };
 }
 
 export async function getTaskById(taskId) {

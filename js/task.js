@@ -214,10 +214,15 @@ function showSuccessToast() {
   const toast = document.getElementById('successMessage');
   if (toast) {
     toast.classList.remove('d-none');
-    setTimeout(() => toast.classList.add('d-none'), 2000);
+    setTimeout(() => {
+      toast.style.bottom = '50px';
+    }, 10);
+
+    setTimeout(() => {
+      toast.classList.add('d-none');
+    }, 2000);
   }
 }
-
 function toggleSubtaskStatus(index) {
   subtasks[index].done = !subtasks[index].done;
   renderSubtasks();

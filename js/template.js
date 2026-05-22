@@ -17,7 +17,7 @@ export function generateTaskHTML(task, id) {
     : '';
   return `
     <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" 
-         onclick="editTask('${id}')"> 
+         onclick="openTaskDetail('${id}')">
       <div class="task-category ${catClass}">${task.category || ''}</div>
       <h3>${task.title || ''}</h3>
       <p class="description-task-board">${task.description || ''}</p>
