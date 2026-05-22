@@ -172,8 +172,51 @@ export function renderAvatar(elementId, name) {
   avatarElement.innerText = getInitials(name);
 }
 
+
+/**
+ * Displays an input validation error.
+ * @param {string} inputId - Input element ID.
+ * @param {string} errorId - Error text element ID.
+ * @param {string} message - Error message.
+ */
+export function showInputError(inputId, errorId, message) {
+  const input = document.getElementById(inputId);
+  const error = document.getElementById(errorId);
+
+  if (input) {
+    input.classList.add('input-error');
+  }
+
+  if (error) {
+    error.innerText = message;
+    error.classList.add('visible');
+  }
+}
+
+
+/**
+ * Clears an input validation error.
+ * @param {string} inputId - Input element ID.
+ * @param {string} errorId - Error text element ID.
+ */
+export function clearInputError(inputId, errorId) {
+  const input = document.getElementById(inputId);
+  const error = document.getElementById(errorId);
+
+  if (input) {
+    input.classList.remove('input-error');
+  }
+
+  if (error) {
+    error.innerText = '';
+    error.classList.remove('visible');
+  }
+}
+
+
 /** --- GLOBAL EXPORTS FOR HTML --- */
 window.handleBackArrow = handleBackArrow;
 window.setGreeting = setGreeting;
 window.removeHighlight = removeHighlight;
 window.highlight = highlight;
+window.clearInputError = clearInputError;

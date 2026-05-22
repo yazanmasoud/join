@@ -5,6 +5,7 @@ import { hideOverlay, showOverlay } from './utils.js';
 import { guestContacts, guestTasks } from './guest-data.js';
 import { closeSignUp, clearSignupInputs } from './main.js';
 import { getCurrentUserId, isGuestUser } from './storage.js';
+import { showInputError, clearInputError } from './ui.js';
 
 
 //handles the complete registration flow
@@ -63,11 +64,64 @@ export async function loginAsUser(email, password) {
     localStorage.setItem('isGuest', 'false');
     localStorage.setItem('currentUserId', userCredential.user.uid);
     loginSuccess('Logged in as User!');
-    // hier kann man später if (error.code === 'auth/wrong-password') {} verwenden statt catch(error)
   } catch (error) {
-    console.error(error);
-    showWrongCredentials();
+    handleLoginError(error); // hier läuft gerade die error handling entwicklung
   }
+}
+
+
+// hier erstmal nur die Fehlercodes von Firebase. Dort muss dann auch
+function handleLoginError(error) {
+  const errors = {
+    'auth/invalid-email': {
+      input: 'email',
+      text: 'error-text-email',
+      message: 'Please enter a valid email address.',
+    },
+
+    'auth/invalid-credential': {
+      input: 'password',
+      text: 'error-text-password',
+      message: 'Check your email and password. Please try again.',
+    },
+
+    'auth/user-not-found': {
+      input: 'password',
+      text: 'error-text-password',
+      message: 'Check your email and password. Please try again.',
+    },
+
+    'auth/wrong-password': {
+      input: 'password',
+      text: 'error-text-password',
+      message: 'Check your email and password. Please try again.',
+    },
+
+    'auth/too-many-requests': {
+      input: 'password',
+      text: 'error-text-password',
+      message: 'Too many failed attempts. Please try again later.',
+    },
+
+    'auth/network-request-failed': {
+      input: 'password',
+      text: 'error-text-password',
+      message: 'Network error. Please check your connection.',
+    },
+  };
+
+  const currentError = errors[error.code];
+
+  if (!currentError) {
+    console.error(error);
+    return;
+  }
+
+  showInputError(
+    currentError.input,
+    currentError.text,
+    currentError.message
+  );
 }
 
 
@@ -109,10 +163,12 @@ function loginSuccess(message) {
 }
 
 
-//holt die input werte
-async function handleLogin() {
+async function handleLogin(event) {
+  event.preventDefault();
+
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
+
   await loginAsUser(email, password);
 }
 

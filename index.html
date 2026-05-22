@@ -1,158 +1,133 @@
 <!doctype html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Join</title>
-    <link rel="stylesheet" href="./css/root.css" />
-    <link rel="stylesheet" href="./css/main.css" />
-    <link rel="stylesheet" href="./css/fonts.css" />
-    <link rel="stylesheet" href="./css/btn.css" />
-    <link rel="stylesheet" href="./css/auth.css" />
-    <link rel="stylesheet" href="./css/summary.css" />
-    <link rel="stylesheet" href="./css/add-task.css" />
-    <link rel="stylesheet" href="./css/contacts.css" />
-  </head>
-  <body>
-    <div class="content-wrapper">
-      <section class="welcome-section">
-        <!-- placeholder keeps space in layout while logo is animated as fixed -->
-        <div class="logo-wrap">
-          <img
-            id="logo"
-            class="join-logo logo-start"
-            src="./assets/logos/main-logo.svg"
-            alt="Join Logo"
-          />
-        </div>
-        <div id="signup-container" class="signup-container">
-          <p class="p-welcome">Not a Join User?</p>
-          <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
-        </div>
-      </section>
 
-      <section id="login" class="login-signup-section hidden">
-        <h1 class="h1-login-signup">Log in</h1>
-        <hr class="login-signup-hr" />
-        <input
-          type="email"
-          id="email"
-          class="username"
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          id="password"
-          class="password"
-          placeholder="Password"
-          required
-        />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join</title>
+  <link rel="stylesheet" href="./css/root.css" />
+  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="stylesheet" href="./css/fonts.css" />
+  <link rel="stylesheet" href="./css/btn.css" />
+  <link rel="stylesheet" href="./css/auth.css" />
+  <link rel="stylesheet" href="./css/summary.css" />
+  <link rel="stylesheet" href="./css/add-task.css" />
+  <link rel="stylesheet" href="./css/contacts.css" />
+</head>
 
-        <div class="login_btn-container">
-          <button class="btn-dark" onclick="handleLogin()">Log in</button>
-          <button class="btn-light" onclick="loginAsGuest()">
-            Guest Log in
-          </button>
-        </div>
-      </section>
-
-      <div id="overlay" class="overlay hidden">
-          <div class="success-message ">You Signed Up successfully!</div>
+<body>
+  <div class="content-wrapper is-loading">
+    <section class="welcome-section">
+      <!-- placeholder keeps space in layout while logo is animated as fixed -->
+      <div class="logo-wrap">
+        <img id="logo" class="join-logo logo-start" src="./assets/logos/main-logo.svg" alt="Join Logo" />
       </div>
-
-      <div id="signup-container-mobile" class="signup-container-mobile">
+      <div id="signup-container" class="signup-container">
         <p class="p-welcome">Not a Join User?</p>
         <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
       </div>
+    </section>
 
-      <section id="signup" class="login-signup-section hidden">
-        <div class="signup-section-header">
-          <button class="btn arrow-btn" onclick="openLogin()">
-            <img src="./assets/icons/arrow-left-line.svg" alt="arrow left" />
-          </button>
-          <h1 class="h1-login-signup">Sign Up</h1>
+    <section id="login" class="login-signup-section hidden">
+      <h1 class="h1-login-signup">Log in</h1>
+      <hr class="login-signup-hr" />
+      <form novalidate onsubmit="handleLogin(event)">
+        <div class="input-area-wrapper">
+          <div class="email-input-area">
+            <input type="email" id="email" class="username" placeholder="Email" required
+              oninput="clearInputError('email', 'error-text-email')" />
+            <p id="error-text-email" class="form-error"></p>
+          </div>
+          <div class="password-input-area">
+            <input type="password" id="password" class="password" placeholder="Password" required
+              oninput="clearInputError('password', 'error-text-password')" />
+            <p id="error-text-password" class="form-error"></p>
+          </div>
         </div>
+        <div class="login_btn-container">
+          <button type="submit" class="btn-dark">
+            Log in
+          </button>
+          <button type="button" class="btn-light" onclick="loginAsGuest()">
+            Guest Log in
+          </button>
+        </div>
+      </form>
+    </section>
 
-        <hr class="login-signup-hr" />
-
-        <form novalidate onsubmit="handleSignup(event)">
-          <input
-            oninput="validateForm()"
-            type="text"
-            id="signup-username"
-            class="username"
-            placeholder="Username"
-          />
-          <input
-            oninput="validateForm()"
-            type="email"
-            id="signup-email"
-            class="email"
-            placeholder="Email"
-          />
-          <input
-            oninput="validateForm()"
-            type="password"
-            id="signup-password"
-            class="password"
-            placeholder="Password"
-          />
-          <input
-            oninput="validateForm()"
-            type="password"
-            id="signup-confirm-password"
-            class="password"
-            placeholder="Confirm Password"
-          />
-
-          <div class="privacy-container">
-            <input type="checkbox" id="privacy" onchange="validateForm()" />
-            <label for="privacy">
-              I accept the <a href="./pages/privacy.html">Privacy policy</a>
-            </label>
-          </div>
-
-          <div id="password-error" class="form-error hidden">
-            <span id="error-text"></span>
-          </div>
-
-          <button type="submit" class="btn-dark">Sign Up</button>
-        </form>
-      </section>
-
-      <footer class="login-footer">
-        <a
-          id="imprintLink"
-          class="footer-link"
-          href="./pages/loginlayout.html?page=imprint"
-          >Legal Notice</a
-        >
-        <a
-          id="privacyLink"
-          class="footer-link"
-          href="./pages/loginlayout.html?page=privacy"
-          >Privacy Policy</a
-        >
-      </footer>
+    <div id="overlay" class="overlay hidden">
+      <div class="success-message ">You Signed Up successfully!</div>
     </div>
-    <!-- 1. Firebase Core (Basis-SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 
-    <!-- 2. Firebase Database -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <div id="signup-container-mobile" class="signup-container-mobile">
+      <p class="p-welcome">Not a Join User?</p>
+      <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
+    </div>
 
-    <!-- 3. Firebase Auth SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script type="module" src="./js/firebase-config.js"></script>
-    <script type="module" src="../js/utils.js"></script>
-    <script type="module" src="../js/template.js"></script>
-    <script type="module" src="../js/summary.js"></script>
-    <script type="module" src="../js/board.js"></script>
-    <script type="module" src="../js/task.js"></script>
-    <script type="module" src="../js/contacts.js"></script>
-    <script type="module" src="../js/layout.js"></script>
-    <script type="module" src="../js/main.js"></script>
-    <script type="module" src="../js/auth-service.js"></script>
-  </body>
+    <section id="signup" class="login-signup-section hidden">
+      <div class="signup-section-header">
+        <button class="btn arrow-btn" onclick="openLogin()">
+          <img src="./assets/icons/arrow-left-line.svg" alt="arrow left" />
+        </button>
+        <h1 class="h1-login-signup">Sign Up</h1>
+      </div>
+
+      <hr class="login-signup-hr" />
+
+      <form novalidate onsubmit="handleSignup(event)">
+        <div class="username-input-area">
+          <input oninput="validateForm();" type="text"
+            id="signup-username" class="username" placeholder="Name" required/>
+          <p id="error-text-signup-username" class="form-error"></p>
+        </div>
+        <div class="email-input-area">
+          <input oninput="validateForm();" type="email"
+            id="signup-email" class="email" placeholder="Email" required />
+          <p id="error-text-signup-email" class="form-error"></p>
+        </div>
+        <div class="password-input-area">
+          <input oninput="validateForm();"
+            type="password" id="signup-password" class="password" placeholder="Password" required />
+          <p id="error-text-signup-password" class="form-error"></p>
+        </div>
+        <div class="confirm-password-input-area">
+          <input oninput="validateForm();"
+            type="password" id="signup-confirm-password" class="password" placeholder="Confirm Password" required />
+          <p id="error-text-confirm-password" class="form-error"></p>
+        </div>
+        <div class="privacy-container">
+          <input type="checkbox" id="privacy" onchange="validateForm()" />
+          <label for="privacy">
+            I accept the <a href="./pages/privacy.html">Privacy policy</a>
+          </label>
+        </div>
+        <button id="signup-button" type="submit" class="btn-dark" disabled>Sign Up</button>
+      </form>
+    </section>
+
+    <footer class="login-footer">
+      <a id="imprintLink" class="footer-link" href="./pages/loginlayout.html?page=imprint">Legal Notice</a>
+      <a id="privacyLink" class="footer-link" href="./pages/loginlayout.html?page=privacy">Privacy Policy</a>
+    </footer>
+  </div>
+  <!-- 1. Firebase Core (Basis-SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
+  <!-- 2. Firebase Database -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <!-- 3. Firebase Auth SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script type="module" src="./js/firebase-config.js"></script>
+  <script type="module" src="../js/utils.js"></script>
+  <script type="module" src="../js/template.js"></script>
+  <script type="module" src="../js/summary.js"></script>
+  <script type="module" src="../js/board.js"></script>
+  <script type="module" src="../js/task.js"></script>
+  <script type="module" src="../js/contacts.js"></script>
+  <script type="module" src="../js/layout.js"></script>
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/auth-service.js"></script>
+</body>
+
 </html>
