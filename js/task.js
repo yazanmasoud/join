@@ -58,10 +58,8 @@ async function createTask() {
   const editId = localStorage.getItem('editTaskId');
   try {
     if (editId) {
-      // Nutzt jetzt den Alias aus dem Import
       await serviceUpdateTask(editId, task);
     } else {
-      // Nutzt jetzt den Alias aus dem Import
       await serviceCreateTask(task);
     }
     handleSuccess();
@@ -72,9 +70,18 @@ async function createTask() {
 
 function handleSuccess() {
   showSuccessToast();
+  const editId = localStorage.getItem('editTaskId');
+
   localStorage.removeItem('editTaskId');
   localStorage.removeItem('editTaskData');
-  setTimeout(() => (window.location.href = 'layout.html?page=board'), 1000);
+
+  setTimeout(async () => {
+    if (editId) {
+      await navigateTo('board');
+    } else {
+      clearForm();
+    }
+  }, 1000);
 }
 
 /**

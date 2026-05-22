@@ -173,7 +173,7 @@ export async function editTask(id) {
   if (task) {
     localStorage.setItem('editTaskId', id);
     localStorage.setItem('editTaskData', JSON.stringify(task));
-    window.location.href = 'layout.html?page=add-task';
+    await navigateTo('add-task');
   }
 }
 
