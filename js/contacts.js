@@ -118,7 +118,6 @@ async function createContact() {
 
     contacts.push(savedContact);
     contacts.sort((a, b) => a.name.localeCompare(b.name));
-    console.log(contacts.map(c => c.name));
     renderContacts();
 
     document.getElementById('contact-name').value = '';
