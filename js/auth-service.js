@@ -3,9 +3,16 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } f
 import { ref, set, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { hideOverlay, showOverlay } from './utils.js';
 import { guestContacts, guestTasks } from './guest-data.js';
-import { closeSignUp, clearSignupInputs } from './main.js';
 import { getCurrentUserId, isGuestUser } from './storage.js';
 import { showInputError, clearInputError } from './ui.js';
+
+
+window.loginAsGuest = loginAsGuest;
+window.loginAsUser = loginAsUser;
+window.handleLogin = handleLogin;
+window.registerUser = registerUser;
+window.handleSignup = handleSignup;
+window.validateLoginEmail = validateLoginEmail;
 
 
 //handles the complete registration flow
@@ -22,7 +29,7 @@ export async function registerUser(name, email, password) {
   } catch (error) {
     console.error(error);
     showSignupFailed(); //hier müssen die Fehlercodes ausgewertet und angezeigt werden.
-  }
+    }
 }
 
 
@@ -70,6 +77,22 @@ export async function loginAsUser(email, password) {
 }
 
 
+export function validateLoginEmail() {
+  const email = document.getElementById('email');
+  const emailValue = email.value.trim();
+  if (!emailValue) {
+    showInputError('email', 'error-text-email', 'Please enter your email.');
+    return false;
+  }
+  if (!isValidEmail(emailValue)) {
+    showInputError('email', 'error-text-email', 'Invalid email address.');
+    return false;
+  }
+  clearInputError('email', 'error-text-email');
+  return true;
+}
+
+
 // hier erstmal nur die Fehlercodes von Firebase. Dort muss dann auch
 function handleLoginError(error) {
   const errors = {
@@ -78,45 +101,37 @@ function handleLoginError(error) {
       text: 'error-text-email',
       message: 'Please enter a valid email address.',
     },
-
     'auth/invalid-credential': {
       input: 'password',
       text: 'error-text-password',
       message: 'Check your email and password. Please try again.',
     },
-
     'auth/user-not-found': {
       input: 'password',
       text: 'error-text-password',
       message: 'Check your email and password. Please try again.',
     },
-
     'auth/wrong-password': {
       input: 'password',
       text: 'error-text-password',
       message: 'Check your email and password. Please try again.',
     },
-
     'auth/too-many-requests': {
       input: 'password',
       text: 'error-text-password',
       message: 'Too many failed attempts. Please try again later.',
     },
-
     'auth/network-request-failed': {
       input: 'password',
       text: 'error-text-password',
       message: 'Network error. Please check your connection.',
     },
   };
-
   const currentError = errors[error.code];
-
   if (!currentError) {
     console.error(error);
     return;
   }
-
   showInputError(
     currentError.input,
     currentError.text,
@@ -165,10 +180,9 @@ function loginSuccess(message) {
 
 async function handleLogin(event) {
   event.preventDefault();
-
+  if (!validateLoginEmail()) return;
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-
   await loginAsUser(email, password);
 }
 
@@ -190,8 +204,6 @@ export async function getCurrentUserData() {
 }
 
 
-window.loginAsGuest = loginAsGuest;
-window.loginAsUser = loginAsUser;
-window.handleLogin = handleLogin;
-window.registerUser = registerUser;
-window.handleSignup = handleSignup;
+function isValidEmail(emailValue) {
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(emailValue);
+}

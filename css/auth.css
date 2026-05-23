@@ -4,7 +4,6 @@
 .show-start-animation .content-wrapper #login,
 .show-start-animation .content-wrapper footer {
   opacity: 0;
-  pointer-events: none;
 }
 
 .content-wrapper {

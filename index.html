@@ -45,7 +45,7 @@
         <div class="input-area-wrapper">
           <div class="email-input-area">
             <input type="email" id="email" class="username" placeholder="Email" required
-              oninput="clearInputError('email', 'error-text-email')" />
+              onblur="validateLoginEmail()" oninput="clearInputError('email', 'error-text-email')" />
             <p id="error-text-email" class="form-error"></p>
           </div>
           <div class="password-input-area">

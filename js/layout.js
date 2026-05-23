@@ -1,6 +1,3 @@
-/**
- * @file Summary management script handling dashboard state and real-time metrics data.
- */
 import { closeOpenElements, setGreetingName, renderAvatar } from './ui.js';
 import { initAddTask } from './task.js';
 import { initSummary } from './summary.js';
@@ -13,6 +10,20 @@ import { isGuestUser } from './storage.js';
 import { ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { getInitials } from './utils.js';
 import { getCurrentUserData } from './auth-service.js';
+
+
+window.initLayout = initLayout;
+window.initLoginLayout = initLoginLayout;
+window.navigateTo = navigateTo;
+window.logOut = logOut;
+window.toggleAvatarDropdown = toggleAvatarDropdown;
+window.closeOpenElements = closeOpenElements;
+window.setActiveNavItem = setActiveNavItem;
+window.goBack = goBack;
+window.openHelp = openHelp;
+window.loginNavigateTo = loginNavigateTo;
+window.backToLogin = backToLogin;
+window.pageHistory = pageHistory;
 
 
 /**
@@ -251,20 +262,6 @@ function setActiveLoginNavFromUrl(page) {
   }
 }
 
-
-// Funktionen global verfügbar machen
-window.initLayout = initLayout;
-window.initLoginLayout = initLoginLayout;
-window.navigateTo = navigateTo;
-window.logOut = logOut;
-window.toggleAvatarDropdown = toggleAvatarDropdown;
-window.closeOpenElements = closeOpenElements;
-window.setActiveNavItem = setActiveNavItem;
-window.goBack = goBack;
-window.openHelp = openHelp;
-window.loginNavigateTo = loginNavigateTo;
-window.backToLogin = backToLogin;
-window.pageHistory = pageHistory;
 
 if (document.querySelector('.layout')) {
   initLayout();
