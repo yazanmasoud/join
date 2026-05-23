@@ -1,13 +1,8 @@
-/**
- * @file Storage management script handling local storage and user state retrieval.
- */
 const categoryOptions = ['Technical Task', 'User Story', 'Feature Task'];
+const contactOptions = ['Maximilian Müller','Sofia Schneider','Benedikt Bauer',];
 
-const contactOptions = [
-  'Maximilian Müller',
-  'Sofia Schneider',
-  'Benedikt Bauer',
-];
+
+window.getCurrentUserId = getCurrentUserId;
 
 
 /**
@@ -74,7 +69,3 @@ export function setLocalContacts(contacts) {
 export function setLocalTasks(tasks) {
   localStorage.setItem('tasks', JSON.stringify(tasks));
 }
-
-
-/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
-window.getCurrentUserId = getCurrentUserId;

@@ -13,6 +13,8 @@ window.handleLogin = handleLogin;
 window.registerUser = registerUser;
 window.handleSignup = handleSignup;
 window.validateLoginEmail = validateLoginEmail;
+window.validateLoginPassword = validateLoginPassword;
+window.updateLoginButtonState = updateLoginButtonState;
 
 
 //handles the complete registration flow
@@ -128,10 +130,8 @@ function handleLoginError(error) {
     },
   };
   const currentError = errors[error.code];
-  if (!currentError) {
-    console.error(error);
-    return;
-  }
+  if (!currentError) {console.error(error);
+    return;}
   showInputError(
     currentError.input,
     currentError.text,
@@ -160,10 +160,7 @@ function initGuestStorage() {
   localStorage.setItem('currentUserId', 'guest_user');
   localStorage.setItem('contacts', JSON.stringify(guestContacts));
   localStorage.setItem('tasks', JSON.stringify(guestTasks));
-  localStorage.setItem(
-    'currentUser',
-    JSON.stringify({ name: 'Guest', email: 'guest@test.de' }),
-  );
+  localStorage.setItem('currentUser', JSON.stringify({ name: 'Guest', email: 'guest@test.de' }));
 }
 
 
@@ -180,8 +177,8 @@ function loginSuccess(message) {
 
 async function handleLogin(event) {
   event.preventDefault();
-  if (!validateLoginEmail()) return;
-  const email = document.getElementById('email').value;
+  if (!validateLoginEmail() || !validateLoginPassword()) return;
+  const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   await loginAsUser(email, password);
 }
@@ -206,4 +203,38 @@ export async function getCurrentUserData() {
 
 function isValidEmail(emailValue) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(emailValue);
+}
+
+
+function validateLoginPassword() {
+  const password = document.getElementById('password');
+  if (!password.value.trim()) {
+    showInputError(
+      'password',
+      'error-text-password',
+      'Please enter your password.'
+    );
+    return false;
+  }
+  clearInputError('password', 'error-text-password');
+  return true;
+}
+
+
+function isLoginFormValid() {
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  return (
+    isValidEmail(email.value.trim()) &&
+    password.value.trim() !== ''
+  );
+}
+
+
+function updateLoginButtonState() {
+  const loginButton = document.getElementById('login-button');
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  const isValid = isValidEmail(email.value.trim()) && password.value.trim() !== '';
+  loginButton.disabled = !isValid;
 }

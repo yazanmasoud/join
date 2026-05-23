@@ -1,7 +1,13 @@
-/**
- * @file Template management script handling board cards, task details, and editor HTML strings.
- */
 import { contacts } from './contacts.js';
+
+
+window.generateTaskHTML = generateTaskHTML;
+window.getNoTaskPlaceholder = getNoTaskPlaceholder;
+window.generateTaskDetailHTML = generateTaskDetailHTML;
+window.generateEditTaskHTML = generateEditTaskHTML;
+window.getContactDetails = getContactDetails;
+window.openEditContact = openEditContact;
+
 
 /** --- BOARD TASK CARDS --- */
 
@@ -25,6 +31,7 @@ export function generateTaskHTML(task, id) {
     </div>`;
 }
 
+
 /**
  * Renders a progress bar and subtask completion text.
  * @param {Object} task - The task data object.
@@ -43,6 +50,7 @@ export function renderSmallSubtaskInfo(task) {
     </div>`;
 }
 
+
 /**
  * Generates placeholder HTML for an empty board column.
  * @param {string} label - The text label of the empty column.
@@ -52,8 +60,8 @@ export function getNoTaskPlaceholder(label) {
   return `<div class="no-tasks">No tasks ${label}</div>`;
 }
 
-/** --- ADD TASK TEMPLATES --- */
 
+/** --- ADD TASK TEMPLATES --- */
 /**
  * Generates HTML buttons for selecting task priority levels.
  * @returns {string} The combined priority buttons HTML string.
@@ -69,6 +77,7 @@ export function getPriorityButtonsHTML() {
     .join('');
 }
 
+
 /**
  * Generates HTML option elements for a select dropdown menu.
  * @param {string[]} optionsArray - List of string options to display.
@@ -82,6 +91,7 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
     .join('');
   return def + opts;
 }
+
 
 /**
  * Generates a single subtask list element with a delete action button.
@@ -103,8 +113,8 @@ export function getSubtaskHTML(task, index) {
     </li>`;
 }
 
-/** --- TASK DETAIL DIALOG --- */
 
+/** --- TASK DETAIL DIALOG --- */
 /**
  * Generates the full HTML markup template for the task detail view dialog.
  * @param {Object} task - The task data object.
@@ -130,6 +140,7 @@ export function generateTaskDetailHTML(task, id) {
       ${getDetailFooter(id)}</div>`;
 }
 
+
 /**
  * Generates HTML table rows containing due date and priority badges.
  * @param {Object} task - The task data object.
@@ -145,6 +156,7 @@ export function getDetailInfoRows(task) {
         <img src="../assets/icons/prio-${prio}-icon.svg"></div>
     </div>`;
 }
+
 
 /**
  * Generates subtask item checklist elements inside the detail modal.
@@ -167,6 +179,7 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
     .join('');
 }
 
+
 /**
  * Generates the functional action buttons for editing and deleting tasks.
  * @param {string} id - The unique task ID.
@@ -184,8 +197,8 @@ export function getDetailFooter(id) {
     </div>`;
 }
 
-/** --- ASSIGNED USERS --- */
 
+/** --- ASSIGNED USERS --- */
 /**
  * Generates an assigned user element containing initials badges and names.
  * @param {any} name - The contact name or object.
@@ -205,6 +218,7 @@ export function getAssignedUserHTML(name) {
       <span class="user-name">${safeName}</span></div>`;
 }
 
+
 /**
  * Iterates over contacts list parameters and generates detail row HTML output.
  * @param {any} assignedTo - Assigned string name or collection array.
@@ -213,7 +227,6 @@ export function getAssignedUserHTML(name) {
 export function renderAssignedToDetail(assignedTo) {
   if (!assignedTo || assignedTo === 'Select contacts to assign') return '';
   const list = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
-
   return list
     .map((contact) => {
       // Falls contact ein Objekt ist {name: "Max", ...}, nimm nur den Namen
@@ -223,8 +236,8 @@ export function renderAssignedToDetail(assignedTo) {
     .join('');
 }
 
-/** --- EDIT MODE --- */
 
+/** --- EDIT MODE --- */
 /**
  * Generates the full framework block wrapper structure for task editor view.
  * @param {Object} task - The active task object.
@@ -245,6 +258,7 @@ export function generateEditTaskHTML(task, id) {
     </div>`;
 }
 
+
 /**
  * Generates the layout view container structure for editor left sections.
  * @param {Object} task - The targeted active task data object.
@@ -259,6 +273,7 @@ export function getEditLeftSection(task) {
         <textarea id="editDescription">${task.description || ''}</textarea></div>
     </div>`;
 }
+
 
 /**
  * Generates the layout view container structure for editor right sections.
@@ -275,6 +290,7 @@ export function getEditRightSection(task, id) {
         <input type="text" id="editAssigned" value="${task.assignedTo || ''}"></div>
     </div>`;
 }
+
 
 /* Contacts Template */
 /**
@@ -298,6 +314,7 @@ export function getContactLetter(list, letter) {
     `;
 }
 
+
 /**
  * Gets a single contact item
  * for rendering in the contact list.
@@ -318,6 +335,7 @@ export function getSingleContact(list, contact, index) {
       </div>
     </div>`;
 }
+
 
 export function getContactDetails(contact, index) {
   return `
@@ -347,11 +365,3 @@ export function getContactDetails(contact, index) {
       </div>
     `;
 }
-
-/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
-window.generateTaskHTML = generateTaskHTML;
-window.getNoTaskPlaceholder = getNoTaskPlaceholder;
-window.generateTaskDetailHTML = generateTaskDetailHTML;
-window.generateEditTaskHTML = generateEditTaskHTML;
-window.getContactDetails = getContactDetails;
-window.openEditContact = openEditContact;

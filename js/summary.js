@@ -1,15 +1,13 @@
-/**
- * @file Summary management script handling dashboard state.
- */
-import {
-  ref,
-  get,
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { isGuestUser, getLocalTasks } from './storage.js';
 import { calculateMetrics } from './utils.js';
 import { setGreeting, updateUI, setGreetingName } from './ui.js';
 import { auth, database } from './firebase-config.js';
 import { getCurrentUserData } from './auth-service.js';
+
+
+window.initSummary = initSummary;
+
 
 /**
  * Initializes the dashboard by setting the greeting, handling mobile view,
@@ -66,5 +64,3 @@ function handleMobileGreeting() {
     setTimeout(() => element.remove(), 300);
   }, 2000);
 }
-
-window.initSummary = initSummary;

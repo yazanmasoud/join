@@ -32,6 +32,26 @@ let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
+
+/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
+window.initBoard = initBoard;
+window.openAddTask = openAddTask;
+window.openTaskDetail = openTaskDetail;
+window.toggleSubtask = toggleSubtask;
+window.startDragging = startDragging;
+window.allowDrop = allowDrop;
+window.moveTo = moveTo;
+window.editTask = editTask;
+window.saveEdit = saveEdit;
+window.handleEditSubtaskKey = handleEditSubtaskKey;
+window.addEditSubtask = addEditSubtask;
+window.deleteEditSubtask = deleteEditSubtask;
+window.toggleEditSubtask = toggleEditSubtask;
+window.deleteTask = deleteTask;
+window.closeTaskDetail = closeTaskDetail;
+window.deleteTask = deleteTask;
+
+
 export function initBoard() {
   if (isGuestUser()) {
     CURRENT_TASKS = convertTaskArrayToObject(getLocalTasks());
@@ -287,21 +307,3 @@ function convertTaskArrayToObject(tasks) {
 function convertTaskObjectToArray(tasksObject) {
   return Object.values(tasksObject);
 }
-
-/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
-window.initBoard = initBoard;
-window.openAddTask = openAddTask;
-window.openTaskDetail = openTaskDetail;
-window.toggleSubtask = toggleSubtask;
-window.startDragging = startDragging;
-window.allowDrop = allowDrop;
-window.moveTo = moveTo;
-window.editTask = editTask;
-window.saveEdit = saveEdit;
-window.handleEditSubtaskKey = handleEditSubtaskKey;
-window.addEditSubtask = addEditSubtask;
-window.deleteEditSubtask = deleteEditSubtask;
-window.toggleEditSubtask = toggleEditSubtask;
-window.deleteTask = deleteTask;
-window.closeTaskDetail = closeTaskDetail;
-window.deleteTask = deleteTask;

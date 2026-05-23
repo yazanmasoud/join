@@ -2,12 +2,12 @@ export const CATEGORY_OPTIONS = ['Technical Task','User Story','Feature Task',];
 export const CONTACT_OPTIONS = ['Maximilian Müller','Sofia Schneider','Benedikt Bauer',];
 
 
+const overlay = document.getElementById('overlay');
+
+
 window.hideOverlay = hideOverlay;
 window.showOverlay = showOverlay;
 window.getInitials = getInitials;
-
-
-const overlay = document.getElementById('overlay');
 
 
 /**

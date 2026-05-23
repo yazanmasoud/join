@@ -12,6 +12,9 @@ import { getInitials } from './utils.js';
 import { getCurrentUserData } from './auth-service.js';
 
 
+const pageHistory = [];
+
+
 window.initLayout = initLayout;
 window.initLoginLayout = initLoginLayout;
 window.navigateTo = navigateTo;
@@ -47,11 +50,6 @@ export function checkSession() {
   });
 }
 
-/**
- * Array storing the navigation path history.
- * @type {string[]}
- */
-const pageHistory = [];
 
 /**
  * Funktion which chooses which init must be loaded.
