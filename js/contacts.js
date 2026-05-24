@@ -6,7 +6,7 @@ import { getContactDetails, getSingleContact, getContactLetter } from './templat
 
 
 export let contacts = [];
-export let currentEditContactId = null;
+let currentEditContactId = null;
 
 
 window.openAddContact = openAddContact;
@@ -69,37 +69,81 @@ async function handleDeleteContact(contactId) {
 }
 
 
+/**
+ * Saves the edited contact to Firebase,
+ * updates the local contacts array and refreshes the UI.
+ *
+ * @async
+ */
 async function handleSaveContact() {
-    const contact = contacts.find(
+    const contact = getCurrentEditContact();
+    const updatedData = getUpdatedContactData(contact);
+
+    await updateContact(currentEditContactId, updatedData);
+    updateLocalContact(updatedData);
+    refreshUpdatedContactUI();
+}
+
+
+/**
+ * Returns the currently edited contact
+ * from the contacts array.
+ *
+ * @returns {Object|undefined} The current contact object.
+ */
+function getCurrentEditContact() {
+    return contacts.find(
         contact => contact.id === currentEditContactId
     );
+}
 
+
+/**
+ * Reads the contact form inputs and
+ * creates an updated contact data object.
+ *
+ * @param {Object} contact - The current contact object.
+ * @returns {Object} The updated contact data.
+ */
+function getUpdatedContactData(contact) {
     let name = document.getElementById('contact-name').value;
     let email = document.getElementById('contact-email').value;
     let phone = document.getElementById('contact-phone').value;
-    let initials = getInitials(name);
 
-    let updatedData = {
+    return {
         name,
         email,
         phone,
-        initials,
+        initials: getInitials(name),
         color: contact.color
     };
-    console.log(updatedData);
-    console.log(currentEditContactId);
+}
 
-    await updateContact(currentEditContactId, updatedData);
 
+/**
+ * Updates the edited contact inside
+ * the local contacts array.
+ *
+ * @param {Object} updatedData - The updated contact data.
+ */
+function updateLocalContact(updatedData) {
     contacts = contacts.map(contact =>
         contact.id === currentEditContactId
             ? { ...contact, ...updatedData }
             : contact
     );
+}
 
 
+/**
+ * Refreshes the contacts list,
+ * updates the contact details view
+ * and closes the contact dialog.
+ */
+function refreshUpdatedContactUI() {
     contacts.sort((a, b) => a.name.localeCompare(b.name));
     renderContacts();
+
     const updatedIndex = contacts.findIndex(
         contact => contact.id === currentEditContactId
     );
@@ -109,11 +153,14 @@ async function handleSaveContact() {
 }
 
 
+/**
+ * Opens the contact dialog with
+ * the opening animation.
+ */
 function openContactDialog() {
     const dialog = document.getElementById('add-contact-popup');
 
     dialog.classList.remove('contact-dialog-open');
-
     dialog.showModal();
 
     setTimeout(() => {
