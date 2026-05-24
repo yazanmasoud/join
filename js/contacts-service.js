@@ -58,6 +58,11 @@ export async function createContact(contactData) {
   };
 }
 
+export function saveContact() {
+  // This function is not needed as updateContact directly updates the contact in Firebase or local storage.
+  
+}
+
 export async function getContactById(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();

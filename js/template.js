@@ -319,7 +319,7 @@ export function getSingleContact(list, contact, index) {
     </div>`;
 }
 
-export function getContactDetails(contact, index) {
+export function getContactDetails(contact) {
   return `
     <div class="contact-details-content">
       <div class="contact-details-header">
@@ -327,7 +327,7 @@ export function getContactDetails(contact, index) {
         <div class="contact-details-header-info">
           <h3>${contact.name}</h3>
             <div class="contact-details-actions">
-              <button onclick="window.openEditContact(${index})" class="btn edit-delete-btn">
+              <button onclick="window.openEditContact('${contact.id}')" class="btn edit-delete-btn">
                 <img src="../assets/icons/edit-icon.svg" alt="">
                 <p>Edit</p>
               </button>

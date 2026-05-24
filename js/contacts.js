@@ -107,8 +107,9 @@ function openAddContact() {
 }
 
 
-function openEditContact(index) {
-    const contact = contacts[index];
+function openEditContact(contactId) {
+    const contact = contacts.find(contact => contact.id === contactId);
+
     const elements = getContactDialogElements();
 
     elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
