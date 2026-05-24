@@ -12,7 +12,7 @@ import {
   CONTACT_OPTIONS,
 } from './utils.js';
 
-const subtasks = [];
+let subtasks = [];
 let currentPriority = 'Medium';
 
 window.toggleSubtaskStatus = toggleSubtaskStatus;
