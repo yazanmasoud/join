@@ -10,9 +10,7 @@ import {
   onValue,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-import { isGuestUser} from './storage.js';
-
-
+import { isGuestUser } from './storage.js';
 
 export async function getContacts() {
   if (isGuestUser()) {
@@ -60,13 +58,12 @@ export async function createContact(contactData) {
 
 export function saveContact() {
   // This function is not needed as updateContact directly updates the contact in Firebase or local storage.
-  
 }
 
 export async function getContactById(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
-    return contacts.find(contact => String(contact.id) === String(contactId));
+    return contacts.find((contact) => String(contact.id) === String(contactId));
   }
 
   const uid = auth.currentUser.uid;
@@ -84,10 +81,10 @@ export async function updateContact(contactId, updatedData) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
 
-    const updatedContacts = contacts.map(contact =>
+    const updatedContacts = contacts.map((contact) =>
       String(contact.id) === String(contactId)
         ? { ...contact, ...updatedData }
-        : contact
+        : contact,
     );
 
     saveGuestContacts(updatedContacts);
@@ -104,7 +101,7 @@ export async function deleteContact(contactId) {
     const contacts = getGuestContacts();
 
     const filteredContacts = contacts.filter(
-      contact => String(contact.id) !== String(contactId)
+      (contact) => String(contact.id) !== String(contactId),
     );
 
     saveGuestContacts(filteredContacts);
@@ -124,7 +121,7 @@ export function listenToContacts(callback) {
 
   const uid = auth.currentUser.uid;
 
-  return onValue(ref(database, `contacts/${uid}`), snapshot => {
+  return onValue(ref(database, `contacts/${uid}`), (snapshot) => {
     if (!snapshot.exists()) {
       callback([]);
       return;
@@ -134,7 +131,7 @@ export function listenToContacts(callback) {
       ([id, contact]) => ({
         id,
         ...contact,
-      })
+      }),
     );
 
     callback(contactsArray);
