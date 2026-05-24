@@ -1,5 +1,5 @@
-import { guestContacts, guestTasks } from './guest-data.js';
 import { showInputError, clearInputError } from './ui.js';
+import { registerUser } from './auth-service.js';
 
 
 const isLoginPage = document.getElementById('login');
@@ -10,10 +10,11 @@ if (isLoginPage && wrapper) {
 }
 
 function initMainLoginPage() {
-  if (document.documentElement.classList.contains('show-start-animation')) {
-    wrapper.classList.add('is-loading');
-  } else {
+  const animationAlreadyPlayed = sessionStorage.getItem('startAnimationPlayed');
+  if (animationAlreadyPlayed) {
     wrapper.classList.add('is-ready', 'no-animation');
+  } else {
+    wrapper.classList.add('is-loading');
   }
 
   initStartAnimation();
@@ -36,6 +37,8 @@ function animateLogo(delay = 0) {
   setTimeout(() => {
     wrapper.classList.remove('is-loading');
     wrapper.classList.add('is-ready');
+    document.documentElement.classList.remove('show-start-animation');
+    document.documentElement.classList.add('skip-start-animation');
     logo.classList.add('shrink');
     finishLogoAnimation(logo, login);
   }, delay);
@@ -106,7 +109,6 @@ function showStartPageWithoutAnimation(wrapper, logo, login) {
   logo.classList.add('no-animation');
   wrapper.classList.remove('is-loading');
   wrapper.classList.add('is-ready');
-  login.classList.remove('hidden');
   logo.classList.add('shrink', 'final');
   showMobileSignup();
   requestAnimationFrame(() => {
@@ -219,11 +221,6 @@ function checkPrivacy(privacy) {
   }
   privacy.classList.remove('input-error');
   return true;
-}
-
-
-function isValidEmail(emailValue) {
-  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(emailValue);
 }
 
 

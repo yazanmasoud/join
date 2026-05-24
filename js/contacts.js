@@ -2,14 +2,20 @@ import { getInitials } from './utils.js';
 import { renderAvatar, clearElementsByIds } from './ui.js';
 import { getCurrentUserId } from './storage.js';
 import { getContacts, createContact, deleteContact } from './contacts-service.js';
-
-
-/**
- * @file Template management script handling board cards, task details, and editor HTML strings.
- */
 import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
 
+
 export let contacts = [];
+
+
+window.openAddContact = openAddContact;
+window.handleCreateContact = handleCreateContact;
+window.closeAddContact = closeAddContact;
+window.getContactDetails = getContactDetails;
+window.renderContactDetails = renderContactDetails;
+window.openEditContact = openEditContact;
+window.handleDeleteContact = handleDeleteContact;
+
 
 export async function initContacts() {
     contacts = await getContacts();
@@ -192,12 +198,3 @@ function getRandomColor() {
     let randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
 }
-
-
-window.openAddContact = openAddContact;
-window.handleCreateContact = handleCreateContact;
-window.closeAddContact = closeAddContact;
-window.getContactDetails = getContactDetails;
-window.renderContactDetails = renderContactDetails;
-window.openEditContact = openEditContact;
-window.handleDeleteContact = handleDeleteContact;

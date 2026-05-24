@@ -1,13 +1,14 @@
-export const CATEGORY_OPTIONS = [
-  'Technical Task',
-  'User Story',
-  'Feature Task',
-];
-export const CONTACT_OPTIONS = [
-  'Maximilian Müller',
-  'Sofia Schneider',
-  'Benedikt Bauer',
-];
+export const CATEGORY_OPTIONS = ['Technical Task','User Story','Feature Task',];
+export const CONTACT_OPTIONS = ['Maximilian Müller','Sofia Schneider','Benedikt Bauer',];
+
+
+const overlay = document.getElementById('overlay');
+
+
+window.hideOverlay = hideOverlay;
+window.showOverlay = showOverlay;
+window.getInitials = getInitials;
+
 
 /**
  * Generates initials from a contact name.
@@ -22,20 +23,17 @@ export function getInitials(name) {
     .trim()
     .split(' ')
     .filter((word) => word !== '');
-
   if (words.length === 0) {
     return '';
   }
-
   if (words.length === 1) {
     return words[0][0].toUpperCase();
   }
-
   let firstLetter = words[0][0].toUpperCase();
   let lastLetter = words[words.length - 1][0].toUpperCase();
-
   return firstLetter + lastLetter;
 }
+
 
 /**
  * Constructs a CSS class name mapped to a priority level.
@@ -45,6 +43,7 @@ export function getInitials(name) {
 export function getPrioClass(prio) {
   return 'active-' + prio.toLowerCase();
 }
+
 
 /**
  * Resets priority button styles by removing all active priority CSS classes.
@@ -58,11 +57,13 @@ export function clearActivePrioClasses(selector) {
 }
 
 
+
 /**Board.js */
 export function capitalizeFirstLetter(string) {
   if (!string) return '';
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
 
 /**Summary.js */
 /**
@@ -73,14 +74,14 @@ export function calculateMetrics(tasks) {
   return {
     todo: tasks.filter((t) => t.status === 'todo').length || 0,
     done: tasks.filter((t) => t.status === 'done').length || 0,
-    urgent:
-      tasks.filter((t) => t.priority?.toLowerCase() === 'urgent').length || 0,
+    urgent: tasks.filter((t) => t.priority?.toLowerCase() === 'urgent').length || 0,
     tasksInBoard: tasks.length || 0,
     tasksInProgress: tasks.filter((t) => t.status === 'progress').length || 0,
     awaitingFeedback: tasks.filter((t) => t.status === 'feedback').length || 0,
     deadline: getNextDeadline(tasks),
   };
 }
+
 
 /**
  * Finds and formats the earliest upcoming task deadline.
@@ -91,37 +92,30 @@ export function getNextDeadline(tasks) {
   const validDates = tasks
     .map((t) => t.dueDate)
     .filter((dateStr) => dateStr && dateStr !== '');
-
   if (validDates.length === 0) return 'No upcoming deadline';
-
   const sortedDates = validDates.sort((a, b) => new Date(a) - new Date(b));
   const nextDate = new Date(sortedDates[0]);
-
   if (isNaN(nextDate.getTime())) return 'No upcoming deadline';
-
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return nextDate.toLocaleDateString('en-US', options);
 }
 
-// Overlay-Element for displaying success message after signup
-const overlay = document.getElementById('overlay');
 
 export function showOverlay(message = 'Success!') {
   const text = overlay.querySelector('.success-message');
-
   text.textContent = message;
-
   overlay.classList.remove('hidden');
   overlay.style.opacity = '1';
 }
 
+
 export function hideOverlay() {
   overlay.style.opacity = '0';
-
   setTimeout(() => {
     overlay.classList.add('hidden');
   }, 300);
 }
+
 
 /**
  * Returns the correct Firebase reference path for a task.
@@ -134,7 +128,3 @@ function getTaskRefPath(taskId) {
     ? `guest/tasks/${taskId}`
     : `tasks/${uid}/${taskId}`;
 }
-
-window.hideOverlay = hideOverlay;
-window.showOverlay = showOverlay;
-window.getInitials = getInitials;

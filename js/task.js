@@ -1,19 +1,21 @@
-import {
-  createTask as serviceCreateTask,
-  updateTask as serviceUpdateTask,
-} from './tasks-service.js';
+import { createTask as serviceCreateTask, updateTask as serviceUpdateTask } from './tasks-service.js';
 import { getPriorityButtonsHTML } from './template.js';
 import { getSelectOptionsHTML } from './template.js';
 import { getSubtaskHTML } from './template.js';
-import {
-  clearActivePrioClasses,
-  getPrioClass,
-  CATEGORY_OPTIONS,
-  CONTACT_OPTIONS,
-} from './utils.js';
+import { clearActivePrioClasses, getPrioClass, CATEGORY_OPTIONS, CONTACT_OPTIONS } from './utils.js';
 
-let subtasks = [];
+
+const subtasks = [];
 let currentPriority = 'Medium';
+
+
+window.toggleSubtaskStatus = toggleSubtaskStatus;
+window.initAddTask = initAddTask;
+window.createTask = createTask;
+window.setPriority = setPriority;
+window.handleSubtaskKey = handleSubtaskKey;
+window.deleteSubtask = deleteSubtask;
+
 
 export async function initAddTask() {
   renderPriorityButtons();
@@ -234,9 +236,3 @@ function toggleSubtaskStatus(index) {
   subtasks[index].done = !subtasks[index].done;
   renderSubtasks();
 }
-window.toggleSubtaskStatus = toggleSubtaskStatus;
-window.initAddTask = initAddTask;
-window.createTask = createTask;
-window.setPriority = setPriority;
-window.handleSubtaskKey = handleSubtaskKey;
-window.deleteSubtask = deleteSubtask;
