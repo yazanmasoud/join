@@ -1,11 +1,12 @@
 import { getInitials } from './utils.js';
 import { renderAvatar, clearElementsByIds } from './ui.js';
 import { getCurrentUserId } from './storage.js';
-import { getContacts, createContact, deleteContact } from './contacts-service.js';
+import { getContacts, createContact, deleteContact, updateContact } from './contacts-service.js';
 import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
 
 
 export let contacts = [];
+export let currentEditContactId = null;
 
 
 window.openAddContact = openAddContact;
@@ -15,6 +16,7 @@ window.getContactDetails = getContactDetails;
 window.renderContactDetails = renderContactDetails;
 window.openEditContact = openEditContact;
 window.handleDeleteContact = handleDeleteContact;
+window.handleSaveContact = handleSaveContact;
 
 
 export async function initContacts() {
@@ -23,6 +25,7 @@ export async function initContacts() {
 
     renderContacts();
 }
+
 
 /**
  * Creates a new contact object
@@ -66,6 +69,46 @@ async function handleDeleteContact(contactId) {
 }
 
 
+async function handleSaveContact() {
+    const contact = contacts.find(
+        contact => contact.id === currentEditContactId
+    );
+
+    let name = document.getElementById('contact-name').value;
+    let email = document.getElementById('contact-email').value;
+    let phone = document.getElementById('contact-phone').value;
+    let initials = getInitials(name);
+
+    let updatedData = {
+        name,
+        email,
+        phone,
+        initials,
+        color: contact.color
+    };
+    console.log(updatedData);
+    console.log(currentEditContactId);
+
+    await updateContact(currentEditContactId, updatedData);
+
+    contacts = contacts.map(contact =>
+        contact.id === currentEditContactId
+            ? { ...contact, ...updatedData }
+            : contact
+    );
+
+
+    contacts.sort((a, b) => a.name.localeCompare(b.name));
+    renderContacts();
+    const updatedIndex = contacts.findIndex(
+        contact => contact.id === currentEditContactId
+    );
+
+    renderContactDetails(updatedIndex);
+    closeAddContact();
+}
+
+
 function openContactDialog() {
     const dialog = document.getElementById('add-contact-popup');
 
@@ -99,6 +142,7 @@ function openAddContact() {
 
     elements.sidebarImage.src = '../assets/img/Frame-add-contact.png';
     elements.createSaveButton.innerHTML = 'Create Contact';
+    elements.createSaveButton.onclick = handleCreateContact;
     elements.cancelDeleteButton.innerHTML = 'Cancel';
     elements.createSaveButton.classList.remove('save-button');
     elements.nameInput.value = '';
@@ -115,11 +159,12 @@ function openAddContact() {
 
 function openEditContact(contactId) {
     const contact = contacts.find(contact => contact.id === contactId);
-
+    currentEditContactId = contactId;
     const elements = getContactDialogElements();
 
     elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
     elements.createSaveButton.innerHTML = 'Save';
+    elements.createSaveButton.onclick = handleSaveContact;
     elements.cancelDeleteButton.innerHTML = 'Delete';
     elements.createSaveButton.classList.add('save-button');
     elements.nameInput.value = contact.name || '';
@@ -190,9 +235,9 @@ function renderContactDetails(index) {
  */
 function getRandomColor() {
     const colors = [
-        '#FF7A00','#FF5EB3','#6E52FF',
-        '#9327FF','#00BEE8','#1FD7C1',
-        '#FF745E','#FFA35E','#FF5E5E',
+        '#FF7A00', '#FF5EB3', '#6E52FF',
+        '#9327FF', '#00BEE8', '#1FD7C1',
+        '#FF745E', '#FFA35E', '#FF5E5E',
         '#FF5E9E'];
 
     let randomIndex = Math.floor(Math.random() * colors.length);
