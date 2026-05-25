@@ -264,3 +264,43 @@
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* ===== DELETE CONFIRM DIALOG ===== */
+.delete-dialog {
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  margin: auto;
+}
+
+.delete-dialog[open] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.delete-dialog-content {
+  padding: 32px;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.delete-dialog-content h3 {
+  margin: 0;
+}
+
+.delete-dialog-content p {
+  margin: 0;
+}
+
+.delete-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

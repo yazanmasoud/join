@@ -18,6 +18,8 @@ window.renderContactDetails = renderContactDetails;
 window.openEditContact = openEditContact;
 window.handleDeleteContact = handleDeleteContact;
 window.handleSaveContact = handleSaveContact;
+window.openDeleteDialog = openDeleteDialog;
+window.closeDeleteDialog = closeDeleteDialog;
 
 
 export async function initContacts() {
@@ -238,7 +240,8 @@ function openAddContact() {
     elements.sidebarImage.src = '../assets/img/Frame-add-contact.png';
     elements.createSaveButton.innerHTML = 'Create Contact';
     elements.createSaveButton.onclick = handleCreateContact;
-    
+    elements.cancelDeleteButton.innerHTML = 'Cancel';
+    elements.cancelDeleteButton.onclick = closeAddContact;
     elements.createSaveButton.classList.remove('save-button');
     elements.nameInput.value = '';
     elements.emailInput.value = '';
@@ -253,14 +256,16 @@ function openAddContact() {
 
 
 function openEditContact(contactId) {
-const contact = contacts.find(contact => String(contact.id) === String(contactId));    currentEditContactId = contactId;
+    const contact = contacts.find(contact => String(contact.id) === String(contactId)); currentEditContactId = contactId;
     const elements = getContactDialogElements();
 
     elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
     elements.createSaveButton.innerHTML = 'Save';
     elements.createSaveButton.onclick = handleSaveContact;
     elements.cancelDeleteButton.innerHTML = 'Delete';
-    elements.cancelDeleteButton.onclick = () => handleDeleteContact(contactId);
+    elements.cancelDeleteButton.removeAttribute('onclick');
+    elements.cancelDeleteButton.onclick =
+        () => openDeleteDialog(contactId);
     elements.createSaveButton.classList.add('save-button');
     elements.nameInput.value = contact.name || '';
     elements.emailInput.value = contact.email || '';
@@ -274,7 +279,29 @@ const contact = contacts.find(contact => String(contact.id) === String(contactId
 }
 
 
+function openDeleteDialog(contactId) {
+    const dialog = document.getElementById(
+        'delete-confirm-dialog'
+    );
 
+    const confirmButton = document.getElementById(
+        'confirm-delete-button'
+    );
+
+    confirmButton.onclick = () => {
+        dialog.close();
+        handleDeleteContact(contactId);
+    };
+
+    dialog.showModal();
+}
+
+
+function closeDeleteDialog() {
+    document
+        .getElementById('delete-confirm-dialog')
+        .close();
+}
 
 
 /**
@@ -296,7 +323,7 @@ function renderContacts() {
             currentLetter = firstLetter;
         }
 
-        getSingleContact(list,contact,i,i === selectedContactIndex);
+        getSingleContact(list, contact, i, i === selectedContactIndex);
     }
 }
 
