@@ -28,6 +28,19 @@
   color: var(--color-user-mail);
 }
 
+.contact-item-active {
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+}
+
+.contact-item-active .contact-name {
+  color: var(--color-bg-primary);
+}
+
+.contact-item-active .contact-email {
+  color: var(--color-user-mail);
+}
+
 .contact-avatar {
   width: 40px;
   height: 40px;

@@ -7,6 +7,7 @@ import { getContactDetails, getSingleContact, getContactLetter } from './templat
 
 export let contacts = [];
 let currentEditContactId = null;
+let selectedContactIndex = null;
 
 
 window.openAddContact = openAddContact;
@@ -267,7 +268,7 @@ function renderContacts() {
             currentLetter = firstLetter;
         }
 
-        getSingleContact(list, contact, i);
+        getSingleContact(list,contact,i,i === selectedContactIndex);
     }
 }
 
@@ -279,9 +280,13 @@ function renderContacts() {
  * @param {number} index - The index of the selected contact in the contacts array.
  */
 function renderContactDetails(index) {
+    selectedContactIndex = index;
+
     const contact = contacts[index];
     const detailsContainer = document.getElementById('contact-details');
+
     detailsContainer.innerHTML = getContactDetails(contact, index);
+    renderContacts();
 }
 
 
