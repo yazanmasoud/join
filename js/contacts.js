@@ -68,6 +68,7 @@ async function handleDeleteContact(contactId) {
     contacts = contacts.filter(contact => contact.id !== contactId);
     renderContacts();
     document.getElementById('contact-details').innerHTML = '';
+    closeAddContact();
     showToast('Contact deleted');
 }
 
@@ -253,6 +254,7 @@ function openEditContact(contactId) {
     elements.createSaveButton.innerHTML = 'Save';
     elements.createSaveButton.onclick = handleSaveContact;
     elements.cancelDeleteButton.innerHTML = 'Delete';
+    elements.cancelDeleteButton.onclick = () => handleDeleteContact(contactId);
     elements.createSaveButton.classList.add('save-button');
     elements.nameInput.value = contact.name || '';
     elements.emailInput.value = contact.email || '';

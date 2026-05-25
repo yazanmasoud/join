@@ -351,7 +351,7 @@ export function getContactDetails(contact) {
                 <img src="../assets/img/edit-contact.svg" alt="Edit Contact">
               </button>
 
-              <button onclick="handleDeleteContact('${contact.id}')" class="btn edit-delete-btn">
+              <button onclick="handleDeleteContact('${contact.id}')" class="btn btn edit-delete-btn">
                 <img src="../assets/img/delete-contact.svg" alt="Delete Contact">
               </button>
             </div>
