@@ -33,13 +33,16 @@
                         <span>cancel</span>
                     </button>
 
-                    <button id="create-save-button" class="contact-dialog-create-button btn-dark" onclick="handleCreateContact()">
+                    <button id="create-save-button" class="contact-dialog-create-button btn-dark" onclick="createContact()">
                         <span>Create Contact</span>
                     </button>
                 </div>
             </div>
         </div>
     </dialog>
+    
+    <div id="toast-message" class="toast-message"></div>
+
     <section class="contact-details">
         <div class="contact-details-title">
             <h2 class="contact-details-title">Contacts</h2>

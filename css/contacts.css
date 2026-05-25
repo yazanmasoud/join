@@ -12,6 +12,7 @@
     align-items: center;
     gap: 20px;
     padding: 8px 12px;
+    margin-top: 8px;
     cursor: pointer;
 }
 
@@ -25,6 +26,19 @@
 }
 
 .contact-item:hover .contact-email {
+  color: var(--color-user-mail);
+}
+
+.contact-item-active {
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+}
+
+.contact-item-active .contact-name {
+  color: var(--color-bg-primary);
+}
+
+.contact-item-active .contact-email {
   color: var(--color-user-mail);
 }
 
@@ -114,7 +128,12 @@
   padding: 0;
   margin: auto;
   transform: translateX(100%);
-  transition: transform 250ms ease-in-out;
+  transition: transform 120ms ease;
+}
+
+.contact-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.25);
+  transition: opacity 120ms ease;
 }
 
 .contact-dialog-open {
@@ -222,4 +241,26 @@
   flex-direction: column;
   gap: 30px;
   margin-top: 20px;
+}
+
+/* ===== TOAST MESSAGE ===== */
+.toast-message {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background-color: #2A3647;
+  color: white;
+  padding: 18px 32px;
+  border-radius: 12px;
+  font-size: 18px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 300ms ease;
+  z-index: 999;
+}
+
+.toast-message-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

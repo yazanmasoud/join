@@ -15,6 +15,7 @@ window.handleSignup = handleSignup;
 window.validateLoginEmail = validateLoginEmail;
 window.validateLoginPassword = validateLoginPassword;
 window.updateLoginButtonState = updateLoginButtonState;
+window.isValidEmail = isValidEmail;
 
 
 //handles the complete registration flow

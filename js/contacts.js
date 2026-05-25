@@ -7,6 +7,7 @@ import { getContactDetails, getSingleContact, getContactLetter } from './templat
 
 export let contacts = [];
 let currentEditContactId = null;
+let selectedContactIndex = null;
 
 
 window.openAddContact = openAddContact;
@@ -52,6 +53,7 @@ async function handleCreateContact() {
     document.getElementById('contact-email').value = '';
     document.getElementById('contact-phone').value = '';
     closeAddContact();
+    showToast('Contact successfully created');
 }
 
 
@@ -66,6 +68,7 @@ async function handleDeleteContact(contactId) {
     contacts = contacts.filter(contact => contact.id !== contactId);
     renderContacts();
     document.getElementById('contact-details').innerHTML = '';
+    showToast('Contact deleted');
 }
 
 
@@ -150,6 +153,7 @@ function refreshUpdatedContactUI() {
 
     renderContactDetails(updatedIndex);
     closeAddContact();
+    showToast('Contact updated');
 }
 
 
@@ -166,6 +170,42 @@ function openContactDialog() {
     setTimeout(() => {
         dialog.classList.add('contact-dialog-open');
     }, 10);
+}
+
+
+/**
+ * Closes the add contact dialog
+ * and removes the animation class.
+ */
+/**
+ * Closes the add contact dialog
+ * with the closing animation.
+ */
+function closeAddContact() {
+    const dialog = document.getElementById('add-contact-popup');
+
+    dialog.classList.remove('contact-dialog-open');
+
+    setTimeout(() => {
+        dialog.close();
+    }, 120);
+}
+
+
+/**
+ * Shows a temporary toast message.
+ *
+ * @param {string} message - The toast text.
+ */
+function showToast(message) {
+    const toast = document.getElementById('toast-message');
+
+    toast.innerText = message;
+    toast.classList.add('toast-message-show');
+
+    setTimeout(() => {
+        toast.classList.remove('toast-message-show');
+    }, 2000);
 }
 
 
@@ -190,7 +230,7 @@ function openAddContact() {
     elements.sidebarImage.src = '../assets/img/Frame-add-contact.png';
     elements.createSaveButton.innerHTML = 'Create Contact';
     elements.createSaveButton.onclick = handleCreateContact;
-    elements.cancelDeleteButton.innerHTML = 'Cancel';
+    
     elements.createSaveButton.classList.remove('save-button');
     elements.nameInput.value = '';
     elements.emailInput.value = '';
@@ -225,15 +265,7 @@ function openEditContact(contactId) {
     openContactDialog();
 }
 
-/**
- * Closes the add contact dialog
- * and removes the animation class.
- */
-function closeAddContact() {
-    const dialog = document.getElementById('add-contact-popup');
-    dialog.classList.remove('contact-dialog-open');
-    dialog.close();
-}
+
 
 
 
@@ -256,7 +288,7 @@ function renderContacts() {
             currentLetter = firstLetter;
         }
 
-        getSingleContact(list, contact, i);
+        getSingleContact(list,contact,i,i === selectedContactIndex);
     }
 }
 
@@ -268,9 +300,13 @@ function renderContacts() {
  * @param {number} index - The index of the selected contact in the contacts array.
  */
 function renderContactDetails(index) {
+    selectedContactIndex = index;
+
     const contact = contacts[index];
     const detailsContainer = document.getElementById('contact-details');
+
     detailsContainer.innerHTML = getContactDetails(contact, index);
+    renderContacts();
 }
 
 

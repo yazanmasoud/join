@@ -323,9 +323,10 @@ export function getContactLetter(list, letter) {
  * @param {Object} contact - The contact object
  * @param {number} i - The index of the contact in the contacts array
  */
-export function getSingleContact(list, contact, index) {
+export function getSingleContact(list, contact, index, isActive) {
   list.innerHTML += `
-    <div class="contact-item" onclick="window.renderContactDetails(${index})">
+    <div class="contact-item ${isActive ? 'contact-item-active' : ''}"
+      onclick="window.renderContactDetails(${index})">
       <div class="contact-avatar" style="background-color: ${contact.color}">
         ${contact.initials || '??'}
       </div>
