@@ -53,6 +53,7 @@ async function handleCreateContact() {
     document.getElementById('contact-email').value = '';
     document.getElementById('contact-phone').value = '';
     closeAddContact();
+    showToast('Contact successfully created');
 }
 
 
@@ -67,6 +68,7 @@ async function handleDeleteContact(contactId) {
     contacts = contacts.filter(contact => contact.id !== contactId);
     renderContacts();
     document.getElementById('contact-details').innerHTML = '';
+    showToast('Contact deleted');
 }
 
 
@@ -151,6 +153,7 @@ function refreshUpdatedContactUI() {
 
     renderContactDetails(updatedIndex);
     closeAddContact();
+    showToast('Contact updated');
 }
 
 
@@ -186,6 +189,23 @@ function closeAddContact() {
     setTimeout(() => {
         dialog.close();
     }, 100);
+}
+
+
+/**
+ * Shows a temporary toast message.
+ *
+ * @param {string} message - The toast text.
+ */
+function showToast(message) {
+    const toast = document.getElementById('toast-message');
+
+    toast.innerText = message;
+    toast.classList.add('toast-message-show');
+
+    setTimeout(() => {
+        toast.classList.remove('toast-message-show');
+    }, 2000);
 }
 
 
