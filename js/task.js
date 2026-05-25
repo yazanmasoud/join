@@ -1,21 +1,59 @@
+import {
+  createTask as serviceCreateTask,
+  updateTask as serviceUpdateTask,
+} from './tasks-service.js';
 import { getPriorityButtonsHTML } from './template.js';
 import { getSelectOptionsHTML } from './template.js';
-import { clearActivePrioClasses } from './utils.js';
-import { getPrioClass } from './utils.js';
-import { CATEGORY_OPTIONS } from './utils.js';
-import { CONTACT_OPTIONS } from './utils.js';
+import { getSubtaskHTML } from './template.js';
+import {
+  clearActivePrioClasses,
+  getPrioClass,
+  CATEGORY_OPTIONS,
+  CONTACT_OPTIONS,
+} from './utils.js';
 
 let subtasks = [];
 let currentPriority = 'Medium';
 
-/**
- * Initializes the page by rendering dropdowns, buttons, and setting the default priority.
- */
-export function initAddTask() {
+window.toggleSubtaskStatus = toggleSubtaskStatus;
+window.initAddTask = initAddTask;
+window.createTask = createTask;
+window.setPriority = setPriority;
+window.handleSubtaskKey = handleSubtaskKey;
+window.deleteSubtask = deleteSubtask;
+
+export async function initAddTask() {
   renderPriorityButtons();
   renderCategories();
   renderContacts();
   setPriority(currentPriority);
+  const editId = localStorage.getItem('editTaskId');
+  if (editId) {
+    const editData = JSON.parse(localStorage.getItem('editTaskData'));
+    fillFormForEdit(editData);
+    updateButtonToSaveMode();
+  }
+}
+
+function fillFormForEdit(data) {
+  document.getElementById('taskTitle').value = data.title || '';
+  document.getElementById('taskDescription').value = data.description || '';
+  document.getElementById('taskDate').value = data.dueDate || '';
+  document.getElementById('taskCategory').value = data.category || '';
+  document.getElementById('tasksAssigned').value = data.assignedTo || '';
+  subtasks = data.subtasks || [];
+  setPriority(data.priority || 'Medium');
+  renderSubtasks();
+}
+
+function updateButtonToSaveMode() {
+  const btn = document.querySelector('.btn-dark');
+  if (btn) {
+    btn.innerHTML = 'Save Changes <img src="../assets/icons/create-task.svg">';
+    btn.onclick = createTask;
+  }
+  const headline = document.querySelector('h2');
+  if (headline) headline.innerText = 'Edit Task';
 }
 
 /**
@@ -24,15 +62,33 @@ export function initAddTask() {
 async function createTask() {
   const task = getTaskObject();
   if (!validateTask(task)) return;
-
-  const userId = getCurrentUserId();
+  const editId = localStorage.getItem('editTaskId');
   try {
-    await database.ref(`users/${userId}/tasks`).push(task);
-    showSuccessToast();
-    clearForm();
+    if (editId) {
+      await serviceUpdateTask(editId, task);
+    } else {
+      await serviceCreateTask(task);
+    }
+    handleSuccess();
   } catch (e) {
-    console.error('Fehler beim Speichern:', e);
+    console.error('Fehler:', e);
   }
+}
+
+function handleSuccess() {
+  showSuccessToast();
+  const editId = localStorage.getItem('editTaskId');
+
+  localStorage.removeItem('editTaskId');
+  localStorage.removeItem('editTaskData');
+
+  setTimeout(async () => {
+    if (editId) {
+      await navigateTo('board');
+    } else {
+      clearForm();
+    }
+  }, 1000);
 }
 
 /**
@@ -50,6 +106,7 @@ function validateTask(task) {
  * @returns {Object} The generated task object.
  */
 function getTaskObject() {
+  const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
   return {
     title: document.getElementById('taskTitle').value,
     description: document.getElementById('taskDescription').value,
@@ -58,8 +115,8 @@ function getTaskObject() {
     priority: currentPriority,
     assignedTo: document.getElementById('tasksAssigned').value,
     subtasks: subtasks,
-    status: 'todo',
-    createdAt: Date.now(),
+    status: editData.status || 'todo',
+    createdAt: editData.createdAt || Date.now(),
   };
 }
 
@@ -145,18 +202,23 @@ function deleteSubtask(index) {
 }
 
 /**
- * Resets all input fields, arrays, and priority levels to defaults.
+ * Resets all input fields, arrays, and clears any active edit session data.
  */
 function clearForm() {
   ['taskTitle', 'taskDescription', 'taskDate', 'subtasks'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
+    let element = document.getElementById(id);
+    if (element) element.value = '';
   });
   subtasks = [];
   renderSubtasks();
   document.getElementById('taskCategory').selectedIndex = 0;
   document.getElementById('tasksAssigned').selectedIndex = 0;
   setPriority('Medium');
+  localStorage.removeItem('editTaskId'); // Entfernt den Edit-Status
+  localStorage.removeItem('editTaskData');
+  document.querySelector('h2').innerText = 'Add Task'; // UI zurücksetzen
+  document.querySelector('.btn-dark').innerHTML =
+    'Create Task <img src="../assets/icons/create-task.svg">';
 }
 
 /**
@@ -166,9 +228,16 @@ function showSuccessToast() {
   const toast = document.getElementById('successMessage');
   if (toast) {
     toast.classList.remove('d-none');
-    setTimeout(() => toast.classList.add('d-none'), 2000);
+    setTimeout(() => {
+      toast.style.bottom = '50px';
+    }, 10);
+
+    setTimeout(() => {
+      toast.classList.add('d-none');
+    }, 2000);
   }
 }
-
-window.createTask = createTask;
-window.setPriority = setPriority;
+function toggleSubtaskStatus(index) {
+  subtasks[index].done = !subtasks[index].done;
+  renderSubtasks();
+}

@@ -1,70 +1,60 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- KORREKTUR: layout.js aus dem Head entfernt, da es unten als Modul geladen wird -->
-    <link rel="stylesheet" href="../css/layout.css" />
-    <link rel="stylesheet" href="../css/main.css" />
-    <link rel="stylesheet" href="../css/root.css" />
-    <link rel="stylesheet" href="../css/imprint.css" />
-    <link rel="stylesheet" href="../css/help.css" />
-    <link rel="stylesheet" href="../css/privacy.css" />
-    <link rel="stylesheet" href="../css/auth.css" />
-    <link rel="stylesheet" href="../css/board.css" />
-    <link rel="stylesheet" href="../css/btn.css" />
-    <link rel="stylesheet" href="../css/fonts.css" />
-    <link rel="stylesheet" href="../css/contacts.css" />
-    <link rel="stylesheet" href="../css/summary.css" />
-    <link rel="stylesheet" href="../css/add-task.css" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="../assets/logos/main-logo-white.svg"
-    />
 
-    <title>Join</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- KORREKTUR: layout.js aus dem Head entfernt, da es unten als Modul geladen wird -->
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/root.css" />
+  <link rel="stylesheet" href="../css/imprint.css" />
+  <link rel="stylesheet" href="../css/help.css" />
+  <link rel="stylesheet" href="../css/privacy.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
+  <link rel="stylesheet" href="../css/board.css" />
+  <link rel="stylesheet" href="../css/btn.css" />
+  <link rel="stylesheet" href="../css/fonts.css" />
+  <link rel="stylesheet" href="../css/contacts.css" />
+  <link rel="stylesheet" href="../css/summary.css" />
+  <link rel="stylesheet" href="../css/add-task.css" />
+  <link rel="icon" type="image/png" href="../assets/logos/main-logo-white.svg" />
 
-  <!-- KORREKTUR: onload entfernt, da der Aufruf jetzt über das Modul-Script unten erfolgt -->
-  <body onclick="closeElement()">
-    <div class="layout">
-      <header id="headerContent" class="headerContent">
-        <!-- hier Header Template -->
-      </header>
+  <title>Join</title>
+</head>
 
-      <aside id="sidebarContent" class="sidebarContent">
-        <!-- hier Sidebar Template -->
-      </aside>
+<body onclick="closeOpenElements()">
+  <div class="layout">
+    <header id="headerContent" class="headerContent">
+      <!-- hier Header Template -->
+    </header>
 
-      <main id="mainContent" class="mainContent">
-        <!-- hier Content Window -->
-      </main>
-    </div>
+    <aside id="sidebarContent" class="sidebarContent">
+      <!-- hier Sidebar Template -->
+    </aside>
 
-    <!-- Firebase App (Basis-SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <!-- Firebase Database -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <!-- KORREKTUR 1: Firebase Auth SDK hinzugefügt -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <main id="mainContent" class="mainContent">
+      <!-- hier Content Window -->
+    </main>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script type="module" src="../js/firebase-config.js"></script>
+  <script type="module" src="../js/storage.js"></script>
+  <script type="module" src="../js/utils.js"></script>
+  <script type="module" src="../js/ui.js"></script>
+  <script type="module" src="../js/guest-data.js"></script>
+  <script type="module" src="../js/template.js"></script>
+  <script type="module" src="../js/header.js"></script>
+  <script type="module" src="../js/layout.js"></script>
+  <script type="module" src="../js/tasks-service.js"></script>
+  <script type="module" src="../js/task.js"></script>
+  <script type="module" src="../js/contacts-service.js"></script>
+  <script type="module" src="../js/contacts.js"></script>
+  <script type="module" src="../js/summary.js"></script>
+  <script type="module" src="../js/board.js"></script>
+  <script type="module" src="../js/auth-service.js"></script>
+</body>
 
-    <!-- KORREKTUR 2: Von regulärem Script zu type="module" geändert -->
-    <script type="module" src="../js/firebase-config.js"></script>
-
-    <!-- Logik & Module -->
-    <script type="module" src="../js/utils.js"></script>
-    <script type="module" src="../js/template.js"></script>
-    <script type="module" src="../js/summary.js"></script>
-    <script type="module" src="../js/board.js"></script>
-    <script type="module" src="../js/task.js"></script>
-    <script type="module" src="../js/contact.js"></script>
-    <script type="module" src="../js/layout.js"></script>
-    <script type="module" src="../js/main.js"></script>
-
-    <!-- Startet das Layout sicher, nachdem alle JS-Module geladen wurden -->
-    <script type="module">
-      initLayout();
-    </script>
-  </body>
 </html>

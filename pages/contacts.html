@@ -8,21 +8,15 @@
         <div id="contact-list"></div>
     </section>
 
-        <section class="contact-details">
-        <div class="contact-details-title">
-            <h2 class="contact-details-title">Contacts</h2>
-            <div class="divider"></div>
-            <span class="contact-name">Better with a team</span>
-        </div>
-
-        <div id="contact-details"></div>
-    </section>
-
     <dialog id="add-contact-popup" class="contact-dialog">
         <div class="contact-dialog-content">
-            <img id="contact-dialog-sidebar-image" class="contact-dialog-sidebar" src="../assets/img/Frame-add-contact.png"
-                alt="Add contact dialog frame">
-            <div id="contact-dialog-avatar" class="contact-dialog-avatar"></div>
+            <img id="contact-dialog-sidebar-image" class="contact-dialog-sidebar"
+                src="../assets/img/Frame-add-contact.png" alt="Add contact dialog frame">
+            <div id="contact-dialog-avatar" class="contact-dialog-avatar">
+                <img id="contact-dialog-avatar-img" src="../assets/img/add-contact-profile-icon.png"
+                    alt="Profile icon" />
+                <span id="contact-dialog-avatar-initials" style="display:none"></span>
+            </div>
 
             <div class="contact-dialog-form">
                 <div class="contact-input-and-close-button">
@@ -36,15 +30,46 @@
                     </div>
                 </div>
                 <div class="contact-dialog-actions">
-                    <button id="cancel-delete-button" class="contact-dialog-cancel-button btn-light" onclick="closeAddContact()">
+                    <button id="cancel-delete-button" class="contact-dialog-cancel-button btn-light"
+                        onclick="closeAddContact()">
                         <span>cancel</span>
                     </button>
 
-                    <button id="create-save-button" class="contact-dialog-create-button btn-dark" onclick="createContact()">
+                    <button id="create-save-button" class="contact-dialog-create-button btn-dark"
+                        onclick="handleCreateContact()">
                         <span>Create Contact</span>
                     </button>
                 </div>
             </div>
         </div>
     </dialog>
+
+    <div id="toast-message" class="toast-message"></div>
+
+    <dialog id="delete-confirm-dialog" class="delete-dialog">
+        <div class="delete-dialog-content">
+            <h3>Delete contact?</h3>
+            <p>Do you really want to delete this contact?</p>
+
+            <div class="delete-dialog-buttons">
+                <button class="btn-light" onclick="closeDeleteDialog()">
+                    Cancel
+                </button>
+
+                <button id="confirm-delete-button" class="btn-dark">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <section class="contact-details">
+        <div class="contact-details-title">
+            <h2 class="contact-details-title">Contacts</h2>
+            <div class="divider"></div>
+            <span class="contact-name">Better with a team</span>
+        </div>
+
+        <div id="contact-details"></div>
+    </section>
 </main>

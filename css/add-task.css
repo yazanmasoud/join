@@ -7,7 +7,6 @@
 
 .add-section-left {
   flex: 1;
-  min-width: 300px;
   display: flex;
   flex-direction: column;
 }
@@ -40,13 +39,14 @@ input,
 textarea,
 select {
   width: 100%;
-  padding: 12px 21px;
+  padding: 12px 20px;
   border: 1px solid var(--color-divider);
   border-radius: 10px;
   font-size: 20px;
   font-family: 'Inter', sans-serif;
   outline: none;
   background-color: var(--color-bg-primary);
+  box-sizing: border-box;
 }
 
 textarea {
@@ -202,4 +202,47 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   cursor: pointer;
   font-weight: bold;
   color: var(--color-bg-secondary);
+}
+
+.success-toast {
+  position: fixed;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2a3647;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: bottom 0.5s ease-in-out;
+}
+
+.success-toast:not(.d-none) {
+  bottom: 50px;
+}
+
+.d-none {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .form-bottom {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .prio-btn {
+    padding: 8px 4px;
+  }
+
+  .form-actions {
+    gap: 8px;
+  }
 }

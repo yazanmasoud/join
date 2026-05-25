@@ -12,13 +12,19 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 15px 24px;
+  padding: 16px 20px;
   background-color: var(--color-bg-secondary);
   color: var(--color-bg-primary);
   border: none;
   border-radius: 8px;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 700;
+}
+
+.btn:hover {
+  color: var(--color-highlights);
+  border: 1px solid var(--color-highlights);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btn-dark:hover {
@@ -26,16 +32,22 @@ button {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.btn-dark:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .btn-light {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 15px 24px;
+  padding: 16px 20px;
   background-color: var(--color-bg-primary);
   color: var(--color-bg-secondary);
   border: 1px solid var(--color-bg-secondary);
   border-radius: 8px;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 700;
 }
 
@@ -97,7 +109,6 @@ button {
   font-weight: 400;
   display: flex;
   align-items: anchor-center;
-  background-image: url('../assets/icons/Close.svg');
   background-position: right 10px center;
   background-repeat: no-repeat;
 }
@@ -126,4 +137,14 @@ button {
   flex-direction: row;
   align-items: center;
   gap: 8px;
+}
+
+@media (max-width: 600px) {
+.btn-light {
+  font-size: 16px;
+  }
+
+.btn-dark {
+  font-size: 16px;
+  }
 }

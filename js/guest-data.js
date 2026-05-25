@@ -200,3 +200,7 @@ export const guestTasks = [
     ],
   },
 ];
+
+
+window.guestContacts = guestContacts;
+window.guestTasks = guestTasks;

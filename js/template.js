@@ -1,7 +1,13 @@
-/**
- * @file Template management script handling board cards, task details, and editor HTML strings.
- */
-import { contacts } from './contact.js';
+import { contacts } from './contacts.js';
+
+
+window.generateTaskHTML = generateTaskHTML;
+window.getNoTaskPlaceholder = getNoTaskPlaceholder;
+window.generateTaskDetailHTML = generateTaskDetailHTML;
+window.generateEditTaskHTML = generateEditTaskHTML;
+window.getContactDetails = getContactDetails;
+window.openEditContact = openEditContact;
+
 
 /** --- BOARD TASK CARDS --- */
 
@@ -25,16 +31,25 @@ export function generateTaskHTML(task, id) {
     </div>`;
 }
 
+
 /**
- * Renders a brief summary of subtask completion progress.
+ * Renders a progress bar and subtask completion text.
  * @param {Object} task - The task data object.
- * @returns {string} The subtask info HTML or an empty string.
+ * @returns {string} The progress bar and text HTML string.
  */
 export function renderSmallSubtaskInfo(task) {
   if (!task.subtasks || task.subtasks.length === 0) return '';
   const done = task.subtasks.filter((s) => s.done).length;
-  return `<small>${done}/${task.subtasks.length} Subtasks</small>`;
+  const percent = (done / task.subtasks.length) * 100;
+  return `
+    <div class="subtask-progress-container">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: ${percent}%"></div>
+      </div>
+      <small>${done}/${task.subtasks.length} Subtasks</small>
+    </div>`;
 }
+
 
 /**
  * Generates placeholder HTML for an empty board column.
@@ -45,8 +60,8 @@ export function getNoTaskPlaceholder(label) {
   return `<div class="no-tasks">No tasks ${label}</div>`;
 }
 
-/** --- ADD TASK TEMPLATES --- */
 
+/** --- ADD TASK TEMPLATES --- */
 /**
  * Generates HTML buttons for selecting task priority levels.
  * @returns {string} The combined priority buttons HTML string.
@@ -62,6 +77,7 @@ export function getPriorityButtonsHTML() {
     .join('');
 }
 
+
 /**
  * Generates HTML option elements for a select dropdown menu.
  * @param {string[]} optionsArray - List of string options to display.
@@ -76,6 +92,7 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
   return def + opts;
 }
 
+
 /**
  * Generates a single subtask list element with a delete action button.
  * @param {Object} task - The subtask data object.
@@ -83,12 +100,21 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
  * @returns {string} The subtask list item HTML string.
  */
 export function getSubtaskHTML(task, index) {
-  return `<li>${task.title}<button type="button" onclick="deleteSubtask(${index})">
-          <img src="../assets/icons/delete-icon.svg"></button></li>`;
+  const icon = task.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
+  return `
+    <li class="subtask-edit-item">
+      <div class="subtask-left" onclick="toggleSubtaskStatus(${index})">
+        <img src="../assets/icons/${icon}" class="subtask-check-icon">
+        <span>${task.title}</span>
+      </div>
+      <button type="button" class="delete-sub-btn" onclick="deleteSubtask(${index})">
+        <img src="../assets/icons/delete-icon.svg">
+      </button>
+    </li>`;
 }
 
-/** --- TASK DETAIL DIALOG --- */
 
+/** --- TASK DETAIL DIALOG --- */
 /**
  * Generates the full HTML markup template for the task detail view dialog.
  * @param {Object} task - The task data object.
@@ -114,6 +140,7 @@ export function generateTaskDetailHTML(task, id) {
       ${getDetailFooter(id)}</div>`;
 }
 
+
 /**
  * Generates HTML table rows containing due date and priority badges.
  * @param {Object} task - The task data object.
@@ -129,6 +156,7 @@ export function getDetailInfoRows(task) {
         <img src="../assets/icons/prio-${prio}-icon.svg"></div>
     </div>`;
 }
+
 
 /**
  * Generates subtask item checklist elements inside the detail modal.
@@ -151,49 +179,65 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
     .join('');
 }
 
+
 /**
  * Generates the functional action buttons for editing and deleting tasks.
  * @param {string} id - The unique task ID.
  * @returns {string} The detail dialog footer menu HTML string.
  */
 export function getDetailFooter(id) {
-  return `<div class="detail-view-footer">
+  return `
+    <div class="detail-view-footer">
       <button class="action-btn" onclick="deleteTask('${id}')">
-        <img src="../assets/icons/delete-icon.svg"> Delete</button>
-      <div class="divider"></div>
+        <img src="../assets/icons/delete-icon.svg"> Delete
+      </button>
       <button class="action-btn" onclick="editTask('${id}')">
-        <img src="../assets/icons/edit-icon.svg"> Edit</button></div>`;
+        <img src="../assets/icons/edit-icon.svg"> Edit
+      </button>
+    </div>`;
 }
 
-/** --- ASSIGNED USERS --- */
 
+/** --- ASSIGNED USERS --- */
 /**
  * Generates an assigned user element containing initials badges and names.
- * @param {string} name - The full contact username.
+ * @param {any} name - The contact name or object.
  * @returns {string} The individual contact badge element HTML string.
  */
 export function getAssignedUserHTML(name) {
+  const safeName = typeof name === 'string' ? name : name?.name || 'Guest';
   const color =
-    typeof getContactColor === 'function' ? getContactColor(name) : '#ff7a00';
-  const initials = typeof getInitials === 'function' ? getInitials(name) : '??';
+    typeof getContactColor === 'function'
+      ? getContactColor(safeName)
+      : '#ff7a00';
+  const initials =
+    typeof getInitials === 'function' ? getInitials(safeName) : '??';
+
   return `<div class="assigned-user">
       <div class="user-badge" style="background-color: ${color}">${initials}</div>
-      <span class="user-name">${name}</span></div>`;
+      <span class="user-name">${safeName}</span></div>`;
 }
+
 
 /**
  * Iterates over contacts list parameters and generates detail row HTML output.
- * @param {string|string[]} assignedTo - Assigned string name or collection array.
+ * @param {any} assignedTo - Assigned string name or collection array.
  * @returns {string} Consolidated contact list markup string.
  */
 export function renderAssignedToDetail(assignedTo) {
   if (!assignedTo || assignedTo === 'Select contacts to assign') return '';
-  const contacts = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
-  return contacts.map((name) => getAssignedUserHTML(name)).join('');
+  const list = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
+  return list
+    .map((contact) => {
+      // Falls contact ein Objekt ist {name: "Max", ...}, nimm nur den Namen
+      const nameOnly = typeof contact === 'object' ? contact.name : contact;
+      return getAssignedUserHTML(nameOnly);
+    })
+    .join('');
 }
 
-/** --- EDIT MODE --- */
 
+/** --- EDIT MODE --- */
 /**
  * Generates the full framework block wrapper structure for task editor view.
  * @param {Object} task - The active task object.
@@ -214,6 +258,7 @@ export function generateEditTaskHTML(task, id) {
     </div>`;
 }
 
+
 /**
  * Generates the layout view container structure for editor left sections.
  * @param {Object} task - The targeted active task data object.
@@ -228,6 +273,7 @@ export function getEditLeftSection(task) {
         <textarea id="editDescription">${task.description || ''}</textarea></div>
     </div>`;
 }
+
 
 /**
  * Generates the layout view container structure for editor right sections.
@@ -244,6 +290,7 @@ export function getEditRightSection(task, id) {
         <input type="text" id="editAssigned" value="${task.assignedTo || ''}"></div>
     </div>`;
 }
+
 
 /* Contacts Template */
 /**
@@ -267,6 +314,7 @@ export function getContactLetter(list, letter) {
     `;
 }
 
+
 /**
  * Gets a single contact item
  * for rendering in the contact list.
@@ -275,9 +323,10 @@ export function getContactLetter(list, letter) {
  * @param {Object} contact - The contact object
  * @param {number} i - The index of the contact in the contacts array
  */
-export function getSingleContact(list, contact, index) {
+export function getSingleContact(list, contact, index, isActive) {
   list.innerHTML += `
-    <div class="contact-item" onclick="window.renderContactDetails(${index})">
+    <div class="contact-item ${isActive ? 'contact-item-active' : ''}"
+      onclick="window.renderContactDetails(${index})">
       <div class="contact-avatar" style="background-color: ${contact.color}">
         ${contact.initials || '??'}
       </div>
@@ -288,7 +337,9 @@ export function getSingleContact(list, contact, index) {
     </div>`;
 }
 
-export function getContactDetails(contact, index) {
+
+
+export function getContactDetails(contact) {
   return `
     <div class="contact-details-content">
       <div class="contact-details-header">
@@ -296,14 +347,12 @@ export function getContactDetails(contact, index) {
         <div class="contact-details-header-info">
           <h3>${contact.name}</h3>
             <div class="contact-details-actions">
-              <button onclick="window.openEditContact(${index})" class="btn edit-delete-btn">
-                <img src="../assets/icons/edit-icon.svg" alt="">
-                <p>Edit</p>
+              <button onclick="window.openEditContact('${contact.id}')" class="btn edit-delete-btn">
+                <img src="../assets/img/edit-contact.svg" alt="Edit Contact">
               </button>
 
-              <button class="btn edit-delete-btn">
-                <img src="../assets/icons/delete-icon.svg" alt="">
-                <p>Delete</p>
+              <button onclick="openDeleteDialog('${contact.id}')" class="btn edit-delete-btn">
+                <img src="../assets/img/delete-contact.svg" alt="Delete Contact">
               </button>
             </div>
         </div> 
@@ -316,12 +365,3 @@ export function getContactDetails(contact, index) {
       </div>
     `;
 }
-
-
-/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
-window.generateTaskHTML = generateTaskHTML;
-window.getNoTaskPlaceholder = getNoTaskPlaceholder;
-window.generateTaskDetailHTML = generateTaskDetailHTML;
-window.generateEditTaskHTML = generateEditTaskHTML;
-window.getContactDetails = getContactDetails;
-window.openEditContact = openEditContact;

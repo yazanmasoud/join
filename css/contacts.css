@@ -12,6 +12,7 @@
   align-items: center;
   gap: 20px;
   padding: 8px 12px;
+  margin-top: 8px;
   cursor: pointer;
 }
 
@@ -25,6 +26,19 @@
 }
 
 .contact-item:hover .contact-email {
+  color: var(--color-user-mail);
+}
+
+.contact-item-active {
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+}
+
+.contact-item-active .contact-name {
+  color: var(--color-bg-primary);
+}
+
+.contact-item-active .contact-email {
   color: var(--color-user-mail);
 }
 
@@ -114,7 +128,12 @@
   padding: 0;
   margin: auto;
   transform: translateX(100%);
-  transition: transform 250ms ease-in-out;
+  transition: transform 120ms ease;
+}
+
+.contact-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.25);
+  transition: opacity 120ms ease;
 }
 
 .contact-dialog-open {
@@ -126,6 +145,33 @@
   flex-direction: row;
   align-items: center;
   gap: 60px;
+}
+
+#contact-dialog-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #cccccc;
+}
+
+#contact-dialog-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+#contact-dialog-avatar #contact-dialog-avatar-initials {
+  position: absolute;
+  color: #fff;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .contact-dialog-form {
@@ -172,7 +218,6 @@
   flex-direction: row;
   align-items: center;
   gap: 30px;
-
 }
 
 .contact-details-content {
@@ -211,10 +256,64 @@
   margin-top: 20px;
 }
 
-.contact-dialog-avatar {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-      width: 120px;
-    height: 120px;
+/* ===== TOAST MESSAGE ===== */
+.toast-message {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background-color: #2A3647;
+  color: white;
+  padding: 18px 32px;
+  border-radius: 12px;
+  font-size: 18px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 300ms ease;
+  z-index: 999;
+}
+
+.toast-message-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== DELETE CONFIRM DIALOG ===== */
+.delete-dialog {
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  margin: auto;
+}
+
+.delete-dialog[open] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.delete-dialog-content {
+  padding: 32px;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.delete-dialog-content h3 {
+  margin: 0;
+}
+
+.delete-dialog-content p {
+  margin: 0;
+}
+
+.delete-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }

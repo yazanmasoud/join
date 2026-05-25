@@ -1,64 +1,71 @@
-/**
- * @file Storage management script handling local storage and user state retrieval.
- */
-
 const categoryOptions = ['Technical Task', 'User Story', 'Feature Task'];
+const contactOptions = ['Maximilian Müller','Sofia Schneider','Benedikt Bauer',];
 
-const contactOptions = [
-  'Maximilian Müller',
-  'Sofia Schneider',
-  'Benedikt Bauer',
-];
+
+window.getCurrentUserId = getCurrentUserId;
+
 
 /**
  * Checks if the current session is a guest session.
  * @returns {boolean} True if guest, false otherwise.
  */
-export function isGuest() {
-  const user = JSON.parse(localStorage.getItem('currentUser'));
-  return (
-    localStorage.getItem('isGuest') === 'true' ||
-    (user && user.name === 'Guest')
-  );
+export function isGuestUser() {
+  return localStorage.getItem('isGuest') === 'true';
 }
+
 
 /**
  * Retrieves the current authenticated user ID or returns a fallback for guests.
  * @returns {string} The active user identifier.
  */
 export function getCurrentUserId() {
-  if (isGuest()) {
+  if (isGuestUser()) {
     return 'guest_user';
   }
-  return localStorage.getItem('currentUserId') || 'guest_user';
+
+  const userId = localStorage.getItem('currentUserId');
+
+  if (!userId) {
+    throw new Error('No authenticated user ID found.');
+  }
+
+  return userId;
 }
+
 
 /**
- * Retrieves contacts from local storage or returns the default contact array.
- * @returns {Array} List of stored or default contacts.
+ * Retrieves guest tasks from localStorage.
+ * @returns {Array} Stored guest tasks.
  */
-export function getStoredContacts() {
-  if (isGuest()) {
-    // Geändert auf 'contacts', da main.js es dort speichert
-    return JSON.parse(localStorage.getItem('contacts')) || [];
-  }
-  return typeof contacts !== 'undefined' ? contacts : [];
+export function getLocalTasks() {
+  return JSON.parse(localStorage.getItem('tasks')) || [];
 }
+
 
 /**
- * Retrieves tasks from local storage or returns the default task array.
- * @returns {Array} List of stored or default tasks.
+ * Retrieves guest contacts from localStorage.
+ * @returns {Array} Stored guest contacts.
  */
-export function getStoredTasks() {
-  if (isGuest()) {
-    // Geändert auf 'tasks', da main.js es dort speichert
-    return JSON.parse(localStorage.getItem('tasks')) || [];
-  }
-  return typeof tasks !== 'undefined' ? tasks : [];
+export function getLocalContacts() {
+  return JSON.parse(localStorage.getItem('contacts')) || [];
 }
 
-/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
-window.getCurrentUserId = getCurrentUserId;
-window.getStoredContacts = getStoredContacts;
-window.getStoredTasks = getStoredTasks;
-window.isGuest = isGuest;
+
+/**
+ * Saves guest contacts to localStorage.
+ * @param {Array} contacts - Updated guest contact array.
+ * @returns {void}
+ */
+export function setLocalContacts(contacts) {
+  localStorage.setItem('contacts', JSON.stringify(contacts));
+}
+
+
+/**
+ * Saves guest tasks to localStorage.
+ * @param {Array} contacts - Updated guest contact array.
+ * @returns {void}
+ */
+export function setLocalTasks(tasks) {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}

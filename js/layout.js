@@ -1,26 +1,78 @@
-/**
- * @file Summary management script handling dashboard state and real-time metrics data.
- */
-import { toggleElement, closeElement } from './ui.js';
+import { closeOpenElements, setGreetingName, renderAvatar } from './ui.js';
 import { initAddTask } from './task.js';
+import { initSummary } from './summary.js';
+import { initBoard } from './board.js';
+import { initContacts } from './contacts.js';
+import { toggleAvatarDropdown } from './header.js';
+import { auth, database } from './firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { isGuestUser } from './storage.js';
+import { ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getInitials } from './utils.js';
+import { getCurrentUserData } from './auth-service.js';
 
-/**
- * The currently active page identifier.
- * @type {string|null}
- */
-let currentPage = null;
 
-/**
- * The previously active page identifier.
- * @type {string|null}
- */
-let previousPage = null;
-
-/**
- * Array storing the navigation path history.
- * @type {string[]}
- */
 const pageHistory = [];
+
+
+window.initLayout = initLayout;
+window.initLoginLayout = initLoginLayout;
+window.navigateTo = navigateTo;
+window.logOut = logOut;
+window.toggleAvatarDropdown = toggleAvatarDropdown;
+window.closeOpenElements = closeOpenElements;
+window.setActiveNavItem = setActiveNavItem;
+window.goBack = goBack;
+window.openHelp = openHelp;
+window.loginNavigateTo = loginNavigateTo;
+window.backToLogin = backToLogin;
+window.pageHistory = pageHistory;
+
+
+/**
+ * Redirect to login if not logged in
+ */
+export function checkSession() {
+  return new Promise((resolve) => {
+    if (isGuestUser()) {
+      resolve(true);
+      return;
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = '../index.html';
+        return;
+      }
+
+      resolve(true);
+    });
+  });
+}
+
+
+/**
+ * Funktion which chooses which init must be loaded.
+ * @param {string} page - The name of the initiated page
+ */
+function initPage(page) {
+  if (page === 'summary') {
+    initSummary();
+  }
+
+  if (page === 'board') {
+    initBoard();
+  }
+
+  if (page === 'add-task') {
+    initAddTask();
+  }
+
+  if (page === 'contacts') {
+    initContacts();
+  }
+}
+
 
 /**
  * Fetches an HTML template file and injects it into a DOM container.
@@ -40,33 +92,40 @@ async function loadTemplate(containerId, templatePath) {
 }
 
 /**
+ * Returns the initial page identifier based on the current URL query parameters.
+ * Falls back to the summary page if no page parameter is provided.
+ *
+ * @returns {string} The initial page identifier.
+ */
+function getInitialPage() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('page') || 'summary';
+}
+
+
+/**
  * Initializes the default main application layout structure.
  */
-async function initLayout() {
+export async function initLayout() {
+  await checkSession();
   await loadTemplate('headerContent', '../templates/header.html');
   await loadTemplate('sidebarContent', '../templates/aside.html');
-  await loadTemplate('mainContent', './summary.html');
+  const userData = await getCurrentUserData();
+  if (userData) {
+    renderAvatar('headerAvatar', userData.name);
+  }
+  const initialPage = getInitialPage();
+  await loadTemplate('mainContent', `./${initialPage}.html`);
+  pageHistory.push(initialPage);
+  initPage(initialPage);
 }
 
 /**
- * Initializes the auth layout components and loads the initial subpage from URL parameters.
- * @returns {Promise<void>}
- */
-async function initLoginLayout() {
-  await loadTemplate('headerLoginContent', '../templates/headerlogin.html');
-  await loadTemplate('sidebarLoginContent', '../templates/asidelogin.html');
-
-  const params = new URLSearchParams(window.location.search);
-  const page = params.get('page') || 'login';
-
-  await loadTemplate('mainLoginContent', `./${page}.html`);
-
-  setActiveLoginNavFromUrl(page);
-}
-
-/**
- * Navigates to a specific subpage view and adds it to the page history stack.
- * @param {string} page - The target page file prefix string.
+ * Handles client-side page navigation by updating the page history,
+ * loading the target page template,
+ * and initializing the corresponding page logic.
+ *
+ * @param {string} page - The target page identifier.
  * @returns {Promise<void>}
  */
 async function navigateTo(page) {
@@ -77,26 +136,37 @@ async function navigateTo(page) {
   }
 
   await loadTemplate('mainContent', `./${page}.html`);
-      if (page === 'add-task') {
-    initAddTask();
+
+  initPage(page);
+}
+
+async function loginNavigateTo(page) {
+  const currentPage = pageHistory[pageHistory.length - 1];
+
+  if (currentPage !== page) {
+    pageHistory.push(page);
   }
+
   await loadTemplate('mainLoginContent', `./${page}.html`);
 }
 
+
 /**
- * Returns to the previous page in history view stack or handles login redirection fallback layout.
+ * Returns to the previous page in the page history stack.
+ *
+ * @returns {Promise<void>}
  */
-function goBack() {
-  if (window.location.pathname.includes('loginlayout.html')) {
-    sessionStorage.setItem('skipIntroAnimation', 'true');
-    window.location.href = '../index.html';
-    return;
-  }
-  if (pageHistory.length > 1) {
-    pageHistory.pop();
-    const previousPage = pageHistory[pageHistory.length - 1];
-    loadTemplate('mainContent', `./${previousPage}.html`);
-  }
+async function goBack() {
+  if (pageHistory.length <= 1) return;
+
+  pageHistory.pop();
+
+  const previousPage = pageHistory[pageHistory.length - 1];
+
+  await loadTemplate('mainContent', `./${previousPage}.html`);
+
+  initPage(previousPage);
+
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
@@ -117,6 +187,25 @@ function setActiveNavItem(clickedItem) {
 }
 
 /**
+ * Initializes the public login layout components and loads the initial subpage
+ * from URL parameters.
+ *
+ * @returns {Promise<void>}
+ */
+export async function initLoginLayout() {
+  await loadTemplate('headerLoginContent', '../templates/headerlogin.html');
+  await loadTemplate('sidebarLoginContent', '../templates/asidelogin.html');
+
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get('page') || 'imprint';
+
+  await loadTemplate('mainLoginContent', `./${page}.html`);
+
+  setActiveLoginNavFromUrl(page);
+  document.body.classList.add('has-active-page'); // Ensures a valid default page is loaded when loginlayout.html is opened directly without a page parameter.
+}
+
+/**
  * Clears sidebar active navigation styling selections and displays the help page interface components.
  */
 function openHelp() {
@@ -134,8 +223,8 @@ function openHelp() {
 function logOut() {
   console.log('User logged out');
   localStorage.removeItem('currentUser'); // Löscht Login-Status
+  closeOpenElements();
   window.location.href = '../index.html'; // Zurück zur Haupt-Login-Seite
-  closeAvatarDropdown();
 }
 
 /**
@@ -171,14 +260,11 @@ function setActiveLoginNavFromUrl(page) {
   }
 }
 
-// Funktionen global verfügbar machen
-window.initLayout = initLayout;
-window.initLoginLayout = initLoginLayout;
-window.navigateTo = navigateTo;
-window.logOut = logOut;
-window.toggleElement = toggleElement;
-window.closeElement = closeElement;
-window.setActiveNavItem = setActiveNavItem;
-window.goBack = goBack;
-window.openHelp = openHelp;
 
+if (document.querySelector('.layout')) {
+  initLayout();
+}
+
+if (document.querySelector('.layout-login')) {
+  initLoginLayout();
+}
