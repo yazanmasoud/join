@@ -37,3 +37,28 @@ p {
 .aside {
   display: flex;
 }
+
+.tooltip {
+  position: relative;
+  cursor: help !important;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: -80%;
+  left: 25%;
+  transform: translateX(-50%);
+  background: var(--color-bg-secondary);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 0.75;
+}
