@@ -45,33 +45,46 @@ p {
 
 .tooltip-text {
   position: absolute;
-
   bottom: calc(100% + 8px);
   right: 0;
-
-  background: var(--color-bg-secondary);
-  color: white;
-
-  padding: 6px 10px;
-  border-radius: 6px 6px 6px 0;
-
-  font-size: 11px;
+  max-width: 180px;
+  padding: 6px 8px;
+  background: var(--color-menu-button-text);
+  border: 1px solid var(--color-bg-secondary);
+  color: var(--color-text-main);
+  border-radius: 4px;
+  font-size: 10px;
   font-weight: 400;
-  line-height: 1.2;
-
-  white-space: nowrap;
-
+  line-height: 1.35;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+  white-space: normal;
   opacity: 0;
   pointer-events: none;
-
-  transition:
-    opacity 0.2s ease 0.5s;
+  transition: opacity 0.18s ease 0.45s;
 }
 
 .tooltip:hover .tooltip-text {
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .tooltip:not(:hover) .tooltip-text {
   transition-delay: 0s;
+}
+
+.tooltip-text::after {
+  content: '';
+
+  position: absolute;
+
+  top: 100%;
+  right: 12px;
+
+  border-width: 5px;
+  border-style: solid;
+
+  border-color:
+    var(--color-bg-secondary)
+    transparent
+    transparent
+    transparent;
 }
