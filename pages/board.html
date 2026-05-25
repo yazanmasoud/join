@@ -1,20 +1,19 @@
 <main class="main-content">
   <section class="content-area">
     <div class="board-header">
-      <h2>Board</h2>
+      <div class="board-header-left">
+       <h2>Board</h2>
+       <button class="btn-dark hidden" id="add-task-btn-mobile" onclick="openAddTask()">
+          <img src="../assets/icons/add.svg" alt="plus" />
+       </button>
+      </div>
 
       <div class="board-header-right">
         <div class="search-container">
           <input type="text" placeholder="Find Task" id="searchTask" />
-          <div class="search-divider"></div>
-          <img
-            src="../assets/icons/search-icon.svg"
-            alt="Search"
-            class="search-icon"
-          />
         </div>
 
-        <button class="btn-dark" onclick="openAddTask()">
+        <button class="btn-dark" id="add-task-btn" onclick="openAddTask()">
           Add task <img src="../assets/icons/add.svg" alt="plus" />
         </button>
       </div>
