@@ -51,10 +51,8 @@
             <p id="error-text-email" class="form-error"></p>
           </div>
           <div class="password-input-area">
-            <span class="tooltip">
             <input type="password" id="password" class="password" placeholder="Password" required
               onblur="validateLoginPassword(); updateLoginButtonState()" oninput="clearInputError('password', 'error-text-password'); updateLoginButtonState()" />
-            <span class="tooltip-text">Password must be at least 6 characters.</span></span>
             <p id="error-text-password" class="form-error"></p>
           </div>
         </div>
@@ -99,8 +97,10 @@
           <p id="error-text-signup-email" class="form-error"></p>
         </div>
         <div class="password-input-area">
+          <span class="tooltip">
           <input oninput="validateForm();" type="password" id="signup-password" class="password" placeholder="Password"
             required />
+          <span class="tooltip-text">Password must be at least 6 characters.</span></span>  
           <p id="error-text-signup-password" class="form-error"></p>
         </div>
         <div class="confirm-password-input-area">
