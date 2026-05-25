@@ -35,10 +35,10 @@ function animateLogo(delay = 0) {
   const login = document.getElementById('login');
   if (!logo || !login || logo.classList.contains('shrink')) return;
   setTimeout(() => {
+    document.documentElement.classList.remove('skip-start-animation');
+    document.documentElement.classList.remove('show-start-animation');
     wrapper.classList.remove('is-loading');
     wrapper.classList.add('is-ready');
-    document.documentElement.classList.remove('show-start-animation');
-    document.documentElement.classList.add('skip-start-animation');
     logo.classList.add('shrink');
     finishLogoAnimation(logo, login);
   }, delay);
