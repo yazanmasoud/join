@@ -246,8 +246,7 @@ function openAddContact() {
 
 
 function openEditContact(contactId) {
-    const contact = contacts.find(contact => contact.id === contactId);
-    currentEditContactId = contactId;
+const contact = contacts.find(contact => String(contact.id) === String(contactId));    currentEditContactId = contactId;
     const elements = getContactDialogElements();
 
     elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';

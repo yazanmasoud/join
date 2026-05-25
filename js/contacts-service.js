@@ -1,4 +1,5 @@
 import { auth, database } from './firebase-config.js';
+import { getInitials } from './utils.js';
 
 import {
   ref,
@@ -12,15 +13,36 @@ import {
 
 import { isGuestUser } from './storage.js';
 
+
 export async function getContacts() {
   if (isGuestUser()) {
-    return getGuestContacts();
+    const storedGuestContacts = getGuestContacts();
+    console.log('guest mode');
+    if (storedGuestContacts.length) {
+      return storedGuestContacts;
+    }
+
+    const snapshot = await get(
+      ref(database, 'defaultGuestData/contacts')
+    );
+    console.log(snapshot.val());
+
+    if (!snapshot.exists()) return [];
+
+    const guestContacts = Object.entries(snapshot.val()).map(
+      ([id, contact]) => ({
+        id,
+        ...contact,
+        initials: getInitials(contact.name),
+      })
+    );
+
+    saveGuestContacts(guestContacts);
+    return guestContacts;
   }
 
   const uid = auth.currentUser.uid;
-  console.log(uid);
   const snapshot = await get(ref(database, `contacts/${uid}`));
-  console.log(snapshot.val());
 
   if (!snapshot.exists()) return [];
 
@@ -30,12 +52,33 @@ export async function getContacts() {
   }));
 }
 
+
+function getGuestContacts() {
+  return JSON.parse(
+    sessionStorage.getItem('guestContacts')
+  ) || [];
+}
+
+
+function saveGuestContacts(contacts) {
+  sessionStorage.setItem(
+    'guestContacts',
+    JSON.stringify(contacts)
+  );
+}
+
+
+function generateLocalId() {
+  return Date.now().toString();
+}
+
+
 export async function createContact(contactData) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
 
     const newContact = {
-      id: generateLocalId(contacts),
+      id: generateLocalId(),
       ...contactData,
     };
 
@@ -56,18 +99,20 @@ export async function createContact(contactData) {
   };
 }
 
-export function saveContact() {
-  // This function is not needed as updateContact directly updates the contact in Firebase or local storage.
-}
 
 export async function getContactById(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
-    return contacts.find((contact) => String(contact.id) === String(contactId));
+
+    return contacts.find(
+      (contact) => String(contact.id) === String(contactId)
+    );
   }
 
   const uid = auth.currentUser.uid;
-  const snapshot = await get(ref(database, `contacts/${uid}/${contactId}`));
+  const snapshot = await get(
+    ref(database, `contacts/${uid}/${contactId}`)
+  );
 
   if (!snapshot.exists()) return null;
 
@@ -77,6 +122,7 @@ export async function getContactById(contactId) {
   };
 }
 
+
 export async function updateContact(contactId, updatedData) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
@@ -84,7 +130,7 @@ export async function updateContact(contactId, updatedData) {
     const updatedContacts = contacts.map((contact) =>
       String(contact.id) === String(contactId)
         ? { ...contact, ...updatedData }
-        : contact,
+        : contact
     );
 
     saveGuestContacts(updatedContacts);
@@ -93,15 +139,19 @@ export async function updateContact(contactId, updatedData) {
 
   const uid = auth.currentUser.uid;
 
-  await update(ref(database, `contacts/${uid}/${contactId}`), updatedData);
+  await update(
+    ref(database, `contacts/${uid}/${contactId}`),
+    updatedData
+  );
 }
+
 
 export async function deleteContact(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
 
     const filteredContacts = contacts.filter(
-      (contact) => String(contact.id) !== String(contactId),
+      (contact) => String(contact.id) !== String(contactId)
     );
 
     saveGuestContacts(filteredContacts);
@@ -112,6 +162,7 @@ export async function deleteContact(contactId) {
 
   await remove(ref(database, `contacts/${uid}/${contactId}`));
 }
+
 
 export function listenToContacts(callback) {
   if (isGuestUser()) {
@@ -131,7 +182,7 @@ export function listenToContacts(callback) {
       ([id, contact]) => ({
         id,
         ...contact,
-      }),
+      })
     );
 
     callback(contactsArray);
