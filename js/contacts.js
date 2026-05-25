@@ -65,13 +65,18 @@ async function handleCreateContact() {
  */
 async function handleDeleteContact(contactId) {
     await deleteContact(contactId);
-    contacts = contacts.filter(contact => contact.id !== contactId);
+
+    contacts = contacts.filter(
+        contact =>
+            String(contact.id) !== String(contactId)
+    );
+
     renderContacts();
     document.getElementById('contact-details').innerHTML = '';
+
     closeAddContact();
     showToast('Contact deleted');
 }
-
 
 /**
  * Saves the edited contact to Firebase,
@@ -97,7 +102,8 @@ async function handleSaveContact() {
  */
 function getCurrentEditContact() {
     return contacts.find(
-        contact => contact.id === currentEditContactId
+        contact =>
+            String(contact.id) === String(currentEditContactId)
     );
 }
 
@@ -132,7 +138,7 @@ function getUpdatedContactData(contact) {
  */
 function updateLocalContact(updatedData) {
     contacts = contacts.map(contact =>
-        contact.id === currentEditContactId
+        String(contact.id) === String(currentEditContactId)
             ? { ...contact, ...updatedData }
             : contact
     );
@@ -149,7 +155,8 @@ function refreshUpdatedContactUI() {
     renderContacts();
 
     const updatedIndex = contacts.findIndex(
-        contact => contact.id === currentEditContactId
+        contact =>
+            String(contact.id) === String(currentEditContactId)
     );
 
     renderContactDetails(updatedIndex);
