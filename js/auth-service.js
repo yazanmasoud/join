@@ -31,7 +31,7 @@ export async function registerUser(name, email, password) {
     handleSignupSuccess();
   } catch (error) {
     console.error(error);
-    showSignupFailed(); //hier müssen die Fehlercodes ausgewertet und angezeigt werden.
+    console.log('irgendetwas stimmt nicht!');
     }
 }
 

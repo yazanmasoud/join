@@ -25,7 +25,6 @@ window.closeDeleteDialog = closeDeleteDialog;
 export async function initContacts() {
     contacts = await getContacts();
     contacts.sort((a, b) => a.name.localeCompare(b.name));
-
     renderContacts();
 }
 

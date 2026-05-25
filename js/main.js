@@ -23,6 +23,9 @@ function initMainLoginPage() {
   window.openLogin = openLogin;
   window.validateForm = validateForm;
   window.handleSignup = handleSignup;
+  window.closeSignUp = closeSignUp;
+  window.clearSignupInputs = clearSignupInputs;
+  window.handleSignup = handleSignup;
 }
 
 
@@ -268,7 +271,7 @@ export function clearSignupInputs() {
 }
 
 
-function clearSignupErrors() {
+export function clearSignupErrors() {
   clearInputError('signup-username', 'error-text-signup-username');
   clearInputError('signup-email', 'error-text-signup-email');
   clearInputError('signup-password', 'error-text-signup-password');
@@ -280,7 +283,7 @@ function clearSignupErrors() {
 }
 
 
-async function handleSignup(event) {
+export async function handleSignup(event) {
   event.preventDefault();
   if (!validateForm()) return;
   const name = document.getElementById('signup-username').value.trim();
