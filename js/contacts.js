@@ -188,7 +188,7 @@ function closeAddContact() {
 
     setTimeout(() => {
         dialog.close();
-    }, 100);
+    }, 120);
 }
 
 
