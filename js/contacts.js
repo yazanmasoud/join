@@ -169,6 +169,25 @@ function openContactDialog() {
 }
 
 
+/**
+ * Closes the add contact dialog
+ * and removes the animation class.
+ */
+/**
+ * Closes the add contact dialog
+ * with the closing animation.
+ */
+function closeAddContact() {
+    const dialog = document.getElementById('add-contact-popup');
+
+    dialog.classList.remove('contact-dialog-open');
+
+    setTimeout(() => {
+        dialog.close();
+    }, 100);
+}
+
+
 function getContactDialogElements() {
     return {
         sidebarImage: document.getElementById('contact-dialog-sidebar-image'),
@@ -190,7 +209,7 @@ function openAddContact() {
     elements.sidebarImage.src = '../assets/img/Frame-add-contact.png';
     elements.createSaveButton.innerHTML = 'Create Contact';
     elements.createSaveButton.onclick = handleCreateContact;
-    elements.cancelDeleteButton.innerHTML = 'Cancel';
+    
     elements.createSaveButton.classList.remove('save-button');
     elements.nameInput.value = '';
     elements.emailInput.value = '';
@@ -225,15 +244,7 @@ function openEditContact(contactId) {
     openContactDialog();
 }
 
-/**
- * Closes the add contact dialog
- * and removes the animation class.
- */
-function closeAddContact() {
-    const dialog = document.getElementById('add-contact-popup');
-    dialog.classList.remove('contact-dialog-open');
-    dialog.close();
-}
+
 
 
 
