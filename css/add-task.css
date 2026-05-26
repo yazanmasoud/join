@@ -105,16 +105,19 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
 }
 
 /*PRIORITÄTEN & BUTTONS */
+
 .priority-btn-content {
   display: flex;
   gap: 16px;
+  width: 100%;
 }
 
+/* 1. Zuerst den Standard-Zustand definieren */
 .prio-btn {
   flex: 1;
   padding: 16px;
   border: 1px solid var(--color-divider);
-  background: var(--color-bg-primary);
+  background-color: white;
   border-radius: 10px;
   cursor: pointer;
   display: flex;
@@ -123,24 +126,38 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   gap: 8px;
   font-size: 16px;
   font-weight: 400;
+  transition: all 0.2s ease;
+  color: black; /* Textfarbe im Normalzustand */
 }
 
-/* Aktive Prio-Zustände */
-.active-urgent {
-  background-color: var(--color-required);
-  color: var(--color-bg-primary);
-}
-.active-medium {
-  background-color: var(--color-btn-medium);
-  color: var(--color-bg-primary);
-}
-.active-low {
-  background-color: var(--color-category-feature);
-  color: var(--color-bg-primary);
+/* 2. Danach die aktiven Zustände (überschreiben den Standard) */
+.prio-btn.active-urgent {
+  background-color: #ff3d00;
+  color: white;
+  border-color: transparent;
 }
 
-.priority-btn-content button[class*='active-'] img {
+.prio-btn.active-medium {
+  background-color: #ff9d00;
+  color: white;
+  border-color: transparent;
+}
+
+.prio-btn.active-low {
+  background-color: #7ae229;
+  color: white;
+  border-color: transparent;
+}
+
+/* 3. Icon Handling: Weißer Filter für alle aktiven Zustände */
+.prio-btn[class*='active-'] img {
   filter: brightness(0) invert(1);
+}
+
+.prio-icon {
+  width: 20px;
+  height: 16px;
+  object-fit: contain;
 }
 
 /*FORM BOTTOM & ACTIONS */
@@ -174,26 +191,51 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   }
 }
 
-/* Subtask */
+/* --- SUBTASK BEREICH (AUFGERÄUMT) --- */
 
-.subtasks-list {
+.subtasks-item-list {
+  list-style: none;
   padding: 0;
-  margin-top: 8px;
-  max-height: 120px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column; /* Liste untereinander */
+  gap: 4px;
+  max-height: 150px;
   overflow-y: auto;
 }
 
-.subtasks-list li {
+.subtask-edit-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 14px;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+  box-sizing: border-box;
 }
 
-.subtasks-list li:hover {
-  background-color: var(--color-bg-tertiary);
+.subtask-edit-item:hover {
+  background-color: var(--color-bg-tertiary, #eeeeee);
+}
+
+/* Linker Teil: Icon + Text */
+.subtask-left {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.subtask-check-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.subtask-text {
+  font-size: 16px;
+  color: var(--color-text-main);
 }
 
 .subtasks-list button {

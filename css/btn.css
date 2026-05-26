@@ -139,12 +139,33 @@ button {
   gap: 8px;
 }
 
+.subtasks-item-list li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.subtasks-item-list li button:hover {
+  transform: scale(1.1);
+}
+
+.subtasks-item-list li button img {
+  width: 18px;
+  height: 18px;
+}
+
 @media (max-width: 600px) {
-.btn-light {
-  font-size: 16px;
+  .btn-light {
+    font-size: 16px;
   }
 
-.btn-dark {
-  font-size: 16px;
+  .btn-dark {
+    font-size: 16px;
   }
 }

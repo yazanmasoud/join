@@ -1,13 +1,13 @@
 import { contacts } from './contacts.js';
 
-
 window.generateTaskHTML = generateTaskHTML;
 window.getNoTaskPlaceholder = getNoTaskPlaceholder;
 window.generateTaskDetailHTML = generateTaskDetailHTML;
 window.generateEditTaskHTML = generateEditTaskHTML;
 window.getContactDetails = getContactDetails;
 window.openEditContact = openEditContact;
-
+window.getPriorityButtonsHTML = getPriorityButtonsHTML;
+window.setPriority = setPriority;
 
 /** --- BOARD TASK CARDS --- */
 
@@ -31,7 +31,6 @@ export function generateTaskHTML(task, id) {
     </div>`;
 }
 
-
 /**
  * Renders a progress bar and subtask completion text.
  * @param {Object} task - The task data object.
@@ -50,7 +49,6 @@ export function renderSmallSubtaskInfo(task) {
     </div>`;
 }
 
-
 /**
  * Generates placeholder HTML for an empty board column.
  * @param {string} label - The text label of the empty column.
@@ -60,23 +58,38 @@ export function getNoTaskPlaceholder(label) {
   return `<div class="no-tasks">No tasks ${label}</div>`;
 }
 
-
 /** --- ADD TASK TEMPLATES --- */
 /**
  * Generates HTML buttons for selecting task priority levels.
- * @returns {string} The combined priority buttons HTML string.
  */
-export function getPriorityButtonsHTML() {
+export function getPriorityButtonsHTML(selectedPrio) {
   return ['Urgent', 'Medium', 'Low']
-    .map(
-      (p) => `
-    <button type="button" class="prio-btn" id="prio${p}" onclick="setPriority('${p}')">
-      ${p} <img src="../assets/icons/prio-${p.toLowerCase()}-icon.svg">
-    </button>`,
-    )
+    .map((p) => {
+      const isSel = p === selectedPrio;
+      const low = p.toLowerCase();
+      // Nutzt das orange-Icon für Medium, sonst dein Standard-Schema
+      const icon =
+        p === 'Medium' ? `medium-icon-orange.svg` : `prio-${low}-icon.svg`;
+
+      return `
+      <button type="button" 
+              class="prio-btn ${isSel ? 'active-' + low : ''}" 
+              id="prio${p}" 
+              onclick="setPriority('${p}')">
+        ${p} <img src="../assets/icons/${icon}" class="prio-icon" alt="${p}">
+      </button>`;
+    })
     .join('');
 }
 
+function setPriority(prio) {
+  currentPriority = currentPriority === prio ? '' : prio;
+
+  const container = document.getElementById('prioContainer');
+  if (container) {
+    container.innerHTML = getPriorityButtonsHTML(currentPriority);
+  }
+}
 
 /**
  * Generates HTML option elements for a select dropdown menu.
@@ -92,27 +105,24 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
   return def + opts;
 }
 
-
 /**
  * Generates a single subtask list element with a delete action button.
- * @param {Object} task - The subtask data object.
- * @param {number} index - The index array placement of the subtask.
- * @returns {string} The subtask list item HTML string.
  */
 export function getSubtaskHTML(task, index) {
   const icon = task.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
   return `
     <li class="subtask-edit-item">
       <div class="subtask-left" onclick="toggleSubtaskStatus(${index})">
-        <img src="../assets/icons/${icon}" class="subtask-check-icon">
-        <span>${task.title}</span>
+        <img src="../assets/icons/${icon}" class="subtask-check-icon" alt="checkbox">
+        <span class="subtask-text">${task.title}</span>
       </div>
-      <button type="button" class="delete-sub-btn" onclick="deleteSubtask(${index})">
-        <img src="../assets/icons/delete-icon.svg">
-      </button>
+      <div class="subtask-actions">
+        <button type="button" class="delete-sub-btn" onclick="deleteSubtask(${index})">
+          <img src="../assets/icons/delete-icon.svg" alt="delete">
+        </button>
+      </div>
     </li>`;
 }
-
 
 /** --- TASK DETAIL DIALOG --- */
 /**
@@ -140,7 +150,6 @@ export function generateTaskDetailHTML(task, id) {
       ${getDetailFooter(id)}</div>`;
 }
 
-
 /**
  * Generates HTML table rows containing due date and priority badges.
  * @param {Object} task - The task data object.
@@ -156,7 +165,6 @@ export function getDetailInfoRows(task) {
         <img src="../assets/icons/prio-${prio}-icon.svg"></div>
     </div>`;
 }
-
 
 /**
  * Generates subtask item checklist elements inside the detail modal.
@@ -179,7 +187,6 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
     .join('');
 }
 
-
 /**
  * Generates the functional action buttons for editing and deleting tasks.
  * @param {string} id - The unique task ID.
@@ -196,7 +203,6 @@ export function getDetailFooter(id) {
       </button>
     </div>`;
 }
-
 
 /** --- ASSIGNED USERS --- */
 /**
@@ -218,7 +224,6 @@ export function getAssignedUserHTML(name) {
       <span class="user-name">${safeName}</span></div>`;
 }
 
-
 /**
  * Iterates over contacts list parameters and generates detail row HTML output.
  * @param {any} assignedTo - Assigned string name or collection array.
@@ -235,7 +240,6 @@ export function renderAssignedToDetail(assignedTo) {
     })
     .join('');
 }
-
 
 /** --- EDIT MODE --- */
 /**
@@ -258,7 +262,6 @@ export function generateEditTaskHTML(task, id) {
     </div>`;
 }
 
-
 /**
  * Generates the layout view container structure for editor left sections.
  * @param {Object} task - The targeted active task data object.
@@ -273,7 +276,6 @@ export function getEditLeftSection(task) {
         <textarea id="editDescription">${task.description || ''}</textarea></div>
     </div>`;
 }
-
 
 /**
  * Generates the layout view container structure for editor right sections.
@@ -290,7 +292,6 @@ export function getEditRightSection(task, id) {
         <input type="text" id="editAssigned" value="${task.assignedTo || ''}"></div>
     </div>`;
 }
-
 
 /* Contacts Template */
 /**
@@ -314,7 +315,6 @@ export function getContactLetter(list, letter) {
     `;
 }
 
-
 /**
  * Gets a single contact item
  * for rendering in the contact list.
@@ -336,8 +336,6 @@ export function getSingleContact(list, contact, index, isActive) {
       </div>
     </div>`;
 }
-
-
 
 export function getContactDetails(contact) {
   return `
