@@ -29,9 +29,25 @@ export async function registerUser(name, email, password) {
     await signOut(auth);
     handleSignupSuccess();
   } catch (error) {
-    console.error(error);
-    showSignupFailed();
-    }
+    console.log('Handled signup error:', error.code);
+    handleSignupError(error);
+  }
+}
+
+
+function handleSignupError(error) {
+  switch (error.code) {
+    case 'auth/email-already-in-use':
+      showInputError('signup-email', 'error-text-signup-email', 'This email is already in use.');
+      break;
+    case 'auth/network-request-failed':
+      showInputError('signup-email', 'error-text-signup-email', 'Network error. Please check your connection.');
+      break;
+    case 'auth/too-many-requests':
+      showInputError('signup-email', 'error-text-signup-email', 'Too many attempts. Please try again later.');
+      break;
+    default: console.log('Signup failed');
+  }
 }
 
 
@@ -119,8 +135,10 @@ function handleLoginError(error) {
     },
   };
   const currentError = errors[error.code];
-  if (!currentError) {console.error(error);
-    return;}
+  if (!currentError) {
+    console.error(error);
+    return;
+  }
   showInputError(
     currentError.input,
     currentError.text,
