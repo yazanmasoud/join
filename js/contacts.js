@@ -71,7 +71,7 @@ async function handleDeleteContact(contactId) {
         contact =>
             String(contact.id) !== String(contactId)
     );
-
+    selectedContactIndex = null;
     renderContacts();
     document.getElementById('contact-details').innerHTML = '';
 
