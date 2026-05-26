@@ -1,13 +1,14 @@
-import { ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import {
+  ref,
+  get,
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { isGuestUser, getLocalTasks } from './storage.js';
 import { calculateMetrics } from './utils.js';
 import { setGreeting, updateUI, setGreetingName } from './ui.js';
 import { auth, database } from './firebase-config.js';
 import { getCurrentUserData } from './auth-service.js';
 
-
 window.initSummary = initSummary;
-
 
 /**
  * Initializes the dashboard by setting the greeting, handling mobile view,
@@ -48,7 +49,9 @@ async function getFirebaseTasks() {
 async function renderGreetingName() {
   if (isGuestUser()) return;
   const userData = await getCurrentUserData();
-    if (!userData) {throw new Error('No user data available.')};
+  if (!userData) {
+    throw new Error('No user data available.');
+  }
   setGreetingName(userData.name);
 }
 

@@ -1,12 +1,10 @@
 import { isGuestUser } from './storage.js';
 
-
 window.handleBackArrow = handleBackArrow;
 window.setGreeting = setGreeting;
 window.removeHighlight = removeHighlight;
 window.highlight = highlight;
 window.clearInputError = clearInputError;
-
 
 /** UI Helper Functions */
 /**board.js*/
@@ -18,7 +16,6 @@ export function closeTaskDetail() {
   }
 }
 
-
 export function setupDialogClose(closeCallback) {
   const dialog = document.getElementById('taskDetailDialog');
   dialog?.addEventListener('click', (e) => {
@@ -26,16 +23,13 @@ export function setupDialogClose(closeCallback) {
   });
 }
 
-
 export function highlight(id) {
   document.getElementById(id)?.classList.add('drag-area-highlight');
 }
 
-
 export function removeHighlight(id) {
   document.getElementById(id)?.classList.remove('drag-area-highlight');
 }
-
 
 export function setEditPriority(prio) {
   ['Urgent', 'Medium', 'Low'].forEach((p) => {
@@ -46,7 +40,6 @@ export function setEditPriority(prio) {
   const activeBtn = document.getElementById('editPrio' + prio);
   if (activeBtn) activeBtn.classList.add('active-' + prio.toLowerCase());
 }
-
 
 /**summary.js */
 /**
@@ -63,7 +56,6 @@ export function updateUI(data) {
   });
 }
 
-
 /**
  * Sets a time-dependent greeting message in the DOM.
  */
@@ -78,7 +70,6 @@ export function setGreeting() {
     element.innerHTML = greeting;
   });
 }
-
 
 /**
  * Adjusts the UI layout and elements based on guest status.
@@ -97,7 +88,6 @@ export function handleGuestLogin(dashboardData) {
   }
 }
 
-
 /**
  * Set the visibility state of the profile avatar dropdown menu to visible.
  *
@@ -110,7 +100,6 @@ export function openAvatarDropdown(event) {
   dropdown.classList.add('open');
 }
 
-
 /**
  * Closes all currently open elements by removing the open class.
  */
@@ -119,7 +108,6 @@ export function closeOpenElements() {
     element.classList.remove('open');
   });
 }
-
 
 /**
  * Handles back arrow navigation behavior depending on the currently active layout context.
@@ -138,7 +126,6 @@ function handleBackArrow() {
   navigateTo(previousPage);
 }
 
-
 // Helper function which resets the innerHTML to prevent double content
 export function clearElementsByIds(ids) {
   ids.forEach((id) => {
@@ -146,7 +133,6 @@ export function clearElementsByIds(ids) {
     if (element) element.innerHTML = '';
   });
 }
-
 
 //guarantees an array -  doesnt matter if the input is an object or an array
 export function normalizeObjectToArray(data) {
@@ -156,7 +142,6 @@ export function normalizeObjectToArray(data) {
     ...item,
   }));
 }
-
 
 /**
  * Sets the user name inside all greeting elements.
@@ -170,7 +155,6 @@ export function setGreetingName(name) {
   });
 }
 
-
 /**
  * Renders the authenticated user's avatar initials.
  */
@@ -179,7 +163,6 @@ export function renderAvatar(elementId, name) {
   if (!avatarElement) return;
   avatarElement.innerText = getInitials(name);
 }
-
 
 /**
  * Displays an input validation error.
@@ -199,7 +182,6 @@ export function showInputError(inputId, errorId, message) {
   }
 }
 
-
 /**
  * Clears an input validation error.
  * @param {string} inputId - Input element ID.
@@ -215,4 +197,53 @@ export function clearInputError(inputId, errorId) {
     error.innerText = '';
     error.classList.remove('visible');
   }
+}
+
+/**
+ * Toggles the visibility of the contact selection list.
+ */
+export function toggleContactList() {
+  const list = document.getElementById('contactList');
+  if (list) list.classList.toggle('d-none');
+}
+
+/**
+ * Shows the success toast notification.
+ */
+export function showSuccessToast() {
+  const toast = document.getElementById('successMessage');
+  if (toast) {
+    toast.classList.remove('d-none');
+    setTimeout(() => {
+      toast.style.bottom = '50px';
+    }, 10);
+
+    setTimeout(() => {
+      toast.classList.add('d-none');
+    }, 2000);
+  }
+}
+
+/**
+ * Updates the submit button and headline for edit mode.
+ */
+export function updateButtonToSaveMode() {
+  const btn = document.querySelector('.btn-dark');
+  if (btn) {
+    btn.innerHTML = 'Save Changes <img src="../assets/icons/create-task.svg">';
+    btn.onclick = createTask;
+  }
+  const headline = document.querySelector('h2');
+  if (headline) headline.innerText = 'Edit Task';
+}
+
+/**
+ * Resets a list of input elements by their IDs.
+ * @param {string[]} ids - Array of element IDs.
+ */
+export function resetInputFields(ids) {
+  ids.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
 }

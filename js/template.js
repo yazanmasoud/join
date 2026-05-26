@@ -363,3 +363,27 @@ export function getContactDetails(contact) {
       </div>
     `;
 }
+
+export function getContactOptionsHTML(contactsArray, defaultText) {
+  const def = `<option value="" disabled selected>${defaultText}</option>`;
+  const opts = contactsArray
+    .map((c) => `<option value="${c.name}">${c.name}</option>`)
+    .join('');
+  return def + opts;
+}
+
+export function getContactCheckboxHTML(contact, isChecked) {
+  return `
+    <div class="contact-item" onclick="event.stopPropagation()">
+      <label class="contact-label">
+        <div class="contact-name-wrapper">
+          <input type="checkbox" name="assignedContact" value="${contact.name}" 
+                 ${isChecked ? 'checked' : ''} onchange="updateSelectedBadges()">
+          <div class="user-badge-small" style="background-color: ${contact.color || '#2A3647'}">
+            ${contact.initials || '??'}
+          </div>
+          <span>${contact.name}</span>
+        </div>
+      </label>
+    </div>`;
+}

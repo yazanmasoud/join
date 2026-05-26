@@ -2,9 +2,14 @@ import {
   createTask as serviceCreateTask,
   updateTask as serviceUpdateTask,
 } from './tasks-service.js';
-import { getPriorityButtonsHTML } from './template.js';
-import { getSelectOptionsHTML } from './template.js';
-import { getSubtaskHTML } from './template.js';
+
+import {
+  getPriorityButtonsHTML,
+  getSelectOptionsHTML,
+  getSubtaskHTML,
+  getContactCheckboxHTML,
+} from './template.js';
+
 import {
   clearActivePrioClasses,
   getPrioClass,
@@ -12,9 +17,19 @@ import {
   CONTACT_OPTIONS,
 } from './utils.js';
 
+import {
+  showSuccessToast,
+  toggleContactList,
+  updateButtonToSaveMode,
+  resetInputFields,
+} from './ui.js';
+
+import { getContacts } from './contacts-service.js';
+
 let subtasks = [];
 let currentPriority = 'Medium';
 
+/** @section GLOBAL EXPORTS */
 window.toggleSubtaskStatus = toggleSubtaskStatus;
 window.initAddTask = initAddTask;
 window.createTask = createTask;
@@ -22,7 +37,34 @@ window.setPriority = setPriority;
 window.handleSubtaskKey = handleSubtaskKey;
 window.deleteSubtask = deleteSubtask;
 window.prepareEditInDialog = prepareEditInDialog;
+window.toggleContactList = toggleContactList;
+window.updateSelectedBadges = updateSelectedBadges;
+window.clearForm = clearForm;
 
+/**
+ * Updates the visual initials badges for selected contacts.
+ */
+export async function updateSelectedBadges() {
+  const container = document.getElementById('assignedBadges');
+  const checked = document.querySelectorAll(
+    'input[name="assignedContact"]:checked',
+  );
+  if (!container) return;
+  const allContacts = await getContacts();
+  container.innerHTML = Array.from(checked)
+    .map((cb) => {
+      const contact = allContacts.find((c) => c.name === cb.value);
+      // Wir nutzen die Farbe direkt aus der Datenbank
+      const color = contact ? contact.color : '#2A3647';
+      const initials = contact ? contact.initials : '??';
+      return `<div class="user-badge" style="background-color: ${color}">${initials}</div>`;
+    })
+    .join('');
+}
+
+/**
+ * Initializes the add task view and loads edit data if available.
+ */
 export async function initAddTask() {
   renderPriorityButtons();
   renderCategories();
@@ -36,6 +78,10 @@ export async function initAddTask() {
   }
 }
 
+/**
+ * Populates form fields with existing task data for editing.
+ * @param {Object} data - The task data object.
+ */
 function fillFormForEdit(data) {
   document.getElementById('taskTitle').value = data.title || '';
   document.getElementById('taskDescription').value = data.description || '';
@@ -47,18 +93,8 @@ function fillFormForEdit(data) {
   renderSubtasks();
 }
 
-function updateButtonToSaveMode() {
-  const btn = document.querySelector('.btn-dark');
-  if (btn) {
-    btn.innerHTML = 'Save Changes <img src="../assets/icons/create-task.svg">';
-    btn.onclick = createTask;
-  }
-  const headline = document.querySelector('h2');
-  if (headline) headline.innerText = 'Edit Task';
-}
-
 /**
- * Manages the task creation process, validates data, and saves it to Firebase.
+ * Collects form data and saves the task to the service.
  */
 async function createTask() {
   const task = getTaskObject();
@@ -76,6 +112,9 @@ async function createTask() {
   }
 }
 
+/**
+ * Handles the success case after task creation or update.
+ */
 function handleSuccess() {
   showSuccessToast();
   const editId = localStorage.getItem('editTaskId');
@@ -93,37 +132,31 @@ function handleSuccess() {
 }
 
 /**
- * Validates that required fields like title, date, and category are filled.
- * @param {Object} task - The task object to validate.
- * @returns {boolean} True if the task is valid, otherwise false.
- */
-function validateTask(task) {
-  const catSelect = document.getElementById('taskCategory');
-  return task.title && task.dueDate && catSelect.selectedIndex !== 0;
-}
-
-/**
- * Gathers values from input fields and bundles them into a structured task object.
- * @returns {Object} The generated task object.
+ * Assembles the task object from form inputs.
+ * @returns {Object} The formatted task object.
  */
 function getTaskObject() {
+  const checked = document.querySelectorAll(
+    'input[name="assignedContact"]:checked',
+  );
+  const assignedArray = Array.from(checked).map((cb) => cb.value);
   const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
+
   return {
     title: document.getElementById('taskTitle').value,
     description: document.getElementById('taskDescription').value,
     dueDate: document.getElementById('taskDate').value,
     category: document.getElementById('taskCategory').value,
     priority: currentPriority,
-    assignedTo: document.getElementById('tasksAssigned').value,
+    assignedTo: assignedArray,
     subtasks: subtasks,
-    status: editData.status || 'todo', // Behält den alten Status (wichtig!)
-    createdAt: editData.createdAt || Date.now(),
+    status: editData.status || 'todo',
   };
 }
 
 /**
- * Updates the global priority variable and updates the button states in the UI.
- * @param {string} prio - The priority level to set.
+ * Sets the active task priority.
+ * @param {string} prio - Priority level.
  */
 function setPriority(prio) {
   currentPriority = prio;
@@ -133,7 +166,7 @@ function setPriority(prio) {
 }
 
 /**
- * Generates and renders HTML buttons inside the priority container.
+ * Renders priority selection buttons.
  */
 function renderPriorityButtons() {
   const container = document.getElementById('prioContainer');
@@ -141,7 +174,7 @@ function renderPriorityButtons() {
 }
 
 /**
- * Dynamically populates the task category dropdown list.
+ * Renders category dropdown options.
  */
 function renderCategories() {
   const select = document.getElementById('taskCategory');
@@ -153,20 +186,29 @@ function renderCategories() {
 }
 
 /**
- * Populates the contacts selection dropdown list in the UI.
+ * Renders contact selection list with real contact data.
  */
-function renderContacts() {
-  const select = document.getElementById('tasksAssigned');
-  if (select)
-    select.innerHTML = getSelectOptionsHTML(
-      CONTACT_OPTIONS,
-      'Select contacts to assign',
-    );
+async function renderContacts() {
+  const list = document.getElementById('contactList');
+  if (!list) return;
+  try {
+    const contacts = await getContacts();
+    const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
+    const assigned = Array.isArray(editData.assignedTo)
+      ? editData.assignedTo
+      : [];
+
+    list.innerHTML = contacts
+      .map((c) => getContactCheckboxHTML(c, assigned.includes(c.name)))
+      .join('');
+  } catch (e) {
+    console.error('Fehler beim Laden der Kontakte:', e);
+  }
 }
 
 /**
- * Adds a new subtask to the array when the Enter key is pressed.
- * @param {KeyboardEvent} event - The keyboard event.
+ * Handles subtask addition via keyboard event.
+ * @param {KeyboardEvent} event - Key down event.
  */
 function handleSubtaskKey(event) {
   if (event.key === 'Enter') {
@@ -182,7 +224,7 @@ function handleSubtaskKey(event) {
 }
 
 /**
- * Refreshes and renders the visible list of subtasks on the page.
+ * Renders the current list of subtasks.
  */
 function renderSubtasks() {
   let list = document.getElementById('subtasksList');
@@ -194,8 +236,8 @@ function renderSubtasks() {
 }
 
 /**
- * Removes a specific subtask from the array and updates the display.
- * @param {number} index - The index of the subtask to delete.
+ * Removes a subtask from the list.
+ * @param {number} index - Index of subtask.
  */
 function deleteSubtask(index) {
   subtasks.splice(index, 1);
@@ -203,7 +245,7 @@ function deleteSubtask(index) {
 }
 
 /**
- * Resets all input fields, arrays, and clears any active edit session data.
+ * Resets the entire task form to default state.
  */
 function clearForm() {
   ['taskTitle', 'taskDescription', 'taskDate', 'subtasks'].forEach((id) => {
@@ -223,54 +265,40 @@ function clearForm() {
 }
 
 /**
- * Briefly displays a success notification toast to the user.
+ * Toggles the completion status of a subtask.
+ * @param {number} index - Index of subtask.
  */
-function showSuccessToast() {
-  const toast = document.getElementById('successMessage');
-  if (toast) {
-    toast.classList.remove('d-none');
-    setTimeout(() => {
-      toast.style.bottom = '50px';
-    }, 10);
-
-    setTimeout(() => {
-      toast.classList.add('d-none');
-    }, 2000);
-  }
-}
 function toggleSubtaskStatus(index) {
   subtasks[index].done = !subtasks[index].done;
   renderSubtasks();
 }
 
+/**
+ * Prepares the form for editing within a dialog window.
+ * @param {string} id - Task ID.
+ * @param {Object} data - Task data.
+ */
 export function prepareEditInDialog(id, data) {
   renderPriorityButtons();
   renderCategories();
   renderContacts();
   fillFormForEdit(data);
-
-  // Überschrift auf Edit Task ändern
   const headline = document.querySelector('.edit-mode-container h2');
   if (headline) headline.innerText = 'Edit Task';
-
-  // Button zu "Ok" ändern
   const btn = document.querySelector('.edit-mode-container .btn-dark');
   if (btn) {
     btn.innerHTML = 'Ok <img src="../assets/icons/create-task.svg">';
     btn.onclick = () => saveEditFromDialog(id);
   }
-
-  // Clear Button entfernen
   const clearBtn = document.querySelector('.edit-mode-container .btn-light');
   if (clearBtn) clearBtn.remove();
 }
 
 async function saveEditFromDialog(id) {
-  const task = getTaskObject(); // Holt die Daten aus den Input-Feldern
+  const task = getTaskObject();
   if (!validateTask(task)) return;
 
   try {
-    // Gezieltes Update statt Neu-Erstellung
     await serviceUpdateTask(id, task);
 
     localStorage.removeItem('editTaskData');

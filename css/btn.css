@@ -160,6 +160,63 @@ button {
   height: 18px;
 }
 
+/* --- PRIORITÄTEN & BUTTONS --- */
+.priority-btn-content {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.prio-btn {
+  flex: 1;
+  padding: 16px;
+  border: 1px solid var(--color-divider);
+  background-color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  color: black;
+}
+
+.prio-btn.active-urgent {
+  background-color: #ff3d00;
+  color: white;
+  border-color: transparent;
+}
+.prio-btn.active-medium {
+  background-color: #ff9d00;
+  color: white;
+  border-color: transparent;
+}
+.prio-btn.active-low {
+  background-color: #7ae229;
+  color: white;
+  border-color: transparent;
+}
+
+.prio-btn[class*='active-'] img {
+  filter: brightness(0) invert(1);
+}
+.prio-icon {
+  width: 20px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.subtasks-list button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--color-bg-secondary);
+}
+
 @media (max-width: 600px) {
   .btn-light {
     font-size: 16px;

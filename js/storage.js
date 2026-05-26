@@ -1,9 +1,6 @@
 const categoryOptions = ['Technical Task', 'User Story', 'Feature Task'];
-const contactOptions = ['Maximilian Müller','Sofia Schneider','Benedikt Bauer',];
-
 
 window.getCurrentUserId = getCurrentUserId;
-
 
 /**
  * Checks if the current session is a guest session.
@@ -12,7 +9,6 @@ window.getCurrentUserId = getCurrentUserId;
 export function isGuestUser() {
   return localStorage.getItem('isGuest') === 'true';
 }
-
 
 /**
  * Retrieves the current authenticated user ID or returns a fallback for guests.
@@ -32,7 +28,6 @@ export function getCurrentUserId() {
   return userId;
 }
 
-
 /**
  * Retrieves guest tasks from localStorage.
  * @returns {Array} Stored guest tasks.
@@ -40,26 +35,6 @@ export function getCurrentUserId() {
 export function getLocalTasks() {
   return JSON.parse(localStorage.getItem('tasks')) || [];
 }
-
-
-/**
- * Retrieves guest contacts from localStorage.
- * @returns {Array} Stored guest contacts.
- */
-export function getLocalContacts() {
-  return JSON.parse(localStorage.getItem('contacts')) || [];
-}
-
-
-/**
- * Saves guest contacts to localStorage.
- * @param {Array} contacts - Updated guest contact array.
- * @returns {void}
- */
-export function setLocalContacts(contacts) {
-  localStorage.setItem('contacts', JSON.stringify(contacts));
-}
-
 
 /**
  * Saves guest tasks to localStorage.

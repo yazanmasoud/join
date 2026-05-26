@@ -35,9 +35,17 @@
 
       <div class="input-group">
         <label for="tasksAssigned">Assigned to</label>
-        <select id="tasksAssigned">
-          <option>Select contacts to assign</option>
-        </select>
+        <div class="multiselect-container">
+          <div
+            id="tasksAssigned"
+            class="select-trigger"
+            onclick="toggleContactList()"
+          >
+            Select contacts to assign
+          </div>
+          <div id="contactList" class="dropdown-content d-none"></div>
+        </div>
+        <div id="assignedBadges" class="assigned-badges-container"></div>
       </div>
       <div class="input-group">
         <label for="taskCategory"
