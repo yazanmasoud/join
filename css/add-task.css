@@ -1,4 +1,4 @@
-/* FORMULAR STRUKTUR */
+/* --- FORMULAR STRUKTUR --- */
 .add-task {
   display: flex;
   gap: 40px;
@@ -34,7 +34,7 @@
   color: var(--color-required);
 }
 
-/*INPUTS & ELEMENTS */
+/* --- INPUTS & ELEMENTS --- */
 input,
 textarea,
 select {
@@ -72,29 +72,22 @@ textarea {
   padding: 0;
 }
 
-/* Placeholder Styling */
+/* --- PLACEHOLDER & DATE --- */
 ::placeholder {
   color: var(--color-divider);
   opacity: 1;
 }
 
-/* Date-Input Spezial-Styling (Farbe & Icon) */
 input[type='date']::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
 }
-
-/* Grundzustand: Grau */
 input[type='date'] {
   color: var(--color-divider);
 }
-
-/* Webkit: Erzwingt Farbe für Platzhalter-Segmente */
 input[type='date']::-webkit-datetime-edit-fields-wrapper {
   color: var(--color-divider);
 }
-
-/* Umschalten: Bei Auswahl schwarz */
 input[type='date']:focus,
 input[type='date']:valid {
   color: var(--color-text-main);
@@ -104,15 +97,13 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   color: var(--color-text-main);
 }
 
-/*PRIORITÄTEN & BUTTONS */
-
+/* --- PRIORITÄTEN & BUTTONS --- */
 .priority-btn-content {
   display: flex;
   gap: 16px;
   width: 100%;
 }
 
-/* 1. Zuerst den Standard-Zustand definieren */
 .prio-btn {
   flex: 1;
   padding: 16px;
@@ -127,40 +118,34 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   font-size: 16px;
   font-weight: 400;
   transition: all 0.2s ease;
-  color: black; /* Textfarbe im Normalzustand */
+  color: black;
 }
 
-/* 2. Danach die aktiven Zustände (überschreiben den Standard) */
 .prio-btn.active-urgent {
   background-color: #ff3d00;
   color: white;
   border-color: transparent;
 }
-
 .prio-btn.active-medium {
   background-color: #ff9d00;
   color: white;
   border-color: transparent;
 }
-
 .prio-btn.active-low {
   background-color: #7ae229;
   color: white;
   border-color: transparent;
 }
-
-/* 3. Icon Handling: Weißer Filter für alle aktiven Zustände */
 .prio-btn[class*='active-'] img {
   filter: brightness(0) invert(1);
 }
-
 .prio-icon {
   width: 20px;
   height: 16px;
   object-fit: contain;
 }
 
-/*FORM BOTTOM & ACTIONS */
+/* --- FORM BOTTOM --- */
 .form-bottom {
   display: flex;
   justify-content: space-between;
@@ -168,42 +153,25 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   margin-top: 32px;
   width: 100%;
 }
-
 .form-actions {
   display: flex;
   gap: 16px;
 }
-
 .required-hint {
   font-size: 16px;
 }
 
-/* RESPONSIVE DESIGN*/
-@media (max-width: 1100px) {
-  .add-task {
-    flex-direction: column;
-  }
-  .vertical-divider {
-    display: none;
-  }
-  .content-area {
-    padding: 40px 20px;
-  }
-}
-
-/* --- SUBTASK BEREICH (AUFGERÄUMT) --- */
-
+/* --- SUBTASKS --- */
 .subtasks-item-list {
   list-style: none;
   padding: 0;
   margin-top: 12px;
   display: flex;
-  flex-direction: column; /* Liste untereinander */
+  flex-direction: column;
   gap: 4px;
   max-height: 150px;
   overflow-y: auto;
 }
-
 .subtask-edit-item {
   display: flex;
   align-items: center;
@@ -214,30 +182,24 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   transition: background-color 0.2s ease;
   box-sizing: border-box;
 }
-
 .subtask-edit-item:hover {
   background-color: var(--color-bg-tertiary, #eeeeee);
 }
-
-/* Linker Teil: Icon + Text */
 .subtask-left {
   display: flex;
   align-items: center;
   flex-grow: 1;
   cursor: pointer;
 }
-
 .subtask-check-icon {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
 }
-
 .subtask-text {
   font-size: 16px;
   color: var(--color-text-main);
 }
-
 .subtasks-list button {
   background: none;
   border: none;
@@ -246,6 +208,7 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   color: var(--color-bg-secondary);
 }
 
+/* --- SUCCESS TOAST --- */
 .success-toast {
   position: fixed;
   bottom: -100px;
@@ -262,13 +225,88 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   z-index: 1000;
   transition: bottom 0.5s ease-in-out;
 }
-
 .success-toast:not(.d-none) {
   bottom: 50px;
 }
-
 .d-none {
   display: none;
+}
+
+/* --- ZENTRIERTER EDIT DIALOG --- */
+.edit-mode-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 40px 60px;
+  border-radius: 30px;
+  width: 1100px;
+  max-width: 95vw;
+  max-height: 95vh;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.edit-mode-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Spezifische Anordnung für den Dialog (Überschreibt Media Query ohne !important) */
+.edit-mode-container .add-task {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: nowrap;
+}
+
+.edit-mode-container .add-section-left {
+  flex: 1;
+  min-width: 0;
+}
+.edit-mode-container .vertical-divider {
+  display: block;
+}
+.edit-mode-container .form-actions {
+  justify-content: flex-end;
+}
+
+/* --- HELPER & ANIMATION --- */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+#taskDetailDialog {
+  overflow-x: hidden;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+.edit-dialog[open] {
+  transform: translateX(0);
+}
+.edit-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 1100px) {
+  .add-task {
+    flex-direction: column;
+  }
+  .vertical-divider {
+    display: none;
+  }
+  .content-area {
+    padding: 40px 20px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -277,13 +315,16 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
     gap: 12px;
     margin-top: 0;
   }
+  .edit-mode-container {
+    padding: 20px;
+    width: 90%;
+  }
 }
 
 @media (max-width: 400px) {
   .prio-btn {
     padding: 8px 4px;
   }
-
   .form-actions {
     gap: 8px;
   }

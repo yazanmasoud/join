@@ -21,6 +21,7 @@ window.createTask = createTask;
 window.setPriority = setPriority;
 window.handleSubtaskKey = handleSubtaskKey;
 window.deleteSubtask = deleteSubtask;
+window.prepareEditInDialog = prepareEditInDialog;
 
 export async function initAddTask() {
   renderPriorityButtons();
@@ -115,7 +116,7 @@ function getTaskObject() {
     priority: currentPriority,
     assignedTo: document.getElementById('tasksAssigned').value,
     subtasks: subtasks,
-    status: editData.status || 'todo',
+    status: editData.status || 'todo', // Behält den alten Status (wichtig!)
     createdAt: editData.createdAt || Date.now(),
   };
 }
@@ -240,4 +241,43 @@ function showSuccessToast() {
 function toggleSubtaskStatus(index) {
   subtasks[index].done = !subtasks[index].done;
   renderSubtasks();
+}
+
+export function prepareEditInDialog(id, data) {
+  renderPriorityButtons();
+  renderCategories();
+  renderContacts();
+  fillFormForEdit(data);
+
+  // Überschrift auf Edit Task ändern
+  const headline = document.querySelector('.edit-mode-container h2');
+  if (headline) headline.innerText = 'Edit Task';
+
+  // Button zu "Ok" ändern
+  const btn = document.querySelector('.edit-mode-container .btn-dark');
+  if (btn) {
+    btn.innerHTML = 'Ok <img src="../assets/icons/create-task.svg">';
+    btn.onclick = () => saveEditFromDialog(id);
+  }
+
+  // Clear Button entfernen
+  const clearBtn = document.querySelector('.edit-mode-container .btn-light');
+  if (clearBtn) clearBtn.remove();
+}
+
+async function saveEditFromDialog(id) {
+  const task = getTaskObject(); // Holt die Daten aus den Input-Feldern
+  if (!validateTask(task)) return;
+
+  try {
+    // Gezieltes Update statt Neu-Erstellung
+    await serviceUpdateTask(id, task);
+
+    localStorage.removeItem('editTaskData');
+    document.getElementById('taskDetailDialog').close();
+
+    if (window.initBoard) window.initBoard();
+  } catch (e) {
+    console.error('Update fehlgeschlagen:', e);
+  }
 }

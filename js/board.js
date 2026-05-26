@@ -32,7 +32,6 @@ let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 
-
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.initBoard = initBoard;
 window.openAddTask = openAddTask;
@@ -50,7 +49,6 @@ window.toggleEditSubtask = toggleEditSubtask;
 window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
 window.deleteTask = deleteTask;
-
 
 export function initBoard() {
   if (isGuestUser()) {
@@ -190,11 +188,16 @@ async function moveFirebaseTaskTo(status) {
 
 export async function editTask(id) {
   const task = CURRENT_TASKS[id];
-  if (task) {
-    localStorage.setItem('editTaskId', id);
-    localStorage.setItem('editTaskData', JSON.stringify(task));
-    await navigateTo('add-task');
-  }
+  if (!task) return;
+  const dialog = document.getElementById('taskDetailDialog');
+  const content = document.getElementById('taskDetailContent');
+
+  localStorage.setItem('editTaskData', JSON.stringify(task)); // Wichtig für getTaskObject()
+  const response = await fetch('add-task.html');
+  content.innerHTML = `<div class="edit-mode-container">${await response.text()}</div>`;
+
+  if (!dialog.open) dialog.showModal(); // Öffnet den Dialog, falls er zu ist
+  if (window.prepareEditInDialog) window.prepareEditInDialog(id, task);
 }
 
 export async function saveEdit(id) {
