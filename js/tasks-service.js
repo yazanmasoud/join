@@ -21,9 +21,7 @@ export async function getTasks() {
 export async function createTask(taskData) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
-    const maxId =
-      tasks.length > 0 ? Math.max(...tasks.map((t) => t.id || 0)) : 0;
-    const newTask = { id: maxId + 1, ...taskData };
+    const newTask = { id: Date.now().toString(), ...taskData };
     tasks.push(newTask);
     setLocalTasks(tasks);
     return newTask;
@@ -50,7 +48,7 @@ export async function getTaskById(taskId) {
     const tasks = getLocalTasks();
 
     return tasks.find(function (task) {
-      return String(task.id) === String(taskId);
+      return task.id === taskId;
     });
   }
   const uid = auth.currentUser.uid;
@@ -66,7 +64,7 @@ export async function updateTask(taskId, updatedData) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
     const updatedTasks = tasks.map((task) =>
-      String(task.id) === String(taskId) ? { ...task, ...updatedData } : task,
+      task.id === taskId ? { ...task, ...updatedData } : task,
     );
     setLocalTasks(updatedTasks);
     return;
@@ -79,7 +77,7 @@ export async function deleteTask(taskId) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
     const filteredTasks = tasks.filter(
-      (task) => String(task.id) !== String(taskId),
+      (task) => task.id !== taskId,
     );
     setLocalTasks(filteredTasks);
     return;

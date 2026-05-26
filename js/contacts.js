@@ -69,7 +69,7 @@ async function handleDeleteContact(contactId) {
 
     contacts = contacts.filter(
         contact =>
-            String(contact.id) !== String(contactId)
+            contact.id !== contactId
     );
 
     renderContacts();
@@ -104,7 +104,7 @@ async function handleSaveContact() {
 function getCurrentEditContact() {
     return contacts.find(
         contact =>
-            String(contact.id) === String(currentEditContactId)
+            contact.id === currentEditContactId
     );
 }
 
@@ -139,7 +139,7 @@ function getUpdatedContactData(contact) {
  */
 function updateLocalContact(updatedData) {
     contacts = contacts.map(contact =>
-        String(contact.id) === String(currentEditContactId)
+        contact.id === currentEditContactId
             ? { ...contact, ...updatedData }
             : contact
     );
@@ -157,7 +157,7 @@ function refreshUpdatedContactUI() {
 
     const updatedIndex = contacts.findIndex(
         contact =>
-            String(contact.id) === String(currentEditContactId)
+            contact.id === currentEditContactId
     );
 
     renderContactDetails(updatedIndex);
@@ -252,7 +252,7 @@ function openAddContact() {
 
 
 function openEditContact(contactId) {
-    const contact = contacts.find(contact => String(contact.id) === String(contactId)); 
+    const contact = contacts.find(contact => contact.id === contactId);
     currentEditContactId = contactId;
     const elements = getContactDialogElements();
 

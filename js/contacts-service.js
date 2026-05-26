@@ -103,7 +103,7 @@ export async function getContactById(contactId) {
     const contacts = getGuestContacts();
 
     return contacts.find(
-      (contact) => String(contact.id) === String(contactId)
+      (contact) => contact.id === contactId
     );
   }
 
@@ -126,7 +126,7 @@ export async function updateContact(contactId, updatedData) {
     const contacts = getGuestContacts();
 
     const updatedContacts = contacts.map((contact) =>
-      String(contact.id) === String(contactId)
+      contact.id === contactId
         ? { ...contact, ...updatedData }
         : contact
     );
@@ -149,7 +149,7 @@ export async function deleteContact(contactId) {
     const contacts = getGuestContacts();
 
     const filteredContacts = contacts.filter(
-      (contact) => String(contact.id) !== String(contactId)
+      (contact) => contact.id !== contactId
     );
 
     saveGuestContacts(filteredContacts);
