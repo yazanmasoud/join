@@ -4,14 +4,13 @@ import { ref, set, get } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { hideOverlay, showOverlay } from './utils.js';
 import { guestContacts, guestTasks } from './guest-data.js';
 import { getCurrentUserId, isGuestUser } from './storage.js';
-import { showInputError, clearInputError } from './ui.js';
+import { showInputError, clearInputError, closeSignUp, clearSignupInputs } from './ui.js';
 
 
 window.loginAsGuest = loginAsGuest;
 window.loginAsUser = loginAsUser;
 window.handleLogin = handleLogin;
 window.registerUser = registerUser;
-window.handleSignup = handleSignup;
 window.validateLoginEmail = validateLoginEmail;
 window.validateLoginPassword = validateLoginPassword;
 window.updateLoginButtonState = updateLoginButtonState;
@@ -31,7 +30,7 @@ export async function registerUser(name, email, password) {
     handleSignupSuccess();
   } catch (error) {
     console.error(error);
-    showSignupFailed(); //hier müssen die Fehlercodes ausgewertet und angezeigt werden.
+    showSignupFailed();
     }
 }
 
@@ -53,17 +52,6 @@ function handleSignupSuccess() {
   }, 2000);
   closeSignUp();
   clearSignupInputs();
-}
-
-
-// get signup information and start signup flow
-async function handleSignup(event) {
-  event.preventDefault();
-  const name = document.getElementById('signup-username').value.trim();
-  const email = document.getElementById('signup-email').value.trim();
-  const password = document.getElementById('signup-password').value;
-  const confirmPassword = document.getElementById('signup-confirm-password').value;
-  await registerUser(name, email, password);
 }
 
 

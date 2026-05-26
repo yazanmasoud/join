@@ -1,4 +1,4 @@
-import { showInputError, clearInputError } from './ui.js';
+import { showInputError, clearInputError, closeSignUp, clearSignupInputs } from './ui.js';
 import { registerUser } from './auth-service.js';
 
 
@@ -136,21 +136,6 @@ function openSignUp() {
 }
 
 
-/**
- * Resets the changes from openSignUp()
- */
-export function closeSignUp() {
-  const signupContainer = document.getElementById('signup-container');
-  const signupContainerMobile = document.getElementById('signup-container-mobile');
-  const signup = document.getElementById('signup');
-  const login = document.getElementById('login');
-  if (!signup || !login) return;
-  signupContainer.classList.remove('hidden');
-  signupContainerMobile.classList.remove('hidden');
-  signup.classList.add('hidden');
-  login.classList.remove('hidden');
-}
-
 
 /**
  * Hides active signup form fields and returns layout viewport visibility states back onto default login forms.
@@ -255,17 +240,6 @@ function validateForm() {
   return isValid;
 }
 
-
-/**
- * Cleares the Input fields after Signup
- **/
-export function clearSignupInputs() {
-  document.getElementById('signup-username').value = '';
-  document.getElementById('signup-email').value = '';
-  document.getElementById('signup-password').value = '';
-  document.getElementById('signup-confirm-password').value = '';
-  document.getElementById('privacy').checked = false;
-}
 
 
 function clearSignupErrors() {
