@@ -114,17 +114,6 @@ export function hideOverlay() {
   }, 300);
 }
 
-/**
- * Returns the correct Firebase reference path for a task.
- * @param {string} taskId - The ID of the task.
- * @returns {string} The database path.
- */
-function getTaskRefPath(taskId) {
-  const uid = auth.currentUser?.uid;
-  return isGuestUser() || !uid
-    ? `guest/tasks/${taskId}`
-    : `tasks/${uid}/${taskId}`;
-}
 
 /**
  * Validates mandatory task fields.
