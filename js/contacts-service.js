@@ -53,13 +53,13 @@ export async function getContacts() {
 
 function getGuestContacts() {
   return JSON.parse(
-    sessionStorage.getItem('guestContacts')
+    localStorage.getItem('guestContacts')
   ) || [];
 }
 
 
 function saveGuestContacts(contacts) {
-  sessionStorage.setItem(
+  localStorage.setItem(
     'guestContacts',
     JSON.stringify(contacts)
   );
