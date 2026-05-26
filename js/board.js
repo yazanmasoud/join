@@ -48,7 +48,6 @@ window.deleteEditSubtask = deleteEditSubtask;
 window.toggleEditSubtask = toggleEditSubtask;
 window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
-window.deleteTask = deleteTask;
 
 export function initBoard() {
   if (isGuestUser()) {
@@ -114,7 +113,6 @@ export async function openTaskDetail(id) {
     console.error('Task not found in CURRENT_TASKS:', id);
   }
 }
-window.openTaskDetail = openTaskDetail;
 
 /**
  * Toggles a subtask and re-renders the board to update the progress bar.
