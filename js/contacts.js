@@ -7,8 +7,7 @@ import { getContactDetails, getSingleContact, getContactLetter } from './templat
 
 export let contacts = [];
 let currentEditContactId = null;
-let selectedContactIndex = null;
-
+let selectedContactId = null;
 
 window.openAddContact = openAddContact;
 window.handleCreateContact = handleCreateContact;
@@ -30,31 +29,66 @@ export async function initContacts() {
 
 
 /**
- * Creates a new contact object
- * from the input values and adds it
- * to the contacts array.
- * Afterwards the contacts get sorted
- * alphabetically and rendered again.
+ * Creates a new contact and
+ * updates the contacts list and UI.
+ *
+ * @async
  */
 async function handleCreateContact() {
-    let name = document.getElementById('contact-name').value;
-    let email = document.getElementById('contact-email').value;
-    let phone = document.getElementById('contact-phone').value;
-    let initials = getInitials(name);
-    let color = getRandomColor();
+    const contactData = getNewContactData();
+    const savedContact = await createContact(contactData);
 
-    let contactData = { name, email, phone, initials, color };
-    let savedContact = await createContact(contactData);
+    addContactToList(savedContact);
+    resetContactForm();
+    closeAddContact();
+    showToast('Contact successfully created');
+}
 
-    contacts.push(savedContact);
-    contacts.sort((a, b) => a.name.localeCompare(b.name));
+
+/**
+ * Reads the contact form inputs
+ * and creates a new contact object.
+ *
+ * @returns {Object} The new contact data.
+ */
+function getNewContactData() {
+    const name = document.getElementById('contact-name').value;
+    const email = document.getElementById('contact-email').value;
+    const phone = document.getElementById('contact-phone').value;
+
+    return {
+        name,
+        email,
+        phone,
+        initials: getInitials(name),
+        color: getRandomColor()
+    };
+}
+
+
+/**
+ * Adds a contact to the contacts array,
+ * sorts and re-renders the list.
+ *
+ * @param {Object} contact - The saved contact object.
+ */
+function addContactToList(contact) {
+    contacts.push(contact);
+    contacts.sort(
+        (a, b) => a.name.localeCompare(b.name)
+    );
+
     renderContacts();
+}
 
+
+/**
+ * Clears all contact dialog inputs.
+ */
+function resetContactForm() {
     document.getElementById('contact-name').value = '';
     document.getElementById('contact-email').value = '';
     document.getElementById('contact-phone').value = '';
-    closeAddContact();
-    showToast('Contact successfully created');
 }
 
 
@@ -71,7 +105,7 @@ async function handleDeleteContact(contactId) {
         contact =>
             String(contact.id) !== String(contactId)
     );
-    selectedContactIndex = null;
+    selectedContactId = null;
     renderContacts();
     document.getElementById('contact-details').innerHTML = '';
 
@@ -252,7 +286,7 @@ function openAddContact() {
 
 
 function openEditContact(contactId) {
-    const contact = contacts.find(contact => String(contact.id) === String(contactId)); 
+    const contact = contacts.find(contact => String(contact.id) === String(contactId));
     currentEditContactId = contactId;
     const elements = getContactDialogElements();
 
@@ -261,8 +295,7 @@ function openEditContact(contactId) {
     elements.createSaveButton.onclick = handleSaveContact;
     elements.cancelDeleteButton.innerHTML = 'Delete';
     elements.cancelDeleteButton.removeAttribute('onclick');
-    elements.cancelDeleteButton.onclick =
-        () => openDeleteDialog(contactId);
+    elements.cancelDeleteButton.onclick =() => openDeleteDialog(contactId);
     elements.createSaveButton.classList.add('save-button');
     elements.nameInput.value = contact.name || '';
     elements.emailInput.value = contact.email || '';
@@ -320,7 +353,7 @@ function renderContacts() {
             currentLetter = firstLetter;
         }
 
-        getSingleContact(list, contact, i, i === selectedContactIndex);
+        getSingleContact(list,contact,i,String(contact.id) ===String(selectedContactId));
     }
 }
 
@@ -329,15 +362,19 @@ function renderContacts() {
  * Renders the selected contact details
  * into the contact details container.
  *
- * @param {number} index - The index of the selected contact in the contacts array.
+ * @param {number} index - The selected contact index.
  */
 function renderContactDetails(index) {
-    selectedContactIndex = index;
-
     const contact = contacts[index];
-    const detailsContainer = document.getElementById('contact-details');
 
-    detailsContainer.innerHTML = getContactDetails(contact, index);
+    selectedContactId = contact.id;
+
+    const detailsContainer =
+        document.getElementById('contact-details');
+
+    detailsContainer.innerHTML =
+        getContactDetails(contact);
+
     renderContacts();
 }
 
