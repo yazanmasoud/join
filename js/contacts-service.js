@@ -16,38 +16,51 @@ import { isGuestUser } from './storage.js';
 
 export async function getContacts() {
   if (isGuestUser()) {
-    const storedGuestContacts = getGuestContacts();
-    if (storedGuestContacts.length) {
-      return storedGuestContacts;
-    }
-
-    const snapshot = await get(
-      ref(database, 'defaultGuestData/contacts')
-    );
-
-    if (!snapshot.exists()) return [];
-
-    const guestContacts = Object.entries(snapshot.val()).map(
-      ([id, contact]) => ({
-        id,
-        ...contact,
-        initials: getInitials(contact.name),
-      })
-    );
-
-    saveGuestContacts(guestContacts);
-    return guestContacts;
+    return getGuestUserContacts();
   }
 
   const uid = auth.currentUser.uid;
-  const snapshot = await get(ref(database, `contacts/${uid}`));
+  const snapshot = await get(
+    ref(database, `contacts/${uid}`)
+  );
 
+  return mapContacts(snapshot);
+}
+
+
+async function getGuestUserContacts() {
+  const storedGuestContacts = getGuestContacts();
+
+  if (storedGuestContacts.length) {
+    return storedGuestContacts;
+  }
+
+  const snapshot = await get(
+    ref(database, 'defaultGuestData/contacts')
+  );
+
+  const guestContacts = mapContacts(
+    snapshot,
+    true
+  );
+
+  saveGuestContacts(guestContacts);
+  return guestContacts;
+}
+
+
+function mapContacts(snapshot, withInitials = false) {
   if (!snapshot.exists()) return [];
 
-  return Object.entries(snapshot.val()).map(([id, contact]) => ({
-    id,
-    ...contact,
-  }));
+  return Object.entries(snapshot.val()).map(
+    ([id, contact]) => ({
+      id,
+      ...contact,
+      ...(withInitials && {
+        initials: getInitials(contact.name),
+      }),
+    })
+  );
 }
 
 
@@ -74,23 +87,15 @@ function generateLocalId() {
 export async function createContact(contactData) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
-
-    const newContact = {
-      id: generateLocalId(),
-      ...contactData,
-    };
-
+    const newContact = {id: generateLocalId(),...contactData,};
     contacts.push(newContact);
     saveGuestContacts(contacts);
 
     return newContact;
   }
-
   const uid = auth.currentUser.uid;
   const newContactRef = push(ref(database, `contacts/${uid}`));
-
   await set(newContactRef, contactData);
-
   return {
     id: newContactRef.key,
     ...contactData,
