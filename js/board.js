@@ -31,6 +31,7 @@ import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
 let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
+let currentSearchTerm = '';
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.initBoard = initBoard;
@@ -50,10 +51,12 @@ window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
 
 export function initBoard() {
+  setupTaskSearch();
+
   if (isGuestUser()) {
     CURRENT_TASKS = convertTaskArrayToObject(getLocalTasks());
 
-    renderAllTasks(CURRENT_TASKS);
+    renderFilteredTasks();
     setupDialogClose(closeTaskDetail);
     return;
   }
@@ -65,10 +68,55 @@ export function initBoard() {
   onValue(tasksRef, (snapshot) => {
     CURRENT_TASKS = snapshot.val() || {};
 
-    renderAllTasks(CURRENT_TASKS);
+    renderFilteredTasks();
   });
 
   setupDialogClose(closeTaskDetail);
+}
+
+function setupTaskSearch() {
+  const searchInput = document.getElementById('searchTask');
+
+  if (!searchInput || searchInput.dataset.searchInitialized === 'true') return;
+
+  currentSearchTerm = searchInput.value.trim().toLowerCase();
+  searchInput.dataset.searchInitialized = 'true';
+
+  searchInput.addEventListener('input', () => {
+    currentSearchTerm = searchInput.value.trim().toLowerCase();
+    renderFilteredTasks();
+  });
+}
+
+function renderFilteredTasks() {
+  const filteredTasks = filterTasksBySearchTerm(CURRENT_TASKS);
+
+  renderAllTasks(filteredTasks);
+  updateNoSearchResults(filteredTasks);
+}
+
+function filterTasksBySearchTerm(allTasks) {
+  if (!currentSearchTerm) return allTasks;
+
+  return normalizeObjectToArray(allTasks).filter((task) => {
+    const title = String(task.title || '').toLowerCase();
+    const description = String(task.description || '').toLowerCase();
+
+    return (
+      title.includes(currentSearchTerm) ||
+      description.includes(currentSearchTerm)
+    );
+  });
+}
+
+function updateNoSearchResults(filteredTasks) {
+  const noResultsElement = document.getElementById('noSearchResults');
+  if (!noResultsElement) return;
+
+  const hasNoSearchResults =
+    currentSearchTerm && normalizeObjectToArray(filteredTasks).length === 0;
+
+  noResultsElement.classList.toggle('hidden', !hasNoSearchResults);
 }
 
 function renderAllTasks(allTasks) {
@@ -122,7 +170,7 @@ export async function toggleSubtask(taskId, index) {
   task.subtasks[index].done = !task.subtasks[index].done;
   if (isGuestUser()) {
     setLocalTasks(Object.values(CURRENT_TASKS));
-    renderAllTasks(CURRENT_TASKS); // Sofortiges Update für Gäste
+    renderFilteredTasks(); // Sofortiges Update für Gäste
   } else {
     const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
     await update(ref(database, path), { done: task.subtasks[index].done });
@@ -172,7 +220,7 @@ function moveGuestTaskTo(status) {
 
   setLocalTasks(convertTaskObjectToArray(CURRENT_TASKS));
 
-  renderAllTasks(CURRENT_TASKS);
+  renderFilteredTasks();
 }
 
 async function moveFirebaseTaskTo(status) {
@@ -211,7 +259,7 @@ export async function saveEdit(id) {
   } else {
     await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), updates);
   }
-  renderAllTasks(CURRENT_TASKS); // Board aktualisieren
+  renderFilteredTasks(); // Board aktualisieren
   closeTaskDetail();
 }
 
@@ -286,7 +334,7 @@ export async function deleteTask(id) {
     await remove(ref(database, `tasks/${auth.currentUser.uid}/${id}`));
   }
   closeTaskDetail();
-  renderAllTasks(CURRENT_TASKS);
+  renderFilteredTasks();
 }
 
 /**
