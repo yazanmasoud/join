@@ -139,13 +139,14 @@ export function generateTaskDetailHTML(task, id) {
     <div class="detail-view">
       <div class="detail-view-header">
         <span class="task-category ${catClass}">${task.category || ''}</span>
-        <div class="detail-view-close" onclick="closeTaskDetail()">×</div></div>
-      <h3 class="detail-view-title">${task.title || ''}</h3>
+        <div class="detail-view-close" onclick="closeTaskDetail()">×</div>
+      </div>
+      <h1 class="detail-view-title">${task.title || ''}</h1>
       <p class="detail-view-description">${task.description || ''}</p>
       ${getDetailInfoRows(task)}
-      <div class="assigned-section"><span class="detail-view-label">Assigned To:</span>
+      <div class="detail-section"><p class="detail-view-label">Assigned To:</p>
         <div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
-      <div class="subtasks-section"><span class="detail-view-label">Subtasks</span>
+      <div class="detail-section"><p class="detail-view-label">Subtasks</p>
         <ul class="subtask-list-detail">${getDetailSubtasksHTML(task.subtasks, id)}</ul></div>
       ${getDetailFooter(id)}</div>`;
 }
@@ -157,10 +158,13 @@ export function generateTaskDetailHTML(task, id) {
  */
 export function getDetailInfoRows(task) {
   const prio = task.priority ? task.priority.toLowerCase() : 'medium';
-  return `<div class="detail-view-info-row">
-      <span class="detail-view-label">Due date:</span> ${task.dueDate || ''}</div>
+  return `
     <div class="detail-view-info-row">
-      <span class="detail-view-label">Priority:</span> 
+      <span class="detail-view-label-inline">Due date:</span> 
+      <span>${task.dueDate || ''}</span>
+    </div>
+    <div class="detail-view-info-row">
+      <span class="detail-view-label-inline">Priority:</span> 
       <div class="detail-view-prio-badge">${task.priority || 'Medium'} 
         <img src="../assets/icons/prio-${prio}-icon.svg"></div>
     </div>`;
@@ -198,6 +202,7 @@ export function getDetailFooter(id) {
       <button class="action-btn" onclick="deleteTask('${id}')">
         <img src="../assets/icons/delete-icon.svg"> Delete
       </button>
+      <div class="footer-divider"></div>
       <button class="action-btn" onclick="editTask('${id}')">
         <img src="../assets/icons/edit-icon.svg"> Edit
       </button>
@@ -229,14 +234,21 @@ export function getAssignedUserHTML(name) {
  * @param {any} assignedTo - Assigned string name or collection array.
  * @returns {string} Consolidated contact list markup string.
  */
-export function renderAssignedToDetail(assignedTo) {
-  if (!assignedTo || assignedTo === 'Select contacts to assign') return '';
-  const list = Array.isArray(assignedTo) ? assignedTo : [assignedTo];
-  return list
-    .map((contact) => {
-      // Falls contact ein Objekt ist {name: "Max", ...}, nimm nur den Namen
-      const nameOnly = typeof contact === 'object' ? contact.name : contact;
-      return getAssignedUserHTML(nameOnly);
+function renderAssignedToDetail(assignedTo) {
+  if (!assignedTo || !Array.isArray(assignedTo)) return '';
+  return assignedTo
+    .map((item) => {
+      const name = typeof item === 'string' ? item : item.name;
+      const contact = (typeof contacts !== 'undefined' ? contacts : []).find(
+        (c) => c.name === name,
+      );
+      const color = contact?.color || '#ff7a00';
+      const initials = contact?.initials || (name ? name.charAt(0) : '?');
+      return `
+      <div class="assigned-contact-row">
+        <div class="user-badge" style="background-color: ${color}">${initials}</div>
+        <span class="contact-name-detail">${name}</span>
+      </div>`;
     })
     .join('');
 }

@@ -1,6 +1,7 @@
 import {
   createTask as serviceCreateTask,
   updateTask as serviceUpdateTask,
+  isTaskValid,
 } from './tasks-service.js';
 
 import {
@@ -98,7 +99,8 @@ function fillFormForEdit(data) {
  */
 async function createTask() {
   const task = getTaskObject();
-  if (!validateTask(task)) return;
+  // Geändert von validateTask zu isTaskValid (passend zum Import oben)
+  if (!isTaskValid(task)) return;
   const editId = localStorage.getItem('editTaskId');
   try {
     if (editId) {
@@ -111,7 +113,6 @@ async function createTask() {
     console.error('Fehler:', e);
   }
 }
-
 /**
  * Handles the success case after task creation or update.
  */
@@ -197,10 +198,10 @@ async function renderContacts() {
     const assigned = Array.isArray(editData.assignedTo)
       ? editData.assignedTo
       : [];
-
     list.innerHTML = contacts
       .map((c) => getContactCheckboxHTML(c, assigned.includes(c.name)))
       .join('');
+    updateSelectedBadges();
   } catch (e) {
     console.error('Fehler beim Laden der Kontakte:', e);
   }
@@ -294,18 +295,13 @@ export function prepareEditInDialog(id, data) {
   if (clearBtn) clearBtn.remove();
 }
 
+/**
+ * Saves the edited task from the dialog.
+ */
 async function saveEditFromDialog(id) {
   const task = getTaskObject();
-  if (!validateTask(task)) return;
-
-  try {
-    await serviceUpdateTask(id, task);
-
-    localStorage.removeItem('editTaskData');
-    document.getElementById('taskDetailDialog').close();
-
-    if (window.initBoard) window.initBoard();
-  } catch (e) {
-    console.error('Update fehlgeschlagen:', e);
-  }
+  if (!isTaskValid(task)) return;
+  await serviceUpdateTask(id, task);
+  document.getElementById('taskDetailDialog').close();
+  if (window.initBoard) window.initBoard();
 }

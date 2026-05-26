@@ -8,22 +8,14 @@ import {
   remove,
   onValue,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-import {
-  isGuestUser,
-  getCurrentUserId,
-  getLocalTasks,
-  setLocalTasks,
-} from './storage.js';
+import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
 import { normalizeObjectToArray } from './ui.js';
 
 export async function getTasks() {
-  if (isGuestUser()) {
-    return getLocalTasks();
-  }
+  if (isGuestUser()) return getLocalTasks();
   const uid = auth.currentUser.uid;
   const snapshot = await get(ref(database, `tasks/${uid}`));
-  if (!snapshot.exists()) return [];
-  return normalizeObjectToArray(snapshot.val());
+  return snapshot.exists() ? normalizeObjectToArray(snapshot.val()) : [];
 }
 
 export async function createTask(taskData) {
@@ -40,6 +32,17 @@ export async function createTask(taskData) {
   const newTaskRef = push(ref(database, `tasks/${uid}`));
   await set(newTaskRef, taskData);
   return { id: newTaskRef.key, ...taskData };
+}
+
+/**
+ * Validates if the task has a title, date and category.
+ */
+export function isTaskValid(task) {
+  const catSelect = document.getElementById('taskCategory');
+  const hasTitle = task.title && task.title.trim().length > 0;
+  const hasDate = !!task.dueDate;
+  const hasCategory = catSelect && catSelect.selectedIndex !== 0;
+  return !!(hasTitle && hasDate && hasCategory);
 }
 
 export async function getTaskById(taskId) {
