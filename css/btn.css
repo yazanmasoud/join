@@ -133,11 +133,21 @@ button {
 }
 
 .edit-delete-btn {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
+  border: none;
+  background: none;
 }
+
+.edit-delete-btn img {
+  transition: 100ms ease;
+}
+
+.edit-delete-btn:hover img {
+  filter: brightness(0) saturate(100%)
+    invert(32%) sepia(96%)
+    saturate(2146%) hue-rotate(183deg)
+    brightness(88%) contrast(96%);
+}
+
 
 .subtasks-item-list li button {
   background: none;
