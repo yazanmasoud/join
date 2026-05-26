@@ -17,7 +17,6 @@ import { isGuestUser } from './storage.js';
 export async function getContacts() {
   if (isGuestUser()) {
     const storedGuestContacts = getGuestContacts();
-    console.log('guest mode');
     if (storedGuestContacts.length) {
       return storedGuestContacts;
     }
@@ -25,7 +24,6 @@ export async function getContacts() {
     const snapshot = await get(
       ref(database, 'defaultGuestData/contacts')
     );
-    console.log(snapshot.val());
 
     if (!snapshot.exists()) return [];
 

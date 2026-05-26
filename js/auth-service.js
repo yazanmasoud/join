@@ -210,16 +210,6 @@ function validateLoginPassword() {
 }
 
 
-function isLoginFormValid() {
-  const email = document.getElementById('email');
-  const password = document.getElementById('password');
-  return (
-    isValidEmail(email.value.trim()) &&
-    password.value.trim() !== ''
-  );
-}
-
-
 function updateLoginButtonState() {
   const loginButton = document.getElementById('login-button');
   const email = document.getElementById('email');
