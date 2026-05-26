@@ -79,7 +79,7 @@ export async function loginAsUser(email, password) {
     localStorage.setItem('currentUserId', userCredential.user.uid);
     loginSuccess('Logged in as User!');
   } catch (error) {
-    handleLoginError(error); // hier läuft gerade die error handling entwicklung
+    handleLoginError(error);
   }
 }
 
@@ -100,7 +100,6 @@ export function validateLoginEmail() {
 }
 
 
-// hier erstmal nur die Fehlercodes von Firebase. Dort muss dann auch
 function handleLoginError(error) {
   const errors = {
     'auth/invalid-email': {

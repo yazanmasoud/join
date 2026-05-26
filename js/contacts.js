@@ -186,10 +186,7 @@ function openContactDialog() {
  * Closes the add contact dialog
  * and removes the animation class.
  */
-/**
- * Closes the add contact dialog
- * with the closing animation.
- */
+
 function closeAddContact() {
     const dialog = document.getElementById('add-contact-popup');
 
@@ -255,7 +252,8 @@ function openAddContact() {
 
 
 function openEditContact(contactId) {
-    const contact = contacts.find(contact => String(contact.id) === String(contactId)); currentEditContactId = contactId;
+    const contact = contacts.find(contact => String(contact.id) === String(contactId)); 
+    currentEditContactId = contactId;
     const elements = getContactDialogElements();
 
     elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
