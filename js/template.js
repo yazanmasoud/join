@@ -357,11 +357,11 @@ export function getContactDetails(contact) {
         <div class="contact-details-header-info">
           <h3>${contact.name}</h3>
             <div class="contact-details-actions">
-              <button onclick="window.openEditContact('${contact.id}')" class="btn edit-delete-btn">
+              <button onclick="window.openEditContact('${contact.id}')" class="edit-delete-btn">
                 <img src="../assets/img/edit-contact.svg" alt="Edit Contact">
               </button>
 
-              <button onclick="openDeleteDialog('${contact.id}')" class="btn edit-delete-btn">
+              <button onclick="openDeleteDialog('${contact.id}')" class="edit-delete-btn">
                 <img src="../assets/img/delete-contact.svg" alt="Delete Contact">
               </button>
             </div>
