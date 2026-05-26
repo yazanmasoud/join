@@ -25,7 +25,6 @@ function initMainLoginPage() {
   window.handleSignup = handleSignup;
   window.closeSignUp = closeSignUp;
   window.clearSignupInputs = clearSignupInputs;
-  window.handleSignup = handleSignup;
 }
 
 
