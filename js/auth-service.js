@@ -29,7 +29,6 @@ export async function registerUser(name, email, password) {
     await signOut(auth);
     handleSignupSuccess();
   } catch (error) {
-    console.log('Handled signup error:', error.code);
     handleSignupError(error);
   }
 }
@@ -46,7 +45,7 @@ function handleSignupError(error) {
     case 'auth/too-many-requests':
       showInputError('signup-email', 'error-text-signup-email', 'Too many attempts. Please try again later.');
       break;
-    default: console.log('Signup failed');
+    default: showInputError('signup-email', 'error-text-signup-email', 'Something went wrong. Please try again.');
   }
 }
 

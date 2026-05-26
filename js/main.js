@@ -139,19 +139,8 @@ function openSignUp() {
 
 
 
-/**
- * Hides active signup form fields and returns layout viewport visibility states back onto default login forms.
- */
 function openLogin() {
-  const signupContainer = document.getElementById('signup-container');
-  const signupContainerMobile = document.getElementById('signup-container-mobile');
-  const signup = document.getElementById('signup');
-  const login = document.getElementById('login');
-  if (!signup || !login) return;
-  signupContainer.classList.remove('hidden');
-  signupContainerMobile.classList.remove('hidden');
-  signup.classList.add('hidden');
-  login.classList.remove('hidden');
+  closeSignUp();
 }
 
 

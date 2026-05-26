@@ -221,10 +221,9 @@ function openHelp() {
  * Clears authentication state parameters and redirects the browser window back to login view.
  */
 function logOut() {
-  console.log('User logged out');
-  localStorage.removeItem('currentUser'); // Löscht Login-Status
+  localStorage.removeItem('currentUser'); // Delete Login-Status
   closeOpenElements();
-  window.location.href = '../index.html'; // Zurück zur Haupt-Login-Seite
+  window.location.href = '../index.html'; // Redirect to login page
 }
 
 /**

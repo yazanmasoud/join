@@ -1,5 +1,3 @@
-const categoryOptions = ['Technical Task', 'User Story', 'Feature Task'];
-
 window.getCurrentUserId = getCurrentUserId;
 
 /**
