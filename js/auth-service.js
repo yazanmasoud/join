@@ -163,7 +163,6 @@ export async function logoutUser() {
 function initGuestStorage() {
   localStorage.setItem('isGuest', 'true');
   localStorage.setItem('currentUserId', 'guest_user');
-  localStorage.setItem('contacts', JSON.stringify(guestContacts));
   localStorage.setItem('tasks', JSON.stringify(guestTasks));
   localStorage.setItem('currentUser', JSON.stringify({ name: 'Guest', email: 'guest@test.de' }));
 }
