@@ -244,28 +244,30 @@ export function renderAssignedToDetail(assignedTo, showName = true) {
       ? window.contacts
       : JSON.parse(localStorage.getItem('guestContacts')) || [];
   return assignedTo
-    .map((item) => {
-      const contact = allContacts.find(
-        (c) => c.name === (item.name || item) || c.id === item,
-      );
-      const fullName =
-        contact?.name ||
-        (typeof item === 'string' ? item : item?.name) ||
-        'Guest';
-      const initials =
-        contact?.initials ||
-        fullName
-          .split(' ')
-          .map((x) => x[0])
-          .join('')
-          .toUpperCase()
-          .slice(0, 2);
-      const badge = `<div class="user-badge" style="background-color: ${contact?.color || '#ff7a00'}">${initials}</div>`;
-      return showName
-        ? `<div class="assigned-contact-row">${badge}<span>${fullName}</span></div>`
-        : badge;
-    })
+    .map((item) => renderSingleBadge(item, allContacts, showName))
     .join('');
+}
+
+function getInitialsFromName(fullName, contact) {
+  if (contact?.initials) return contact.initials;
+  return fullName
+    .split(' ')
+    .map((x) => x[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function renderSingleBadge(item, allContacts, showName) {
+  const c = allContacts.find(
+    (c) => c.name === (item.name || item) || c.id === item,
+  );
+  const n =
+    c?.name || (typeof item === 'string' ? item : item?.name) || 'Guest';
+  const badge = `<div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${getInitialsFromName(n, c)}</div>`;
+  return showName
+    ? `<div class="assigned-contact-row">${badge}<span>${n}</span></div>`
+    : badge;
 }
 /** --- EDIT MODE --- */
 /**
