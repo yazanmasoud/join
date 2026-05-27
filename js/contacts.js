@@ -295,7 +295,7 @@ function openEditContact(contactId) {
     elements.createSaveButton.onclick = handleSaveContact;
     elements.cancelDeleteButton.innerHTML = 'Delete';
     elements.cancelDeleteButton.removeAttribute('onclick');
-    elements.cancelDeleteButton.onclick =() => openDeleteDialog(contactId);
+    elements.cancelDeleteButton.onclick = () => openDeleteDialog(contactId);
     elements.createSaveButton.classList.add('save-button');
     elements.nameInput.value = contact.name || '';
     elements.emailInput.value = contact.email || '';
@@ -353,29 +353,45 @@ function renderContacts() {
             currentLetter = firstLetter;
         }
 
-        getSingleContact(list,contact,i,String(contact.id) ===String(selectedContactId));
+        getSingleContact(list, contact, i, String(contact.id) === String(selectedContactId));
     }
 }
 
 
 /**
  * Renders the selected contact details
- * into the contact details container.
+ * with smooth slide animation.
  *
- * @param {number} index - The selected contact index.
+ * @param {number} index - Selected contact index.
  */
 function renderContactDetails(index) {
     const contact = contacts[index];
-
     selectedContactId = contact.id;
 
     const detailsContainer =
         document.getElementById('contact-details');
-
-    detailsContainer.innerHTML =
-        getContactDetails(contact);
-
     renderContacts();
+
+    if (detailsContainer.innerHTML.trim()) {
+        detailsContainer.classList.add('slide-out');
+
+        setTimeout(() => {
+            detailsContainer.innerHTML = getContactDetails(contact);
+
+            detailsContainer.classList.remove('slide-out');
+
+            detailsContainer.classList.add('slide-in');
+
+            requestAnimationFrame(() => { detailsContainer.classList.remove('slide-in'); });
+        }, 300);
+
+    } else {
+        detailsContainer.classList.add('slide-in');
+
+        detailsContainer.innerHTML = getContactDetails(contact);
+
+        requestAnimationFrame(() => { detailsContainer.classList.remove('slide-in'); });
+    }
 }
 
 
