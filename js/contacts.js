@@ -98,17 +98,24 @@ function resetContactForm() {
  * @async
  * @param {string} contactId - The Firebase ID of the contact to delete.
  */
+/**
+ * Deletes a contact
+ * and updates the UI.
+ *
+ * @async
+ * @param {string} contactId - Contact ID.
+ */
 async function handleDeleteContact(contactId) {
     await deleteContact(contactId);
 
-    contacts = contacts.filter(
-        contact =>
-            contact.id !== contactId
-    );
+    contacts = contacts.filter(contact => String(contact.id) !== String(contactId));
     selectedContactId = null;
+
     renderContacts();
+
     document.getElementById('contact-details').innerHTML = '';
 
+    closeDeleteDialog();
     closeAddContact();
     showToast('Contact deleted');
 }
@@ -434,7 +441,7 @@ function renderContactDetails(index) {
 
             detailsContainer.classList.add('slide-in');
 
-            requestAnimationFrame(() => {detailsContainer.classList.remove('slide-in');});
+            requestAnimationFrame(() => { detailsContainer.classList.remove('slide-in'); });
         }, 300);
     } else {
         detailsContainer.classList.add(
