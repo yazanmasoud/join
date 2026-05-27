@@ -126,7 +126,7 @@ async function handleSaveContact() {
     await updateContact(currentEditContactId, updatedData);
     updateLocalContact(updatedData);
     refreshUpdatedContactUI();
-    
+
 }
 
 
@@ -286,25 +286,65 @@ function openAddContact() {
 }
 
 
+/**
+ * Opens the dialog
+ * in edit contact mode.
+ *
+ * @param {string} contactId - Contact ID.
+ */
 function openEditContact(contactId) {
-    const contact = contacts.find(contact => contact.id === contactId);
-    currentEditContactId = contactId;
-    const elements = getContactDialogElements();
+    const contact = contacts.find(
+        contact =>
+            String(contact.id) ===
+            String(contactId)
+    );
 
-    elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
-    elements.createSaveButton.innerHTML = 'Save';
-    elements.createSaveButton.onclick = handleSaveContact;
-    elements.cancelDeleteButton.innerHTML = 'Delete';
-    elements.cancelDeleteButton.removeAttribute('onclick');
-    elements.cancelDeleteButton.onclick = () => openDeleteDialog(contactId);
-    elements.createSaveButton.classList.add('save-button');
-    elements.nameInput.value = contact.name || '';
-    elements.emailInput.value = contact.email || '';
-    elements.phoneInput.value = contact.phone || '';
-    elements.avatarImg.style.display = 'none';
-    elements.avatarInitials.style.display = 'flex';
-    elements.avatarInitials.innerHTML = contact.initials || '';
-    elements.avatar.style.backgroundColor = contact.color || '#ccc';
+    if (!contact) return;
+
+    currentEditContactId = contactId;
+
+    const elements =
+        getContactDialogElements();
+
+    elements.sidebarImage.src =
+        '../assets/img/Frame-edit-contact.png';
+
+    elements.createSaveButton.innerHTML =
+        'Save';
+
+    elements.createSaveButton.onclick =
+        handleSaveContact;
+
+    elements.cancelDeleteButton.innerHTML =
+        'Delete';
+
+    elements.cancelDeleteButton.onclick =
+        () => openDeleteDialog(contactId);
+
+    elements.createSaveButton.classList.add(
+        'save-button'
+    );
+
+    elements.nameInput.value =
+        contact.name || '';
+
+    elements.emailInput.value =
+        contact.email || '';
+
+    elements.phoneInput.value =
+        contact.phone || '';
+
+    elements.avatarImg.style.display =
+        'none';
+
+    elements.avatarInitials.style.display =
+        'flex';
+
+    elements.avatarInitials.innerHTML =
+        contact.initials || '';
+
+    elements.avatar.style.backgroundColor =
+        contact.color || '#ccc';
 
     openContactDialog();
 }
