@@ -128,23 +128,19 @@ export function getSubtaskHTML(task, index) {
  * @returns {string} The task detail layout HTML string.
  */
 export function generateTaskDetailHTML(task, id) {
-  const catClass = task.category
-    ? task.category.replace(/\s+/g, '').toLowerCase()
-    : '';
+  const p = (task.priority || 'Medium').toLowerCase();
   return `
     <div class="detail-view">
-      <div class="detail-view-header">
-        <span class="task-category ${catClass}">${task.category || ''}</span>
-        <div class="detail-view-close" onclick="closeTaskDetail()">×</div>
-      </div>
+      <div class="detail-view-header"><div class="task-category ${task.category?.replace(/\s+/g, '').toLowerCase() || ''}">${task.category || ''}</div><div class="detail-view-close" onclick="closeTaskDetail()">×</div></div>
       <h1 class="detail-view-title">${task.title || ''}</h1>
       <p class="detail-view-description">${task.description || ''}</p>
-      ${getDetailInfoRows(task)}
-      <div class="detail-section"><p class="detail-view-label">Assigned To:</p>
-        <div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
-      <div class="detail-section"><p class="detail-view-label">Subtasks</p>
-        <ul class="subtask-list-detail">${getDetailSubtasksHTML(task.subtasks, id)}</ul></div>
-      ${getDetailFooter(id)}</div>`;
+      <div class="detail-view-info-row"><span class="detail-view-label" style="white-space:nowrap">Due date:</span> ${task.dueDate?.replaceAll('-', '/') || ''}</div>
+      <div class="detail-view-info-row"><span class="detail-view-label" style="white-space:nowrap">Priority:</span>
+        <div class="detail-view-prio-badge">${task.priority || 'Medium'} <img src="../assets/icons/${p === 'medium' ? 'medium-icon-orange.svg' : `prio-${p}-icon.svg`}"></div></div>
+      <div class="detail-section"><p class="detail-view-label" style="white-space:nowrap">Assigned To:</p><div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
+      <div class="detail-section"><p class="detail-view-label">Subtasks</p><ul class="subtask-list-detail">${getDetailSubtasksHTML(task.subtasks, id)}</ul></div>
+      ${getDetailFooter(id)}
+    </div>`;
 }
 
 /**
@@ -230,7 +226,7 @@ export function getAssignedUserHTML(name) {
  * @param {any} assignedTo - Assigned string name or collection array.
  * @returns {string} Consolidated contact list markup string.
  */
-function renderAssignedToDetail(assignedTo) {
+export function renderAssignedToDetail(assignedTo, showName = true) {
   if (!Array.isArray(assignedTo)) return '';
   return assignedTo
     .map((item) => {
@@ -238,11 +234,10 @@ function renderAssignedToDetail(assignedTo) {
       const c = (typeof contacts !== 'undefined' ? contacts : []).find(
         (c) => c.name === name,
       );
-      const color = c?.color || '#ff7a00',
-        ini = c?.initials || name?.charAt(0) || '?';
-      return `<div class="assigned-contact-row">
-      <div class="user-badge" style="background-color: ${color}">${ini}</div>
-      <span class="contact-name-detail">${name}</span></div>`;
+      const badge = `<div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${c?.initials || name?.charAt(0) || '?'}</div>`;
+      return showName
+        ? `<div class="assigned-contact-row">${badge}<span class="contact-name-detail">${name}</span></div>`
+        : badge;
     })
     .join('');
 }
