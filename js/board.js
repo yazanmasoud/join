@@ -16,6 +16,7 @@ import {
   setupDialogClose,
   clearElementsByIds,
   normalizeObjectToArray,
+  showSuccessToast,
 } from './ui.js';
 
 import {
@@ -274,6 +275,7 @@ export async function deleteTask(id) {
   }
   closeTaskDetail();
   renderAllTasks(CURRENT_TASKS);
+  if (typeof showSuccessToast === 'function') showSuccessToast('Task deleted');
 }
 
 /**

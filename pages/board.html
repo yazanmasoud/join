@@ -2,10 +2,14 @@
   <section class="content-area">
     <div class="board-header">
       <div class="board-header-left">
-       <h2>Board</h2>
-       <button class="btn-dark hidden" id="add-task-btn-mobile" onclick="openAddTask()">
+        <h2>Board</h2>
+        <button
+          class="btn-dark hidden"
+          id="add-task-btn-mobile"
+          onclick="openAddTask()"
+        >
           <img src="../assets/icons/add.svg" alt="plus" />
-       </button>
+        </button>
       </div>
 
       <div class="board-header-right">
@@ -103,3 +107,7 @@
     <!-- Hier wird das Template eingefügt -->
   </div>
 </dialog>
+<div id="successMessage" class="success-toast d-none">
+  <span>Task added to board</span>
+  <img src="../assets/icons/create-task.svg" alt="" />
+</div>
