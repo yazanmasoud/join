@@ -3,7 +3,6 @@
 .board-header-right,
 .search-container,
 .column-header,
-.detail-view-header,
 .detail-view-prio-badge,
 .action-btn,
 .assigned-user,
@@ -57,10 +56,28 @@
   background-repeat: no-repeat;
 }
 
+.content-area {
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
 .board-columns {
   display: flex;
-  gap: 24px;
+  justify-content: space-between;
+  gap: 20px;
   flex-wrap: wrap;
+  overflow-x: visible;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.column {
+  width: 252px;
+  min-width: 252px;
+  display: flex;
+  flex-direction: column;
 }
 
 .column-header {
@@ -69,11 +86,11 @@
   margin-bottom: 16px;
   font-weight: 700;
   font-size: 20px;
-  width:250px;
+  width: 250px;
 }
 
 .task-container {
-  min-height: 60vh;
+  min-height: 70vh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -98,6 +115,20 @@
   cursor: grab;
   width: 100%;
   max-width: 252px;
+  box-sizing: border-box;
+}
+
+.task-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.assignee-list {
+  display: flex;
+  flex-direction: row;
 }
 
 .task-card:active {
@@ -106,6 +137,7 @@
 }
 .description-task-board {
   color: var(--color-text-secondary);
+  padding: 8px 0;
 }
 
 .task-category {
@@ -158,6 +190,34 @@
   width: 100%;
 }
 
+.detail-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-view-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  width: 30px;
+  color: var(--color-bg-secondary);
+}
+
+.detail-view {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.detail-view-info-row {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+
 .detail-view-title {
   font-size: 42px;
   font-weight: 700;
@@ -172,9 +232,21 @@
 }
 .detail-view-label {
   color: var(--color-bg-secondary);
-  width: 120px;
+  width: 150px;
   font-size: 24px;
   flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.detail-view-prio-badge {
+  gap: 10px;
+  text-transform: capitalize;
+}
+
+.detail-view-prio-badge img {
+  width: 17px;
+  height: 12px;
+  object-fit: contain;
 }
 
 .detail-view-footer {
@@ -198,12 +270,49 @@
   border-radius: 8px;
 }
 
+/* Container für alle zugewiesenen Personen */
+.assigned-list-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Abstand zwischen den einzelnen Personen */
+  margin-top: 10px;
+}
+
+/* Eine einzelne Reihe (Kreis + Name) */
+.assigned-contact-row {
+  display: flex;
+  align-items: center; /* Richtet Kreis und Name vertikal mittig aus */
+  gap: 25px; /* Abstand zwischen Kreis und Name laut Foto */
+  padding: 4px 16px; /* Etwas Einrückung wie im Design */
+}
+
+/* Der Namens-Text */
+.contact-name-detail {
+  font-size: 20px;
+  color: #000000;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Der Initialen-Kreis (falls noch nicht global definiert) */
+.user-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-right: -8px;
+}
+
 /* --- 5. PROGRESS & SUBTASKS --- */
 .subtask-progress-container {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 8px;
+  padding: 10px 0;
   width: 100%;
 }
 .progress-bar-bg {
@@ -268,7 +377,6 @@
   color: var(--color-required);
 }
 
-
 input,
 textarea,
 select {
@@ -317,5 +425,4 @@ textarea {
   .board-header-right {
     width: stretch;
   }
-
 }

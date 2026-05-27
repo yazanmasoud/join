@@ -2,3 +2,8 @@
   font-family: 'Inter';
   src: url('../assets/fonts/inter/Inter-VariableFont_opsz,wght.ttf');
 }
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('../assets/fonts/open-sans/OpenSans-VariableFont_wdth,wght.ttf');
+}

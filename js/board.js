@@ -16,6 +16,7 @@ import {
   setupDialogClose,
   clearElementsByIds,
   normalizeObjectToArray,
+  showSuccessToast,
 } from './ui.js';
 
 import {
@@ -26,6 +27,7 @@ import {
 } from './template.js';
 
 import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
+import { getContacts } from './contacts-service.js';
 
 /** @section GLOBAL VARIABLES */
 let CURRENT_TASKS = {};
@@ -49,42 +51,27 @@ window.toggleEditSubtask = toggleEditSubtask;
 window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
 
-export function initBoard() {
-  if (isGuestUser()) {
-    CURRENT_TASKS = convertTaskArrayToObject(getLocalTasks());
-
+export async function initBoard() {
+  window.contacts = await getContacts();
+  const setup = (data) => {
+    CURRENT_TASKS = data || {};
     renderAllTasks(CURRENT_TASKS);
     setupDialogClose(closeTaskDetail);
-    return;
-  }
-
-  const uid = auth.currentUser.uid;
-
-  const tasksRef = ref(database, `tasks/${uid}`);
-
-  onValue(tasksRef, (snapshot) => {
-    CURRENT_TASKS = snapshot.val() || {};
-
-    renderAllTasks(CURRENT_TASKS);
-  });
-
-  setupDialogClose(closeTaskDetail);
+  };
+  if (isGuestUser()) return setup(convertTaskArrayToObject(getLocalTasks()));
+  onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snap) =>
+    setup(snap.val()),
+  );
 }
 
 function renderAllTasks(allTasks) {
   const columns = ['todo', 'progress', 'feedback', 'done'];
-
   if (!document.getElementById(columns[0])) return;
   clearElementsByIds(columns);
 
-  const tasksArray = normalizeObjectToArray(allTasks);
-
-  tasksArray.forEach((task) => {
+  normalizeObjectToArray(allTasks).forEach((task) => {
     const container = document.getElementById(task.status || 'todo');
-
-    if (container) {
-      container.innerHTML += generateTaskHTML(task, task.id);
-    }
+    if (container) container.innerHTML += generateTaskHTML(task, task.id);
   });
 
   columns.forEach((id) => checkPlaceholder(id));
@@ -204,14 +191,16 @@ export async function saveEdit(id) {
     description: document.getElementById('editDescription').value,
     dueDate: document.getElementById('editDate').value,
     priority: editPriority,
+    assignedTo: window.selectedContacts || CURRENT_TASKS[id].assignedTo || [],
   };
-  if (isGuestUser()) {
-    Object.assign(CURRENT_TASKS[id], updates);
-    setLocalTasks(Object.values(CURRENT_TASKS));
-  } else {
-    await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), updates);
-  }
-  renderAllTasks(CURRENT_TASKS); // Board aktualisieren
+  isGuestUser()
+    ? (Object.assign(CURRENT_TASKS[id], updates),
+      setLocalTasks(Object.values(CURRENT_TASKS)))
+    : await update(
+        ref(database, `tasks/${auth.currentUser.uid}/${id}`),
+        updates,
+      );
+  renderAllTasks(CURRENT_TASKS);
   closeTaskDetail();
 }
 
@@ -287,6 +276,7 @@ export async function deleteTask(id) {
   }
   closeTaskDetail();
   renderAllTasks(CURRENT_TASKS);
+  if (typeof showSuccessToast === 'function') showSuccessToast('Task deleted');
 }
 
 /**

@@ -210,18 +210,19 @@ export function toggleContactList() {
 /**
  * Shows the success toast notification.
  */
-export function showSuccessToast() {
+export function showSuccessToast(message = 'Task added to board') {
   const toast = document.getElementById('successMessage');
-  if (toast) {
-    toast.classList.remove('d-none');
-    setTimeout(() => {
-      toast.style.bottom = '50px';
-    }, 10);
-
-    setTimeout(() => {
-      toast.classList.add('d-none');
-    }, 2000);
-  }
+  if (!toast) return;
+  const span = toast.querySelector('span');
+  if (span) span.innerText = message;
+  toast.classList.remove('d-none');
+  setTimeout(() => {
+    toast.style.bottom = '50px';
+  }, 10);
+  setTimeout(() => {
+    toast.classList.add('d-none');
+    toast.style.bottom = '-100px';
+  }, 2000);
 }
 
 /**
@@ -248,10 +249,11 @@ export function resetInputFields(ids) {
   });
 }
 
-
 export function closeSignUp() {
   const signupContainer = document.getElementById('signup-container');
-  const signupContainerMobile = document.getElementById('signup-container-mobile');
+  const signupContainerMobile = document.getElementById(
+    'signup-container-mobile',
+  );
   const signup = document.getElementById('signup');
   const login = document.getElementById('login');
   if (!signup || !login) return;
@@ -260,7 +262,6 @@ export function closeSignUp() {
   signup.classList.add('hidden');
   login.classList.remove('hidden');
 }
-
 
 export function clearSignupInputs() {
   document.getElementById('signup-username').value = '';

@@ -18,17 +18,28 @@ window.setPriority = setPriority;
  * @returns {string} The task card HTML string.
  */
 export function generateTaskHTML(task, id) {
-  const catClass = task.category
-    ? task.category.replace(/\s+/g, '').toLowerCase()
-    : '';
+  const cat = (task.category || '').replace(/\s+/g, '').toLowerCase();
+  const prio = (task.priority || 'Medium').toLowerCase();
+  const icon =
+    prio === 'medium' ? 'medium-icon-orange.svg' : `prio-${prio}-icon.svg`;
   return `
-    <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" 
-         onclick="openTaskDetail('${id}')">
-      <div class="task-category ${catClass}">${task.category || ''}</div>
-      <h3>${task.title || ''}</h3>
-      <p class="description-task-board">${task.description || ''}</p>
-      ${renderSmallSubtaskInfo(task)}
+    <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" onclick="openTaskDetail('${id}')">
+      <div class="task-category ${cat}">${task.category || ''}</div>
+      ${renderTaskBody(task)}
+      <div class="task-card-footer">
+        <div class="assignee-list">${renderAssignedToDetail(task.assignedTo, false)}</div>
+        <img src="../assets/icons/${icon}" class="prio-icon-small">
+      </div>
     </div>`;
+}
+
+function renderTaskBody(t) {
+  return `
+    <div class="task-card-content">
+      <h3>${t.title || ''}</h3>
+      <p class="description-task-board">${t.description || ''}</p>
+    </div>
+    ${renderSmallSubtaskInfo(t)}`;
 }
 
 /**
@@ -65,17 +76,13 @@ export function getNoTaskPlaceholder(label) {
 export function getPriorityButtonsHTML(selectedPrio) {
   return ['Urgent', 'Medium', 'Low']
     .map((p) => {
-      const isSel = p === selectedPrio;
-      const low = p.toLowerCase();
-      // Nutzt das orange-Icon für Medium, sonst dein Standard-Schema
+      const isSel = p === selectedPrio,
+        low = p.toLowerCase();
       const icon =
         p === 'Medium' ? `medium-icon-orange.svg` : `prio-${low}-icon.svg`;
-
       return `
-      <button type="button" 
-              class="prio-btn ${isSel ? 'active-' + low : ''}" 
-              id="prio${p}" 
-              onclick="setPriority('${p}')">
+      <button type="button" class="prio-btn ${isSel ? 'active-' + low : ''}" 
+              id="prio${p}" onclick="setPriority('${p}')">
         ${p} <img src="../assets/icons/${icon}" class="prio-icon" alt="${p}">
       </button>`;
     })
@@ -132,23 +139,19 @@ export function getSubtaskHTML(task, index) {
  * @returns {string} The task detail layout HTML string.
  */
 export function generateTaskDetailHTML(task, id) {
-  const catClass = task.category
-    ? task.category.replace(/\s+/g, '').toLowerCase()
-    : '';
+  const p = (task.priority || 'Medium').toLowerCase();
   return `
     <div class="detail-view">
-      <div class="detail-view-header">
-        <span class="task-category ${catClass}">${task.category || ''}</span>
-        <div class="detail-view-close" onclick="closeTaskDetail()">×</div>
-      </div>
+      <div class="detail-view-header"><div class="task-category ${task.category?.replace(/\s+/g, '').toLowerCase() || ''}">${task.category || ''}</div><div class="detail-view-close" onclick="closeTaskDetail()">×</div></div>
       <h1 class="detail-view-title">${task.title || ''}</h1>
       <p class="detail-view-description">${task.description || ''}</p>
-      ${getDetailInfoRows(task)}
-      <div class="detail-section"><p class="detail-view-label">Assigned To:</p>
-        <div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
-      <div class="detail-section"><p class="detail-view-label">Subtasks</p>
-        <ul class="subtask-list-detail">${getDetailSubtasksHTML(task.subtasks, id)}</ul></div>
-      ${getDetailFooter(id)}</div>`;
+      <div class="detail-view-info-row"><span class="detail-view-label" style="white-space:nowrap">Due date:</span> ${task.dueDate?.replaceAll('-', '/') || ''}</div>
+      <div class="detail-view-info-row"><span class="detail-view-label" style="white-space:nowrap">Priority:</span>
+        <div class="detail-view-prio-badge">${task.priority || 'Medium'} <img src="../assets/icons/${p === 'medium' ? 'medium-icon-orange.svg' : `prio-${p}-icon.svg`}"></div></div>
+      <div class="detail-section"><p class="detail-view-label" style="white-space:nowrap">Assigned To:</p><div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
+      <div class="detail-section"><p class="detail-view-label">Subtasks</p><ul class="subtask-list-detail">${getDetailSubtasksHTML(task.subtasks, id)}</ul></div>
+      ${getDetailFooter(id)}
+    </div>`;
 }
 
 /**
@@ -234,25 +237,36 @@ export function getAssignedUserHTML(name) {
  * @param {any} assignedTo - Assigned string name or collection array.
  * @returns {string} Consolidated contact list markup string.
  */
-function renderAssignedToDetail(assignedTo) {
-  if (!assignedTo || !Array.isArray(assignedTo)) return '';
+export function renderAssignedToDetail(assignedTo, showName = true) {
+  if (!Array.isArray(assignedTo)) return '';
+  const allContacts =
+    window.contacts?.length > 0
+      ? window.contacts
+      : JSON.parse(localStorage.getItem('guestContacts')) || [];
   return assignedTo
     .map((item) => {
-      const name = typeof item === 'string' ? item : item.name;
-      const contact = (typeof contacts !== 'undefined' ? contacts : []).find(
-        (c) => c.name === name,
+      const contact = allContacts.find(
+        (c) => c.name === (item.name || item) || c.id === item,
       );
-      const color = contact?.color || '#ff7a00';
-      const initials = contact?.initials || (name ? name.charAt(0) : '?');
-      return `
-      <div class="assigned-contact-row">
-        <div class="user-badge" style="background-color: ${color}">${initials}</div>
-        <span class="contact-name-detail">${name}</span>
-      </div>`;
+      const fullName =
+        contact?.name ||
+        (typeof item === 'string' ? item : item?.name) ||
+        'Guest';
+      const initials =
+        contact?.initials ||
+        fullName
+          .split(' ')
+          .map((x) => x[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+      const badge = `<div class="user-badge" style="background-color: ${contact?.color || '#ff7a00'}">${initials}</div>`;
+      return showName
+        ? `<div class="assigned-contact-row">${badge}<span>${fullName}</span></div>`
+        : badge;
     })
     .join('');
 }
-
 /** --- EDIT MODE --- */
 /**
  * Generates the full framework block wrapper structure for task editor view.
@@ -356,24 +370,13 @@ export function getContactDetails(contact) {
         <div class="contact-avatar contact-avatar--big" style="background-color: ${contact.color}">${contact.initials}</div>
         <div class="contact-details-header-info">
           <h3>${contact.name}</h3>
-            <div class="contact-details-actions">
-              <button onclick="window.openEditContact('${contact.id}')" class="edit-delete-btn">
-                <img src="../assets/img/edit-contact.svg" alt="Edit Contact">
-              </button>
-
-              <button onclick="openDeleteDialog('${contact.id}')" class="edit-delete-btn">
-                <img src="../assets/img/delete-contact.svg" alt="Delete Contact">
-              </button>
-            </div>
-        </div> 
-      </div>
-
-      <div class="contact-details-information">
-        <span>Contact Information</span>
+          <div class="contact-details-actions">
+            <button onclick="window.openEditContact('${contact.id}')" class="edit-delete-btn"><img src="../assets/img/edit-contact.svg" alt="Edit"></button>
+            <button onclick="openDeleteDialog('${contact.id}')" class="edit-delete-btn"><img src="../assets/img/delete-contact.svg" alt="Delete"></button>
+          </div></div></div>
+      <div class="contact-details-information"><span>Contact Information</span>
         <span><b>Email:</b> <a class="contact-email" href="mailto:${contact.email}">${contact.email}</a></span>
-        <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div>
-      </div>
-    `;
+        <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div></div>`;
 }
 
 export function getContactOptionsHTML(contactsArray, defaultText) {

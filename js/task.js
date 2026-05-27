@@ -54,11 +54,8 @@ export async function updateSelectedBadges() {
   const allContacts = await getContacts();
   container.innerHTML = Array.from(checked)
     .map((cb) => {
-      const contact = allContacts.find((c) => c.name === cb.value);
-      // Wir nutzen die Farbe direkt aus der Datenbank
-      const color = contact ? contact.color : '#2A3647';
-      const initials = contact ? contact.initials : '??';
-      return `<div class="user-badge" style="background-color: ${color}">${initials}</div>`;
+      const c = allContacts.find((c) => c.name === cb.value);
+      return `<div class="user-badge" style="background-color: ${c?.color || '#2A3647'}">${c?.initials || '??'}</div>`;
     })
     .join('');
 }
@@ -88,7 +85,6 @@ function fillFormForEdit(data) {
   document.getElementById('taskDescription').value = data.description || '';
   document.getElementById('taskDate').value = data.dueDate || '';
   document.getElementById('taskCategory').value = data.category || '';
-  document.getElementById('tasksAssigned').value = data.assignedTo || '';
   subtasks = data.subtasks || [];
   setPriority(data.priority || 'Medium');
   renderSubtasks();
@@ -140,16 +136,14 @@ function getTaskObject() {
   const checked = document.querySelectorAll(
     'input[name="assignedContact"]:checked',
   );
-  const assignedArray = Array.from(checked).map((cb) => cb.value);
   const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
-
   return {
     title: document.getElementById('taskTitle').value,
     description: document.getElementById('taskDescription').value,
     dueDate: document.getElementById('taskDate').value,
     category: document.getElementById('taskCategory').value,
     priority: currentPriority,
-    assignedTo: assignedArray,
+    assignedTo: Array.from(checked).map((cb) => cb.value),
     subtasks: subtasks,
     status: editData.status || 'todo',
   };
@@ -203,7 +197,7 @@ async function renderContacts() {
       .join('');
     updateSelectedBadges();
   } catch (e) {
-    console.error('Fehler beim Laden der Kontakte:', e);
+    console.error('Fehler:', e);
   }
 }
 
@@ -250,17 +244,16 @@ function deleteSubtask(index) {
  */
 function clearForm() {
   ['taskTitle', 'taskDescription', 'taskDate', 'subtasks'].forEach((id) => {
-    let element = document.getElementById(id);
-    if (element) element.value = '';
+    if (document.getElementById(id)) document.getElementById(id).value = '';
   });
   subtasks = [];
   renderSubtasks();
   document.getElementById('taskCategory').selectedIndex = 0;
   document.getElementById('tasksAssigned').selectedIndex = 0;
   setPriority('Medium');
-  localStorage.removeItem('editTaskId'); // Entfernt den Edit-Status
+  localStorage.removeItem('editTaskId');
   localStorage.removeItem('editTaskData');
-  document.querySelector('h2').innerText = 'Add Task'; // UI zurücksetzen
+  document.querySelector('h2').innerText = 'Add Task';
   document.querySelector('.btn-dark').innerHTML =
     'Create Task <img src="../assets/icons/create-task.svg">';
 }
