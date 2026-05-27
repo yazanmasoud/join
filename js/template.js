@@ -18,17 +18,28 @@ window.setPriority = setPriority;
  * @returns {string} The task card HTML string.
  */
 export function generateTaskHTML(task, id) {
-  const catClass = task.category
-    ? task.category.replace(/\s+/g, '').toLowerCase()
-    : '';
+  const cat = (task.category || '').replace(/\s+/g, '').toLowerCase();
+  const prio = (task.priority || 'Medium').toLowerCase();
+  const icon =
+    prio === 'medium' ? 'medium-icon-orange.svg' : `prio-${prio}-icon.svg`;
   return `
-    <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" 
-         onclick="openTaskDetail('${id}')">
-      <div class="task-category ${catClass}">${task.category || ''}</div>
-      <h3>${task.title || ''}</h3>
-      <p class="description-task-board">${task.description || ''}</p>
-      ${renderSmallSubtaskInfo(task)}
+    <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" onclick="openTaskDetail('${id}')">
+      <div class="task-category ${cat}">${task.category || ''}</div>
+      ${renderTaskBody(task)}
+      <div class="task-card-footer">
+        <div class="assignee-list">${renderAssignedToDetail(task.assignedTo, false)}</div>
+        <img src="../assets/icons/${icon}" class="prio-icon-small">
+      </div>
     </div>`;
+}
+
+function renderTaskBody(t) {
+  return `
+    <div class="task-card-content">
+      <h3>${t.title || ''}</h3>
+      <p class="description-task-board">${t.description || ''}</p>
+    </div>
+    ${renderSmallSubtaskInfo(t)}`;
 }
 
 /**

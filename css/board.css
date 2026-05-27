@@ -56,10 +56,28 @@
   background-repeat: no-repeat;
 }
 
+.content-area {
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
 .board-columns {
   display: flex;
-  gap: 24px;
+  justify-content: space-between;
+  gap: 20px;
   flex-wrap: wrap;
+  overflow-x: visible;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.column {
+  width: 252px;
+  min-width: 252px;
+  display: flex;
+  flex-direction: column;
 }
 
 .column-header {
@@ -72,7 +90,7 @@
 }
 
 .task-container {
-  min-height: 60vh;
+  min-height: 70vh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -97,6 +115,20 @@
   cursor: grab;
   width: 100%;
   max-width: 252px;
+  box-sizing: border-box;
+}
+
+.task-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.assignee-list {
+  display: flex;
+  flex-direction: row;
 }
 
 .task-card:active {
@@ -105,6 +137,7 @@
 }
 .description-task-board {
   color: var(--color-text-secondary);
+  padding: 8px 0;
 }
 
 .task-category {
@@ -271,6 +304,7 @@
   color: white;
   font-size: 12px;
   flex-shrink: 0;
+  margin-right: -8px;
 }
 
 /* --- 5. PROGRESS & SUBTASKS --- */
@@ -278,7 +312,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 8px;
+  padding: 10px 0;
   width: 100%;
 }
 .progress-bar-bg {
