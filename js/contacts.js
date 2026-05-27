@@ -1,9 +1,7 @@
-import { getInitials } from './utils.js';
 import { renderAvatar, clearElementsByIds } from './ui.js';
 import { getCurrentUserId } from './storage.js';
 import { getContacts, createContact, deleteContact, updateContact } from './contacts-service.js';
 import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
-
 
 export let contacts = [];
 let currentEditContactId = null;
@@ -20,13 +18,11 @@ window.handleSaveContact = handleSaveContact;
 window.openDeleteDialog = openDeleteDialog;
 window.closeDeleteDialog = closeDeleteDialog;
 
-
 export async function initContacts() {
     contacts = await getContacts();
     contacts.sort((a, b) => a.name.localeCompare(b.name));
     renderContacts();
 }
-
 
 /**
  * Creates a new contact and
@@ -43,7 +39,6 @@ async function handleCreateContact() {
     closeAddContact();
     showToast('Contact successfully created');
 }
-
 
 /**
  * Reads the contact form inputs
@@ -65,7 +60,6 @@ function getNewContactData() {
     };
 }
 
-
 /**
  * Adds a contact to the contacts array,
  * sorts and re-renders the list.
@@ -74,13 +68,9 @@ function getNewContactData() {
  */
 function addContactToList(contact) {
     contacts.push(contact);
-    contacts.sort(
-        (a, b) => a.name.localeCompare(b.name)
-    );
-
+    contacts.sort((a, b) => a.name.localeCompare(b.name));
     renderContacts();
 }
-
 
 /**
  * Clears all contact dialog inputs.
@@ -91,13 +81,6 @@ function resetContactForm() {
     document.getElementById('contact-phone').value = '';
 }
 
-
-/**
- * Deletes a contact from Firebase and updates the local contacts array and UI.
- *
- * @async
- * @param {string} contactId - The Firebase ID of the contact to delete.
- */
 /**
  * Deletes a contact
  * and updates the UI.
@@ -108,11 +91,13 @@ function resetContactForm() {
 async function handleDeleteContact(contactId) {
     await deleteContact(contactId);
 
-    contacts = contacts.filter(contact => String(contact.id) !== String(contactId));
+    contacts = contacts.filter(
+        contact => String(contact.id) !== String(contactId)
+    );
+
     selectedContactId = null;
 
     renderContacts();
-
     document.getElementById('contact-details').innerHTML = '';
 
     closeDeleteDialog();
@@ -121,21 +106,24 @@ async function handleDeleteContact(contactId) {
 }
 
 /**
- * Saves the edited contact to Firebase,
- * updates the local contacts array and refreshes the UI.
+ * Saves edited contact data
+ * and updates the UI.
  *
  * @async
  */
 async function handleSaveContact() {
     const contact = getCurrentEditContact();
+
+    if (!contact) return;
+
     const updatedData = getUpdatedContactData(contact);
 
     await updateContact(currentEditContactId, updatedData);
-    updateLocalContact(updatedData);
-    refreshUpdatedContactUI();
 
+    refreshUpdatedContactUI(updatedData);
+    closeAddContact();
+    showToast('Contact updated');
 }
-
 
 /**
  * Returns the currently edited contact
@@ -146,10 +134,10 @@ async function handleSaveContact() {
 function getCurrentEditContact() {
     return contacts.find(
         contact =>
-            contact.id === currentEditContactId
+            String(contact.id) ===
+            String(currentEditContactId)
     );
 }
-
 
 /**
  * Reads the contact form inputs and
@@ -159,9 +147,9 @@ function getCurrentEditContact() {
  * @returns {Object} The updated contact data.
  */
 function getUpdatedContactData(contact) {
-    let name = document.getElementById('contact-name').value;
-    let email = document.getElementById('contact-email').value;
-    let phone = document.getElementById('contact-phone').value;
+    const name = document.getElementById('contact-name').value;
+    const email = document.getElementById('contact-email').value;
+    const phone = document.getElementById('contact-phone').value;
 
     return {
         name,
@@ -172,7 +160,6 @@ function getUpdatedContactData(contact) {
     };
 }
 
-
 /**
  * Updates the edited contact inside
  * the local contacts array.
@@ -181,32 +168,34 @@ function getUpdatedContactData(contact) {
  */
 function updateLocalContact(updatedData) {
     contacts = contacts.map(contact =>
-        contact.id === currentEditContactId
+        String(contact.id) === String(currentEditContactId)
             ? { ...contact, ...updatedData }
             : contact
     );
 }
 
-
 /**
- * Refreshes the contacts list,
- * updates the contact details view
- * and closes the contact dialog.
+ * Updates the contact list
+ * and details after saving.
+ *
+ * @param {Object} updatedData
  */
-function refreshUpdatedContactUI() {
-    contacts.sort((a, b) => a.name.localeCompare(b.name));
+function refreshUpdatedContactUI(updatedData) {
+    updateLocalContact(updatedData);
     renderContacts();
 
-    const updatedIndex = contacts.findIndex(
+    const index = contacts.findIndex(
         contact =>
-            contact.id === currentEditContactId
+            String(contact.id) ===
+            String(currentEditContactId)
     );
 
-    renderContactDetails(updatedIndex);
-    closeAddContact();
-    showToast('Contact updated');
+if (index !== -1) {
+    selectedContactId = contacts[index].id;
+    document.getElementById('contact-details').innerHTML =
+        getContactDetails(contacts[index]);
 }
-
+}
 
 /**
  * Opens the contact dialog with
@@ -223,12 +212,10 @@ function openContactDialog() {
     }, 10);
 }
 
-
 /**
  * Closes the add contact dialog
  * and removes the animation class.
  */
-
 function closeAddContact() {
     const dialog = document.getElementById('add-contact-popup');
 
@@ -238,7 +225,6 @@ function closeAddContact() {
         dialog.close();
     }, 120);
 }
-
 
 /**
  * Shows a temporary toast message.
@@ -256,7 +242,11 @@ function showToast(message) {
     }, 2000);
 }
 
-
+/**
+ * Returns dialog elements.
+ *
+ * @returns {Object} Dialog elements.
+ */
 function getContactDialogElements() {
     return {
         sidebarImage: document.getElementById('contact-dialog-sidebar-image'),
@@ -271,7 +261,10 @@ function getContactDialogElements() {
     };
 }
 
-
+/**
+ * Opens the dialog
+ * in create contact mode.
+ */
 function openAddContact() {
     const elements = getContactDialogElements();
 
@@ -292,7 +285,6 @@ function openAddContact() {
     openContactDialog();
 }
 
-
 /**
  * Opens the dialog
  * in edit contact mode.
@@ -310,61 +302,33 @@ function openEditContact(contactId) {
 
     currentEditContactId = contactId;
 
-    const elements =
-        getContactDialogElements();
+    const elements = getContactDialogElements();
 
-    elements.sidebarImage.src =
-        '../assets/img/Frame-edit-contact.png';
-
-    elements.createSaveButton.innerHTML =
-        'Save';
-
-    elements.createSaveButton.onclick =
-        handleSaveContact;
-
-    elements.cancelDeleteButton.innerHTML =
-        'Delete';
-
-    elements.cancelDeleteButton.onclick =
-        () => openDeleteDialog(contactId);
-
-    elements.createSaveButton.classList.add(
-        'save-button'
-    );
-
-    elements.nameInput.value =
-        contact.name || '';
-
-    elements.emailInput.value =
-        contact.email || '';
-
-    elements.phoneInput.value =
-        contact.phone || '';
-
-    elements.avatarImg.style.display =
-        'none';
-
-    elements.avatarInitials.style.display =
-        'flex';
-
-    elements.avatarInitials.innerHTML =
-        contact.initials || '';
-
-    elements.avatar.style.backgroundColor =
-        contact.color || '#ccc';
+    elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
+    elements.createSaveButton.innerHTML = 'Save';
+    elements.createSaveButton.onclick = handleSaveContact;
+    elements.cancelDeleteButton.innerHTML = 'Delete';
+    elements.cancelDeleteButton.onclick = () => openDeleteDialog(contactId);
+    elements.createSaveButton.classList.add('save-button');
+    elements.nameInput.value = contact.name || '';
+    elements.emailInput.value = contact.email || '';
+    elements.phoneInput.value = contact.phone || '';
+    elements.avatarImg.style.display = 'none';
+    elements.avatarInitials.style.display = 'flex';
+    elements.avatarInitials.innerHTML = contact.initials || '';
+    elements.avatar.style.backgroundColor = contact.color || '#ccc';
 
     openContactDialog();
 }
 
-
+/**
+ * Opens delete confirmation dialog.
+ *
+ * @param {string} contactId - Contact ID.
+ */
 function openDeleteDialog(contactId) {
-    const dialog = document.getElementById(
-        'delete-confirm-dialog'
-    );
-
-    const confirmButton = document.getElementById(
-        'confirm-delete-button'
-    );
+    const dialog = document.getElementById('delete-confirm-dialog');
+    const confirmButton = document.getElementById('confirm-delete-button');
 
     confirmButton.onclick = () => {
         dialog.close();
@@ -374,13 +338,12 @@ function openDeleteDialog(contactId) {
     dialog.showModal();
 }
 
-
+/**
+ * Closes delete dialog.
+ */
 function closeDeleteDialog() {
-    document
-        .getElementById('delete-confirm-dialog')
-        .close();
+    document.getElementById('delete-confirm-dialog').close();
 }
-
 
 /**
  * Renders all contacts into the contact list.
@@ -401,77 +364,77 @@ function renderContacts() {
             currentLetter = firstLetter;
         }
 
-        getSingleContact(list, contact, i, String(contact.id) === String(selectedContactId));
+        getSingleContact(
+            list,
+            contact,
+            i,
+            String(contact.id) === String(selectedContactId)
+        );
     }
 }
-
 
 /**
  * Renders the selected contact details
  * with smooth slide animation.
  *
  * @param {number} index - Selected contact index.
+ * @param {boolean} forceRender - Forces rerender.
  */
-function renderContactDetails(index) {
+function renderContactDetails(index, forceRender = false, animate = true) {
     const contact = contacts[index];
 
-    if (
-        String(contact.id) ===
-        String(selectedContactId)
-    ) {
+    if (!contact) return;
+
+    if (!forceRender && String(contact.id) === String(selectedContactId)) {
         return;
     }
 
     selectedContactId = contact.id;
 
-    const detailsContainer =
-        document.getElementById(
-            'contact-details'
-        );
+    const detailsContainer = document.getElementById('contact-details');
 
     renderContacts();
+
+    if (!animate) {
+        detailsContainer.innerHTML = getContactDetails(contact);
+        return;
+    }
 
     if (detailsContainer.innerHTML.trim()) {
         detailsContainer.classList.add('slide-out');
 
         setTimeout(() => {
             detailsContainer.innerHTML = getContactDetails(contact);
-
             detailsContainer.classList.remove('slide-out');
-
             detailsContainer.classList.add('slide-in');
 
-            requestAnimationFrame(() => { detailsContainer.classList.remove('slide-in'); });
+            requestAnimationFrame(() => {
+                detailsContainer.classList.remove('slide-in');
+            });
         }, 300);
     } else {
-        detailsContainer.classList.add(
-            'slide-in'
-        );
-
-        detailsContainer.innerHTML =
-            getContactDetails(contact);
+        detailsContainer.classList.add('slide-in');
+        detailsContainer.innerHTML = getContactDetails(contact);
 
         requestAnimationFrame(() => {
-            detailsContainer.classList.remove(
-                'slide-in'
-            );
+            detailsContainer.classList.remove('slide-in');
         });
     }
 }
-
 
 /**
  * Returns a random color
  * from the predefined color array.
  *
- * @returns {string} A random hex color value
+ * @returns {string} A random hex color value.
  */
 function getRandomColor() {
     const colors = [
         '#FF7A00', '#FF5EB3', '#6E52FF',
         '#9327FF', '#00BEE8', '#1FD7C1',
         '#FF745E', '#FFA35E', '#FF5E5E',
-        '#FF5E9E'];
+        '#FF5E9E'
+    ];
 
     let randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
