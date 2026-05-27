@@ -55,7 +55,6 @@ export async function updateSelectedBadges() {
   container.innerHTML = Array.from(checked)
     .map((cb) => {
       const contact = allContacts.find((c) => c.name === cb.value);
-      // Wir nutzen die Farbe direkt aus der Datenbank
       const color = contact ? contact.color : '#2A3647';
       const initials = contact ? contact.initials : '??';
       return `<div class="user-badge" style="background-color: ${color}">${initials}</div>`;
@@ -88,7 +87,6 @@ function fillFormForEdit(data) {
   document.getElementById('taskDescription').value = data.description || '';
   document.getElementById('taskDate').value = data.dueDate || '';
   document.getElementById('taskCategory').value = data.category || '';
-  document.getElementById('tasksAssigned').value = data.assignedTo || '';
   subtasks = data.subtasks || [];
   setPriority(data.priority || 'Medium');
   renderSubtasks();
@@ -258,9 +256,9 @@ function clearForm() {
   document.getElementById('taskCategory').selectedIndex = 0;
   document.getElementById('tasksAssigned').selectedIndex = 0;
   setPriority('Medium');
-  localStorage.removeItem('editTaskId'); // Entfernt den Edit-Status
+  localStorage.removeItem('editTaskId');
   localStorage.removeItem('editTaskData');
-  document.querySelector('h2').innerText = 'Add Task'; // UI zurücksetzen
+  document.querySelector('h2').innerText = 'Add Task';
   document.querySelector('.btn-dark').innerHTML =
     'Create Task <img src="../assets/icons/create-task.svg">';
 }
