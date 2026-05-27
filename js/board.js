@@ -50,41 +50,29 @@ window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
 
 export function initBoard() {
-  if (isGuestUser()) {
-    CURRENT_TASKS = convertTaskArrayToObject(getLocalTasks());
-
+  const setup = (data) => {
+    CURRENT_TASKS = data || {};
     renderAllTasks(CURRENT_TASKS);
     setupDialogClose(closeTaskDetail);
-    return;
+  };
+
+  if (isGuestUser()) {
+    return setup(convertTaskArrayToObject(getLocalTasks()));
   }
 
-  const uid = auth.currentUser.uid;
-
-  const tasksRef = ref(database, `tasks/${uid}`);
-
-  onValue(tasksRef, (snapshot) => {
-    CURRENT_TASKS = snapshot.val() || {};
-
-    renderAllTasks(CURRENT_TASKS);
+  onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snapshot) => {
+    setup(snapshot.val());
   });
-
-  setupDialogClose(closeTaskDetail);
 }
 
 function renderAllTasks(allTasks) {
   const columns = ['todo', 'progress', 'feedback', 'done'];
-
   if (!document.getElementById(columns[0])) return;
   clearElementsByIds(columns);
 
-  const tasksArray = normalizeObjectToArray(allTasks);
-
-  tasksArray.forEach((task) => {
+  normalizeObjectToArray(allTasks).forEach((task) => {
     const container = document.getElementById(task.status || 'todo');
-
-    if (container) {
-      container.innerHTML += generateTaskHTML(task, task.id);
-    }
+    if (container) container.innerHTML += generateTaskHTML(task, task.id);
   });
 
   columns.forEach((id) => checkPlaceholder(id));
@@ -208,10 +196,9 @@ export async function saveEdit(id) {
   if (isGuestUser()) {
     Object.assign(CURRENT_TASKS[id], updates);
     setLocalTasks(Object.values(CURRENT_TASKS));
-  } else {
+  } else
     await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), updates);
-  }
-  renderAllTasks(CURRENT_TASKS); // Board aktualisieren
+  renderAllTasks(CURRENT_TASKS);
   closeTaskDetail();
 }
 

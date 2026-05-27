@@ -65,17 +65,13 @@ export function getNoTaskPlaceholder(label) {
 export function getPriorityButtonsHTML(selectedPrio) {
   return ['Urgent', 'Medium', 'Low']
     .map((p) => {
-      const isSel = p === selectedPrio;
-      const low = p.toLowerCase();
-      // Nutzt das orange-Icon für Medium, sonst dein Standard-Schema
+      const isSel = p === selectedPrio,
+        low = p.toLowerCase();
       const icon =
         p === 'Medium' ? `medium-icon-orange.svg` : `prio-${low}-icon.svg`;
-
       return `
-      <button type="button" 
-              class="prio-btn ${isSel ? 'active-' + low : ''}" 
-              id="prio${p}" 
-              onclick="setPriority('${p}')">
+      <button type="button" class="prio-btn ${isSel ? 'active-' + low : ''}" 
+              id="prio${p}" onclick="setPriority('${p}')">
         ${p} <img src="../assets/icons/${icon}" class="prio-icon" alt="${p}">
       </button>`;
     })
@@ -235,20 +231,18 @@ export function getAssignedUserHTML(name) {
  * @returns {string} Consolidated contact list markup string.
  */
 function renderAssignedToDetail(assignedTo) {
-  if (!assignedTo || !Array.isArray(assignedTo)) return '';
+  if (!Array.isArray(assignedTo)) return '';
   return assignedTo
     .map((item) => {
       const name = typeof item === 'string' ? item : item.name;
-      const contact = (typeof contacts !== 'undefined' ? contacts : []).find(
+      const c = (typeof contacts !== 'undefined' ? contacts : []).find(
         (c) => c.name === name,
       );
-      const color = contact?.color || '#ff7a00';
-      const initials = contact?.initials || (name ? name.charAt(0) : '?');
-      return `
-      <div class="assigned-contact-row">
-        <div class="user-badge" style="background-color: ${color}">${initials}</div>
-        <span class="contact-name-detail">${name}</span>
-      </div>`;
+      const color = c?.color || '#ff7a00',
+        ini = c?.initials || name?.charAt(0) || '?';
+      return `<div class="assigned-contact-row">
+      <div class="user-badge" style="background-color: ${color}">${ini}</div>
+      <span class="contact-name-detail">${name}</span></div>`;
     })
     .join('');
 }
@@ -356,24 +350,13 @@ export function getContactDetails(contact) {
         <div class="contact-avatar contact-avatar--big" style="background-color: ${contact.color}">${contact.initials}</div>
         <div class="contact-details-header-info">
           <h3>${contact.name}</h3>
-            <div class="contact-details-actions">
-              <button onclick="window.openEditContact('${contact.id}')" class="edit-delete-btn">
-                <img src="../assets/img/edit-contact.svg" alt="Edit Contact">
-              </button>
-
-              <button onclick="openDeleteDialog('${contact.id}')" class="edit-delete-btn">
-                <img src="../assets/img/delete-contact.svg" alt="Delete Contact">
-              </button>
-            </div>
-        </div> 
-      </div>
-
-      <div class="contact-details-information">
-        <span>Contact Information</span>
+          <div class="contact-details-actions">
+            <button onclick="window.openEditContact('${contact.id}')" class="edit-delete-btn"><img src="../assets/img/edit-contact.svg" alt="Edit"></button>
+            <button onclick="openDeleteDialog('${contact.id}')" class="edit-delete-btn"><img src="../assets/img/delete-contact.svg" alt="Delete"></button>
+          </div></div></div>
+      <div class="contact-details-information"><span>Contact Information</span>
         <span><b>Email:</b> <a class="contact-email" href="mailto:${contact.email}">${contact.email}</a></span>
-        <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div>
-      </div>
-    `;
+        <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div></div>`;
 }
 
 export function getContactOptionsHTML(contactsArray, defaultText) {
