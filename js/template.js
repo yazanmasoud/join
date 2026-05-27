@@ -20,8 +20,7 @@ window.setPriority = setPriority;
 export function generateTaskHTML(task, id) {
   const cat = (task.category || '').replace(/\s+/g, '').toLowerCase();
   const prio = (task.priority || 'Medium').toLowerCase();
-  const icon =
-    prio === 'medium' ? 'medium-icon-orange.svg' : `prio-${prio}-icon.svg`;
+  const icon = prio === 'medium' ? 'medium-icon-orange.svg' : `prio-${prio}-icon.svg`;
   return `
     <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" onclick="openTaskDetail('${id}')">
       <div class="task-category ${cat}">${task.category || ''}</div>
@@ -78,8 +77,7 @@ export function getPriorityButtonsHTML(selectedPrio) {
     .map((p) => {
       const isSel = p === selectedPrio,
         low = p.toLowerCase();
-      const icon =
-        p === 'Medium' ? `medium-icon-orange.svg` : `prio-${low}-icon.svg`;
+      const icon = p === 'Medium' ? `medium-icon-orange.svg` : `prio-${low}-icon.svg`;
       return `
       <button type="button" class="prio-btn ${isSel ? 'active-' + low : ''}" 
               id="prio${p}" onclick="setPriority('${p}')">
@@ -106,9 +104,7 @@ function setPriority(prio) {
  */
 export function getSelectOptionsHTML(optionsArray, defaultText) {
   const def = `<option value="" disabled selected>${defaultText}</option>`;
-  const opts = optionsArray
-    .map((opt) => `<option value="${opt}">${opt}</option>`)
-    .join('');
+  const opts = optionsArray.map((opt) => `<option value="${opt}">${opt}</option>`).join('');
   return def + opts;
 }
 
@@ -180,8 +176,7 @@ export function getDetailInfoRows(task) {
  * @returns {string} The list of subtask checkbox items HTML string.
  */
 export function getDetailSubtasksHTML(subtasks, taskId) {
-  if (!subtasks || !Array.isArray(subtasks) || subtasks.length === 0)
-    return '<p>No subtasks</p>';
+  if (!subtasks || !Array.isArray(subtasks) || subtasks.length === 0) return '<p>No subtasks</p>';
   return subtasks
     .map((st, i) => {
       const icon = st.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
@@ -220,12 +215,8 @@ export function getDetailFooter(id) {
  */
 export function getAssignedUserHTML(name) {
   const safeName = typeof name === 'string' ? name : name?.name || 'Guest';
-  const color =
-    typeof getContactColor === 'function'
-      ? getContactColor(safeName)
-      : '#ff7a00';
-  const initials =
-    typeof getInitials === 'function' ? getInitials(safeName) : '??';
+  const color = typeof getContactColor === 'function' ? getContactColor(safeName) : '#ff7a00';
+  const initials = typeof getInitials === 'function' ? getInitials(safeName) : '??';
 
   return `<div class="assigned-user">
       <div class="user-badge" style="background-color: ${color}">${initials}</div>
@@ -239,13 +230,8 @@ export function getAssignedUserHTML(name) {
  */
 export function renderAssignedToDetail(assignedTo, showName = true) {
   if (!Array.isArray(assignedTo)) return '';
-  const allContacts =
-    window.contacts?.length > 0
-      ? window.contacts
-      : JSON.parse(localStorage.getItem('guestContacts')) || [];
-  return assignedTo
-    .map((item) => renderSingleBadge(item, allContacts, showName))
-    .join('');
+  const allContacts = window.contacts?.length > 0 ? window.contacts : JSON.parse(localStorage.getItem('guestContacts')) || [];
+  return assignedTo.map((item) => renderSingleBadge(item, allContacts, showName)).join('');
 }
 
 function getInitialsFromName(fullName, contact) {
@@ -259,15 +245,10 @@ function getInitialsFromName(fullName, contact) {
 }
 
 function renderSingleBadge(item, allContacts, showName) {
-  const c = allContacts.find(
-    (c) => c.name === (item.name || item) || c.id === item,
-  );
-  const n =
-    c?.name || (typeof item === 'string' ? item : item?.name) || 'Guest';
+  const c = allContacts.find((c) => c.name === (item.name || item) || c.id === item);
+  const n = c?.name || (typeof item === 'string' ? item : item?.name) || 'Guest';
   const badge = `<div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${getInitialsFromName(n, c)}</div>`;
-  return showName
-    ? `<div class="assigned-contact-row">${badge}<span>${n}</span></div>`
-    : badge;
+  return showName ? `<div class="assigned-contact-row">${badge}<span>${n}</span></div>` : badge;
 }
 /** --- EDIT MODE --- */
 /**
@@ -383,9 +364,7 @@ export function getContactDetails(contact) {
 
 export function getContactOptionsHTML(contactsArray, defaultText) {
   const def = `<option value="" disabled selected>${defaultText}</option>`;
-  const opts = contactsArray
-    .map((c) => `<option value="${c.name}">${c.name}</option>`)
-    .join('');
+  const opts = contactsArray.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
   return def + opts;
 }
 
