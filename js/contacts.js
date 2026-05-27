@@ -407,31 +407,59 @@ function renderContacts() {
  */
 function renderContactDetails(index) {
     const contact = contacts[index];
+
+    if (
+        String(contact.id) ===
+        String(selectedContactId)
+    ) {
+        return;
+    }
+
     selectedContactId = contact.id;
 
     const detailsContainer =
-        document.getElementById('contact-details');
+        document.getElementById(
+            'contact-details'
+        );
+
     renderContacts();
 
     if (detailsContainer.innerHTML.trim()) {
-        detailsContainer.classList.add('slide-out');
+        detailsContainer.classList.add(
+            'slide-out'
+        );
 
         setTimeout(() => {
-            detailsContainer.innerHTML = getContactDetails(contact);
+            detailsContainer.innerHTML =
+                getContactDetails(contact);
 
-            detailsContainer.classList.remove('slide-out');
+            detailsContainer.classList.remove(
+                'slide-out'
+            );
 
-            detailsContainer.classList.add('slide-in');
+            detailsContainer.classList.add(
+                'slide-in'
+            );
 
-            requestAnimationFrame(() => { detailsContainer.classList.remove('slide-in'); });
+            requestAnimationFrame(() => {
+                detailsContainer.classList.remove(
+                    'slide-in'
+                );
+            });
         }, 300);
-
     } else {
-        detailsContainer.classList.add('slide-in');
+        detailsContainer.classList.add(
+            'slide-in'
+        );
 
-        detailsContainer.innerHTML = getContactDetails(contact);
+        detailsContainer.innerHTML =
+            getContactDetails(contact);
 
-        requestAnimationFrame(() => { detailsContainer.classList.remove('slide-in'); });
+        requestAnimationFrame(() => {
+            detailsContainer.classList.remove(
+                'slide-in'
+            );
+        });
     }
 }
 
