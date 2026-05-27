@@ -126,6 +126,7 @@ async function handleSaveContact() {
     await updateContact(currentEditContactId, updatedData);
     updateLocalContact(updatedData);
     refreshUpdatedContactUI();
+    
 }
 
 
