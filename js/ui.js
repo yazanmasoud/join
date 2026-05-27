@@ -6,8 +6,11 @@ window.removeHighlight = removeHighlight;
 window.highlight = highlight;
 window.clearInputError = clearInputError;
 
-/** UI Helper Functions */
-/**board.js*/
+/** @section UI Helper Functions */
+
+/**
+ * Closes the task detail dialog and resets its styling.
+ */
 export function closeTaskDetail() {
   const dialog = document.getElementById('taskDetailDialog');
   if (dialog) {
@@ -16,6 +19,10 @@ export function closeTaskDetail() {
   }
 }
 
+/**
+ * Sets up a listener to close the dialog when clicking on the backdrop.
+ * @param {Function} closeCallback - The function to execute on close.
+ */
 export function setupDialogClose(closeCallback) {
   const dialog = document.getElementById('taskDetailDialog');
   dialog?.addEventListener('click', (e) => {
@@ -23,14 +30,26 @@ export function setupDialogClose(closeCallback) {
   });
 }
 
+/**
+ * Adds a highlight class to a drag container.
+ * @param {string} id - The ID of the element to highlight.
+ */
 export function highlight(id) {
   document.getElementById(id)?.classList.add('drag-area-highlight');
 }
 
+/**
+ * Removes the highlight class from a drag container.
+ * @param {string} id - The ID of the element.
+ */
 export function removeHighlight(id) {
   document.getElementById(id)?.classList.remove('drag-area-highlight');
 }
 
+/**
+ * Updates the visual active state of priority buttons in edit mode.
+ * @param {string} prio - The priority level (Urgent, Medium, Low).
+ */
 export function setEditPriority(prio) {
   ['Urgent', 'Medium', 'Low'].forEach((p) => {
     const btn = document.getElementById('editPrio' + p);
@@ -41,9 +60,10 @@ export function setEditPriority(prio) {
   if (activeBtn) activeBtn.classList.add('active-' + prio.toLowerCase());
 }
 
-/**summary.js */
+/** @section Summary & Dashboard */
+
 /**
- * Updates DOM text elements mapped to metric keys.
+ * Updates DOM text elements mapped to metric keys using data-fields.
  * @param {Object} data - The calculated metrics object.
  */
 export function updateUI(data) {
@@ -57,7 +77,7 @@ export function updateUI(data) {
 }
 
 /**
- * Sets a time-dependent greeting message in the DOM.
+ * Sets a time-dependent greeting message (Morning, Afternoon, Evening).
  */
 export function setGreeting() {
   const hour = new Date().getHours();
@@ -72,8 +92,8 @@ export function setGreeting() {
 }
 
 /**
- * Adjusts the UI layout and elements based on guest status.
- * @param {Object} dashboardData - Object containing guest status and user name.
+ * Adjusts the greeting layout and name display based on guest status.
+ * @param {Object} dashboardData - Object containing user information.
  */
 export function handleGuestLogin(dashboardData) {
   const container = document.getElementById('greeting-container');
@@ -89,8 +109,7 @@ export function handleGuestLogin(dashboardData) {
 }
 
 /**
- * Set the visibility state of the profile avatar dropdown menu to visible.
- *
+ * Opens the profile avatar dropdown menu.
  * @param {Event} event - The triggered DOM click event.
  */
 export function openAvatarDropdown(event) {
@@ -101,7 +120,7 @@ export function openAvatarDropdown(event) {
 }
 
 /**
- * Closes all currently open elements by removing the open class.
+ * Closes all elements currently marked with the 'open' class.
  */
 export function closeOpenElements() {
   document.querySelectorAll('.open').forEach((element) => {
@@ -110,11 +129,7 @@ export function closeOpenElements() {
 }
 
 /**
- * Handles back arrow navigation behavior depending on the currently active layout context.
- * Within the main application layout, the function navigates back to the previously visited app page.
- * If no previous page exists, the summary page is loaded as a fallback.
- * Within the login layout, the function redirects the user back to the main index login page.
- * @return {void}
+ * Navigates back based on the current layout context (Login or App).
  */
 function handleBackArrow() {
   const isLoginLayout = window.location.pathname.includes('loginlayout.html');
@@ -126,7 +141,10 @@ function handleBackArrow() {
   navigateTo(previousPage);
 }
 
-// Helper function which resets the innerHTML to prevent double content
+/**
+ * Clears the inner HTML of multiple elements by their IDs.
+ * @param {string[]} ids - Array of element IDs to clear.
+ */
 export function clearElementsByIds(ids) {
   ids.forEach((id) => {
     const element = document.getElementById(id);
@@ -134,7 +152,11 @@ export function clearElementsByIds(ids) {
   });
 }
 
-//guarantees an array -  doesnt matter if the input is an object or an array
+/**
+ * Ensures data is returned as an array, converting objects if necessary.
+ * @param {Object|Array} data - The input data to normalize.
+ * @returns {Array} The normalized data array.
+ */
 export function normalizeObjectToArray(data) {
   if (Array.isArray(data)) return data;
   return Object.entries(data || {}).map(([id, item]) => ({
@@ -144,8 +166,8 @@ export function normalizeObjectToArray(data) {
 }
 
 /**
- * Sets the user name inside all greeting elements.
- * @param {string} name - User name.
+ * Updates the user name in all greeting-related DOM elements.
+ * @param {string} name - The user name to display.
  */
 export function setGreetingName(name) {
   const greetingElements = document.querySelectorAll('[data-field="userName"]');
@@ -156,7 +178,9 @@ export function setGreetingName(name) {
 }
 
 /**
- * Renders the authenticated user's avatar initials.
+ * Renders user initials into a specific avatar element.
+ * @param {string} elementId - ID of the avatar container.
+ * @param {string} name - Name to extract initials from.
  */
 export function renderAvatar(elementId, name) {
   const avatarElement = document.getElementById(elementId);
@@ -165,10 +189,10 @@ export function renderAvatar(elementId, name) {
 }
 
 /**
- * Displays an input validation error.
- * @param {string} inputId - Input element ID.
- * @param {string} errorId - Error text element ID.
- * @param {string} message - Error message.
+ * Shows a validation error message and highlights the input.
+ * @param {string} inputId - ID of the input field.
+ * @param {string} errorId - ID of the error message element.
+ * @param {string} message - The error text to show.
  */
 export function showInputError(inputId, errorId, message) {
   const input = document.getElementById(inputId);
@@ -183,9 +207,9 @@ export function showInputError(inputId, errorId, message) {
 }
 
 /**
- * Clears an input validation error.
- * @param {string} inputId - Input element ID.
- * @param {string} errorId - Error text element ID.
+ * Removes validation error highlights and hides the error message.
+ * @param {string} inputId - ID of the input field.
+ * @param {string} errorId - ID of the error message element.
  */
 export function clearInputError(inputId, errorId) {
   const input = document.getElementById(inputId);
@@ -208,7 +232,8 @@ export function toggleContactList() {
 }
 
 /**
- * Shows the success toast notification.
+ * Displays a success toast notification with a custom message.
+ * @param {string} message - The message to display.
  */
 export function showSuccessToast(message = 'Task added to board') {
   const toast = document.getElementById('successMessage');
@@ -226,7 +251,7 @@ export function showSuccessToast(message = 'Task added to board') {
 }
 
 /**
- * Updates the submit button and headline for edit mode.
+ * Switches the Add Task button to Save mode for editing.
  */
 export function updateButtonToSaveMode() {
   const btn = document.querySelector('.btn-dark');
@@ -239,8 +264,8 @@ export function updateButtonToSaveMode() {
 }
 
 /**
- * Resets a list of input elements by their IDs.
- * @param {string[]} ids - Array of element IDs.
+ * Resets the values of multiple input fields.
+ * @param {string[]} ids - Array of input element IDs.
  */
 export function resetInputFields(ids) {
   ids.forEach((id) => {
@@ -249,6 +274,9 @@ export function resetInputFields(ids) {
   });
 }
 
+/**
+ * Closes the sign-up view and navigates back to the login screen.
+ */
 export function closeSignUp() {
   const signupContainer = document.getElementById('signup-container');
   const signupContainerMobile = document.getElementById(
@@ -263,6 +291,9 @@ export function closeSignUp() {
   login.classList.remove('hidden');
 }
 
+/**
+ * Resets all input fields and the privacy checkbox in the sign-up form.
+ */
 export function clearSignupInputs() {
   document.getElementById('signup-username').value = '';
   document.getElementById('signup-email').value = '';
