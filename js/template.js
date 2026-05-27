@@ -239,20 +239,34 @@ export function getAssignedUserHTML(name) {
  */
 export function renderAssignedToDetail(assignedTo, showName = true) {
   if (!Array.isArray(assignedTo)) return '';
+  const allContacts =
+    window.contacts?.length > 0
+      ? window.contacts
+      : JSON.parse(localStorage.getItem('guestContacts')) || [];
   return assignedTo
     .map((item) => {
-      const name = typeof item === 'string' ? item : item.name;
-      const c = (typeof contacts !== 'undefined' ? contacts : []).find(
-        (c) => c.name === name,
+      const contact = allContacts.find(
+        (c) => c.name === (item.name || item) || c.id === item,
       );
-      const badge = `<div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${c?.initials || name?.charAt(0) || '?'}</div>`;
+      const fullName =
+        contact?.name ||
+        (typeof item === 'string' ? item : item?.name) ||
+        'Guest';
+      const initials =
+        contact?.initials ||
+        fullName
+          .split(' ')
+          .map((x) => x[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+      const badge = `<div class="user-badge" style="background-color: ${contact?.color || '#ff7a00'}">${initials}</div>`;
       return showName
-        ? `<div class="assigned-contact-row">${badge}<span class="contact-name-detail">${name}</span></div>`
+        ? `<div class="assigned-contact-row">${badge}<span>${fullName}</span></div>`
         : badge;
     })
     .join('');
 }
-
 /** --- EDIT MODE --- */
 /**
  * Generates the full framework block wrapper structure for task editor view.

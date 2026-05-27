@@ -27,6 +27,7 @@ import {
 } from './template.js';
 
 import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
+import { getContacts } from './contacts-service.js';
 
 /** @section GLOBAL VARIABLES */
 let CURRENT_TASKS = {};
@@ -50,20 +51,17 @@ window.toggleEditSubtask = toggleEditSubtask;
 window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
 
-export function initBoard() {
+export async function initBoard() {
+  window.contacts = await getContacts();
   const setup = (data) => {
     CURRENT_TASKS = data || {};
     renderAllTasks(CURRENT_TASKS);
     setupDialogClose(closeTaskDetail);
   };
-
-  if (isGuestUser()) {
-    return setup(convertTaskArrayToObject(getLocalTasks()));
-  }
-
-  onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snapshot) => {
-    setup(snapshot.val());
-  });
+  if (isGuestUser()) return setup(convertTaskArrayToObject(getLocalTasks()));
+  onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snap) =>
+    setup(snap.val()),
+  );
 }
 
 function renderAllTasks(allTasks) {
@@ -193,12 +191,15 @@ export async function saveEdit(id) {
     description: document.getElementById('editDescription').value,
     dueDate: document.getElementById('editDate').value,
     priority: editPriority,
+    assignedTo: window.selectedContacts || CURRENT_TASKS[id].assignedTo || [],
   };
-  if (isGuestUser()) {
-    Object.assign(CURRENT_TASKS[id], updates);
-    setLocalTasks(Object.values(CURRENT_TASKS));
-  } else
-    await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), updates);
+  isGuestUser()
+    ? (Object.assign(CURRENT_TASKS[id], updates),
+      setLocalTasks(Object.values(CURRENT_TASKS)))
+    : await update(
+        ref(database, `tasks/${auth.currentUser.uid}/${id}`),
+        updates,
+      );
   renderAllTasks(CURRENT_TASKS);
   closeTaskDetail();
 }
