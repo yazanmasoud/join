@@ -23,6 +23,7 @@ import {
 
 import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
 import { getContacts } from './contacts-service.js';
+import { userSubtaskPath, userTaskPath, userTasksPath } from './database-paths.js';
 
 /** @section GLOBAL VARIABLES */
 let CURRENT_TASKS = {};
@@ -61,7 +62,7 @@ export async function initBoard() {
     setupDialogClose(closeTaskDetail);
   };
   if (isGuestUser()) return setup(convertTaskArrayToObject(getLocalTasks()));
-  onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snap) => setup(snap.val()));
+  onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snap) => setup(snap.val()));
 }
 
 function setupTaskSearch() {
@@ -152,7 +153,7 @@ export async function toggleSubtask(taskId, index) {
     setLocalTasks(Object.values(CURRENT_TASKS));
     renderFilteredTasks(); // Sofortiges Update für Gäste
   } else {
-    const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
+    const path = userSubtaskPath(auth.currentUser.uid, taskId, index);
     await update(ref(database, path), { done: task.subtasks[index].done });
   }
   document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, taskId);
@@ -188,7 +189,7 @@ async function saveEditSubtask(index, taskId) {
     item.outerHTML = getSubtaskHTML(task.subtasks[index], index);
 
     if (!isGuestUser()) {
-      const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
+      const path = userSubtaskPath(auth.currentUser.uid, taskId, index);
       await update(ref(database, path), { title: task.subtasks[index].title });
     }
   }
@@ -240,7 +241,7 @@ function moveGuestTaskTo(status) {
 
 async function moveFirebaseTaskTo(status) {
   const uid = auth.currentUser.uid;
-  const taskRef = ref(database, `tasks/${uid}/${CURRENT_DRAGGED_ELEMENT}`);
+  const taskRef = ref(database, userTaskPath(uid, CURRENT_DRAGGED_ELEMENT));
 
   await update(taskRef, { status });
 }
@@ -272,7 +273,7 @@ export async function saveEdit(id) {
     Object.assign(CURRENT_TASKS[id], updates);
     setLocalTasks(Object.values(CURRENT_TASKS));
   } else {
-    await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), updates);
+    await update(ref(database, userTaskPath(auth.currentUser.uid, id)), updates);
   }
   renderFilteredTasks();
   closeTaskDetail();
@@ -340,7 +341,7 @@ export async function deleteTask(id) {
     delete CURRENT_TASKS[id];
     setLocalTasks(Object.values(CURRENT_TASKS));
   } else {
-    await remove(ref(database, `tasks/${auth.currentUser.uid}/${id}`));
+    await remove(ref(database, userTaskPath(auth.currentUser.uid, id)));
   }
   closeTaskDetail();
   renderFilteredTasks();
