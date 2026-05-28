@@ -25,4 +25,8 @@
 
   --color-error: #E60026;
   --color-required: #ff3d00;
+
+  --color-info-bg: #eef7fb;
+  --color-info-border: #b7dff0;
+  --color-info-text: #42526e;
 }

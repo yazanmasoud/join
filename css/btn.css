@@ -141,12 +141,8 @@ button {
 }
 
 .edit-delete-btn:hover img {
-  filter: brightness(0) saturate(100%)
-    invert(32%) sepia(96%)
-    saturate(2146%) hue-rotate(183deg)
-    brightness(88%) contrast(96%);
+  filter: brightness(0) saturate(100%) invert(32%) sepia(96%) saturate(2146%) hue-rotate(183deg) brightness(88%) contrast(96%);
 }
-
 
 .subtasks-item-list li button {
   background: none;
@@ -165,8 +161,40 @@ button {
 }
 
 .subtasks-item-list li button img {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+}
+
+.subtask-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.action-btn:hover img,
+.subtask-action-btn:hover img {
+  filter: invert(59%) sepia(80%) saturate(1853%) hue-rotate(171deg) brightness(95%) contrast(92%);
+}
+
+.action-btn:hover,
+.subtask-action-btn:hover {
+  color: var(--color-highlights) !important;
+}
+
+.subtask-divider {
+  display: none;
+}
+
+.input-wrapper-task button {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
 }
 
 /* --- PRIORITÄTEN & BUTTONS --- */

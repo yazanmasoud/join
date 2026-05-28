@@ -1,10 +1,11 @@
 import { auth, database } from './firebase-config.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { ref, set, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-import { hideOverlay, showOverlay } from './utils.js';
+import { hideOverlay, showOverlay, getInitials, getRandomColor } from './utils.js';
 import { guestContacts, guestTasks } from './guest-data.js';
 import { getCurrentUserId, isGuestUser } from './storage.js';
 import { showInputError, clearInputError, closeSignUp, clearSignupInputs } from './ui.js';
+import { userContactPath, userProfilePath } from './database-paths.js';
 
 
 window.loginAsGuest = loginAsGuest;
@@ -20,17 +21,26 @@ window.isValidEmail = isValidEmail;
 //handles the complete registration flow
 export async function registerUser(name, email, password) {
   try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await saveUserProfile(userCredential.user, name, email);
+    await saveUserAsContact(userCredential.user, name, email);
     await signOut(auth);
     handleSignupSuccess();
   } catch (error) {
     handleSignupError(error);
   }
+}
+
+
+async function saveUserAsContact(user, name, email) {
+  await set(ref(database, userContactPath(user.uid, user.uid)), {
+    id: user.uid,
+    name,
+    email,
+    phone: '',
+    color: getRandomColor(),
+    initials: getInitials(name),
+  });
 }
 
 
@@ -52,7 +62,7 @@ function handleSignupError(error) {
 
 // saves the user profile to the database
 async function saveUserProfile(user, name, email) {
-  await set(ref(database, `users/${user.uid}`), {
+  await set(ref(database, userProfilePath(user.uid)), {
     name,
     email,
   });
@@ -101,47 +111,19 @@ export function validateLoginEmail() {
 
 function handleLoginError(error) {
   const errors = {
-    'auth/invalid-email': {
-      input: 'email',
-      text: 'error-text-email',
-      message: 'Please enter a valid email address.',
-    },
-    'auth/invalid-credential': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Check your email and password. Please try again.',
-    },
-    'auth/user-not-found': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Check your email and password. Please try again.',
-    },
-    'auth/wrong-password': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Check your email and password. Please try again.',
-    },
-    'auth/too-many-requests': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Too many failed attempts. Please try again later.',
-    },
-    'auth/network-request-failed': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Network error. Please check your connection.',
-    },
+    'auth/invalid-email': {input: 'email', text: 'error-text-email', message: 'Please enter a valid email address.'},
+    'auth/invalid-credential': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/user-not-found': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/wrong-password': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/too-many-requests': {input: 'password', text: 'error-text-password', message: 'Too many failed attempts. Please try again later.'},
+    'auth/network-request-failed': {input: 'password', text: 'error-text-password', message: 'Network error. Please check your connection.'},
   };
   const currentError = errors[error.code];
   if (!currentError) {
     console.error(error);
     return;
   }
-  showInputError(
-    currentError.input,
-    currentError.text,
-    currentError.message
-  );
+  showInputError(currentError.input, currentError.text, currentError.message);
 }
 
 
@@ -169,6 +151,7 @@ function initGuestStorage() {
 
 
 function loginSuccess(message) {
+  sessionStorage.removeItem('mobileGreetingPlayed');
   showOverlay(message);
   setTimeout(() => {
     hideOverlay();
@@ -197,7 +180,7 @@ export async function getCurrentUserData() {
     return JSON.parse(localStorage.getItem('currentUser'));
   }
   const uid = getCurrentUserId();
-  const snapshot = await get(ref(database, `users/${uid}`));
+  const snapshot = await get(ref(database, userProfilePath(uid)));
   if (!snapshot.exists()) {
     throw new Error('Authenticated user data not found.');
   }

@@ -1,14 +1,14 @@
-import {
-  ref,
-  get,
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { isGuestUser, getLocalTasks } from './storage.js';
 import { calculateMetrics } from './utils.js';
 import { setGreeting, updateUI, setGreetingName } from './ui.js';
 import { auth, database } from './firebase-config.js';
 import { getCurrentUserData } from './auth-service.js';
+import { userTasksPath } from './database-paths.js';
 
 window.initSummary = initSummary;
+
+const MOBILE_GREETING_PLAYED_KEY = 'mobileGreetingPlayed';
 
 /**
  * Initializes the dashboard by setting the greeting, handling mobile view,
@@ -23,12 +23,24 @@ export async function initSummary() {
 }
 
 /**
- * Orchestrates the data retrieval based on user type and updates the UI with calculated metrics.
- * @returns {Promise<void>}
+ * Orchestrates the data retrieval and attaches navigation events to cards.
  */
 async function fetchSummaryData() {
   const tasks = isGuestUser() ? getLocalTasks() : await getFirebaseTasks();
   updateUI(calculateMetrics(tasks));
+  setupCardNavigation(); // Fügt die Klick-Events hinzu
+}
+
+/**
+ * Attaches the click event to all summary cards to navigate to the board.
+ */
+function setupCardNavigation() {
+  // Wir wählen einfach ALLE Elemente mit der Klasse .card-base aus
+  const cards = document.querySelectorAll('.card-base');
+
+  cards.forEach((card) => {
+    card.onclick = () => navigateTo('board');
+  });
 }
 
 /**
@@ -38,7 +50,7 @@ async function fetchSummaryData() {
 async function getFirebaseTasks() {
   const uid = auth.currentUser?.uid;
   if (!uid) return getLocalTasks();
-  const snapshot = await get(ref(database, `tasks/${uid}`));
+  const snapshot = await get(ref(database, userTasksPath(uid)));
   return snapshot.exists() ? Object.values(snapshot.val()) : getLocalTasks();
 }
 
@@ -61,7 +73,16 @@ async function renderGreetingName() {
  */
 function handleMobileGreeting() {
   const element = document.getElementById('mobile-greeting');
-  if (!element || window.innerWidth > 1100) return element?.remove();
+
+  if (!element) return;
+
+  if (window.innerWidth > 1100 || sessionStorage.getItem(MOBILE_GREETING_PLAYED_KEY)) {
+    element.remove();
+    return;
+  }
+
+  sessionStorage.setItem(MOBILE_GREETING_PLAYED_KEY, 'true');
+
   setTimeout(() => {
     element.style.opacity = '0';
     setTimeout(() => element.remove(), 300);

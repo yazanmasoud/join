@@ -1,34 +1,16 @@
-import {
-  createTask as serviceCreateTask,
-  updateTask as serviceUpdateTask,
-  isTaskValid,
-} from './tasks-service.js';
+import { createTask as serviceCreateTask, updateTask as serviceUpdateTask, isTaskValid } from './tasks-service.js';
 
-import {
-  getPriorityButtonsHTML,
-  getSelectOptionsHTML,
-  getSubtaskHTML,
-  getContactCheckboxHTML,
-} from './template.js';
+import { getPriorityButtonsHTML, getSelectOptionsHTML, getSubtaskHTML, getContactCheckboxHTML, getSubtaskEditHTML } from './template.js';
 
-import {
-  clearActivePrioClasses,
-  getPrioClass,
-  CATEGORY_OPTIONS,
-  CONTACT_OPTIONS,
-} from './utils.js';
+import { clearActivePrioClasses, getPrioClass, CATEGORY_OPTIONS, CONTACT_OPTIONS } from './utils.js';
 
-import {
-  showSuccessToast,
-  toggleContactList,
-  updateButtonToSaveMode,
-  resetInputFields,
-} from './ui.js';
+import { showSuccessToast, toggleContactList, updateButtonToSaveMode, resetInputFields } from './ui.js';
 
 import { getContacts } from './contacts-service.js';
 
 let subtasks = [];
 let currentPriority = 'Medium';
+let selectedContacts = [];
 
 /** @section GLOBAL EXPORTS */
 window.toggleSubtaskStatus = toggleSubtaskStatus;
@@ -41,15 +23,31 @@ window.prepareEditInDialog = prepareEditInDialog;
 window.toggleContactList = toggleContactList;
 window.updateSelectedBadges = updateSelectedBadges;
 window.clearForm = clearForm;
+window.renderContacts = renderContacts;
+window.editSubtask = editSubtask;
+window.saveSubtask = saveSubtask;
+window.getSubtaskEditHTML = getSubtaskEditHTML;
+
+/**
+ * Toggles the contact selection by clicking the row.
+ */
+window.toggleContactSelection = function (name) {
+  const index = selectedContacts.indexOf(name);
+  if (index === -1) {
+    selectedContacts.push(name);
+  } else {
+    selectedContacts.splice(index, 1);
+  }
+  renderContacts(document.getElementById('assignedInput').value);
+  updateSelectedBadges();
+};
 
 /**
  * Updates the visual initials badges for selected contacts.
  */
 export async function updateSelectedBadges() {
   const container = document.getElementById('assignedBadges');
-  const checked = document.querySelectorAll(
-    'input[name="assignedContact"]:checked',
-  );
+  const checked = document.querySelectorAll('input[name="assignedContact"]:checked');
   if (!container) return;
   const allContacts = await getContacts();
   container.innerHTML = Array.from(checked)
@@ -86,8 +84,10 @@ function fillFormForEdit(data) {
   document.getElementById('taskDate').value = data.dueDate || '';
   document.getElementById('taskCategory').value = data.category || '';
   subtasks = data.subtasks || [];
+  selectedContacts = data.assignedTo || [];
   setPriority(data.priority || 'Medium');
   renderSubtasks();
+  renderContacts();
 }
 
 /**
@@ -95,7 +95,7 @@ function fillFormForEdit(data) {
  */
 async function createTask() {
   const task = getTaskObject();
-  // Geändert von validateTask zu isTaskValid (passend zum Import oben)
+
   if (!isTaskValid(task)) return;
   const editId = localStorage.getItem('editTaskId');
   try {
@@ -133,9 +133,6 @@ function handleSuccess() {
  * @returns {Object} The formatted task object.
  */
 function getTaskObject() {
-  const checked = document.querySelectorAll(
-    'input[name="assignedContact"]:checked',
-  );
   const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
   return {
     title: document.getElementById('taskTitle').value,
@@ -143,7 +140,7 @@ function getTaskObject() {
     dueDate: document.getElementById('taskDate').value,
     category: document.getElementById('taskCategory').value,
     priority: currentPriority,
-    assignedTo: Array.from(checked).map((cb) => cb.value),
+    assignedTo: selectedContacts, // Hier das neue Array nutzen!
     subtasks: subtasks,
     status: editData.status || 'todo',
   };
@@ -173,32 +170,21 @@ function renderPriorityButtons() {
  */
 function renderCategories() {
   const select = document.getElementById('taskCategory');
-  if (select)
-    select.innerHTML = getSelectOptionsHTML(
-      CATEGORY_OPTIONS,
-      'Select task category',
-    );
+  if (select) select.innerHTML = getSelectOptionsHTML(CATEGORY_OPTIONS, 'Select task category');
 }
 
 /**
- * Renders contact selection list with real contact data.
+ * Renders contact selection list filtered by the input value.
+ * @param {string} searchTerm - The string to search for in names.
  */
-async function renderContacts() {
+export async function renderContacts(searchTerm = '') {
   const list = document.getElementById('contactList');
   if (!list) return;
-  try {
-    const contacts = await getContacts();
-    const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
-    const assigned = Array.isArray(editData.assignedTo)
-      ? editData.assignedTo
-      : [];
-    list.innerHTML = contacts
-      .map((c) => getContactCheckboxHTML(c, assigned.includes(c.name)))
-      .join('');
-    updateSelectedBadges();
-  } catch (e) {
-    console.error('Fehler:', e);
-  }
+  const contacts = await getContacts();
+  const filtered = contacts.filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  // Nutzt das selectedContacts Array für den Status
+  list.innerHTML = filtered.map((c) => getContactCheckboxHTML(c, selectedContacts.includes(c.name))).join('');
+  if (searchTerm.length > 0) list.classList.remove('d-none');
 }
 
 /**
@@ -216,6 +202,36 @@ function handleSubtaskKey(event) {
       renderSubtasks();
     }
   }
+}
+
+/**
+ * Activates the edit mode for a subtask by re-rendering it with an input.
+ * @param {number} index - The index of the subtask in the array.
+ */
+function editSubtask(index) {
+  const list = document.getElementById('subtasksList');
+  if (!list) return; // Sicherheits-Check: Falls Liste nicht da, Funktion abbrechen
+
+  const items = list.querySelectorAll('li');
+  if (!items[index]) return; // Falls der Index nicht existiert, abbrechen
+
+  items[index].outerHTML = getSubtaskEditHTML(subtasks[index].title, index);
+  const input = document.getElementById(`editSubtaskInput${index}`);
+  input?.focus();
+}
+
+/**
+ * Saves the edited subtask title and returns to normal view.
+ * @param {number} index - The index of the subtask.
+ */
+function saveSubtask(index) {
+  const input = document.getElementById(`editSubtaskInput${index}`);
+  if (input && input.value.trim() !== '') {
+    subtasks[index].title = input.value.trim();
+  } else if (input && input.value.trim() === '') {
+    subtasks.splice(index, 1);
+  }
+  renderSubtasks();
 }
 
 /**
@@ -247,15 +263,14 @@ function clearForm() {
     if (document.getElementById(id)) document.getElementById(id).value = '';
   });
   subtasks = [];
-  renderSubtasks();
-  document.getElementById('taskCategory').selectedIndex = 0;
-  document.getElementById('tasksAssigned').selectedIndex = 0;
-  setPriority('Medium');
-  localStorage.removeItem('editTaskId');
-  localStorage.removeItem('editTaskData');
-  document.querySelector('h2').innerText = 'Add Task';
-  document.querySelector('.btn-dark').innerHTML =
-    'Create Task <img src="../assets/icons/create-task.svg">';
+  if (window.renderSubtasks) renderSubtasks();
+  document.getElementById('taskCategory') && (document.getElementById('taskCategory').selectedIndex = 0);
+  document.getElementById('tasksAssigned') && (document.getElementById('tasksAssigned').selectedIndex = 0);
+  if (window.setPriority) setPriority('Medium');
+  ['editTaskId', 'editTaskData'].forEach((k) => localStorage.removeItem(k));
+  if (document.querySelector('h2')) document.querySelector('h2').innerText = 'Add Task';
+  const btn = document.querySelector('.btn-dark');
+  if (btn) btn.innerHTML = 'Create Task <img src="../assets/icons/create-task.svg">';
 }
 
 /**

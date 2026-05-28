@@ -8,6 +8,7 @@ window.getContactDetails = getContactDetails;
 window.openEditContact = openEditContact;
 window.getPriorityButtonsHTML = getPriorityButtonsHTML;
 window.setPriority = setPriority;
+window.getSingleDetailSubtaskHTML = getSingleDetailSubtaskHTML;
 
 /** --- BOARD TASK CARDS --- */
 
@@ -47,16 +48,19 @@ function renderTaskBody(t) {
  * @returns {string} The progress bar and text HTML string.
  */
 export function renderSmallSubtaskInfo(task) {
-  if (!task.subtasks || task.subtasks.length === 0) return '';
-  const done = task.subtasks.filter((s) => s.done).length;
-  const percent = (done / task.subtasks.length) * 100;
+  const subtasks = Array.isArray(task.subtasks) ? task.subtasks : [];
+  if (subtasks.length === 0) return ''; // Zeigt gar nichts an, wenn keine Subtasks da sind
+
+  const done = subtasks.filter((s) => s.done).length;
+  const percent = (done / subtasks.length) * 100;
+
   return `
     <div class="subtask-progress-container">
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" style="width: ${percent}%"></div>
       </div>
-      <small>${done}/${task.subtasks.length} Subtasks</small>
-    </div>`;
+      <span>${done}/${subtasks.length} Subtasks</span> 
+    </div>`; // "Subtasks" Text sorgt dafür, dass keine leeren Punkte stehen
 }
 
 /**
@@ -114,15 +118,34 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
 export function getSubtaskHTML(task, index) {
   const icon = task.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
   return `
-    <li class="subtask-edit-item">
+    <li class="subtask-edit-item" id="subtaskItem${index}" ondblclick="editSubtask(${index})">
       <div class="subtask-left" onclick="toggleSubtaskStatus(${index})">
-        <img src="../assets/icons/${icon}" class="subtask-check-icon" alt="checkbox">
+        <img src="../assets/icons/${icon}" class="subtask-check-icon">
         <span class="subtask-text">${task.title}</span>
       </div>
       <div class="subtask-actions">
-        <button type="button" class="delete-sub-btn" onclick="deleteSubtask(${index})">
+        <button type="button" class="subtask-action-btn" onclick="editSubtask(${index})">
+          <img src="../assets/icons/edit-icon.svg" alt="edit">
+        </button>
+        <div class="subtask-divider"></div>
+        <button type="button" class="subtask-action-btn" onclick="deleteSubtask(${index})">
           <img src="../assets/icons/delete-icon.svg" alt="delete">
         </button>
+      </div>
+    </li>`;
+}
+
+export function getSubtaskEditHTML(title, index, isEditMode = false, taskId = '') {
+  const saveFn = isEditMode ? `saveEditSubtask(${index}, '${taskId}')` : `saveSubtask(${index})`;
+  const deleteFn = isEditMode ? `deleteEditSubtask(${index}, '${taskId}')` : `deleteSubtask(${index})`;
+  return `
+    <li class="subtask-edit-mode-item">
+      <input type="text" id="editSubtaskInput${index}" class="subtask-edit-input" value="${title}" 
+             onkeydown="if(event.key==='Enter') ${saveFn}">
+      <div class="subtask-edit-actions">
+        <button type="button" class="subtask-action-btn" onclick="${deleteFn}"><img src="../assets/icons/delete-icon.svg"></button>
+        <div class="subtask-divider"></div>
+        <button type="button" class="subtask-action-btn" onclick="${saveFn}"><img src="../assets/icons/subtask-check-icon.svg"></button>
       </div>
     </li>`;
 }
@@ -144,7 +167,7 @@ export function generateTaskDetailHTML(task, id) {
       <div class="detail-view-info-row"><span class="detail-view-label" style="white-space:nowrap">Due date:</span> ${task.dueDate?.replaceAll('-', '/') || ''}</div>
       <div class="detail-view-info-row"><span class="detail-view-label" style="white-space:nowrap">Priority:</span>
         <div class="detail-view-prio-badge">${task.priority || 'Medium'} <img src="../assets/icons/${p === 'medium' ? 'medium-icon-orange.svg' : `prio-${p}-icon.svg`}"></div></div>
-      <div class="detail-section"><p class="detail-view-label" style="white-space:nowrap">Assigned To:</p><div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
+      <div class="detail-section"><p class="detail-view-label" style="white-space:nowrap">Assigned To</p><div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
       <div class="detail-section"><p class="detail-view-label">Subtasks</p><ul class="subtask-list-detail">${getDetailSubtasksHTML(task.subtasks, id)}</ul></div>
       ${getDetailFooter(id)}
     </div>`;
@@ -170,23 +193,41 @@ export function getDetailInfoRows(task) {
 }
 
 /**
- * Generates subtask item checklist elements inside the detail modal.
- * @param {Object[]} subtasks - List of subtask data objects.
- * @param {string} taskId - The unique target task ID.
- * @returns {string} The list of subtask checkbox items HTML string.
+ * Generates the HTML list items for subtasks in the detail view.
  */
 export function getDetailSubtasksHTML(subtasks, taskId) {
-  if (!subtasks || !Array.isArray(subtasks) || subtasks.length === 0) return '<p>No subtasks</p>';
-  return subtasks
-    .map((st, i) => {
-      const icon = st.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
-      return `
-      <li class="subtask-item" onclick="toggleSubtask('${taskId}', ${i})">
-        <img src="../assets/icons/${icon}" class="subtask-check-icon">
-        <span class="subtask-text">${st.title}</span>
-      </li>`;
-    })
+  const safeSubtasks = Array.isArray(subtasks) ? subtasks : [];
+  return safeSubtasks
+    .map(
+      (subtask, index) => `
+<li id="subtaskItemDetail${index}" class="subtask-item">
+<div class="subtask-left">
+<input type="checkbox" ${subtask.done ? 'checked' : ''} onclick="toggleSubtask('${taskId}', ${index})">
+<span>${subtask.title}</span>
+</div>
+<div class="subtask-icons">
+<img src="../assets/icons/edit-icon.svg" onclick="editEditSubtask(${index}, '${taskId}')">
+<div class="icon-divider"></div>
+<img src="../assets/icons/delete-icon.svg" onclick="deleteEditSubtask('${taskId}', ${index})">
+</div>
+</li>`,
+    )
     .join('');
+}
+
+export function getSingleDetailSubtaskHTML(subtask, index, taskId) {
+  return `
+    <li id="subtaskItemDetail${index}" class="subtask-item">
+      <div class="subtask-left">
+        <input type="checkbox" ${subtask.done ? 'checked' : ''} onclick="toggleSubtask('${taskId}', ${index})">
+        <span>${subtask.title}</span>
+      </div>
+      <div class="subtask-icons">
+        <img src="../assets/icons/edit-icon.svg" onclick="editEditSubtask(${index}, '${taskId}')">
+        <div class="icon-divider"></div>
+        <img src="../assets/icons/delete-icon.svg" onclick="deleteEditSubtask('${taskId}', ${index})">
+      </div>
+    </li>`;
 }
 
 /**
@@ -286,19 +327,19 @@ export function getEditLeftSection(task) {
     </div>`;
 }
 
-/**
- * Generates the layout view container structure for editor right sections.
- * @param {Object} task - The targeted active task data object.
- * @param {string} id - The unique task ID.
- * @returns {string} HTML snippet wrapper form elements.
- */
 export function getEditRightSection(task, id) {
   return `
     <div class="edit-section">
       <div class="input-group"><label>Due Date</label>
         <input type="date" id="editDate" value="${task.dueDate || ''}"></div>
       <div class="input-group"><label>Assigned To</label>
-        <input type="text" id="editAssigned" value="${task.assignedTo || ''}"></div>
+        <div class="combo-wrapper" id="assignedInputContainer">
+          <input type="text" id="assignedInput" placeholder="Select contacts to assign" 
+                 oninput="renderContacts(this.value)" onclick="toggleContactList()">
+          <img src="../assets/icons/arrow_drop_down.svg" class="dropdown-arrow" onclick="toggleContactList()">
+        </div>
+        <div id="contactList" class="contact-list-dropdown d-none"></div>
+        <div id="assignedBadges" class="assigned-badges-container"></div>
     </div>`;
 }
 
@@ -368,18 +409,20 @@ export function getContactOptionsHTML(contactsArray, defaultText) {
   return def + opts;
 }
 
+/**
+ * Generates the HTML for a contact item in the dropdown with your specific icons.
+ */
 export function getContactCheckboxHTML(contact, isChecked) {
+  const icon = isChecked ? 'subtask-done-icon.svg' : 'check-empty.svg';
   return `
-    <div class="contact-item" onclick="event.stopPropagation()">
-      <label class="contact-label">
-        <div class="contact-name-wrapper">
-          <input type="checkbox" name="assignedContact" value="${contact.name}" 
-                 ${isChecked ? 'checked' : ''} onchange="updateSelectedBadges()">
-          <div class="user-badge-small" style="background-color: ${contact.color || '#2A3647'}">
-            ${contact.initials || '??'}
-          </div>
-          <span>${contact.name}</span>
-        </div>
-      </label>
+    <div class="contact-item ${isChecked ? 'selected' : ''}" 
+         onclick="toggleContactSelection('${contact.name}'); event.stopPropagation();">
+      <div class="contact-name-left" style="pointer-events: none;">
+        <div class="user-badge-small" style="background-color: ${contact.color}">${contact.initials}</div>
+        <span style="color: inherit;">${contact.name}</span>
+      </div>
+      <input type="checkbox" name="assignedContact" value="${contact.name}" 
+             ${isChecked ? 'checked' : ''} style="display:none">
+      <img src="../assets/icons/${icon}" class="custom-checkbox" style="pointer-events: none;">
     </div>`;
 }

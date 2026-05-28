@@ -7,14 +7,11 @@
 .action-btn,
 .assigned-user,
 .input-wrapper,
-.subtask-item,
-.subtask-left,
 .detail-view-info-row {
   display: flex;
   align-items: center;
 }
 
-/* Box-Sizing für alle Dialog-Komponenten */
 .detail-dialog-frame,
 .task-detail-content-style,
 .detail-view,
@@ -25,7 +22,6 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* --- 2. BOARD LAYOUT --- */
 .board-header {
   justify-content: space-between;
   margin-bottom: 40px;
@@ -89,12 +85,22 @@
   width: 250px;
 }
 
+.drag-area-highlight {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 2px dashed #a8a8a8;
+  border-radius: 24px;
+  transition: all 125ms ease-in-out;
+}
+
 .task-container {
   min-height: 70vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+  flex-direction: column;
 }
 
 .no-tasks {
@@ -106,7 +112,18 @@
   color: var(--color-divider);
 }
 
-/* --- 3. TASK CARDS --- */
+.no-search-results {
+  width: fit-content;
+  margin: -20px 0 24px;
+  padding: 12px 18px;
+  border: 1px solid var(--color-info-border);
+  border-radius: 8px;
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
+  font-size: 18px;
+  margin-top: 8px;
+}
+
 .task-card {
   background: var(--color-bg-primary);
   border-radius: 24px;
@@ -158,7 +175,6 @@
   background: var(--color-category-feature);
 }
 
-/* --- 4. DIALOG & DETAIL VIEW --- */
 .detail-dialog-frame {
   border: none;
   border-radius: 30px;
@@ -188,6 +204,13 @@
   max-height: 90vh;
   overflow: auto;
   width: 100%;
+}
+
+.task-detail-content-style ul,
+.assigned-list-detail {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 .detail-view-header {
@@ -270,30 +293,26 @@
   border-radius: 8px;
 }
 
-/* Container für alle zugewiesenen Personen */
 .assigned-list-detail {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Abstand zwischen den einzelnen Personen */
+  gap: 8px;
   margin-top: 10px;
 }
 
-/* Eine einzelne Reihe (Kreis + Name) */
 .assigned-contact-row {
   display: flex;
-  align-items: center; /* Richtet Kreis und Name vertikal mittig aus */
-  gap: 25px; /* Abstand zwischen Kreis und Name laut Foto */
-  padding: 4px 16px; /* Etwas Einrückung wie im Design */
+  align-items: center;
+  gap: 25px;
+  padding: 4px 16px;
 }
 
-/* Der Namens-Text */
 .contact-name-detail {
   font-size: 20px;
   color: #000000;
   font-family: 'Open Sans', sans-serif;
 }
 
-/* Der Initialen-Kreis (falls noch nicht global definiert) */
 .user-badge {
   width: 42px;
   height: 42px;
@@ -307,7 +326,6 @@
   margin-right: -8px;
 }
 
-/* --- 5. PROGRESS & SUBTASKS --- */
 .subtask-progress-container {
   display: flex;
   align-items: center;
@@ -329,15 +347,53 @@
 }
 
 .subtask-item {
-  padding: 6px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
   cursor: pointer;
+  gap: 10px;
+  width: 100%;
 }
 .subtask-text {
   margin-left: 20px;
   font-size: 16px;
 }
 
-/* --- 6. EDIT MODE & INPUTS --- */
+.subtask-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  min-width: 0;
+}
+
+.subtask-left span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subtask-left input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.subtask-icons img {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.subtask-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .edit-content-wrapper {
   display: flex;
   gap: 40px;

@@ -1,11 +1,4 @@
-import {
-  ref,
-  onValue,
-  get,
-  child,
-  update,
-  remove,
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { ref, onValue, get, child, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { auth, database } from './firebase-config.js';
 
 import {
@@ -24,15 +17,20 @@ import {
   generateTaskHTML,
   generateTaskDetailHTML,
   generateEditTaskHTML,
+  getSubtaskHTML,
+  getSubtaskEditHTML,
 } from './template.js';
 
 import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
 import { getContacts } from './contacts-service.js';
+import { userSubtaskPath, userTaskPath, userTasksPath } from './database-paths.js';
 
 /** @section GLOBAL VARIABLES */
 let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
+let currentSearchTerm = '';
+let currentStatus = 'todo';
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.initBoard = initBoard;
@@ -50,18 +48,62 @@ window.deleteEditSubtask = deleteEditSubtask;
 window.toggleEditSubtask = toggleEditSubtask;
 window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
+window.editEditSubtask = editEditSubtask;
+window.saveEditSubtask = saveEditSubtask;
+window.highlight = highlight;
+window.removeHighlight = removeHighlight;
 
 export async function initBoard() {
+  setupTaskSearch();
   window.contacts = await getContacts();
   const setup = (data) => {
     CURRENT_TASKS = data || {};
-    renderAllTasks(CURRENT_TASKS);
+    renderFilteredTasks();
     setupDialogClose(closeTaskDetail);
   };
   if (isGuestUser()) return setup(convertTaskArrayToObject(getLocalTasks()));
-  onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snap) =>
-    setup(snap.val()),
-  );
+  onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snap) => setup(snap.val()));
+}
+
+function setupTaskSearch() {
+  const searchInput = document.getElementById('searchTask');
+
+  if (!searchInput || searchInput.dataset.searchInitialized === 'true') return;
+
+  currentSearchTerm = searchInput.value.trim().toLowerCase();
+  searchInput.dataset.searchInitialized = 'true';
+
+  searchInput.addEventListener('input', () => {
+    currentSearchTerm = searchInput.value.trim().toLowerCase();
+    renderFilteredTasks();
+  });
+}
+
+function renderFilteredTasks() {
+  const filteredTasks = filterTasksBySearchTerm(CURRENT_TASKS);
+
+  renderAllTasks(filteredTasks);
+  updateNoSearchResults(filteredTasks);
+}
+
+function filterTasksBySearchTerm(allTasks) {
+  if (!currentSearchTerm) return allTasks;
+
+  return normalizeObjectToArray(allTasks).filter((task) => {
+    const title = String(task.title || '').toLowerCase();
+    const description = String(task.description || '').toLowerCase();
+
+    return title.includes(currentSearchTerm) || description.includes(currentSearchTerm);
+  });
+}
+
+function updateNoSearchResults(filteredTasks) {
+  const noResultsElement = document.getElementById('noSearchResults');
+  if (!noResultsElement) return;
+
+  const hasNoSearchResults = currentSearchTerm && normalizeObjectToArray(filteredTasks).length === 0;
+
+  noResultsElement.classList.toggle('hidden', !hasNoSearchResults);
 }
 
 function renderAllTasks(allTasks) {
@@ -109,13 +151,50 @@ export async function toggleSubtask(taskId, index) {
   task.subtasks[index].done = !task.subtasks[index].done;
   if (isGuestUser()) {
     setLocalTasks(Object.values(CURRENT_TASKS));
-    renderAllTasks(CURRENT_TASKS); // Sofortiges Update für Gäste
+    renderFilteredTasks(); // Sofortiges Update für Gäste
   } else {
-    const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
+    const path = userSubtaskPath(auth.currentUser.uid, taskId, index);
     await update(ref(database, path), { done: task.subtasks[index].done });
   }
-  document.getElementById('taskDetailContent').innerHTML =
-    generateTaskDetailHTML(task, taskId);
+  document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, taskId);
+}
+
+export function editEditSubtask(index, taskId) {
+  const item = document.getElementById(`subtaskItemDetail${index}`);
+  const task = CURRENT_TASKS[taskId];
+  if (item && task) {
+    item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
+    const input = document.getElementById(`editSubtaskInput${index}`);
+    input?.focus();
+  }
+}
+
+window.editEditSubtask = function (index, taskId) {
+  const item = document.getElementById(`subtaskItemDetail${index}`);
+  const task = CURRENT_TASKS[taskId];
+
+  if (item && task && task.subtasks[index]) {
+    item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
+    const input = document.getElementById(`editSubtaskInput${index}`);
+    input?.focus();
+  } else {
+    console.error(`Element subtaskItemDetail${index} nicht gefunden!`);
+  }
+};
+
+async function saveEditSubtask(index, taskId) {
+  const input = document.getElementById(`editSubtaskInput${index}`);
+  const task = CURRENT_TASKS[taskId];
+  if (input && input.value.trim() !== '') {
+    task.subtasks[index].title = input.value.trim();
+    const item = input.closest('li');
+    item.outerHTML = getSingleDetailSubtaskHTML(task.subtasks[index], index, taskId);
+
+    if (!isGuestUser()) {
+      const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
+      await update(ref(database, path), { title: task.subtasks[index].title });
+    }
+  }
 }
 
 /** @section DRAG & DROP */
@@ -159,12 +238,12 @@ function moveGuestTaskTo(status) {
 
   setLocalTasks(convertTaskObjectToArray(CURRENT_TASKS));
 
-  renderAllTasks(CURRENT_TASKS);
+  renderFilteredTasks();
 }
 
 async function moveFirebaseTaskTo(status) {
   const uid = auth.currentUser.uid;
-  const taskRef = ref(database, `tasks/${uid}/${CURRENT_DRAGGED_ELEMENT}`);
+  const taskRef = ref(database, userTaskPath(uid, CURRENT_DRAGGED_ELEMENT));
 
   await update(taskRef, { status });
 }
@@ -174,15 +253,13 @@ async function moveFirebaseTaskTo(status) {
 export async function editTask(id) {
   const task = CURRENT_TASKS[id];
   if (!task) return;
-  const dialog = document.getElementById('taskDetailDialog');
   const content = document.getElementById('taskDetailContent');
-
-  localStorage.setItem('editTaskData', JSON.stringify(task)); // Wichtig für getTaskObject()
-  const response = await fetch('add-task.html');
+  localStorage.setItem('editTaskData', JSON.stringify(task));
+  const response = await fetch('add-task.html'); // Diese Zeile war weg!
   content.innerHTML = `<div class="edit-mode-container">${await response.text()}</div>`;
-
-  if (!dialog.open) dialog.showModal(); // Öffnet den Dialog, falls er zu ist
   if (window.prepareEditInDialog) window.prepareEditInDialog(id, task);
+  const dialog = document.getElementById('taskDetailDialog');
+  if (!dialog.open) dialog.showModal();
 }
 
 export async function saveEdit(id) {
@@ -193,14 +270,13 @@ export async function saveEdit(id) {
     priority: editPriority,
     assignedTo: window.selectedContacts || CURRENT_TASKS[id].assignedTo || [],
   };
-  isGuestUser()
-    ? (Object.assign(CURRENT_TASKS[id], updates),
-      setLocalTasks(Object.values(CURRENT_TASKS)))
-    : await update(
-        ref(database, `tasks/${auth.currentUser.uid}/${id}`),
-        updates,
-      );
-  renderAllTasks(CURRENT_TASKS);
+  if (isGuestUser()) {
+    Object.assign(CURRENT_TASKS[id], updates);
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    await update(ref(database, userTaskPath(auth.currentUser.uid, id)), updates);
+  }
+  renderFilteredTasks();
   closeTaskDetail();
 }
 
@@ -230,10 +306,7 @@ async function addEditSubtask(taskId) {
   if (!task.subtasks) task.subtasks = [];
   task.subtasks.push({ title: title, done: false });
   input.value = '';
-  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(
-    task,
-    taskId,
-  );
+  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
 }
 
 /**
@@ -241,10 +314,13 @@ async function addEditSubtask(taskId) {
  * @param {string} id - The parent task ID.
  * @param {number} index - Subtask position index.
  */
-async function deleteEditSubtask(id, index) {
-  CURRENT_TASKS[id].subtasks.splice(index, 1);
-  const content = document.getElementById('taskDetailContent');
-  content.innerHTML = generateEditTaskHTML(CURRENT_TASKS[id], id);
+export async function deleteEditSubtask(id, index) {
+  const task = CURRENT_TASKS[id];
+  if (task && task.subtasks) {
+    task.subtasks.splice(index, 1);
+    document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, id);
+    if (!isGuestUser()) await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), { subtasks: task.subtasks });
+  }
 }
 
 /**
@@ -255,10 +331,7 @@ async function deleteEditSubtask(id, index) {
 function toggleEditSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
   task.subtasks[index].done = !task.subtasks[index].done;
-  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(
-    task,
-    taskId,
-  );
+  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
 }
 
 /** @section MISCELLANEOUS ACTIONS */
@@ -272,10 +345,10 @@ export async function deleteTask(id) {
     delete CURRENT_TASKS[id];
     setLocalTasks(Object.values(CURRENT_TASKS));
   } else {
-    await remove(ref(database, `tasks/${auth.currentUser.uid}/${id}`));
+    await remove(ref(database, userTaskPath(auth.currentUser.uid, id)));
   }
   closeTaskDetail();
-  renderAllTasks(CURRENT_TASKS);
+  renderFilteredTasks();
   if (typeof showSuccessToast === 'function') showSuccessToast('Task deleted');
 }
 
@@ -283,9 +356,45 @@ export async function deleteTask(id) {
  * Navigates the window viewport to the creation view.
  * @param {string} [status='todo'] - Initial status column value.
  */
-function openAddTask(status = 'todo') {
-  localStorage.setItem('selectedStatus', status);
-  window.location.href = 'layout.html?page=add-task';
+export async function openAddTask(status = 'todo') {
+  currentStatus = status;
+  const content = document.getElementById('taskDetailContent');
+  const response = await fetch('add-task.html');
+  content.innerHTML = `<div class="edit-mode-container">${await response.text()}</div>`;
+  localStorage.removeItem('editTaskId');
+  if (window.initAddTask) await window.initAddTask();
+  currentStatus = status;
+  const btn = content.querySelector('#createTaskBtn') || content.querySelector('.btn-dark');
+  if (btn) btn.onclick = () => saveNewTaskFromBoard();
+  document.getElementById('taskDetailDialog').showModal();
+}
+
+async function saveNewTaskFromBoard() {
+  const newTask = getTaskDataFromForm();
+  if (isGuestUser()) {
+    const tempId = Date.now();
+    CURRENT_TASKS[tempId] = newTask;
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    const newTaskRef = push(ref(database, `tasks/${auth.currentUser.uid}`));
+    await update(newTaskRef, newTask);
+    CURRENT_TASKS[newTaskRef.key] = newTask;
+  }
+  closeTaskDetail();
+  renderFilteredTasks();
+}
+
+function getTaskDataFromForm() {
+  return {
+    title: document.getElementById('taskTitle')?.value || '',
+    description: document.getElementById('taskDescription')?.value || '',
+    dueDate: document.getElementById('taskDate')?.value || '',
+    priority: window.currentPriority || 'Medium',
+    status: currentStatus,
+    category: document.getElementById('selectedCategory')?.innerText || 'User Story',
+    assignedTo: window.selectedContacts || [],
+    subtasks: window.subtasks || [],
+  };
 }
 
 function convertTaskArrayToObject(tasks) {

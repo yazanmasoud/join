@@ -123,3 +123,22 @@ function validateTask(task) {
   const catSelect = document.getElementById('taskCategory');
   return task.title && task.dueDate && catSelect.selectedIndex !== 0;
 }
+
+
+/**
+ * Returns a random color
+ * from the predefined color array.
+ *
+ * @returns {string} A random hex color value.
+ */
+export function getRandomColor() {
+    const colors = [
+        '#FF7A00', '#FF5EB3', '#6E52FF',
+        '#9327FF', '#00BEE8', '#1FD7C1',
+        '#FF745E', '#FFA35E', '#FF5E5E',
+        '#FF5E9E'
+    ];
+
+    let randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+}

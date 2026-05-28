@@ -202,7 +202,7 @@ export async function initLoginLayout() {
   await loadTemplate('mainLoginContent', `./${page}.html`);
 
   setActiveLoginNavFromUrl(page);
-  document.body.classList.add('has-active-page'); // Ensures a valid default page is loaded when loginlayout.html is opened directly without a page parameter.
+  document.body.classList.add('has-active-page'); // Ensures a valid default page is loaded when layout-login.html is opened directly without a page parameter.
 }
 
 /**
@@ -222,6 +222,7 @@ function openHelp() {
  */
 function logOut() {
   localStorage.removeItem('currentUser'); // Delete Login-Status
+  sessionStorage.removeItem('mobileGreetingPlayed');
   closeOpenElements();
   window.location.href = '../index.html'; // Redirect to login page
 }
