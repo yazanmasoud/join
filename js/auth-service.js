@@ -1,7 +1,7 @@
 import { auth, database } from './firebase-config.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { ref, set, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-import { hideOverlay, showOverlay } from './utils.js';
+import { hideOverlay, showOverlay, getRandomColor } from './utils.js';
 import { guestContacts, guestTasks } from './guest-data.js';
 import { getCurrentUserId, isGuestUser } from './storage.js';
 import { showInputError, clearInputError, closeSignUp, clearSignupInputs } from './ui.js';
@@ -26,11 +26,24 @@ export async function registerUser(name, email, password) {
       password
     );
     await saveUserProfile(userCredential.user, name, email);
+    await saveUserAsContact(user, name, email);
     await signOut(auth);
     handleSignupSuccess();
   } catch (error) {
     handleSignupError(error);
   }
+}
+
+
+async function saveUserAsContact(user, name, email) {
+  await set(ref(database, `contacts/${user.uid}/${user.uid}`), {
+    id: user.uid,
+    name,
+    email,
+    phone: '',
+    color: getRandomColor(),
+    initials: getInitials(name),
+  });
 }
 
 

@@ -7,6 +7,7 @@ import {
     openDeleteDialog, closeDeleteDialog
 } from './contacts-dialog.js';
 import { handleCreateContact, handleDeleteContact, handleSaveContact } from './contacts-actions.js';
+import { getRandomColor } from './utils.js';
 
 export let contacts = [];
 export let currentEditContactId = null;
@@ -172,23 +173,4 @@ function animateNewContact(detailsContainer, contact) {
     renderContactHtml(detailsContainer, contact);
 
     requestAnimationFrame(() => detailsContainer.classList.remove('slide-in'));
-}
-
-
-/**
- * Returns a random color
- * from the predefined color array.
- *
- * @returns {string} A random hex color value.
- */
-export function getRandomColor() {
-    const colors = [
-        '#FF7A00', '#FF5EB3', '#6E52FF',
-        '#9327FF', '#00BEE8', '#1FD7C1',
-        '#FF745E', '#FFA35E', '#FF5E5E',
-        '#FF5E9E'
-    ];
-
-    let randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
 }
