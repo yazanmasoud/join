@@ -66,9 +66,11 @@ function openAddContact() {
  * @param {Object} elements
  */
 function setupCreateDialog(elements) {
-    elements.sidebarImage.src ='../assets/img/Frame-add-contact.png';
+    elements.sidebarImage.src = '../assets/img/Frame-add-contact.png';
+    document.getElementById('contact-dialog-title').textContent = 'Add contact';
+    document.getElementById('contact-dialog-subtitle').style.display = '';
 
-    elements.createSaveButton.innerHTML ='Create Contact';
+    elements.createSaveButton.innerHTML = 'Create Contact';
 
     elements.createSaveButton.onclick = handleCreateContact;
 
@@ -171,6 +173,8 @@ function setupEditDialog(elements, contact, contactId) {
     fillEditInputs(elements, contact);
 
     elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
+    document.getElementById('contact-dialog-title').textContent = 'Edit contact';
+    document.getElementById('contact-dialog-subtitle').style.display = 'none';
 }
 
 
