@@ -10,6 +10,8 @@ import { getCurrentUserData } from './auth-service.js';
 
 window.initSummary = initSummary;
 
+const MOBILE_GREETING_PLAYED_KEY = 'mobileGreetingPlayed';
+
 /**
  * Initializes the dashboard by setting the greeting, handling mobile view,
  * rendering the username, and fetching task data.
@@ -61,7 +63,19 @@ async function renderGreetingName() {
  */
 function handleMobileGreeting() {
   const element = document.getElementById('mobile-greeting');
-  if (!element || window.innerWidth > 1100) return element?.remove();
+
+  if (!element) return;
+
+  if (
+    window.innerWidth > 1100 ||
+    sessionStorage.getItem(MOBILE_GREETING_PLAYED_KEY)
+  ) {
+    element.remove();
+    return;
+  }
+
+  sessionStorage.setItem(MOBILE_GREETING_PLAYED_KEY, 'true');
+
   setTimeout(() => {
     element.style.opacity = '0';
     setTimeout(() => element.remove(), 300);

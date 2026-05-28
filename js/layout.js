@@ -222,6 +222,7 @@ function openHelp() {
  */
 function logOut() {
   localStorage.removeItem('currentUser'); // Delete Login-Status
+  sessionStorage.removeItem('mobileGreetingPlayed');
   closeOpenElements();
   window.location.href = '../index.html'; // Redirect to login page
 }
