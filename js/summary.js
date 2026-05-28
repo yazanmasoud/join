@@ -1,7 +1,4 @@
-import {
-  ref,
-  get,
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { ref, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { isGuestUser, getLocalTasks } from './storage.js';
 import { calculateMetrics } from './utils.js';
 import { setGreeting, updateUI, setGreetingName } from './ui.js';
@@ -25,12 +22,24 @@ export async function initSummary() {
 }
 
 /**
- * Orchestrates the data retrieval based on user type and updates the UI with calculated metrics.
- * @returns {Promise<void>}
+ * Orchestrates the data retrieval and attaches navigation events to cards.
  */
 async function fetchSummaryData() {
   const tasks = isGuestUser() ? getLocalTasks() : await getFirebaseTasks();
   updateUI(calculateMetrics(tasks));
+  setupCardNavigation(); // Fügt die Klick-Events hinzu
+}
+
+/**
+ * Attaches the click event to all summary cards to navigate to the board.
+ */
+function setupCardNavigation() {
+  // Wir wählen einfach ALLE Elemente mit der Klasse .card-base aus
+  const cards = document.querySelectorAll('.card-base');
+
+  cards.forEach((card) => {
+    card.onclick = () => navigateTo('board');
+  });
 }
 
 /**
@@ -66,10 +75,7 @@ function handleMobileGreeting() {
 
   if (!element) return;
 
-  if (
-    window.innerWidth > 1100 ||
-    sessionStorage.getItem(MOBILE_GREETING_PLAYED_KEY)
-  ) {
+  if (window.innerWidth > 1100 || sessionStorage.getItem(MOBILE_GREETING_PLAYED_KEY)) {
     element.remove();
     return;
   }

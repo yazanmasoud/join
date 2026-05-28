@@ -1,24 +1,37 @@
+/* --- ALLGEMEINE ADD-TASK STYLES --- */
+.add-task {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.add-task .input-group input:focus,
+.add-task .input-group textarea:focus,
+.add-task .input-group select:focus {
+  border-color: #29abe2;
+  box-shadow: 0 0 4px 0 rgba(41, 171, 226, 0.5);
+}
+
+.add-task .input-group input.input-error,
+.add-task .input-group select.input-error {
+  border-color: #ff3d00;
+}
+
+.error-message {
+  color: #ff3d00;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* --- LAYOUT & STRUKTUR --- */
 .stats-section {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
+
 .content-area {
   padding: 60px;
-}
-
-.card-base {
-  background-color: var(--color-bg-primary);
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  display: flex;
-  transition: all 125ms ease-in-out;
-}
-
-.card-base:hover {
-  background: var(--color-highlights);
-  color: var(--color-bg-primary);
-  cursor: pointer;
 }
 
 .summary-header {
@@ -31,7 +44,7 @@
 .vertical-line {
   width: 3px;
   height: 40px;
-  background-color: var(--color-highlights);
+  background-color: #29abe2;
 }
 
 .dashboard-grid {
@@ -52,10 +65,19 @@
   justify-content: space-between;
 }
 
+/* --- SUMMARY CARDS BASIS --- */
+.card-base {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  transition: all 125ms ease-in-out;
+  cursor: pointer;
+}
+
 .summary-card {
   flex: 1;
   height: 168px;
-  max-width: none;
   justify-content: center;
   align-items: center;
 }
@@ -73,6 +95,59 @@
   text-align: center;
 }
 
+/* --- ICON CONTAINER SYSTEM --- */
+.icon-container {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: #2a3647; /* Standard Kreis dunkel */
+  /* transition: all 125ms ease-in-out; */
+}
+
+.icon-container img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.icon-hover {
+  display: none; /* Im Normalzustand unsichtbar */
+}
+
+/* --- HOVER EFFEKTE --- */
+.card-base:hover,
+.summary-card:hover,
+.urgent-row:hover {
+  background-color: #2a3647;
+}
+
+/* Kreis wird weiß bei Hover */
+.summary-card:hover .icon-container {
+  background-color: #ffffff;
+}
+
+/* Bildertausch beim Hover */
+.summary-card:hover .icon-default {
+  display: none;
+}
+
+.summary-card:hover .icon-hover {
+  display: block;
+}
+
+/* Texte weiß färben beim Hovern */
+.card-base:hover .stat-number,
+.card-base:hover .stat-label,
+.card-base:hover .deadline-date,
+.card-base:hover .urgent-right div,
+.card-base:hover span {
+  color: #ffffff;
+}
+
+/* --- URGENT ROW SPEZIAL --- */
 .urgent-row {
   max-width: none;
   height: 168px;
@@ -81,6 +156,14 @@
   grid-template-columns: 1fr 1fr;
   position: relative;
   padding: 0 40px;
+}
+
+.urgent-row .icon-container {
+  background-color: #ff3d00; /* Urgent Kreis immer rot */
+}
+
+.urgent-row:hover .urgent-divider {
+  background-color: #ffffff;
 }
 
 .urgent-right {
@@ -94,15 +177,7 @@
   gap: 5px;
 }
 
-.urgent-row .summary-card-content {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-}
-
+/* --- INNERE ELEMENTE --- */
 .summary-card-content {
   display: flex;
   align-items: center;
@@ -127,17 +202,7 @@
 
 .stat-label {
   font-size: 18px;
-  color: var(--color-text-main);
   margin: 0;
-}
-
-.summary-card-small .stat-number {
-  font-size: 48px;
-  font-weight: 700;
-}
-
-.summary-card-small .stat-label {
-  font-size: 16px;
 }
 
 .urgent-divider {
@@ -147,13 +212,14 @@
   transform: translate(-50%, -50%);
   width: 2px;
   height: 100px;
-  background-color: var(--color-divider);
+  background-color: #d1d1d1;
 }
 
 .deadline-date {
   font-weight: bold;
 }
 
+/* --- GREETING & OVERLAY --- */
 .greeting-section {
   display: flex;
   flex-direction: column;
@@ -163,27 +229,22 @@
 
 .user-name-display {
   font-size: 64px;
-  color: var(--color-highlights);
+  color: #29abe2;
   margin: 0;
 }
 
 .mobile-greeting-overlay {
-    position: fixed;
-    inset: 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    background-color: #f6f7f8;
-
-    z-index: 9999;
-
-    opacity: 1;
-    transition: opacity 300ms ease;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #f6f7f8;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 300ms ease;
 }
-
 /* --- RESPONSIVE MEDIA QUERIES --- */
 
 @media (min-width: 1101px) {
