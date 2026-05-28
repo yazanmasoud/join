@@ -29,6 +29,7 @@ let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
 let currentSearchTerm = '';
+let currentStatus = 'todo';
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.initBoard = initBoard;
@@ -48,6 +49,8 @@ window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
 window.editEditSubtask = editEditSubtask;
 window.saveEditSubtask = saveEditSubtask;
+window.highlight = highlight;
+window.removeHighlight = removeHighlight;
 
 export async function initBoard() {
   setupTaskSearch();
@@ -169,7 +172,6 @@ function editEditSubtask(index, taskId) {
 window.editEditSubtask = function (index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
   const task = CURRENT_TASKS[taskId];
-  // Wir nutzen deine getSubtaskEditHTML (isEditMode = true)
   item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
 
   const input = document.getElementById(`editSubtaskInput${index}`);
@@ -183,7 +185,6 @@ async function saveEditSubtask(index, taskId) {
   if (input && input.value.trim() !== '') {
     task.subtasks[index].title = input.value.trim();
     const item = input.closest('li');
-    // Wir rendern nur diesen einen Listenpunkt neu
     item.outerHTML = getSubtaskHTML(task.subtasks[index], index);
 
     if (!isGuestUser()) {
@@ -252,11 +253,10 @@ export async function editTask(id) {
   const dialog = document.getElementById('taskDetailDialog');
   const content = document.getElementById('taskDetailContent');
 
-  localStorage.setItem('editTaskData', JSON.stringify(task)); // Wichtig für getTaskObject()
-  const response = await fetch('add-task.html');
+  localStorage.setItem('editTaskData', JSON.stringify(task));
   content.innerHTML = `<div class="edit-mode-container">${await response.text()}</div>`;
 
-  if (!dialog.open) dialog.showModal(); // Öffnet den Dialog, falls er zu ist
+  if (!dialog.open) dialog.showModal();
   if (window.prepareEditInDialog) window.prepareEditInDialog(id, task);
 }
 
@@ -351,9 +351,45 @@ export async function deleteTask(id) {
  * Navigates the window viewport to the creation view.
  * @param {string} [status='todo'] - Initial status column value.
  */
-function openAddTask(status = 'todo') {
-  localStorage.setItem('selectedStatus', status);
-  window.location.href = 'layout.html?page=add-task';
+export async function openAddTask(status = 'todo') {
+  currentStatus = status;
+  const content = document.getElementById('taskDetailContent');
+  const response = await fetch('add-task.html');
+  content.innerHTML = `<div class="edit-mode-container">${await response.text()}</div>`;
+  localStorage.removeItem('editTaskId');
+  if (window.initAddTask) await window.initAddTask();
+  currentStatus = status;
+  const btn = content.querySelector('#createTaskBtn') || content.querySelector('.btn-dark');
+  if (btn) btn.onclick = () => saveNewTaskFromBoard();
+  document.getElementById('taskDetailDialog').showModal();
+}
+
+async function saveNewTaskFromBoard() {
+  const newTask = getTaskDataFromForm();
+  if (isGuestUser()) {
+    const tempId = Date.now();
+    CURRENT_TASKS[tempId] = newTask;
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    const newTaskRef = push(ref(database, `tasks/${auth.currentUser.uid}`));
+    await update(newTaskRef, newTask);
+    CURRENT_TASKS[newTaskRef.key] = newTask;
+  }
+  closeTaskDetail();
+  renderFilteredTasks();
+}
+
+function getTaskDataFromForm() {
+  return {
+    title: document.getElementById('taskTitle')?.value || '',
+    description: document.getElementById('taskDescription')?.value || '',
+    dueDate: document.getElementById('taskDate')?.value || '',
+    priority: window.currentPriority || 'Medium',
+    status: currentStatus,
+    category: document.getElementById('selectedCategory')?.innerText || 'User Story',
+    assignedTo: window.selectedContacts || [],
+    subtasks: window.subtasks || [],
+  };
 }
 
 function convertTaskArrayToObject(tasks) {

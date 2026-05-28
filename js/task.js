@@ -263,14 +263,14 @@ function clearForm() {
     if (document.getElementById(id)) document.getElementById(id).value = '';
   });
   subtasks = [];
-  renderSubtasks();
-  document.getElementById('taskCategory').selectedIndex = 0;
-  document.getElementById('tasksAssigned').selectedIndex = 0;
-  setPriority('Medium');
-  localStorage.removeItem('editTaskId');
-  localStorage.removeItem('editTaskData');
-  document.querySelector('h2').innerText = 'Add Task';
-  document.querySelector('.btn-dark').innerHTML = 'Create Task <img src="../assets/icons/create-task.svg">';
+  if (window.renderSubtasks) renderSubtasks();
+  document.getElementById('taskCategory') && (document.getElementById('taskCategory').selectedIndex = 0);
+  document.getElementById('tasksAssigned') && (document.getElementById('tasksAssigned').selectedIndex = 0);
+  if (window.setPriority) setPriority('Medium');
+  ['editTaskId', 'editTaskData'].forEach((k) => localStorage.removeItem(k));
+  if (document.querySelector('h2')) document.querySelector('h2').innerText = 'Add Task';
+  const btn = document.querySelector('.btn-dark');
+  if (btn) btn.innerHTML = 'Create Task <img src="../assets/icons/create-task.svg">';
 }
 
 /**

@@ -14,7 +14,6 @@
   align-items: center;
 }
 
-/* Box-Sizing für alle Dialog-Komponenten */
 .detail-dialog-frame,
 .task-detail-content-style,
 .detail-view,
@@ -25,7 +24,6 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* --- 2. BOARD LAYOUT --- */
 .board-header {
   justify-content: space-between;
   margin-bottom: 40px;
@@ -89,12 +87,22 @@
   width: 250px;
 }
 
+.drag-area-highlight {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 2px dashed #a8a8a8;
+  border-radius: 24px;
+  transition: all 125ms ease-in-out;
+}
+
 .task-container {
   min-height: 70vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+  flex-direction: column;
 }
 
 .no-tasks {
@@ -118,7 +126,6 @@
   margin-top: 8px;
 }
 
-/* --- 3. TASK CARDS --- */
 .task-card {
   background: var(--color-bg-primary);
   border-radius: 24px;
@@ -170,7 +177,6 @@
   background: var(--color-category-feature);
 }
 
-/* --- 4. DIALOG & DETAIL VIEW --- */
 .detail-dialog-frame {
   border: none;
   border-radius: 30px;
@@ -282,30 +288,26 @@
   border-radius: 8px;
 }
 
-/* Container für alle zugewiesenen Personen */
 .assigned-list-detail {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Abstand zwischen den einzelnen Personen */
+  gap: 8px;
   margin-top: 10px;
 }
 
-/* Eine einzelne Reihe (Kreis + Name) */
 .assigned-contact-row {
   display: flex;
-  align-items: center; /* Richtet Kreis und Name vertikal mittig aus */
-  gap: 25px; /* Abstand zwischen Kreis und Name laut Foto */
-  padding: 4px 16px; /* Etwas Einrückung wie im Design */
+  align-items: center;
+  gap: 25px;
+  padding: 4px 16px;
 }
 
-/* Der Namens-Text */
 .contact-name-detail {
   font-size: 20px;
   color: #000000;
   font-family: 'Open Sans', sans-serif;
 }
 
-/* Der Initialen-Kreis (falls noch nicht global definiert) */
 .user-badge {
   width: 42px;
   height: 42px;
@@ -319,7 +321,6 @@
   margin-right: -8px;
 }
 
-/* --- 5. PROGRESS & SUBTASKS --- */
 .subtask-progress-container {
   display: flex;
   align-items: center;
@@ -349,7 +350,6 @@
   font-size: 16px;
 }
 
-/* --- 6. EDIT MODE & INPUTS --- */
 .edit-content-wrapper {
   display: flex;
   gap: 40px;

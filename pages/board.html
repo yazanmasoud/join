@@ -1,31 +1,22 @@
 <main class="main-content">
   <section class="content-area">
-     
     <div class="board-header">
-      
       <div class="board-header-left">
         <h2>Board</h2>
-        <button
-          class="btn-dark hidden"
-          id="add-task-btn-mobile"
-          onclick="openAddTask()"
-        >
+        <button class="btn-dark hidden" id="add-task-btn-mobile" onclick="openAddTask()">
           <img src="../assets/icons/add.svg" alt="plus" />
         </button>
       </div>
-<p id="noSearchResults" class="no-search-results hidden">No search results. Clear search.</p> 
+      <p id="noSearchResults" class="no-search-results hidden">No search results. Clear search.</p>
       <div class="board-header-right">
         <div class="search-container">
           <input type="text" placeholder="Find Task" id="searchTask" />
         </div>
 
-        <button class="btn-dark" id="add-task-btn" onclick="openAddTask()">
-          Add task <img src="../assets/icons/add.svg" alt="plus" />
-        </button>
+        <button class="btn-dark" id="add-task-btn" onclick="openAddTask()">Add task <img src="../assets/icons/add.svg" alt="plus" /></button>
       </div>
     </div>
     <div class="board-columns">
-      <!-- 1. TO DO -->
       <div class="column">
         <div class="column-header">
           <span>To do</span>
@@ -42,12 +33,9 @@
             highlight('todo');
           "
           ondragleave="removeHighlight('todo')"
-        >
-          <div class="no-tasks">No tasks To do</div>
-        </div>
+        ></div>
       </div>
 
-      <!-- 2. IN PROGRESS -->
       <div class="column">
         <div class="column-header">
           <span>In progress</span>
@@ -59,13 +47,14 @@
           class="task-container"
           id="progress"
           ondrop="moveTo('progress')"
-          ondragover="allowDrop(event)"
-        >
-          <div class="no-tasks">No tasks In progress</div>
-        </div>
+          ondragover="
+            allowDrop(event);
+            highlight('progress');
+          "
+          ondragleave="removeHighlight('progress')"
+        ></div>
       </div>
 
-      <!-- 3. AWAIT FEEDBACK -->
       <div class="column">
         <div class="column-header">
           <span>Await feedback</span>
@@ -77,13 +66,14 @@
           class="task-container"
           id="feedback"
           ondrop="moveTo('feedback')"
-          ondragover="allowDrop(event)"
-        >
-          <div class="no-tasks">No tasks Await feedback</div>
-        </div>
+          ondragover="
+            allowDrop(event);
+            highlight('feedback');
+          "
+          ondragleave="removeHighlight('feedback')"
+        ></div>
       </div>
 
-      <!-- 4. DONE -->
       <div class="column">
         <div class="column-header">
           <span>Done</span>
@@ -95,11 +85,13 @@
           class="task-container"
           id="done"
           ondrop="moveTo('done')"
-          ondragover="allowDrop(event)"
-        >
-          <div class="no-tasks">No tasks Done</div>
-        </div>
-      </div>     
+          ondragover="
+            allowDrop(event);
+            highlight('done');
+          "
+          ondragleave="removeHighlight('done')"
+        ></div>
+      </div>
     </div>
   </section>
 </main>
@@ -110,5 +102,5 @@
 </dialog>
 <div id="successMessage" class="success-toast d-none">
   <span>Task added to board</span>
-  <img src="../assets/icons/create-task.svg" alt="" />
+  <img src="../assets/icons/create-task.svg" alt="erstelle Task" />
 </div>

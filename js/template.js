@@ -47,15 +47,19 @@ function renderTaskBody(t) {
  * @returns {string} The progress bar and text HTML string.
  */
 export function renderSmallSubtaskInfo(task) {
-  if (!task.subtasks || task.subtasks.length === 0) return '';
-  const done = task.subtasks.filter((s) => s.done).length;
-  const percent = (done / task.subtasks.length) * 100;
+  const subtasks = Array.isArray(task.subtasks) ? task.subtasks : [];
+
+  if (subtasks.length === 0) return '';
+
+  const done = subtasks.filter((s) => s.done).length;
+  const percent = (done / subtasks.length) * 100;
+
   return `
     <div class="subtask-progress-container">
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" style="width: ${percent}%"></div>
       </div>
-      <small>${done}/${task.subtasks.length} Subtasks</small>
+      <small>${done}/${subtasks.length} Subtasks</small>
     </div>`;
 }
 
@@ -198,25 +202,15 @@ export function getDetailInfoRows(task) {
  * Renders subtasks in the detail view with edit and delete icons.
  */
 export function getDetailSubtasksHTML(subtasks, taskId) {
-  if (!subtasks || subtasks.length === 0) return '<p>No subtasks</p>';
-  return subtasks
-    .map((st, i) => {
-      const icon = st.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
-      return `
-      <li class="subtask-edit-item" id="subtaskItemDetail${i}">
-        <div class="subtask-left" onclick="toggleSubtask('${taskId}', ${i})">
-          <img src="../assets/icons/${icon}" class="subtask-check-icon">
-          <span class="subtask-text">${st.title}</span>
-        </div>
-        <div class="subtask-actions">
-          <button type="button" class="subtask-action-btn" onclick="editEditSubtask(${i}, '${taskId}')">
-            <img src="../assets/icons/edit-icon.svg">
-          </button>
-          <button type="button" class="subtask-action-btn" onclick="deleteEditSubtask(${i}, '${taskId}')">
-            <img src="../assets/icons/delete-icon.svg">
-          </button>
-        </div>
-      </li>`;
+  const safeSubtasks = Array.isArray(subtasks) ? subtasks : [];
+
+  if (safeSubtasks.length === 0) return '<p>No subtasks</p>';
+
+  return safeSubtasks
+    .map((subtask, index) => {
+      const isDone = subtask.done ? 'checked' : '';
+
+      return `<li>...</li>`;
     })
     .join('');
 }
