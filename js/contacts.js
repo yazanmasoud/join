@@ -1,6 +1,4 @@
-import { renderAvatar, clearElementsByIds } from './ui.js';
-import { getCurrentUserId } from './storage.js';
-import { getContacts, createContact, deleteContact, updateContact } from './contacts-service.js';
+import { getContacts} from './contacts-service.js';
 import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
 import {
     openAddContact, closeAddContact, openEditContact,
