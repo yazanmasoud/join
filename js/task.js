@@ -95,7 +95,7 @@ function fillFormForEdit(data) {
  */
 async function createTask() {
   const task = getTaskObject();
-  // Geändert von validateTask zu isTaskValid (passend zum Import oben)
+
   if (!isTaskValid(task)) return;
   const editId = localStorage.getItem('editTaskId');
   try {

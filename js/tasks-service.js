@@ -1,13 +1,5 @@
 import { database, auth } from './firebase-config.js';
-import {
-  ref,
-  get,
-  set,
-  update,
-  push,
-  remove,
-  onValue,
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { ref, get, set, update, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
 import { normalizeObjectToArray } from './ui.js';
 
@@ -36,27 +28,33 @@ export async function createTask(taskData) {
  * Validates if the task has a title, date and category.
  */
 export function isTaskValid(task) {
-  const catSelect = document.getElementById('taskCategory');
-  const hasTitle = task.title && task.title.trim().length > 0;
-  const hasDate = !!task.dueDate;
-  const hasCategory = catSelect && catSelect.selectedIndex !== 0;
-  return !!(hasTitle && hasDate && hasCategory);
+  const titleField = document.getElementById('taskTitle');
+  const dateField = document.getElementById('taskDate');
+  const catField = document.getElementById('taskCategory');
+
+  const titleOk = !!(task.title && task.title.trim().length > 0);
+  const dateOk = !!task.dueDate;
+  const catOk = !!(task.category && !task.category.includes('Select'));
+
+  // Visuelles Feedback (Klassen umschalten)
+  toggleErrorState('taskTitle', !titleOk);
+  toggleErrorState('taskDate', !dateOk);
+  toggleErrorState('taskCategory', !catOk);
+
+  return titleOk && dateOk && catOk;
 }
 
-export async function getTaskById(taskId) {
-  if (isGuestUser()) return getLocalTasks().find((t) => t.id === taskId);
-  const snapshot = await get(
-    ref(database, `tasks/${auth.currentUser.uid}/${taskId}`),
-  );
-  return snapshot.exists() ? { id: taskId, ...snapshot.val() } : null;
+function toggleErrorState(id, isError) {
+  const field = document.getElementById(id);
+  if (field) field.classList.toggle('input-error', isError);
+  const msg = document.getElementById(`error-${id}`);
+  if (msg) msg.classList.toggle('d-none', !isError);
 }
 
 export async function updateTask(taskId, updatedData) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
-    const updatedTasks = tasks.map((task) =>
-      task.id === taskId ? { ...task, ...updatedData } : task,
-    );
+    const updatedTasks = tasks.map((task) => (task.id === taskId ? { ...task, ...updatedData } : task));
     setLocalTasks(updatedTasks);
     return;
   }

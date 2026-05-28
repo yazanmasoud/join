@@ -33,6 +33,7 @@ import { getContacts } from './contacts-service.js';
 let CURRENT_TASKS = {};
 let CURRENT_DRAGGED_ELEMENT;
 let editPriority;
+let currentSearchTerm = '';
 
 /** @section GLOBAL EXPORTS FOR HTML ONCLICK */
 window.initBoard = initBoard;
@@ -52,16 +53,62 @@ window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
 
 export async function initBoard() {
+  setupTaskSearch();
   window.contacts = await getContacts();
   const setup = (data) => {
     CURRENT_TASKS = data || {};
-    renderAllTasks(CURRENT_TASKS);
+    renderFilteredTasks();
     setupDialogClose(closeTaskDetail);
   };
   if (isGuestUser()) return setup(convertTaskArrayToObject(getLocalTasks()));
   onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snap) =>
     setup(snap.val()),
   );
+}
+
+function setupTaskSearch() {
+  const searchInput = document.getElementById('searchTask');
+
+  if (!searchInput || searchInput.dataset.searchInitialized === 'true') return;
+
+  currentSearchTerm = searchInput.value.trim().toLowerCase();
+  searchInput.dataset.searchInitialized = 'true';
+
+  searchInput.addEventListener('input', () => {
+    currentSearchTerm = searchInput.value.trim().toLowerCase();
+    renderFilteredTasks();
+  });
+}
+
+function renderFilteredTasks() {
+  const filteredTasks = filterTasksBySearchTerm(CURRENT_TASKS);
+
+  renderAllTasks(filteredTasks);
+  updateNoSearchResults(filteredTasks);
+}
+
+function filterTasksBySearchTerm(allTasks) {
+  if (!currentSearchTerm) return allTasks;
+
+  return normalizeObjectToArray(allTasks).filter((task) => {
+    const title = String(task.title || '').toLowerCase();
+    const description = String(task.description || '').toLowerCase();
+
+    return (
+      title.includes(currentSearchTerm) ||
+      description.includes(currentSearchTerm)
+    );
+  });
+}
+
+function updateNoSearchResults(filteredTasks) {
+  const noResultsElement = document.getElementById('noSearchResults');
+  if (!noResultsElement) return;
+
+  const hasNoSearchResults =
+    currentSearchTerm && normalizeObjectToArray(filteredTasks).length === 0;
+
+  noResultsElement.classList.toggle('hidden', !hasNoSearchResults);
 }
 
 function renderAllTasks(allTasks) {
@@ -109,7 +156,7 @@ export async function toggleSubtask(taskId, index) {
   task.subtasks[index].done = !task.subtasks[index].done;
   if (isGuestUser()) {
     setLocalTasks(Object.values(CURRENT_TASKS));
-    renderAllTasks(CURRENT_TASKS); // Sofortiges Update für Gäste
+    renderFilteredTasks(); // Sofortiges Update für Gäste
   } else {
     const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
     await update(ref(database, path), { done: task.subtasks[index].done });
@@ -159,7 +206,7 @@ function moveGuestTaskTo(status) {
 
   setLocalTasks(convertTaskObjectToArray(CURRENT_TASKS));
 
-  renderAllTasks(CURRENT_TASKS);
+  renderFilteredTasks();
 }
 
 async function moveFirebaseTaskTo(status) {
@@ -193,14 +240,13 @@ export async function saveEdit(id) {
     priority: editPriority,
     assignedTo: window.selectedContacts || CURRENT_TASKS[id].assignedTo || [],
   };
-  isGuestUser()
-    ? (Object.assign(CURRENT_TASKS[id], updates),
-      setLocalTasks(Object.values(CURRENT_TASKS)))
-    : await update(
-        ref(database, `tasks/${auth.currentUser.uid}/${id}`),
-        updates,
-      );
-  renderAllTasks(CURRENT_TASKS);
+  if (isGuestUser()) {
+    Object.assign(CURRENT_TASKS[id], updates);
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), updates);
+  }
+  renderFilteredTasks();
   closeTaskDetail();
 }
 
@@ -275,7 +321,7 @@ export async function deleteTask(id) {
     await remove(ref(database, `tasks/${auth.currentUser.uid}/${id}`));
   }
   closeTaskDetail();
-  renderAllTasks(CURRENT_TASKS);
+  renderFilteredTasks();
   if (typeof showSuccessToast === 'function') showSuccessToast('Task deleted');
 }
 
