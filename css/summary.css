@@ -103,8 +103,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background-color: #2a3647; /* Standard Kreis dunkel */
-  /* transition: all 125ms ease-in-out; */
+  background-color: #2a3647;
 }
 
 .icon-container img {
@@ -114,22 +113,19 @@
 }
 
 .icon-hover {
-  display: none; /* Im Normalzustand unsichtbar */
+  display: none;
 }
 
-/* --- HOVER EFFEKTE --- */
 .card-base:hover,
 .summary-card:hover,
 .urgent-row:hover {
   background-color: #2a3647;
 }
 
-/* Kreis wird weiß bei Hover */
 .summary-card:hover .icon-container {
   background-color: #ffffff;
 }
 
-/* Bildertausch beim Hover */
 .summary-card:hover .icon-default {
   display: none;
 }
@@ -138,7 +134,6 @@
   display: block;
 }
 
-/* Texte weiß färben beim Hovern */
 .card-base:hover .stat-number,
 .card-base:hover .stat-label,
 .card-base:hover .deadline-date,
@@ -147,7 +142,6 @@
   color: #ffffff;
 }
 
-/* --- URGENT ROW SPEZIAL --- */
 .urgent-row {
   max-width: none;
   height: 168px;
@@ -159,7 +153,7 @@
 }
 
 .urgent-row .icon-container {
-  background-color: #ff3d00; /* Urgent Kreis immer rot */
+  background-color: #ff3d00;
 }
 
 .urgent-row:hover .urgent-divider {
@@ -177,7 +171,6 @@
   gap: 5px;
 }
 
-/* --- INNERE ELEMENTE --- */
 .summary-card-content {
   display: flex;
   align-items: center;
@@ -219,7 +212,6 @@
   font-weight: bold;
 }
 
-/* --- GREETING & OVERLAY --- */
 .greeting-section {
   display: flex;
   flex-direction: column;
@@ -266,7 +258,6 @@
 .mobile-greeting-content .user-name-display {
   text-align: center;
 }
-/* --- RESPONSIVE MEDIA QUERIES --- */
 
 @media (min-width: 1101px) {
   .mobile-greeting-overlay {
@@ -285,47 +276,67 @@
 }
 
 @media (max-width: 600px) {
+  .content-area {
+    padding: 20px;
+  }
+
   .top-row {
-    flex-wrap: wrap;
+    gap: 16px;
+    padding: 8px 0;
+  }
+
+  .summary-card {
+    height: 100px;
     gap: 8px;
+  }
+
+  .summary-card-content {
+    gap: 12px;
+  }
+
+  .urgent-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0 16px;
+    height: 100px;
+  }
+
+  .urgent-divider {
+    position: static;
+    transform: none;
+    height: 60px;
+    margin: 0 8px;
+  }
+
+  .urgent-right {
+    padding-left: 0;
+  }
+
+  .icon-container {
+    width: 45px;
+    height: 45px;
+  }
+
+  .icon-container img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .stat-number {
+    font-size: 32px;
+  }
+
+  .stat-label {
+    font-size: 14px;
   }
 
   .bottom-row {
     gap: 8px;
   }
 
-  .urgent-row {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    padding: 24px;
-    gap: 20px;
-  }
-
-  .urgent-row .summary-card-content {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .urgent-divider {
-    position: static;
-    transform: none;
-    width: 100%;
-    height: 2px;
-  }
-
-  .urgent-right {
-    align-items: center;
-    padding-left: 0;
-  }
-}
-
-@media (max-width: 400px) {
-  .summary-card-content {
-    padding: 20px;
-  }
-
-  .top-row {
-    flex-direction: column;
+  .summary-card-small {
+    height: 100px;
   }
 }
