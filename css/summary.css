@@ -187,6 +187,10 @@
 /* --- RESPONSIVE MEDIA QUERIES --- */
 
 @media (min-width: 1101px) {
+  .mobile-greeting-overlay {
+    display: none;
+  }
+
   .dashboard-grid {
     grid-template-columns: 1.5fr 1fr;
   }

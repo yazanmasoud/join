@@ -169,6 +169,7 @@ function initGuestStorage() {
 
 
 function loginSuccess(message) {
+  sessionStorage.removeItem('mobileGreetingPlayed');
   showOverlay(message);
   setTimeout(() => {
     hideOverlay();
