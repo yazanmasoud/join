@@ -1,11 +1,8 @@
 import { getContacts} from './contacts-service.js';
 import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
-import {
-    openAddContact, closeAddContact, openEditContact,
-    openDeleteDialog, closeDeleteDialog
-} from './contacts-dialog.js';
+import { openAddContact, closeAddContact, openEditContact, openDeleteDialog, closeDeleteDialog } from './contacts-dialog.js';
 import { handleCreateContact, handleDeleteContact, handleSaveContact } from './contacts-actions.js';
-import { getRandomColor } from './utils.js';
+
 
 export let contacts = [];
 export let currentEditContactId = null;

@@ -7,7 +7,7 @@ import {
 } from './contacts.js';
 import { closeAddContact, closeDeleteDialog } from './contacts-dialog.js';
 import { getContactDetails } from './template.js';
-
+import { getRandomColor } from './utils.js';
 
 export {
     handleCreateContact,
