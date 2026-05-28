@@ -114,14 +114,35 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
 export function getSubtaskHTML(task, index) {
   const icon = task.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
   return `
-    <li class="subtask-edit-item">
+    <li class="subtask-edit-item" id="subtaskItem${index}" ondblclick="editSubtask(${index})">
       <div class="subtask-left" onclick="toggleSubtaskStatus(${index})">
-        <img src="../assets/icons/${icon}" class="subtask-check-icon" alt="checkbox">
+        <img src="../assets/icons/${icon}" class="subtask-check-icon">
         <span class="subtask-text">${task.title}</span>
       </div>
       <div class="subtask-actions">
-        <button type="button" class="delete-sub-btn" onclick="deleteSubtask(${index})">
+        <button type="button" class="subtask-action-btn" onclick="editSubtask(${index})">
+          <img src="../assets/icons/edit-icon.svg" alt="edit">
+        </button>
+        <div class="subtask-divider"></div>
+        <button type="button" class="subtask-action-btn" onclick="deleteSubtask(${index})">
           <img src="../assets/icons/delete-icon.svg" alt="delete">
+        </button>
+      </div>
+    </li>`;
+}
+
+export function getSubtaskEditHTML(title, index) {
+  return `
+    <li class="subtask-edit-mode-item">
+      <input type="text" id="editSubtaskInput${index}" class="subtask-edit-input" value="${title}" 
+             onkeydown="if(event.key==='Enter') saveSubtask(${index})">
+      <div class="subtask-edit-actions">
+        <button type="button" class="subtask-action-btn" onclick="deleteSubtask(${index})">
+          <img src="../assets/icons/delete-icon.svg" alt="delete">
+        </button>
+        <div class="subtask-divider"></div>
+        <button type="button" class="subtask-action-btn" onclick="saveSubtask(${index})">
+          <img src="../assets/icons/subtask-check-icon.svg" alt="save">
         </button>
       </div>
     </li>`;
@@ -286,19 +307,19 @@ export function getEditLeftSection(task) {
     </div>`;
 }
 
-/**
- * Generates the layout view container structure for editor right sections.
- * @param {Object} task - The targeted active task data object.
- * @param {string} id - The unique task ID.
- * @returns {string} HTML snippet wrapper form elements.
- */
 export function getEditRightSection(task, id) {
   return `
     <div class="edit-section">
       <div class="input-group"><label>Due Date</label>
         <input type="date" id="editDate" value="${task.dueDate || ''}"></div>
       <div class="input-group"><label>Assigned To</label>
-        <input type="text" id="editAssigned" value="${task.assignedTo || ''}"></div>
+        <div class="combo-wrapper" id="assignedInputContainer">
+          <input type="text" id="assignedInput" placeholder="Select contacts to assign" 
+                 oninput="renderContacts(this.value)" onclick="toggleContactList()">
+          <img src="../assets/icons/arrow_drop_down.svg" class="dropdown-arrow" onclick="toggleContactList()">
+        </div>
+        <div id="contactList" class="contact-list-dropdown d-none"></div>
+        <div id="assignedBadges" class="assigned-badges-container"></div>
     </div>`;
 }
 
@@ -368,18 +389,20 @@ export function getContactOptionsHTML(contactsArray, defaultText) {
   return def + opts;
 }
 
+/**
+ * Generates the HTML for a contact item in the dropdown with your specific icons.
+ */
 export function getContactCheckboxHTML(contact, isChecked) {
+  const icon = isChecked ? 'subtask-done-icon.svg' : 'check-empty.svg';
   return `
-    <div class="contact-item" onclick="event.stopPropagation()">
-      <label class="contact-label">
-        <div class="contact-name-wrapper">
-          <input type="checkbox" name="assignedContact" value="${contact.name}" 
-                 ${isChecked ? 'checked' : ''} onchange="updateSelectedBadges()">
-          <div class="user-badge-small" style="background-color: ${contact.color || '#2A3647'}">
-            ${contact.initials || '??'}
-          </div>
-          <span>${contact.name}</span>
-        </div>
-      </label>
+    <div class="contact-item ${isChecked ? 'selected' : ''}" 
+         onclick="toggleContactSelection('${contact.name}'); event.stopPropagation();">
+      <div class="contact-name-left" style="pointer-events: none;">
+        <div class="user-badge-small" style="background-color: ${contact.color}">${contact.initials}</div>
+        <span style="color: inherit;">${contact.name}</span>
+      </div>
+      <input type="checkbox" name="assignedContact" value="${contact.name}" 
+             ${isChecked ? 'checked' : ''} style="display:none">
+      <img src="../assets/icons/${icon}" class="custom-checkbox" style="pointer-events: none;">
     </div>`;
 }
