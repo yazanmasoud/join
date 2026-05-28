@@ -210,14 +210,14 @@ function handleSubtaskKey(event) {
  */
 function editSubtask(index) {
   const list = document.getElementById('subtasksList');
+  if (!list) return; // Sicherheits-Check: Falls Liste nicht da, Funktion abbrechen
+
   const items = list.querySelectorAll('li');
-  const task = subtasks[index];
-  // Nutzt eine neue Template-Funktion für den Edit-Modus
-  items[index].outerHTML = getSubtaskEditHTML(task.title, index);
+  if (!items[index]) return; // Falls der Index nicht existiert, abbrechen
+
+  items[index].outerHTML = getSubtaskEditHTML(subtasks[index].title, index);
   const input = document.getElementById(`editSubtaskInput${index}`);
-  input.focus();
-  // Setzt Cursor ans Ende
-  input.setSelectionRange(input.value.length, input.value.length);
+  input?.focus();
 }
 
 /**
