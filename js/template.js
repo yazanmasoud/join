@@ -8,6 +8,7 @@ window.getContactDetails = getContactDetails;
 window.openEditContact = openEditContact;
 window.getPriorityButtonsHTML = getPriorityButtonsHTML;
 window.setPriority = setPriority;
+window.getSingleDetailSubtaskHTML = getSingleDetailSubtaskHTML;
 
 /** --- BOARD TASK CARDS --- */
 
@@ -199,10 +200,26 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
   return safeSubtasks
     .map(
       (subtask, index) => `
+<li id="subtaskItemDetail${index}" class="subtask-item">
+<div class="subtask-left">
+<input type="checkbox" ${subtask.done ? 'checked' : ''} onclick="toggleSubtask('${taskId}', ${index})">
+<span>${subtask.title}</span>
+</div>
+<div class="subtask-icons">
+<img src="../assets/icons/edit-icon.svg" onclick="editEditSubtask(${index}, '${taskId}')">
+<div class="icon-divider"></div>
+<img src="../assets/icons/delete-icon.svg" onclick="deleteEditSubtask('${taskId}', ${index})">
+</div>
+</li>`,
+    )
+    .join('');
+}
+
+export function getSingleDetailSubtaskHTML(subtask, index, taskId) {
+  return `
     <li id="subtaskItemDetail${index}" class="subtask-item">
       <div class="subtask-left">
-        <input type="checkbox" ${subtask.done ? 'checked' : ''} 
-               onclick="toggleSubtask('${taskId}', ${index})">
+        <input type="checkbox" ${subtask.done ? 'checked' : ''} onclick="toggleSubtask('${taskId}', ${index})">
         <span>${subtask.title}</span>
       </div>
       <div class="subtask-icons">
@@ -210,10 +227,7 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
         <div class="icon-divider"></div>
         <img src="../assets/icons/delete-icon.svg" onclick="deleteEditSubtask('${taskId}', ${index})">
       </div>
-    </li>
-  `,
-    )
-    .join('');
+    </li>`;
 }
 
 /**
