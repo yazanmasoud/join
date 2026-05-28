@@ -173,6 +173,20 @@ button {
   padding: 0 4px;
 }
 
+.action-btn:hover img,
+.subtask-action-btn:hover img {
+  filter: invert(59%) sepia(80%) saturate(1853%) hue-rotate(171deg) brightness(95%) contrast(92%);
+}
+
+.action-btn:hover,
+.subtask-action-btn:hover {
+  color: var(--color-highlights) !important;
+}
+
+.subtask-divider {
+  display: none;
+}
+
 .input-wrapper-task button {
   position: absolute;
   right: 12px;
