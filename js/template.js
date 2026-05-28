@@ -131,19 +131,17 @@ export function getSubtaskHTML(task, index) {
     </li>`;
 }
 
-export function getSubtaskEditHTML(title, index) {
+export function getSubtaskEditHTML(title, index, isEditMode = false, taskId = '') {
+  const saveFn = isEditMode ? `saveEditSubtask(${index}, '${taskId}')` : `saveSubtask(${index})`;
+  const deleteFn = isEditMode ? `deleteEditSubtask(${index}, '${taskId}')` : `deleteSubtask(${index})`;
   return `
     <li class="subtask-edit-mode-item">
       <input type="text" id="editSubtaskInput${index}" class="subtask-edit-input" value="${title}" 
-             onkeydown="if(event.key==='Enter') saveSubtask(${index})">
+             onkeydown="if(event.key==='Enter') ${saveFn}">
       <div class="subtask-edit-actions">
-        <button type="button" class="subtask-action-btn" onclick="deleteSubtask(${index})">
-          <img src="../assets/icons/delete-icon.svg" alt="delete">
-        </button>
+        <button type="button" class="subtask-action-btn" onclick="${deleteFn}"><img src="../assets/icons/delete-icon.svg"></button>
         <div class="subtask-divider"></div>
-        <button type="button" class="subtask-action-btn" onclick="saveSubtask(${index})">
-          <img src="../assets/icons/subtask-check-icon.svg" alt="save">
-        </button>
+        <button type="button" class="subtask-action-btn" onclick="${saveFn}"><img src="../assets/icons/subtask-check-icon.svg"></button>
       </div>
     </li>`;
 }
@@ -165,7 +163,7 @@ export function generateTaskDetailHTML(task, id) {
       <div class="detail-view-info-row"><span class="detail-view-label" style="white-space:nowrap">Due date:</span> ${task.dueDate?.replaceAll('-', '/') || ''}</div>
       <div class="detail-view-info-row"><span class="detail-view-label" style="white-space:nowrap">Priority:</span>
         <div class="detail-view-prio-badge">${task.priority || 'Medium'} <img src="../assets/icons/${p === 'medium' ? 'medium-icon-orange.svg' : `prio-${p}-icon.svg`}"></div></div>
-      <div class="detail-section"><p class="detail-view-label" style="white-space:nowrap">Assigned To:</p><div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
+      <div class="detail-section"><p class="detail-view-label" style="white-space:nowrap">Assigned To</p><div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}</div></div>
       <div class="detail-section"><p class="detail-view-label">Subtasks</p><ul class="subtask-list-detail">${getDetailSubtasksHTML(task.subtasks, id)}</ul></div>
       ${getDetailFooter(id)}
     </div>`;
@@ -196,15 +194,28 @@ export function getDetailInfoRows(task) {
  * @param {string} taskId - The unique target task ID.
  * @returns {string} The list of subtask checkbox items HTML string.
  */
+/**
+ * Renders subtasks in the detail view with edit and delete icons.
+ */
 export function getDetailSubtasksHTML(subtasks, taskId) {
-  if (!subtasks || !Array.isArray(subtasks) || subtasks.length === 0) return '<p>No subtasks</p>';
+  if (!subtasks || subtasks.length === 0) return '<p>No subtasks</p>';
   return subtasks
     .map((st, i) => {
       const icon = st.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
       return `
-      <li class="subtask-item" onclick="toggleSubtask('${taskId}', ${i})">
-        <img src="../assets/icons/${icon}" class="subtask-check-icon">
-        <span class="subtask-text">${st.title}</span>
+      <li class="subtask-edit-item" id="subtaskItemDetail${i}">
+        <div class="subtask-left" onclick="toggleSubtask('${taskId}', ${i})">
+          <img src="../assets/icons/${icon}" class="subtask-check-icon">
+          <span class="subtask-text">${st.title}</span>
+        </div>
+        <div class="subtask-actions">
+          <button type="button" class="subtask-action-btn" onclick="editEditSubtask(${i}, '${taskId}')">
+            <img src="../assets/icons/edit-icon.svg">
+          </button>
+          <button type="button" class="subtask-action-btn" onclick="deleteEditSubtask(${i}, '${taskId}')">
+            <img src="../assets/icons/delete-icon.svg">
+          </button>
+        </div>
       </li>`;
     })
     .join('');

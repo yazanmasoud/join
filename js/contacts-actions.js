@@ -183,10 +183,7 @@ function refreshUpdatedContactUI(updatedData) {
     renderContacts();
 
     const index = contacts.findIndex(
-        contact =>
-            String(contact.id) ===
-            String(currentEditContactId)
-    );
+        contact => String(contact.id) === String(currentEditContactId));
 
     if (index !== -1) {
         setSelectedContactId(contacts[index].id);

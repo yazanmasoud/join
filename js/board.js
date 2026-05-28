@@ -1,11 +1,4 @@
-import {
-  ref,
-  onValue,
-  get,
-  child,
-  update,
-  remove,
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { ref, onValue, get, child, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { auth, database } from './firebase-config.js';
 
 import {
@@ -24,6 +17,8 @@ import {
   generateTaskHTML,
   generateTaskDetailHTML,
   generateEditTaskHTML,
+  getSubtaskHTML,
+  getSubtaskEditHTML,
 } from './template.js';
 
 import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
@@ -51,6 +46,8 @@ window.deleteEditSubtask = deleteEditSubtask;
 window.toggleEditSubtask = toggleEditSubtask;
 window.deleteTask = deleteTask;
 window.closeTaskDetail = closeTaskDetail;
+window.editEditSubtask = editEditSubtask;
+window.saveEditSubtask = saveEditSubtask;
 
 export async function initBoard() {
   setupTaskSearch();
@@ -61,9 +58,7 @@ export async function initBoard() {
     setupDialogClose(closeTaskDetail);
   };
   if (isGuestUser()) return setup(convertTaskArrayToObject(getLocalTasks()));
-  onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snap) =>
-    setup(snap.val()),
-  );
+  onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snap) => setup(snap.val()));
 }
 
 function setupTaskSearch() {
@@ -94,10 +89,7 @@ function filterTasksBySearchTerm(allTasks) {
     const title = String(task.title || '').toLowerCase();
     const description = String(task.description || '').toLowerCase();
 
-    return (
-      title.includes(currentSearchTerm) ||
-      description.includes(currentSearchTerm)
-    );
+    return title.includes(currentSearchTerm) || description.includes(currentSearchTerm);
   });
 }
 
@@ -105,8 +97,7 @@ function updateNoSearchResults(filteredTasks) {
   const noResultsElement = document.getElementById('noSearchResults');
   if (!noResultsElement) return;
 
-  const hasNoSearchResults =
-    currentSearchTerm && normalizeObjectToArray(filteredTasks).length === 0;
+  const hasNoSearchResults = currentSearchTerm && normalizeObjectToArray(filteredTasks).length === 0;
 
   noResultsElement.classList.toggle('hidden', !hasNoSearchResults);
 }
@@ -161,8 +152,45 @@ export async function toggleSubtask(taskId, index) {
     const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
     await update(ref(database, path), { done: task.subtasks[index].done });
   }
-  document.getElementById('taskDetailContent').innerHTML =
-    generateTaskDetailHTML(task, taskId);
+  document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, taskId);
+}
+
+function editEditSubtask(index, taskId) {
+  const task = CURRENT_TASKS[taskId];
+  const list = document.getElementById('editSubtasksList');
+  const items = list.querySelectorAll('li');
+  // Nutzt das gleiche Template wie Add-Task
+  items[index].outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
+  const input = document.getElementById(`editSubtaskInput${index}`);
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+}
+
+window.editEditSubtask = function (index, taskId) {
+  const item = document.getElementById(`subtaskItemDetail${index}`);
+  const task = CURRENT_TASKS[taskId];
+  // Wir nutzen deine getSubtaskEditHTML (isEditMode = true)
+  item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
+
+  const input = document.getElementById(`editSubtaskInput${index}`);
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+};
+
+async function saveEditSubtask(index, taskId) {
+  const input = document.getElementById(`editSubtaskInput${index}`);
+  const task = CURRENT_TASKS[taskId];
+  if (input && input.value.trim() !== '') {
+    task.subtasks[index].title = input.value.trim();
+    const item = input.closest('li');
+    // Wir rendern nur diesen einen Listenpunkt neu
+    item.outerHTML = getSubtaskHTML(task.subtasks[index], index);
+
+    if (!isGuestUser()) {
+      const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
+      await update(ref(database, path), { title: task.subtasks[index].title });
+    }
+  }
 }
 
 /** @section DRAG & DROP */
@@ -276,10 +304,7 @@ async function addEditSubtask(taskId) {
   if (!task.subtasks) task.subtasks = [];
   task.subtasks.push({ title: title, done: false });
   input.value = '';
-  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(
-    task,
-    taskId,
-  );
+  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
 }
 
 /**
@@ -301,10 +326,7 @@ async function deleteEditSubtask(id, index) {
 function toggleEditSubtask(taskId, index) {
   const task = CURRENT_TASKS[taskId];
   task.subtasks[index].done = !task.subtasks[index].done;
-  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(
-    task,
-    taskId,
-  );
+  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
 }
 
 /** @section MISCELLANEOUS ACTIONS */
