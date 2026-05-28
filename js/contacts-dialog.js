@@ -80,7 +80,7 @@ function closeAddContact() {
 
     setTimeout(() => {
         dialog.close();
-    }, 120);
+    }, 125);
 }
 
 
@@ -91,11 +91,7 @@ function closeAddContact() {
  * @param {string} contactId - Contact ID.
  */
 function openEditContact(contactId) {
-    const contact = contacts.find(
-        contact =>
-            String(contact.id) ===
-            String(contactId)
-    );
+    const contact = getContactById(contactId);
 
     if (!contact) return;
 
@@ -103,21 +99,85 @@ function openEditContact(contactId) {
 
     const elements = getContactDialogElements();
 
-    elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
-    elements.createSaveButton.innerHTML = 'Save';
-    elements.createSaveButton.onclick = handleSaveContact;
-    elements.cancelDeleteButton.innerHTML = 'Delete';
-    elements.cancelDeleteButton.onclick = () => openDeleteDialog(contactId);
-    elements.createSaveButton.classList.add('save-button');
-    elements.nameInput.value = contact.name || '';
-    elements.emailInput.value = contact.email || '';
-    elements.phoneInput.value = contact.phone || '';
-    elements.avatarImg.style.display = 'none';
-    elements.avatarInitials.style.display = 'flex';
-    elements.avatarInitials.innerHTML = contact.initials || '';
-    elements.avatar.style.backgroundColor = contact.color || '#ccc';
-
+    setupEditDialog(elements, contact, contactId);
     openContactDialog();
+}
+
+
+/**
+ * Returns a contact
+ * by its ID.
+ *
+ * @param {string} contactId
+ * @returns {Object|undefined}
+ */
+function getContactById(contactId) {
+    return contacts.find(
+        contact =>
+            String(contact.id) ===
+            String(contactId)
+    );
+}
+
+
+/**
+ * Configures the dialog
+ * for edit mode.
+ *
+ * @param {Object} elements
+ * @param {Object} contact
+ * @param {string} contactId
+ */
+function setupEditDialog(elements, contact, contactId) {
+    setupEditButtons(elements, contactId);
+    fillEditInputs(elements, contact);
+
+    elements.sidebarImage.src =
+        '../assets/img/Frame-edit-contact.png';
+}
+
+
+/**
+ * Configures edit
+ * dialog buttons.
+ *
+ * @param {Object} elements
+ * @param {string} contactId
+ */
+function setupEditButtons(elements, contactId) {
+    elements.createSaveButton.innerHTML ='Save';
+
+    elements.createSaveButton.onclick = handleSaveContact;
+
+    elements.cancelDeleteButton.innerHTML ='Delete';
+
+    elements.cancelDeleteButton.onclick = () => openDeleteDialog(contactId);
+
+    elements.createSaveButton.classList.add('save-button');
+}
+
+
+/**
+ * Fills edit dialog
+ * with contact data.
+ *
+ * @param {Object} elements
+ * @param {Object} contact
+ */
+function fillEditInputs(elements, contact) {
+    elements.nameInput.value = contact.name || '';
+
+    elements.emailInput.value = contact.email || '';
+
+    elements.phoneInput.value = contact.phone || '';
+
+    elements.avatarImg.style.display = 'none';
+
+    elements.avatarInitials.style.display = 'flex';
+
+    elements.avatarInitials.innerHTML = contact.initials || '';
+
+    elements.avatar.style.backgroundColor = contact.color || '#ccc';
 }
 
 

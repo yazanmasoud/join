@@ -2,8 +2,10 @@ import { renderAvatar, clearElementsByIds } from './ui.js';
 import { getCurrentUserId } from './storage.js';
 import { getContacts, createContact, deleteContact, updateContact } from './contacts-service.js';
 import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
-import { openAddContact, closeAddContact, openEditContact,
-         openDeleteDialog, closeDeleteDialog } from './contacts-dialog.js';
+import {
+    openAddContact, closeAddContact, openEditContact,
+    openDeleteDialog, closeDeleteDialog
+} from './contacts-dialog.js';
 import { handleCreateContact, handleDeleteContact, handleSaveContact } from './contacts-actions.js';
 
 export let contacts = [];
@@ -62,10 +64,7 @@ export function renderContacts() {
             currentLetter = firstLetter;
         }
 
-        getSingleContact(
-            list,
-            contact,
-            i,
+        getSingleContact(list, contact, i,
             String(contact.id) === String(selectedContactId)
         );
     }
@@ -73,53 +72,108 @@ export function renderContacts() {
 
 
 /**
- * Renders the selected contact details
- * with smooth slide animation.
+ * Renders the selected contact details.
  *
- * @param {number} index - Selected contact index.
- * @param {boolean} forceRender - Forces rerender.
+ * @param {number} index
+ * @param {boolean} forceRender
+ * @param {boolean} animate
  */
 export function renderContactDetails(index, forceRender = false, animate = true) {
     const contact = contacts[index];
 
-    if (!contact) return;
-
-    if (!forceRender && String(contact.id) === String(selectedContactId)) {
-        return;
-    }
+    if (!canRenderContact(contact, forceRender)) return;
 
     selectedContactId = contact.id;
-
     const detailsContainer = document.getElementById('contact-details');
-
     renderContacts();
 
     if (!animate) {
-        detailsContainer.innerHTML = getContactDetails(contact);
+        renderContactHtml(detailsContainer, contact);
         return;
     }
 
-    if (detailsContainer.innerHTML.trim()) {
-        detailsContainer.classList.add('slide-out');
-
-        setTimeout(() => {
-            detailsContainer.innerHTML = getContactDetails(contact);
-            detailsContainer.classList.remove('slide-out');
-            detailsContainer.classList.add('slide-in');
-
-            requestAnimationFrame(() => {
-                detailsContainer.classList.remove('slide-in');
-            });
-        }, 300);
-    } else {
-        detailsContainer.classList.add('slide-in');
-        detailsContainer.innerHTML = getContactDetails(contact);
-
-        requestAnimationFrame(() => {
-            detailsContainer.classList.remove('slide-in');
-        });
-    }
+    animateContactDetails(detailsContainer, contact);
 }
+
+/**
+ * Checks whether a contact
+ * should be rendered.
+ *
+ * @param {Object} contact - Contact object.
+ * @param {boolean} forceRender - Forces rerender.
+ * @returns {boolean} True if render is allowed.
+ */
+function canRenderContact(contact, forceRender) {
+    return contact &&
+        (forceRender ||
+            String(contact.id) !== String(selectedContactId));
+}
+
+
+/**
+ * Renders contact details
+ * into the details container.
+ *
+ * @param {HTMLElement} detailsContainer
+ * @param {Object} contact - Contact object.
+ */
+function renderContactHtml(detailsContainer, contact) {
+    detailsContainer.innerHTML =
+        getContactDetails(contact);
+}
+
+
+/**
+ * Animates contact details
+ * with slide transition.
+ *
+ * @param {HTMLElement} detailsContainer
+ * @param {Object} contact - Contact object.
+ */
+function animateContactDetails(detailsContainer, contact) {
+    if (detailsContainer.innerHTML.trim()) {
+        animateExistingContact(detailsContainer, contact);
+        return;
+    }
+
+    animateNewContact(detailsContainer, contact);
+}
+
+
+/**
+ * Animates an already
+ * rendered contact.
+ *
+ * @param {HTMLElement} detailsContainer
+ * @param {Object} contact - Contact object.
+ */
+function animateExistingContact(detailsContainer, contact) {
+    detailsContainer.classList.add('slide-out');
+
+    setTimeout(() => {
+        renderContactHtml(detailsContainer, contact);
+        detailsContainer.classList.remove('slide-out');
+        detailsContainer.classList.add('slide-in');
+
+        requestAnimationFrame(() => detailsContainer.classList.remove('slide-in'));
+    }, 300);
+}
+
+
+/**
+ * Animates a newly
+ * rendered contact.
+ *
+ * @param {HTMLElement} detailsContainer
+ * @param {Object} contact - Contact object.
+ */
+function animateNewContact(detailsContainer, contact) {
+    detailsContainer.classList.add('slide-in');
+    renderContactHtml(detailsContainer, contact);
+
+    requestAnimationFrame(() => detailsContainer.classList.remove('slide-in'));
+}
+
 
 /**
  * Returns a random color
