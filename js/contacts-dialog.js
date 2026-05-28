@@ -51,21 +51,62 @@ function openContactDialog() {
 function openAddContact() {
     const elements = getContactDialogElements();
 
-    elements.sidebarImage.src = '../assets/img/Frame-add-contact.png';
-    elements.createSaveButton.innerHTML = 'Create Contact';
+    setupCreateDialog(elements);
+    resetDialogInputs(elements);
+    resetDialogAvatar(elements);
+
+    openContactDialog();
+}
+
+
+/**
+ * Configures the dialog
+ * for create mode.
+ *
+ * @param {Object} elements
+ */
+function setupCreateDialog(elements) {
+    elements.sidebarImage.src ='../assets/img/Frame-add-contact.png';
+
+    elements.createSaveButton.innerHTML ='Create Contact';
+
     elements.createSaveButton.onclick = handleCreateContact;
-    elements.cancelDeleteButton.innerHTML = 'Cancel';
-    elements.cancelDeleteButton.onclick = closeAddContact;
+
+    elements.cancelDeleteButton.innerHTML ='Cancel';
+
+    elements.cancelDeleteButton.onclick =closeAddContact;
+
     elements.createSaveButton.classList.remove('save-button');
+}
+
+
+/**
+ * Resets dialog
+ * input fields.
+ *
+ * @param {Object} elements
+ */
+function resetDialogInputs(elements) {
     elements.nameInput.value = '';
     elements.emailInput.value = '';
     elements.phoneInput.value = '';
-    elements.avatarImg.style.display = 'block';
-    elements.avatarInitials.style.display = 'none';
-    elements.avatarInitials.innerHTML = '';
-    elements.avatar.style.backgroundColor = '';
+}
 
-    openContactDialog();
+
+/**
+ * Resets dialog
+ * avatar display.
+ *
+ * @param {Object} elements
+ */
+function resetDialogAvatar(elements) {
+    elements.avatarImg.style.display = 'block';
+
+    elements.avatarInitials.style.display = 'none';
+
+    elements.avatarInitials.innerHTML = '';
+
+    elements.avatar.style.backgroundColor = '';
 }
 
 
@@ -113,10 +154,7 @@ function openEditContact(contactId) {
  */
 function getContactById(contactId) {
     return contacts.find(
-        contact =>
-            String(contact.id) ===
-            String(contactId)
-    );
+        contact => String(contact.id) === String(contactId));
 }
 
 
@@ -132,8 +170,7 @@ function setupEditDialog(elements, contact, contactId) {
     setupEditButtons(elements, contactId);
     fillEditInputs(elements, contact);
 
-    elements.sidebarImage.src =
-        '../assets/img/Frame-edit-contact.png';
+    elements.sidebarImage.src = '../assets/img/Frame-edit-contact.png';
 }
 
 
