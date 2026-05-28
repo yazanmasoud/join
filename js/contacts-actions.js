@@ -1,13 +1,10 @@
 import { getInitials } from './utils.js';
 import { createContact, deleteContact, updateContact } from './contacts-service.js';
-import {
-    contacts, currentEditContactId, setContacts,
-    setSelectedContactId, renderContacts,
-    getRandomColor
-} from './contacts.js';
+import { contacts, currentEditContactId, setContacts, setSelectedContactId, renderContacts } from './contacts.js';
 import { closeAddContact, closeDeleteDialog } from './contacts-dialog.js';
 import { getContactDetails } from './template.js';
 import { getRandomColor } from './utils.js';
+
 
 export {
     handleCreateContact,
@@ -15,6 +12,7 @@ export {
     handleSaveContact,
     showToast
 };
+
 
 /**
  * Creates a new contact and
