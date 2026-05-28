@@ -2,8 +2,9 @@ import { getInitials } from './utils.js';
 import { createContact, deleteContact, updateContact } from './contacts-service.js';
 import {
     contacts, currentEditContactId, setContacts,
-    selectedContactId, setSelectedContactId, renderContacts,
-    renderContactDetails, getRandomColor } from './contacts.js';
+    setSelectedContactId, renderContacts,
+    getRandomColor
+} from './contacts.js';
 import { closeAddContact, closeDeleteDialog } from './contacts-dialog.js';
 import { getContactDetails } from './template.js';
 
