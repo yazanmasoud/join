@@ -106,6 +106,18 @@
   color: var(--color-divider);
 }
 
+.no-search-results {
+  width: fit-content;
+  margin: -20px 0 24px;
+  padding: 12px 18px;
+  border: 1px solid var(--color-info-border);
+  border-radius: 8px;
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
+  font-size: 18px;
+  margin-top: 8px;
+}
+
 /* --- 3. TASK CARDS --- */
 .task-card {
   background: var(--color-bg-primary);

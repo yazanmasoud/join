@@ -132,7 +132,7 @@ export function closeOpenElements() {
  * Navigates back based on the current layout context (Login or App).
  */
 function handleBackArrow() {
-  const isLoginLayout = window.location.pathname.includes('loginlayout.html');
+  const isLoginLayout = window.location.pathname.includes('layout-login.html');
   if (isLoginLayout) {
     backToLogin();
     return;
