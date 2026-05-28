@@ -204,9 +204,6 @@ if (index !== -1) {
 }
 
 
-
-
-
 /**
  * Shows a temporary toast message.
  *
@@ -222,15 +219,6 @@ function showToast(message) {
         toast.classList.remove('toast-message-show');
     }, 2000);
 }
-
-
-
-
-
-
-
-
-
 
 
 /**
@@ -260,6 +248,7 @@ function renderContacts() {
         );
     }
 }
+
 
 /**
  * Renders the selected contact details
