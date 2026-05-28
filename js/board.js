@@ -188,10 +188,10 @@ async function saveEditSubtask(index, taskId) {
   if (input && input.value.trim() !== '') {
     task.subtasks[index].title = input.value.trim();
     const item = input.closest('li');
-    item.outerHTML = getSubtaskHTML(task.subtasks[index], index);
+    item.outerHTML = getSingleDetailSubtaskHTML(task.subtasks[index], index, taskId);
 
     if (!isGuestUser()) {
-      const path = userSubtaskPath(auth.currentUser.uid, taskId, index);
+      const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
       await update(ref(database, path), { title: task.subtasks[index].title });
     }
   }
