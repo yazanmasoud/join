@@ -8,19 +8,13 @@
       </div>
       <div class="input-group">
         <label for="taskDescription">Description</label>
-        <textarea
-          id="taskDescription"
-          placeholder="Enter a Description"
-        ></textarea>
+        <textarea id="taskDescription" placeholder="Enter a Description"></textarea>
       </div>
       <div class="input-group">
         <label for="taskDate">Due date<span class="required">*</span></label>
         <div class="input-wrapper-task">
           <input type="date" id="taskDate" placeholder="dd/mm/yyyy" />
-          <button
-            type="button"
-            onclick="document.getElementById('taskDate').showPicker()"
-          >
+          <button type="button" onclick="document.getElementById('taskDate').showPicker()">
             <img src="../assets/icons/date-icon.svg" alt="Kalender öffnen" />
           </button>
         </div>
@@ -34,50 +28,46 @@
       </div>
 
       <div class="input-group">
-        <label for="tasksAssigned">Assigned to</label>
+        <label for="assignedInput" class="input-group-label">Assigned to</label>
         <div class="multiselect-container">
-          <div
-            id="tasksAssigned"
-            class="select-trigger"
-            onclick="toggleContactList()"
-          >
-            Select contacts to assign
+          <div class="select-trigger-wrapper" id="assignedInputContainer">
+            <input
+              type="text"
+              id="assignedInput"
+              placeholder="Select contacts to assign"
+              oninput="
+                renderContacts(this.value);
+                document.getElementById('contactList').classList.remove('d-none');
+              "
+              onclick="toggleContactList()"
+            />
+            <img src="../assets/icons/arrow-drop-down.svg" onclick="toggleContactList()" class="dropdown-arrow" />
           </div>
-          <div id="contactList" class="dropdown-content d-none"></div>
+          <div id="contactList" class="dropdown-content d-none">
+            <!-- Kontakte werden hier geladen -->
+          </div>
         </div>
         <div id="assignedBadges" class="assigned-badges-container"></div>
       </div>
       <div class="input-group">
-        <label for="taskCategory"
-          >Category<span class="required">*</span></label
-        >
+        <label for="taskCategory">Category<span class="required">*</span></label>
         <select id="taskCategory">
           <option>Select task category</option>
         </select>
       </div>
       <div class="input-group">
         <label for="subtasks">Subtasks</label>
-        <input
-          type="text"
-          id="subtasks"
-          placeholder="Add new subtask"
-          onkeydown="handleSubtaskKey(event)"
-        />
+        <input type="text" id="subtasks" placeholder="Add new subtask" onkeydown="handleSubtaskKey(event)" />
         <ul id="subtasksList" class="subtasks-item-list"></ul>
       </div>
     </div>
   </div>
   <div class="form-bottom">
-    <p class="required-hint">
-      <span class="required">*</span>This field is required
-    </p>
+    <p class="required-hint"><span class="required">*</span>This field is required</p>
     <div class="form-actions">
       <button type="button" class="btn-light" onclick="clearForm()">
         Clear <span></span>
-        <img
-          src="../assets/icons/cancle-icon.svg"
-          alt="Verwerfe den Entwurf Button"
-        />
+        <img src="../assets/icons/cancle-icon.svg" alt="Verwerfe den Entwurf Button" />
       </button>
       <button type="submit" class="btn-dark" onclick="createTask()">
         Create Task

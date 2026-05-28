@@ -1,29 +1,10 @@
-import {
-  createTask as serviceCreateTask,
-  updateTask as serviceUpdateTask,
-  isTaskValid,
-} from './tasks-service.js';
+import { createTask as serviceCreateTask, updateTask as serviceUpdateTask, isTaskValid } from './tasks-service.js';
 
-import {
-  getPriorityButtonsHTML,
-  getSelectOptionsHTML,
-  getSubtaskHTML,
-  getContactCheckboxHTML,
-} from './template.js';
+import { getPriorityButtonsHTML, getSelectOptionsHTML, getSubtaskHTML, getContactCheckboxHTML } from './template.js';
 
-import {
-  clearActivePrioClasses,
-  getPrioClass,
-  CATEGORY_OPTIONS,
-  CONTACT_OPTIONS,
-} from './utils.js';
+import { clearActivePrioClasses, getPrioClass, CATEGORY_OPTIONS, CONTACT_OPTIONS } from './utils.js';
 
-import {
-  showSuccessToast,
-  toggleContactList,
-  updateButtonToSaveMode,
-  resetInputFields,
-} from './ui.js';
+import { showSuccessToast, toggleContactList, updateButtonToSaveMode, resetInputFields } from './ui.js';
 
 import { getContacts } from './contacts-service.js';
 
@@ -41,15 +22,14 @@ window.prepareEditInDialog = prepareEditInDialog;
 window.toggleContactList = toggleContactList;
 window.updateSelectedBadges = updateSelectedBadges;
 window.clearForm = clearForm;
+window.renderContacts = renderContacts;
 
 /**
  * Updates the visual initials badges for selected contacts.
  */
 export async function updateSelectedBadges() {
   const container = document.getElementById('assignedBadges');
-  const checked = document.querySelectorAll(
-    'input[name="assignedContact"]:checked',
-  );
+  const checked = document.querySelectorAll('input[name="assignedContact"]:checked');
   if (!container) return;
   const allContacts = await getContacts();
   container.innerHTML = Array.from(checked)
@@ -133,9 +113,7 @@ function handleSuccess() {
  * @returns {Object} The formatted task object.
  */
 function getTaskObject() {
-  const checked = document.querySelectorAll(
-    'input[name="assignedContact"]:checked',
-  );
+  const checked = document.querySelectorAll('input[name="assignedContact"]:checked');
   const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
   return {
     title: document.getElementById('taskTitle').value,
@@ -173,32 +151,25 @@ function renderPriorityButtons() {
  */
 function renderCategories() {
   const select = document.getElementById('taskCategory');
-  if (select)
-    select.innerHTML = getSelectOptionsHTML(
-      CATEGORY_OPTIONS,
-      'Select task category',
-    );
+  if (select) select.innerHTML = getSelectOptionsHTML(CATEGORY_OPTIONS, 'Select task category');
 }
 
 /**
- * Renders contact selection list with real contact data.
+ * Renders contact selection list filtered by the input value.
+ * @param {string} searchTerm - The string to search for in names.
  */
-async function renderContacts() {
+export async function renderContacts(searchTerm = '') {
   const list = document.getElementById('contactList');
   if (!list) return;
-  try {
-    const contacts = await getContacts();
-    const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
-    const assigned = Array.isArray(editData.assignedTo)
-      ? editData.assignedTo
-      : [];
-    list.innerHTML = contacts
-      .map((c) => getContactCheckboxHTML(c, assigned.includes(c.name)))
-      .join('');
-    updateSelectedBadges();
-  } catch (e) {
-    console.error('Fehler:', e);
-  }
+  const contacts = await getContacts();
+  // Filtert die Kontakte basierend auf der Eingabe ("An" -> Anton, Anja)
+  const filtered = contacts.filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const editData = JSON.parse(localStorage.getItem('editTaskData') || '{}');
+  const assigned = Array.isArray(editData.assignedTo) ? editData.assignedTo : [];
+
+  list.innerHTML = filtered.map((c) => getContactCheckboxHTML(c, assigned.includes(c.name))).join('');
+  updateSelectedBadges();
 }
 
 /**
@@ -254,8 +225,7 @@ function clearForm() {
   localStorage.removeItem('editTaskId');
   localStorage.removeItem('editTaskData');
   document.querySelector('h2').innerText = 'Add Task';
-  document.querySelector('.btn-dark').innerHTML =
-    'Create Task <img src="../assets/icons/create-task.svg">';
+  document.querySelector('.btn-dark').innerHTML = 'Create Task <img src="../assets/icons/create-task.svg">';
 }
 
 /**
