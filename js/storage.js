@@ -8,6 +8,7 @@ export function isGuestUser() {
   return localStorage.getItem('isGuest') === 'true';
 }
 
+
 /**
  * Retrieves the current authenticated user ID or returns a fallback for guests.
  * @returns {string} The active user identifier.
@@ -26,6 +27,7 @@ export function getCurrentUserId() {
   return userId;
 }
 
+
 /**
  * Retrieves guest tasks from localStorage.
  * @returns {Array} Stored guest tasks.
@@ -33,6 +35,7 @@ export function getCurrentUserId() {
 export function getLocalTasks() {
   return JSON.parse(localStorage.getItem('tasks')) || [];
 }
+
 
 /**
  * Saves guest tasks to localStorage.

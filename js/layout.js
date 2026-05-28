@@ -91,6 +91,7 @@ async function loadTemplate(containerId, templatePath) {
   container.innerHTML = html;
 }
 
+
 /**
  * Returns the initial page identifier based on the current URL query parameters.
  * Falls back to the summary page if no page parameter is provided.
@@ -120,6 +121,7 @@ export async function initLayout() {
   initPage(initialPage);
 }
 
+
 /**
  * Handles client-side page navigation by updating the page history,
  * loading the target page template,
@@ -139,6 +141,7 @@ async function navigateTo(page) {
 
   initPage(page);
 }
+
 
 async function loginNavigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
@@ -171,6 +174,7 @@ async function goBack() {
   document.body.classList.remove('help-open');
 }
 
+
 /**
  * Updates navigation item visual states by assigning active styling classes.
  * @param {HTMLElement} clickedItem - The navigation link node clicked by the user.
@@ -185,6 +189,7 @@ function setActiveNavItem(clickedItem) {
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
+
 
 /**
  * Initializes the public login layout components and loads the initial subpage
@@ -205,6 +210,7 @@ export async function initLoginLayout() {
   document.body.classList.add('has-active-page'); // Ensures a valid default page is loaded when layout-login.html is opened directly without a page parameter.
 }
 
+
 /**
  * Clears sidebar active navigation styling selections and displays the help page interface components.
  */
@@ -217,6 +223,7 @@ function openHelp() {
   document.body.classList.remove('has-active-page');
 }
 
+
 /**
  * Clears authentication state parameters and redirects the browser window back to login view.
  */
@@ -227,12 +234,14 @@ function logOut() {
   window.location.href = '../index.html'; // Redirect to login page
 }
 
+
 /**
  * Redirects the main page location reference point back to the central index login gateway.
  */
 function backToLogin() {
   window.location.href = '../index.html';
 }
+
 
 /**
  * Modifies visibility displays to remove unauthenticated navigation history back arrows.
@@ -241,6 +250,7 @@ function turnOffBackarrow() {
   const backArrow = document.querySelector('.backarrow-placeholder');
   if (backArrow) backArrow.style.display = 'none';
 }
+
 
 /**
  * Highlights corresponding sidebar links dynamically according to current URL routing paths.
@@ -264,6 +274,7 @@ function setActiveLoginNavFromUrl(page) {
 if (document.querySelector('.layout')) {
   initLayout();
 }
+
 
 if (document.querySelector('.layout-login')) {
   initLoginLayout();

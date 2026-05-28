@@ -65,6 +65,7 @@ export async function initBoard() {
   onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snap) => setup(snap.val()));
 }
 
+
 function setupTaskSearch() {
   const searchInput = document.getElementById('searchTask');
 
@@ -79,12 +80,14 @@ function setupTaskSearch() {
   });
 }
 
+
 function renderFilteredTasks() {
   const filteredTasks = filterTasksBySearchTerm(CURRENT_TASKS);
 
   renderAllTasks(filteredTasks);
   updateNoSearchResults(filteredTasks);
 }
+
 
 function filterTasksBySearchTerm(allTasks) {
   if (!currentSearchTerm) return allTasks;
@@ -97,6 +100,7 @@ function filterTasksBySearchTerm(allTasks) {
   });
 }
 
+
 function updateNoSearchResults(filteredTasks) {
   const noResultsElement = document.getElementById('noSearchResults');
   if (!noResultsElement) return;
@@ -105,6 +109,7 @@ function updateNoSearchResults(filteredTasks) {
 
   noResultsElement.classList.toggle('hidden', !hasNoSearchResults);
 }
+
 
 function renderAllTasks(allTasks) {
   const columns = ['todo', 'progress', 'feedback', 'done'];
@@ -119,10 +124,12 @@ function renderAllTasks(allTasks) {
   columns.forEach((id) => checkPlaceholder(id));
 }
 
+
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
   if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
 }
+
 
 /** @section TASK DETAILS & DIALOG CONTROL */
 
@@ -143,6 +150,7 @@ export async function openTaskDetail(id) {
   }
 }
 
+
 /**
  * Toggles a subtask and re-renders the board to update the progress bar.
  */
@@ -159,6 +167,7 @@ export async function toggleSubtask(taskId, index) {
   document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, taskId);
 }
 
+
 export function editEditSubtask(index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
   const task = CURRENT_TASKS[taskId];
@@ -168,6 +177,7 @@ export function editEditSubtask(index, taskId) {
     input?.focus();
   }
 }
+
 
 window.editEditSubtask = function (index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
@@ -181,6 +191,7 @@ window.editEditSubtask = function (index, taskId) {
     console.error(`Element subtaskItemDetail${index} nicht gefunden!`);
   }
 };
+
 
 async function saveEditSubtask(index, taskId) {
   const input = document.getElementById(`editSubtaskInput${index}`);
@@ -197,6 +208,7 @@ async function saveEditSubtask(index, taskId) {
   }
 }
 
+
 /** @section DRAG & DROP */
 
 /**
@@ -207,6 +219,7 @@ function startDragging(id) {
   CURRENT_DRAGGED_ELEMENT = id;
 }
 
+
 /**
  * Prevents default handler to allow dropping elements.
  * @param {Event} ev - The dragover event object.
@@ -214,6 +227,7 @@ function startDragging(id) {
 function allowDrop(ev) {
   ev.preventDefault();
 }
+
 
 /**
  * Updates a task status column value in Firebase.
@@ -230,6 +244,7 @@ async function moveTo(status) {
   await moveFirebaseTaskTo(status);
 }
 
+
 function moveGuestTaskTo(status) {
   CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT] = {
     ...CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT],
@@ -241,12 +256,14 @@ function moveGuestTaskTo(status) {
   renderFilteredTasks();
 }
 
+
 async function moveFirebaseTaskTo(status) {
   const uid = auth.currentUser.uid;
   const taskRef = ref(database, userTaskPath(uid, CURRENT_DRAGGED_ELEMENT));
 
   await update(taskRef, { status });
 }
+
 
 /** @section EDIT TASK (EDIT MODE) */
 
@@ -261,6 +278,7 @@ export async function editTask(id) {
   const dialog = document.getElementById('taskDetailDialog');
   if (!dialog.open) dialog.showModal();
 }
+
 
 export async function saveEdit(id) {
   const updates = {
@@ -280,6 +298,7 @@ export async function saveEdit(id) {
   closeTaskDetail();
 }
 
+
 /** @section EDITING SUBTASKS */
 
 /**
@@ -293,6 +312,7 @@ function handleEditSubtaskKey(event, taskId) {
     addEditSubtask(taskId);
   }
 }
+
 
 /**
  * Adds a subtask entry into the temporary local list.
@@ -309,6 +329,7 @@ async function addEditSubtask(taskId) {
   document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
 }
 
+
 /**
  * Deletes a subtask entry from the temporary editor view.
  * @param {string} id - The parent task ID.
@@ -323,6 +344,7 @@ export async function deleteEditSubtask(id, index) {
   }
 }
 
+
 /**
  * Switches a subtask checkmark status within the editor.
  * @param {string} taskId - The parent task ID.
@@ -333,6 +355,7 @@ function toggleEditSubtask(taskId, index) {
   task.subtasks[index].done = !task.subtasks[index].done;
   document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
 }
+
 
 /** @section MISCELLANEOUS ACTIONS */
 
@@ -352,6 +375,7 @@ export async function deleteTask(id) {
   if (typeof showSuccessToast === 'function') showSuccessToast('Task deleted');
 }
 
+
 /**
  * Navigates the window viewport to the creation view.
  * @param {string} [status='todo'] - Initial status column value.
@@ -369,6 +393,7 @@ export async function openAddTask(status = 'todo') {
   document.getElementById('taskDetailDialog').showModal();
 }
 
+
 async function saveNewTaskFromBoard() {
   const newTask = getTaskDataFromForm();
   if (isGuestUser()) {
@@ -384,6 +409,7 @@ async function saveNewTaskFromBoard() {
   renderFilteredTasks();
 }
 
+
 function getTaskDataFromForm() {
   return {
     title: document.getElementById('taskTitle')?.value || '',
@@ -397,12 +423,14 @@ function getTaskDataFromForm() {
   };
 }
 
+
 function convertTaskArrayToObject(tasks) {
   return tasks.reduce((taskObject, task) => {
     taskObject[task.id] = task;
     return taskObject;
   }, {});
 }
+
 
 function convertTaskObjectToArray(tasksObject) {
   return Object.values(tasksObject);

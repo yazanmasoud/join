@@ -142,7 +142,7 @@ textarea {
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 10px;
-  transition: background 0.1s;
+  transition: background 125ms;
 }
 
 .contact-item:hover span,
@@ -207,7 +207,7 @@ textarea {
   pointer-events: none;
   width: 18px;
   height: 18px;
-  transition: filter 0.1s ease;
+  transition: filter 125ms ease;
 }
 
 .contact-item:hover .custom-checkbox,
@@ -286,230 +286,7 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   display: flex;
   gap: 16px;
 }
-/* .add-task {
-  display: flex;
-  gap: 40px;
-  flex-wrap: wrap;
-}
 
-.add-task .input-group input:focus,
-.add-task .input-group textarea:focus,
-.add-task .input-group select:focus {
-  border-color: #29abe2;
-  box-shadow: 0 0 4px 0 rgba(41, 171, 226, 0.5);
-}
-
-
-.add-task .input-group input.input-error,
-.add-task .input-group select.input-error {
-  border-color: var(--color-required, #ff3d00);
-}
-
-.error-message {
-  color: var(--color-required, #ff3d00);
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-.add-section-left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.vertical-divider {
-  width: 1px;
-  background: var(--color-divider);
-  align-self: stretch;
-  margin: 0 10px;
-}
-
-.input-group {
-  margin-bottom: 24px;
-  width: 100%;
-}
-
-.input-group label {
-  display: flex;
-  margin-bottom: 8px;
-  font-weight: bold;
-  font-size: 20px;
-}
-
-.required {
-  color: var(--color-required);
-}
-
-input,
-textarea,
-select {
-  width: 100%;
-  padding: 12px 20px;
-  border: 1px solid var(--color-divider);
-  border-radius: 10px;
-  font-size: 20px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  background-color: var(--color-bg-primary);
-  box-sizing: border-box;
-}
-
-textarea {
-  resize: none;
-  height: 120px;
-}
-
-.input-wrapper-task {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.multiselect-container {
-  position: relative;
-}
-
-.combo-wrapper:focus-within {
-  border-color: #29abe2;
-  box-shadow: 0 0 4px 0 rgba(41, 171, 226, 0.5);
-}
-
-.select-trigger-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 21px;
-  border: 1px solid #d1d1d1;
-  border-radius: 10px;
-  background: white;
-}
-.combo-wrapper input {
-  border: none;
-  outline: none;
-  background: transparent;
-  width: 100%;
-  padding: 8px 0;
-  font-size: 20px;
-}
-
-
-.add-task .select-trigger-wrapper input,
-.add-task .combo-wrapper input {
-  border: none;
-  outline: none;
-  box-shadow: none;
-  background: transparent;
-  padding: 0;
-  width: 100%;
-}
-
-
-.add-task .select-trigger-wrapper input:focus,
-.add-task .combo-wrapper input:focus {
-  border: none;
-  box-shadow: none;
-}
-
-.combo-wrapper input:focus {
-  border: none;
-  box-shadow: none;
-}
-
-.select-trigger-wrapper:focus-within {
-  border-color: var(--color-highlights, #29abe2);
-  box-shadow: 0 0 4px 0 rgba(41, 171, 226, 0.5);
-}
-
-.dropdown-arrow {
-  cursor: pointer;
-}
-
-.contact-name-left {
-  display: flex;
-  gap: 12px;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 10px;
-  transition: background 0.1s;
-}
-
-.contact-item:hover span,
-.contact-item.selected span {
-  color: white !important;
-}
-
-.contact-item:hover,
-.contact-item.selected {
-  background-color: #2a3647;
-}
-
-.contact-item * {
-  pointer-events: none;
-}
-
-.dropdown-content {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-  background: white;
-  border: 1px solid var(--color-divider);
-  border-radius: 0 0 10px 10px;
-  z-index: 10;
-}
-
-.contact-label {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  cursor: pointer;
-  padding: 0px 8px;
-  box-sizing: border-box;
-}
-
-.contact-name-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.contact-label input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  flex-shrink: 0;
-  cursor: pointer;
-}
-
-.contact-label span {
-  font-size: 18px;
-  color: var(--color-text-main);
-  font-weight: 400;
-}
-
-.custom-checkbox {
-  pointer-events: none;
-  width: 18px;
-  height: 18px;
-  transition: filter 0.1s ease;
-  pointer-events: none;
-}
-
-.contact-item:hover .custom-checkbox,
-.contact-item.selected .custom-checkbox {
-  filter: brightness(0) invert(1);
-}
 
 /* --- BADGES (INITIALS) --- */
 .assigned-badges-container {
@@ -600,7 +377,7 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   width: 100%;
   padding: 6px 12px;
   border-radius: 10px;
-  transition: background-color 0.2s ease;
+  transition: background-color 125ms ease;
   box-sizing: border-box;
 }
 .subtask-edit-item:hover {

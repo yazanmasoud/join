@@ -22,6 +22,7 @@ export async function initSummary() {
   await fetchSummaryData();
 }
 
+
 /**
  * Orchestrates the data retrieval and attaches navigation events to cards.
  */
@@ -30,6 +31,7 @@ async function fetchSummaryData() {
   updateUI(calculateMetrics(tasks));
   setupCardNavigation(); // Fügt die Klick-Events hinzu
 }
+
 
 /**
  * Attaches the click event to all summary cards to navigate to the board.
@@ -43,6 +45,7 @@ function setupCardNavigation() {
   });
 }
 
+
 /**
  * Retrieves task data from Firebase for authenticated users or falls back to local data.
  * @returns {Promise<Array>} A promise that resolves to an array of tasks.
@@ -53,6 +56,7 @@ async function getFirebaseTasks() {
   const snapshot = await get(ref(database, userTasksPath(uid)));
   return snapshot.exists() ? Object.values(snapshot.val()) : getLocalTasks();
 }
+
 
 /**
  * Fetches and displays the authenticated user's name in the greeting section.
@@ -66,6 +70,7 @@ async function renderGreetingName() {
   }
   setGreetingName(userData.name);
 }
+
 
 /**
  * Handles the visibility and auto-removal of the greeting message on mobile devices.

@@ -39,6 +39,7 @@ export function getInitials(name) {
   return firstLetter + lastLetter;
 }
 
+
 /**
  * Constructs a CSS class name mapped to a priority level.
  * @param {string} prio - The priority level string.
@@ -47,6 +48,7 @@ export function getInitials(name) {
 export function getPrioClass(prio) {
   return 'active-' + prio.toLowerCase();
 }
+
 
 /**
  * Resets priority button styles by removing all active priority CSS classes.
@@ -59,11 +61,13 @@ export function clearActivePrioClasses(selector) {
   );
 }
 
+
 /**Board.js */
 export function capitalizeFirstLetter(string) {
   if (!string) return '';
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
 
 /**Summary.js */
 /**
@@ -83,6 +87,7 @@ export function calculateMetrics(tasks) {
   };
 }
 
+
 /**
  * Finds and formats the earliest upcoming task deadline.
  * @param {Array} tasks - The list of tasks.
@@ -100,12 +105,14 @@ export function getNextDeadline(tasks) {
   return nextDate.toLocaleDateString('en-US', options);
 }
 
+
 export function showOverlay(message = 'Success!') {
   const text = overlay.querySelector('.success-message');
   text.textContent = message;
   overlay.classList.remove('hidden');
   overlay.style.opacity = '1';
 }
+
 
 export function hideOverlay() {
   overlay.style.opacity = '0';

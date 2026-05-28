@@ -11,6 +11,7 @@ export async function getTasks() {
   return snapshot.exists() ? normalizeObjectToArray(snapshot.val()) : [];
 }
 
+
 export async function createTask(taskData) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
@@ -24,6 +25,7 @@ export async function createTask(taskData) {
   await set(newTaskRef, taskData);
   return { id: newTaskRef.key, ...taskData };
 }
+
 
 /**
  * Validates if the task has a title, date and category.
@@ -45,12 +47,14 @@ export function isTaskValid(task) {
   return titleOk && dateOk && catOk;
 }
 
+
 function toggleErrorState(id, isError) {
   const field = document.getElementById(id);
   if (field) field.classList.toggle('input-error', isError);
   const msg = document.getElementById(`error-${id}`);
   if (msg) msg.classList.toggle('d-none', !isError);
 }
+
 
 export async function updateTask(taskId, updatedData) {
   if (isGuestUser()) {
@@ -63,6 +67,7 @@ export async function updateTask(taskId, updatedData) {
   await update(ref(database, userTaskPath(uid, taskId)), updatedData);
 }
 
+
 export async function deleteTask(taskId) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
@@ -73,6 +78,7 @@ export async function deleteTask(taskId) {
   const uid = auth.currentUser.uid;
   await remove(ref(database, userTaskPath(uid, taskId)));
 }
+
 
 export function listenToTasks(callback) {
   if (isGuestUser()) return callback(getLocalTasks());

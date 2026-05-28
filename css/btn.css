@@ -4,7 +4,7 @@ button {
 }
 
 .btn {
-  border: none;
+  border: unset;
   background: none;
 }
 
@@ -15,7 +15,7 @@ button {
   padding: 16px 20px;
   background-color: var(--color-bg-secondary);
   color: var(--color-bg-primary);
-  border: none;
+  border: unset;
   border-radius: 8px;
   font-size: 20px;
   font-weight: 700;
@@ -66,7 +66,7 @@ button {
   padding: 10px 20px;
   background-color: var(--color-bg-secondary);
   color: var(--color-bg-primary);
-  border: none;
+  border: unset;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 700;
@@ -84,7 +84,7 @@ button {
   color: var(--color-bg-primary);
   width: 280px;
   height: 56px;
-  border: none;
+  border: unset;
   font-size: 20px;
   font-weight: 700;
   display: flex;
@@ -94,7 +94,7 @@ button {
 }
 
 .contact-dialog-close-button {
-  border: none;
+  border: unset;
   background: none;
   display: flex;
   align-items: center;
@@ -132,12 +132,12 @@ button {
 }
 
 .edit-delete-btn {
-  border: none;
+  border: unset;
   background: none;
 }
 
 .edit-delete-btn img {
-  transition: 100ms ease;
+  transition: 125ms ease;
 }
 
 .edit-delete-btn:hover img {
@@ -146,14 +146,14 @@ button {
 
 .subtasks-item-list li button {
   background: none;
-  border: none;
+  border: unset;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
   border-radius: 50%;
-  transition: all 0.2s ease;
+  transition: all 125ms ease;
 }
 
 .subtasks-item-list li button:hover {
@@ -167,7 +167,7 @@ button {
 
 .subtask-action-btn {
   background: none;
-  border: none;
+  border: unset;
   cursor: pointer;
   padding: 0 4px;
 }
@@ -190,7 +190,7 @@ button {
   position: absolute;
   right: 12px;
   background: none;
-  border: none;
+  border: unset;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -217,7 +217,7 @@ button {
   gap: 8px;
   font-size: 16px;
   font-weight: 400;
-  transition: all 0.2s ease;
+  transition: all 125ms ease;
   color: black;
 }
 
@@ -248,7 +248,7 @@ button {
 
 .subtasks-list button {
   background: none;
-  border: none;
+  border: unset;
   cursor: pointer;
   font-weight: bold;
   color: var(--color-bg-secondary);
@@ -280,7 +280,7 @@ button {
     height: 56px;
     border-radius: 50%;
     background-color: var(--color-bg-secondary);
-    border: none;
+    border: unset;
     color: white;
     font-size: 28px;
     align-items: center;
@@ -311,7 +311,7 @@ button {
 .mobile-action-item {
     display: flex;
     align-items: center;
-    border: none;
+    border: unset;
     background: none;
     cursor: pointer;
 }
@@ -322,7 +322,7 @@ button {
 
 .mobile-back-btn {
     display: none;
-    border: none;
+    border: unset;
     background: none;
     cursor: pointer;
     padding: 8px;
@@ -344,6 +344,12 @@ button {
 
   .mobile-back-btn {
     display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  #login-button {
+    min-width: 180px;
   }
 }
 

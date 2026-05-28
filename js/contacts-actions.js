@@ -133,6 +133,7 @@ function getCurrentEditContact() {
     );
 }
 
+
 /**
  * Reads the contact form inputs and
  * creates an updated contact data object.
@@ -170,6 +171,7 @@ function updateLocalContact(updatedData) {
         )
     );
 }
+
 
 /**
  * Updates the contact list

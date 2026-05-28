@@ -19,6 +19,7 @@ export function closeTaskDetail() {
   }
 }
 
+
 /**
  * Sets up a listener to close the dialog when clicking on the backdrop.
  * @param {Function} closeCallback - The function to execute on close.
@@ -30,6 +31,7 @@ export function setupDialogClose(closeCallback) {
   });
 }
 
+
 /**
  * Adds a highlight class to a drag container.
  * @param {string} id - The ID of the element to highlight.
@@ -38,6 +40,7 @@ export function highlight(id) {
   document.getElementById(id)?.classList.add('drag-area-highlight');
 }
 
+
 /**
  * Removes the highlight class from a drag container.
  * @param {string} id - The ID of the element.
@@ -45,6 +48,7 @@ export function highlight(id) {
 export function removeHighlight(id) {
   document.getElementById(id)?.classList.remove('drag-area-highlight');
 }
+
 
 /**
  * Updates the visual active state of priority buttons in edit mode.
@@ -59,6 +63,7 @@ export function setEditPriority(prio) {
   const activeBtn = document.getElementById('editPrio' + prio);
   if (activeBtn) activeBtn.classList.add('active-' + prio.toLowerCase());
 }
+
 
 /** @section Summary & Dashboard */
 
@@ -76,6 +81,7 @@ export function updateUI(data) {
   });
 }
 
+
 /**
  * Sets a time-dependent greeting message (Morning, Afternoon, Evening).
  */
@@ -90,6 +96,7 @@ export function setGreeting() {
     element.innerHTML = greeting;
   });
 }
+
 
 /**
  * Adjusts the greeting layout and name display based on guest status.
@@ -108,6 +115,7 @@ export function handleGuestLogin(dashboardData) {
   }
 }
 
+
 /**
  * Opens the profile avatar dropdown menu.
  * @param {Event} event - The triggered DOM click event.
@@ -119,6 +127,7 @@ export function openAvatarDropdown(event) {
   dropdown.classList.add('open');
 }
 
+
 /**
  * Closes all elements currently marked with the 'open' class.
  */
@@ -127,6 +136,7 @@ export function closeOpenElements() {
     element.classList.remove('open');
   });
 }
+
 
 /**
  * Navigates back based on the current layout context (Login or App).
@@ -141,6 +151,7 @@ function handleBackArrow() {
   navigateTo(previousPage);
 }
 
+
 /**
  * Clears the inner HTML of multiple elements by their IDs.
  * @param {string[]} ids - Array of element IDs to clear.
@@ -151,6 +162,7 @@ export function clearElementsByIds(ids) {
     if (element) element.innerHTML = '';
   });
 }
+
 
 /**
  * Ensures data is returned as an array, converting objects if necessary.
@@ -165,6 +177,7 @@ export function normalizeObjectToArray(data) {
   }));
 }
 
+
 /**
  * Updates the user name in all greeting-related DOM elements.
  * @param {string} name - The user name to display.
@@ -177,6 +190,7 @@ export function setGreetingName(name) {
   });
 }
 
+
 /**
  * Renders user initials into a specific avatar element.
  * @param {string} elementId - ID of the avatar container.
@@ -187,6 +201,7 @@ export function renderAvatar(elementId, name) {
   if (!avatarElement) return;
   avatarElement.innerText = getInitials(name);
 }
+
 
 /**
  * Shows a validation error message and highlights the input.
@@ -206,6 +221,7 @@ export function showInputError(inputId, errorId, message) {
   }
 }
 
+
 /**
  * Removes validation error highlights and hides the error message.
  * @param {string} inputId - ID of the input field.
@@ -223,6 +239,7 @@ export function clearInputError(inputId, errorId) {
   }
 }
 
+
 /**
  * Toggles the visibility of the contact selection list.
  */
@@ -230,6 +247,7 @@ export function toggleContactList() {
   const list = document.getElementById('contactList');
   if (list) list.classList.toggle('d-none');
 }
+
 
 /**
  * Displays a success toast notification with a custom message.
@@ -250,6 +268,7 @@ export function showSuccessToast(message = 'Task added to board') {
   }, 2000);
 }
 
+
 /**
  * Switches the Add Task button to Save mode for editing.
  */
@@ -263,6 +282,7 @@ export function updateButtonToSaveMode() {
   if (headline) headline.innerText = 'Edit Task';
 }
 
+
 /**
  * Resets the values of multiple input fields.
  * @param {string[]} ids - Array of input element IDs.
@@ -273,6 +293,7 @@ export function resetInputFields(ids) {
     if (el) el.value = '';
   });
 }
+
 
 /**
  * Closes the sign-up view and navigates back to the login screen.
@@ -290,6 +311,7 @@ export function closeSignUp() {
   signup.classList.add('hidden');
   login.classList.remove('hidden');
 }
+
 
 /**
  * Resets all input fields and the privacy checkbox in the sign-up form.
