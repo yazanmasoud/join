@@ -4,6 +4,7 @@ import { calculateMetrics } from './utils.js';
 import { setGreeting, updateUI, setGreetingName } from './ui.js';
 import { auth, database } from './firebase-config.js';
 import { getCurrentUserData } from './auth-service.js';
+import { userTasksPath } from './database-paths.js';
 
 window.initSummary = initSummary;
 
@@ -49,7 +50,7 @@ function setupCardNavigation() {
 async function getFirebaseTasks() {
   const uid = auth.currentUser?.uid;
   if (!uid) return getLocalTasks();
-  const snapshot = await get(ref(database, `tasks/${uid}`));
+  const snapshot = await get(ref(database, userTasksPath(uid)));
   return snapshot.exists() ? Object.values(snapshot.val()) : getLocalTasks();
 }
 
