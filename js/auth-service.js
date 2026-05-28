@@ -21,11 +21,7 @@ window.isValidEmail = isValidEmail;
 //handles the complete registration flow
 export async function registerUser(name, email, password) {
   try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await saveUserProfile(userCredential.user, name, email);
     await saveUserAsContact(userCredential.user, name, email);
     await signOut(auth);
@@ -115,47 +111,19 @@ export function validateLoginEmail() {
 
 function handleLoginError(error) {
   const errors = {
-    'auth/invalid-email': {
-      input: 'email',
-      text: 'error-text-email',
-      message: 'Please enter a valid email address.',
-    },
-    'auth/invalid-credential': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Check your email and password. Please try again.',
-    },
-    'auth/user-not-found': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Check your email and password. Please try again.',
-    },
-    'auth/wrong-password': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Check your email and password. Please try again.',
-    },
-    'auth/too-many-requests': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Too many failed attempts. Please try again later.',
-    },
-    'auth/network-request-failed': {
-      input: 'password',
-      text: 'error-text-password',
-      message: 'Network error. Please check your connection.',
-    },
+    'auth/invalid-email': {input: 'email', text: 'error-text-email', message: 'Please enter a valid email address.'},
+    'auth/invalid-credential': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/user-not-found': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/wrong-password': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/too-many-requests': {input: 'password', text: 'error-text-password', message: 'Too many failed attempts. Please try again later.'},
+    'auth/network-request-failed': {input: 'password', text: 'error-text-password', message: 'Network error. Please check your connection.'},
   };
   const currentError = errors[error.code];
   if (!currentError) {
     console.error(error);
     return;
   }
-  showInputError(
-    currentError.input,
-    currentError.text,
-    currentError.message
-  );
+  showInputError(currentError.input, currentError.text, currentError.message);
 }
 
 
