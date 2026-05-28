@@ -340,3 +340,12 @@
   justify-content: flex-end;
   gap: 12px;
 }
+
+.contact-items {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    cursor: pointer;
+}
