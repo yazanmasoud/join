@@ -138,6 +138,7 @@ function openDeleteDialog(contactId) {
     dialog.showModal();
 }
 
+
 /**
  * Closes delete dialog.
  */
