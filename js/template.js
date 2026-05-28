@@ -33,7 +33,6 @@ export function generateTaskHTML(task, id) {
     </div>`;
 }
 
-
 function renderTaskBody(t) {
   return `
     <div class="task-card-content">
@@ -42,7 +41,6 @@ function renderTaskBody(t) {
     </div>
     ${renderSmallSubtaskInfo(t)}`;
 }
-
 
 /**
  * Renders a progress bar and subtask completion text.
@@ -65,7 +63,6 @@ export function renderSmallSubtaskInfo(task) {
     </div>`; // "Subtasks" Text sorgt dafür, dass keine leeren Punkte stehen
 }
 
-
 /**
  * Generates placeholder HTML for an empty board column.
  * @param {string} label - The text label of the empty column.
@@ -74,7 +71,6 @@ export function renderSmallSubtaskInfo(task) {
 export function getNoTaskPlaceholder(label) {
   return `<div class="no-tasks">No tasks ${label}</div>`;
 }
-
 
 /** --- ADD TASK TEMPLATES --- */
 /**
@@ -95,7 +91,6 @@ export function getPriorityButtonsHTML(selectedPrio) {
     .join('');
 }
 
-
 function setPriority(prio) {
   currentPriority = currentPriority === prio ? '' : prio;
 
@@ -104,7 +99,6 @@ function setPriority(prio) {
     container.innerHTML = getPriorityButtonsHTML(currentPriority);
   }
 }
-
 
 /**
  * Generates HTML option elements for a select dropdown menu.
@@ -117,7 +111,6 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
   const opts = optionsArray.map((opt) => `<option value="${opt}">${opt}</option>`).join('');
   return def + opts;
 }
-
 
 /**
  * Generates a single subtask list element with a delete action button.
@@ -142,7 +135,6 @@ export function getSubtaskHTML(task, index) {
     </li>`;
 }
 
-
 export function getSubtaskEditHTML(title, index, isEditMode = false, taskId = '') {
   const saveFn = isEditMode ? `saveEditSubtask(${index}, '${taskId}')` : `saveSubtask(${index})`;
   const deleteFn = isEditMode ? `deleteEditSubtask(${index}, '${taskId}')` : `deleteSubtask(${index})`;
@@ -157,7 +149,6 @@ export function getSubtaskEditHTML(title, index, isEditMode = false, taskId = ''
       </div>
     </li>`;
 }
-
 
 /** --- TASK DETAIL DIALOG --- */
 /**
@@ -182,7 +173,6 @@ export function generateTaskDetailHTML(task, id) {
     </div>`;
 }
 
-
 /**
  * Generates HTML table rows containing due date and priority badges.
  * @param {Object} task - The task data object.
@@ -201,7 +191,6 @@ export function getDetailInfoRows(task) {
         <img src="../assets/icons/prio-${prio}-icon.svg"></div>
     </div>`;
 }
-
 
 /**
  * Generates the HTML list items for subtasks in the detail view.
@@ -226,7 +215,6 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
     .join('');
 }
 
-
 export function getSingleDetailSubtaskHTML(subtask, index, taskId) {
   return `
     <li id="subtaskItemDetail${index}" class="subtask-item">
@@ -241,7 +229,6 @@ export function getSingleDetailSubtaskHTML(subtask, index, taskId) {
       </div>
     </li>`;
 }
-
 
 /**
  * Generates the functional action buttons for editing and deleting tasks.
@@ -261,7 +248,6 @@ export function getDetailFooter(id) {
     </div>`;
 }
 
-
 /** --- ASSIGNED USERS --- */
 /**
  * Generates an assigned user element containing initials badges and names.
@@ -278,7 +264,6 @@ export function getAssignedUserHTML(name) {
       <span class="user-name">${safeName}</span></div>`;
 }
 
-
 /**
  * Iterates over contacts list parameters and generates detail row HTML output.
  * @param {any} assignedTo - Assigned string name or collection array.
@@ -290,7 +275,6 @@ export function renderAssignedToDetail(assignedTo, showName = true) {
   return assignedTo.map((item) => renderSingleBadge(item, allContacts, showName)).join('');
 }
 
-
 function getInitialsFromName(fullName, contact) {
   if (contact?.initials) return contact.initials;
   return fullName
@@ -301,14 +285,12 @@ function getInitialsFromName(fullName, contact) {
     .slice(0, 2);
 }
 
-
 function renderSingleBadge(item, allContacts, showName) {
   const c = allContacts.find((c) => c.name === (item.name || item) || c.id === item);
   const n = c?.name || (typeof item === 'string' ? item : item?.name) || 'Guest';
   const badge = `<div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${getInitialsFromName(n, c)}</div>`;
   return showName ? `<div class="assigned-contact-row">${badge}<span>${n}</span></div>` : badge;
 }
-
 
 /** --- EDIT MODE --- */
 /**
@@ -331,7 +313,6 @@ export function generateEditTaskHTML(task, id) {
     </div>`;
 }
 
-
 /**
  * Generates the layout view container structure for editor left sections.
  * @param {Object} task - The targeted active task data object.
@@ -346,7 +327,6 @@ export function getEditLeftSection(task) {
         <textarea id="editDescription">${task.description || ''}</textarea></div>
     </div>`;
 }
-
 
 export function getEditRightSection(task, id) {
   return `
@@ -363,7 +343,6 @@ export function getEditRightSection(task, id) {
         <div id="assignedBadges" class="assigned-badges-container"></div>
     </div>`;
 }
-
 
 /* Contacts Template */
 /**
@@ -387,7 +366,6 @@ export function getContactLetter(list, letter) {
     `;
 }
 
-
 /**
  * Gets a single contact item
  * for rendering in the contact list.
@@ -410,7 +388,6 @@ export function getSingleContact(list, contact, index, isActive) {
     </div>`;
 }
 
-
 export function getContactDetails(contact) {
   return `
     <div class="contact-details-content">
@@ -427,13 +404,11 @@ export function getContactDetails(contact) {
         <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div></div>`;
 }
 
-
 export function getContactOptionsHTML(contactsArray, defaultText) {
   const def = `<option value="" disabled selected>${defaultText}</option>`;
   const opts = contactsArray.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
   return def + opts;
 }
-
 
 /**
  * Generates the HTML for a contact item in the dropdown with your specific icons.

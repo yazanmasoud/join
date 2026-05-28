@@ -42,23 +42,20 @@ window.toggleContactSelection = function (name) {
   updateSelectedBadges();
 };
 
-
 /**
  * Updates the visual initials badges for selected contacts.
  */
 export async function updateSelectedBadges() {
   const container = document.getElementById('assignedBadges');
-  const checked = document.querySelectorAll('input[name="assignedContact"]:checked');
   if (!container) return;
   const allContacts = await getContacts();
-  container.innerHTML = Array.from(checked)
-    .map((cb) => {
-      const c = allContacts.find((c) => c.name === cb.value);
+  container.innerHTML = selectedContacts
+    .map((item) => {
+      const c = allContacts.find((contact) => contact.name === item || contact.id === item);
       return `<div class="user-badge" style="background-color: ${c?.color || '#2A3647'}">${c?.initials || '??'}</div>`;
     })
     .join('');
 }
-
 
 /**
  * Initializes the add task view and loads edit data if available.
@@ -76,7 +73,6 @@ export async function initAddTask() {
   }
 }
 
-
 /**
  * Populates form fields with existing task data for editing.
  * @param {Object} data - The task data object.
@@ -87,12 +83,11 @@ function fillFormForEdit(data) {
   document.getElementById('taskDate').value = data.dueDate || '';
   document.getElementById('taskCategory').value = data.category || '';
   subtasks = data.subtasks || [];
-  selectedContacts = data.assignedTo || [];
+  selectedContacts = (data.assignedTo || []).map((item) => (typeof item === 'object' ? item.name || item.id : item));
   setPriority(data.priority || 'Medium');
   renderSubtasks();
   renderContacts();
 }
-
 
 /**
  * Collects form data and saves the task to the service.
@@ -114,7 +109,6 @@ async function createTask() {
   }
 }
 
-
 /**
  * Handles the success case after task creation or update.
  */
@@ -134,7 +128,6 @@ function handleSuccess() {
   }, 1000);
 }
 
-
 /**
  * Assembles the task object from form inputs.
  * @returns {Object} The formatted task object.
@@ -153,7 +146,6 @@ function getTaskObject() {
   };
 }
 
-
 /**
  * Sets the active task priority.
  * @param {string} prio - Priority level.
@@ -165,7 +157,6 @@ function setPriority(prio) {
   if (active) active.classList.add(getPrioClass(prio));
 }
 
-
 /**
  * Renders priority selection buttons.
  */
@@ -174,7 +165,6 @@ function renderPriorityButtons() {
   if (container) container.innerHTML = getPriorityButtonsHTML();
 }
 
-
 /**
  * Renders category dropdown options.
  */
@@ -182,7 +172,6 @@ function renderCategories() {
   const select = document.getElementById('taskCategory');
   if (select) select.innerHTML = getSelectOptionsHTML(CATEGORY_OPTIONS, 'Select task category');
 }
-
 
 /**
  * Renders contact selection list filtered by the input value.
@@ -193,11 +182,12 @@ export async function renderContacts(searchTerm = '') {
   if (!list) return;
   const contacts = await getContacts();
   const filtered = contacts.filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const selectedNames = selectedContacts.map((item) => (typeof item === 'object' ? item.name : item));
+  const selectedIds = selectedContacts.map((item) => (typeof item === 'object' ? item.id : item));
   // Nutzt das selectedContacts Array für den Status
-  list.innerHTML = filtered.map((c) => getContactCheckboxHTML(c, selectedContacts.includes(c.name))).join('');
+  list.innerHTML = filtered.map((c) => getContactCheckboxHTML(c, selectedNames.includes(c.name) || selectedIds.includes(c.id))).join('');
   if (searchTerm.length > 0) list.classList.remove('d-none');
 }
-
 
 /**
  * Handles subtask addition via keyboard event.
@@ -216,7 +206,6 @@ function handleSubtaskKey(event) {
   }
 }
 
-
 /**
  * Activates the edit mode for a subtask by re-rendering it with an input.
  * @param {number} index - The index of the subtask in the array.
@@ -233,7 +222,6 @@ function editSubtask(index) {
   input?.focus();
 }
 
-
 /**
  * Saves the edited subtask title and returns to normal view.
  * @param {number} index - The index of the subtask.
@@ -248,7 +236,6 @@ function saveSubtask(index) {
   renderSubtasks();
 }
 
-
 /**
  * Renders the current list of subtasks.
  */
@@ -261,7 +248,6 @@ function renderSubtasks() {
   });
 }
 
-
 /**
  * Removes a subtask from the list.
  * @param {number} index - Index of subtask.
@@ -271,16 +257,23 @@ function deleteSubtask(index) {
   renderSubtasks();
 }
 
-
 /**
  * Resets the entire task form to default state.
  */
 function clearForm() {
-  ['taskTitle', 'taskDescription', 'taskDate', 'subtasks'].forEach((id) => {
+  ['taskTitle', 'taskDescription', 'taskDate', 'subtasks', 'assignedInput'].forEach((id) => {
     if (document.getElementById(id)) document.getElementById(id).value = '';
   });
   subtasks = [];
+  selectedContacts = [];
   if (window.renderSubtasks) renderSubtasks();
+  if (window.renderContacts) {
+    renderContacts().then(() => updateSelectedBadges());
+  } else {
+    updateSelectedBadges();
+  }
+  const list = document.getElementById('contactList');
+  if (list) list.classList.add('d-none');
   document.getElementById('taskCategory') && (document.getElementById('taskCategory').selectedIndex = 0);
   document.getElementById('tasksAssigned') && (document.getElementById('tasksAssigned').selectedIndex = 0);
   if (window.setPriority) setPriority('Medium');
@@ -290,7 +283,6 @@ function clearForm() {
   if (btn) btn.innerHTML = 'Create Task <img src="../assets/icons/create-task.svg">';
 }
 
-
 /**
  * Toggles the completion status of a subtask.
  * @param {number} index - Index of subtask.
@@ -299,7 +291,6 @@ function toggleSubtaskStatus(index) {
   subtasks[index].done = !subtasks[index].done;
   renderSubtasks();
 }
-
 
 /**
  * Prepares the form for editing within a dialog window.
@@ -321,7 +312,6 @@ export function prepareEditInDialog(id, data) {
   const clearBtn = document.querySelector('.edit-mode-container .btn-light');
   if (clearBtn) clearBtn.remove();
 }
-
 
 /**
  * Saves the edited task from the dialog.
