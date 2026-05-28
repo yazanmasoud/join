@@ -114,14 +114,35 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
 export function getSubtaskHTML(task, index) {
   const icon = task.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
   return `
-    <li class="subtask-edit-item">
+    <li class="subtask-edit-item" id="subtaskItem${index}" ondblclick="editSubtask(${index})">
       <div class="subtask-left" onclick="toggleSubtaskStatus(${index})">
-        <img src="../assets/icons/${icon}" class="subtask-check-icon" alt="checkbox">
+        <img src="../assets/icons/${icon}" class="subtask-check-icon">
         <span class="subtask-text">${task.title}</span>
       </div>
       <div class="subtask-actions">
-        <button type="button" class="delete-sub-btn" onclick="deleteSubtask(${index})">
+        <button type="button" class="subtask-action-btn" onclick="editSubtask(${index})">
+          <img src="../assets/icons/edit-icon.svg" alt="edit">
+        </button>
+        <div class="subtask-divider"></div>
+        <button type="button" class="subtask-action-btn" onclick="deleteSubtask(${index})">
           <img src="../assets/icons/delete-icon.svg" alt="delete">
+        </button>
+      </div>
+    </li>`;
+}
+
+export function getSubtaskEditHTML(title, index) {
+  return `
+    <li class="subtask-edit-mode-item">
+      <input type="text" id="editSubtaskInput${index}" class="subtask-edit-input" value="${title}" 
+             onkeydown="if(event.key==='Enter') saveSubtask(${index})">
+      <div class="subtask-edit-actions">
+        <button type="button" class="subtask-action-btn" onclick="deleteSubtask(${index})">
+          <img src="../assets/icons/delete-icon.svg" alt="delete">
+        </button>
+        <div class="subtask-divider"></div>
+        <button type="button" class="subtask-action-btn" onclick="saveSubtask(${index})">
+          <img src="../assets/icons/subtask-check-icon.svg" alt="save">
         </button>
       </div>
     </li>`;
@@ -368,18 +389,20 @@ export function getContactOptionsHTML(contactsArray, defaultText) {
   return def + opts;
 }
 
+/**
+ * Generates the HTML for a contact item in the dropdown with your specific icons.
+ */
 export function getContactCheckboxHTML(contact, isChecked) {
+  const icon = isChecked ? 'subtask-done-icon.svg' : 'check-empty.svg';
   return `
-    <div class="contact-item">
-      <label class="contact-label">
-        <div class="contact-name-wrapper">
-          <div class="user-badge-small" style="background-color: ${contact.color || '#2A3647'}">
-            ${contact.initials || '??'}
-          </div>
-          <span>${contact.name}</span>
-        </div>
-        <input type="checkbox" name="assignedContact" value="${contact.name}" 
-               ${isChecked ? 'checked' : ''} onchange="updateSelectedBadges()">
-      </label>
+    <div class="contact-item ${isChecked ? 'selected' : ''}" 
+         onclick="toggleContactSelection('${contact.name}'); event.stopPropagation();">
+      <div class="contact-name-left" style="pointer-events: none;">
+        <div class="user-badge-small" style="background-color: ${contact.color}">${contact.initials}</div>
+        <span style="color: inherit;">${contact.name}</span>
+      </div>
+      <input type="checkbox" name="assignedContact" value="${contact.name}" 
+             ${isChecked ? 'checked' : ''} style="display:none">
+      <img src="../assets/icons/${icon}" class="custom-checkbox" style="pointer-events: none;">
     </div>`;
 }
