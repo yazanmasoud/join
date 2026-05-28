@@ -7,8 +7,6 @@
 .action-btn,
 .assigned-user,
 .input-wrapper,
-.subtask-item,
-.subtask-left,
 .detail-view-info-row {
   display: flex;
   align-items: center;
@@ -208,6 +206,13 @@
   width: 100%;
 }
 
+.task-detail-content-style ul,
+.assigned-list-detail {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
 .detail-view-header {
   display: flex;
   justify-content: space-between;
@@ -342,12 +347,51 @@
 }
 
 .subtask-item {
-  padding: 6px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
   cursor: pointer;
+  gap: 10px;
+  width: 100%;
 }
 .subtask-text {
   margin-left: 20px;
   font-size: 16px;
+}
+
+.subtask-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  min-width: 0;
+}
+
+.subtask-left span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subtask-left input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.subtask-icons img {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.subtask-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .edit-content-wrapper {

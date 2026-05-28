@@ -158,25 +158,27 @@ export async function toggleSubtask(taskId, index) {
   document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, taskId);
 }
 
-function editEditSubtask(index, taskId) {
+export function editEditSubtask(index, taskId) {
+  const item = document.getElementById(`subtaskItemDetail${index}`);
   const task = CURRENT_TASKS[taskId];
-  const list = document.getElementById('editSubtasksList');
-  const items = list.querySelectorAll('li');
-  // Nutzt das gleiche Template wie Add-Task
-  items[index].outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
-  const input = document.getElementById(`editSubtaskInput${index}`);
-  input.focus();
-  input.setSelectionRange(input.value.length, input.value.length);
+  if (item && task) {
+    item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
+    const input = document.getElementById(`editSubtaskInput${index}`);
+    input?.focus();
+  }
 }
 
 window.editEditSubtask = function (index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
   const task = CURRENT_TASKS[taskId];
-  item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
 
-  const input = document.getElementById(`editSubtaskInput${index}`);
-  input.focus();
-  input.setSelectionRange(input.value.length, input.value.length);
+  if (item && task && task.subtasks[index]) {
+    item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
+    const input = document.getElementById(`editSubtaskInput${index}`);
+    input?.focus();
+  } else {
+    console.error(`Element subtaskItemDetail${index} nicht gefunden!`);
+  }
 };
 
 async function saveEditSubtask(index, taskId) {
@@ -250,14 +252,13 @@ async function moveFirebaseTaskTo(status) {
 export async function editTask(id) {
   const task = CURRENT_TASKS[id];
   if (!task) return;
-  const dialog = document.getElementById('taskDetailDialog');
   const content = document.getElementById('taskDetailContent');
-
   localStorage.setItem('editTaskData', JSON.stringify(task));
+  const response = await fetch('add-task.html'); // Diese Zeile war weg!
   content.innerHTML = `<div class="edit-mode-container">${await response.text()}</div>`;
-
-  if (!dialog.open) dialog.showModal();
   if (window.prepareEditInDialog) window.prepareEditInDialog(id, task);
+  const dialog = document.getElementById('taskDetailDialog');
+  if (!dialog.open) dialog.showModal();
 }
 
 export async function saveEdit(id) {
@@ -312,10 +313,13 @@ async function addEditSubtask(taskId) {
  * @param {string} id - The parent task ID.
  * @param {number} index - Subtask position index.
  */
-async function deleteEditSubtask(id, index) {
-  CURRENT_TASKS[id].subtasks.splice(index, 1);
-  const content = document.getElementById('taskDetailContent');
-  content.innerHTML = generateEditTaskHTML(CURRENT_TASKS[id], id);
+export async function deleteEditSubtask(id, index) {
+  const task = CURRENT_TASKS[id];
+  if (task && task.subtasks) {
+    task.subtasks.splice(index, 1);
+    document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, id);
+    if (!isGuestUser()) await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), { subtasks: task.subtasks });
+  }
 }
 
 /**
