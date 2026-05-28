@@ -48,8 +48,7 @@ function renderTaskBody(t) {
  */
 export function renderSmallSubtaskInfo(task) {
   const subtasks = Array.isArray(task.subtasks) ? task.subtasks : [];
-
-  if (subtasks.length === 0) return '';
+  if (subtasks.length === 0) return ''; // Zeigt gar nichts an, wenn keine Subtasks da sind
 
   const done = subtasks.filter((s) => s.done).length;
   const percent = (done / subtasks.length) * 100;
@@ -59,8 +58,8 @@ export function renderSmallSubtaskInfo(task) {
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" style="width: ${percent}%"></div>
       </div>
-      <small>${done}/${subtasks.length} Subtasks</small>
-    </div>`;
+      <span>${done}/${subtasks.length} Subtasks</span> 
+    </div>`; // "Subtasks" Text sorgt dafür, dass keine leeren Punkte stehen
 }
 
 /**
@@ -193,25 +192,27 @@ export function getDetailInfoRows(task) {
 }
 
 /**
- * Generates subtask item checklist elements inside the detail modal.
- * @param {Object[]} subtasks - List of subtask data objects.
- * @param {string} taskId - The unique target task ID.
- * @returns {string} The list of subtask checkbox items HTML string.
- */
-/**
- * Renders subtasks in the detail view with edit and delete icons.
+ * Generates the HTML list items for subtasks in the detail view.
  */
 export function getDetailSubtasksHTML(subtasks, taskId) {
   const safeSubtasks = Array.isArray(subtasks) ? subtasks : [];
-
-  if (safeSubtasks.length === 0) return '<p>No subtasks</p>';
-
   return safeSubtasks
-    .map((subtask, index) => {
-      const isDone = subtask.done ? 'checked' : '';
-
-      return `<li>...</li>`;
-    })
+    .map(
+      (subtask, index) => `
+    <li id="subtaskItemDetail${index}" class="subtask-item">
+      <div class="subtask-left">
+        <input type="checkbox" ${subtask.done ? 'checked' : ''} 
+               onclick="toggleSubtask('${taskId}', ${index})">
+        <span>${subtask.title}</span>
+      </div>
+      <div class="subtask-icons">
+        <img src="../assets/icons/edit-icon.svg" onclick="editEditSubtask(${index}, '${taskId}')">
+        <div class="icon-divider"></div>
+        <img src="../assets/icons/delete-icon.svg" onclick="deleteEditSubtask('${taskId}', ${index})">
+      </div>
+    </li>
+  `,
+    )
     .join('');
 }
 
