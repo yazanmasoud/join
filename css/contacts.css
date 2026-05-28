@@ -120,13 +120,22 @@
   background-color: var(--color-highlights);
 }
 
+/* ===== DIALOG MOBILE HEADER ===== */
+.contact-dialog-mobile-header {
+  display: none;
+}
+
 /* ===== POPUP / DIALOG ===== */
 
 .contact-dialog {
   border: none;
   border-radius: 20px;
   padding: 0;
+  position: fixed;
+  inset: 0;
   margin: auto;
+  width: fit-content;
+  height: fit-content;
   transform: translateX(100%);
   transition: transform 120ms ease;
 }
@@ -216,7 +225,6 @@
 
 .contact-details-title {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 30px;
 
@@ -257,14 +265,10 @@
 
 .contact-details-actions {
   display: flex;
-  flex-direction: row;
-  gap: 40px;
 }
 
 .edit-delete-btn {
   display: flex;
-  flex-direction: r ow;
-  gap: 12px;
 }
 
 .contact-details-information {
@@ -327,7 +331,7 @@
 }
 
 
-delete-dialog-content p {
+.delete-dialog-content p {
   margin: 0;
 }
 

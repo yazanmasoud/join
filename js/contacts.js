@@ -3,6 +3,7 @@ import { renderAvatar, clearElementsByIds } from './ui.js';
 import { getCurrentUserId } from './storage.js';
 import { getContacts, createContact, deleteContact, updateContact } from './contacts-service.js';
 import { getContactDetails, getSingleContact, getContactLetter } from './template.js';
+import { isMobile, showMobileDetailView, updateMobileActionMenu } from './contacts-mobile.js';
 
 
 export let contacts = [];
@@ -19,11 +20,18 @@ window.handleDeleteContact = handleDeleteContact;
 window.handleSaveContact = handleSaveContact;
 window.openDeleteDialog = openDeleteDialog;
 window.closeDeleteDialog = closeDeleteDialog;
+window.resetSelection = resetSelection;
 
 
 export async function initContacts() {
     contacts = await getContacts();
     contacts.sort((a, b) => a.name.localeCompare(b.name));
+    renderContacts();
+}
+
+
+export function resetSelection() {
+    selectedContactId = null;
     renderContacts();
 }
 
@@ -269,6 +277,8 @@ function openAddContact() {
     const elements = getContactDialogElements();
 
     elements.sidebarImage.src = '../assets/img/Frame-add-contact.png';
+    document.getElementById('contact-dialog-title').textContent = 'Add contact';
+    document.getElementById('contact-dialog-subtitle').style.display = '';
     elements.createSaveButton.innerHTML = 'Create Contact';
     elements.createSaveButton.onclick = handleCreateContact;
     elements.cancelDeleteButton.innerHTML = 'Cancel';
@@ -308,6 +318,9 @@ function openEditContact(contactId) {
 
     elements.sidebarImage.src =
         '../assets/img/Frame-edit-contact.png';
+
+    document.getElementById('contact-dialog-title').textContent = 'Edit contact';
+    document.getElementById('contact-dialog-subtitle').style.display = 'none';
 
     elements.createSaveButton.innerHTML =
         'Save';
@@ -424,6 +437,11 @@ function renderContactDetails(index) {
 
     renderContacts();
 
+    if (isMobile()) {                         
+        showMobileDetailView();               
+        updateMobileActionMenu(contact.id);  
+    } 
+
     if (detailsContainer.innerHTML.trim()) {
         detailsContainer.classList.add('slide-out');
 
@@ -450,6 +468,7 @@ function renderContactDetails(index) {
             );
         });
     }
+    
 }
 
 
