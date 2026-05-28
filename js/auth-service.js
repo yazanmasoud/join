@@ -1,10 +1,11 @@
 import { auth, database } from './firebase-config.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { ref, set, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-import { hideOverlay, showOverlay, getRandomColor } from './utils.js';
+import { hideOverlay, showOverlay, getInitials, getRandomColor } from './utils.js';
 import { guestContacts, guestTasks } from './guest-data.js';
 import { getCurrentUserId, isGuestUser } from './storage.js';
 import { showInputError, clearInputError, closeSignUp, clearSignupInputs } from './ui.js';
+import { userContactPath, userProfilePath } from './database-paths.js';
 
 
 window.loginAsGuest = loginAsGuest;
@@ -26,7 +27,7 @@ export async function registerUser(name, email, password) {
       password
     );
     await saveUserProfile(userCredential.user, name, email);
-    await saveUserAsContact(user, name, email);
+    await saveUserAsContact(userCredential.user, name, email);
     await signOut(auth);
     handleSignupSuccess();
   } catch (error) {
@@ -36,7 +37,7 @@ export async function registerUser(name, email, password) {
 
 
 async function saveUserAsContact(user, name, email) {
-  await set(ref(database, `contacts/${user.uid}/${user.uid}`), {
+  await set(ref(database, userContactPath(user.uid, user.uid)), {
     id: user.uid,
     name,
     email,
@@ -65,7 +66,7 @@ function handleSignupError(error) {
 
 // saves the user profile to the database
 async function saveUserProfile(user, name, email) {
-  await set(ref(database, `users/${user.uid}`), {
+  await set(ref(database, userProfilePath(user.uid)), {
     name,
     email,
   });
@@ -211,7 +212,7 @@ export async function getCurrentUserData() {
     return JSON.parse(localStorage.getItem('currentUser'));
   }
   const uid = getCurrentUserId();
-  const snapshot = await get(ref(database, `users/${uid}`));
+  const snapshot = await get(ref(database, userProfilePath(uid)));
   if (!snapshot.exists()) {
     throw new Error('Authenticated user data not found.');
   }

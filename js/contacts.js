@@ -20,6 +20,7 @@ window.handleDeleteContact = handleDeleteContact;
 window.handleSaveContact = handleSaveContact;
 
 export async function initContacts() {
+    setSelectedContactId(null);
     contacts = await getContacts();
     contacts.sort((a, b) => a.name.localeCompare(b.name));
     renderContacts();

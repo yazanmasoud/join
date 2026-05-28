@@ -12,6 +12,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
 import { isGuestUser } from './storage.js';
+import { userContactPath, userContactsPath } from './database-paths.js';
 
 
 export async function getContacts() {
@@ -21,7 +22,7 @@ export async function getContacts() {
 
   const uid = auth.currentUser.uid;
   const snapshot = await get(
-    ref(database, `contacts/${uid}`)
+    ref(database, userContactsPath(uid))
   );
 
   return mapContacts(snapshot);
@@ -94,7 +95,7 @@ export async function createContact(contactData) {
     return newContact;
   }
   const uid = auth.currentUser.uid;
-  const newContactRef = push(ref(database, `contacts/${uid}`));
+  const newContactRef = push(ref(database, userContactsPath(uid)));
   await set(newContactRef, contactData);
   return {
     id: newContactRef.key,
@@ -114,7 +115,7 @@ export async function getContactById(contactId) {
 
   const uid = auth.currentUser.uid;
   const snapshot = await get(
-    ref(database, `contacts/${uid}/${contactId}`)
+    ref(database, userContactPath(uid, contactId))
   );
 
   if (!snapshot.exists()) return null;
@@ -143,7 +144,7 @@ export async function updateContact(contactId, updatedData) {
   const uid = auth.currentUser.uid;
 
   await update(
-    ref(database, `contacts/${uid}/${contactId}`),
+    ref(database, userContactPath(uid, contactId)),
     updatedData
   );
 }
@@ -163,7 +164,7 @@ export async function deleteContact(contactId) {
 
   const uid = auth.currentUser.uid;
 
-  await remove(ref(database, `contacts/${uid}/${contactId}`));
+  await remove(ref(database, userContactPath(uid, contactId)));
 }
 
 
@@ -175,7 +176,7 @@ export function listenToContacts(callback) {
 
   const uid = auth.currentUser.uid;
 
-  return onValue(ref(database, `contacts/${uid}`), (snapshot) => {
+  return onValue(ref(database, userContactsPath(uid)), (snapshot) => {
     if (!snapshot.exists()) {
       callback([]);
       return;

@@ -2,11 +2,12 @@ import { database, auth } from './firebase-config.js';
 import { ref, get, set, update, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
 import { normalizeObjectToArray } from './ui.js';
+import { userTaskPath, userTasksPath } from './database-paths.js';
 
 export async function getTasks() {
   if (isGuestUser()) return getLocalTasks();
   const uid = auth.currentUser.uid;
-  const snapshot = await get(ref(database, `tasks/${uid}`));
+  const snapshot = await get(ref(database, userTasksPath(uid)));
   return snapshot.exists() ? normalizeObjectToArray(snapshot.val()) : [];
 }
 
@@ -19,7 +20,7 @@ export async function createTask(taskData) {
     return newTask;
   }
   const uid = auth.currentUser.uid;
-  const newTaskRef = push(ref(database, `tasks/${uid}`));
+  const newTaskRef = push(ref(database, userTasksPath(uid)));
   await set(newTaskRef, taskData);
   return { id: newTaskRef.key, ...taskData };
 }
@@ -59,7 +60,7 @@ export async function updateTask(taskId, updatedData) {
     return;
   }
   const uid = auth.currentUser.uid;
-  await update(ref(database, `tasks/${uid}/${taskId}`), updatedData);
+  await update(ref(database, userTaskPath(uid, taskId)), updatedData);
 }
 
 export async function deleteTask(taskId) {
@@ -70,12 +71,12 @@ export async function deleteTask(taskId) {
     return;
   }
   const uid = auth.currentUser.uid;
-  await remove(ref(database, `tasks/${uid}/${taskId}`));
+  await remove(ref(database, userTaskPath(uid, taskId)));
 }
 
 export function listenToTasks(callback) {
   if (isGuestUser()) return callback(getLocalTasks());
-  return onValue(ref(database, `tasks/${auth.currentUser.uid}`), (snapshot) => {
+  return onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snapshot) => {
     if (!snapshot.exists()) return callback([]);
     const tasks = Object.entries(snapshot.val()).map(([id, task]) => ({
       id,
