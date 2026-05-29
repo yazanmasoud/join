@@ -261,13 +261,13 @@
   word-wrap: break-word;
 }
 .detail-view-description {
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.3;
 }
 .detail-view-label {
   color: var(--color-bg-secondary);
   width: 150px;
-  font-size: 24px;
+  font-size: 20px;
   flex-shrink: 0;
   white-space: nowrap;
 }
