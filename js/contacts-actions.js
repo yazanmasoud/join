@@ -16,6 +16,48 @@ export {
 
 
 /**
+ * Validates contact name input.
+ *
+ * @param {string} name
+ * @returns {boolean}
+ */
+function isValidContactName(name) {
+    return (
+        name.trim().length > 0 &&
+        !name.startsWith(' ') &&
+        !/^\d/.test(name)
+    );
+}
+
+
+/**
+ * Shows name validation error.
+ */
+function showContactNameError() {
+    const input = document.getElementById('contact-name');
+    const error = document.getElementById('contact-name-error');
+
+    input.classList.add('input-error');
+    error.textContent =
+        'Please enter a valid name';
+    error.classList.add('visible');
+}
+
+
+/**
+ * Clears name validation error.
+ */
+function clearContactNameError() {
+    const input = document.getElementById('contact-name');
+    const error = document.getElementById('contact-name-error');
+
+    input.classList.remove('input-error');
+    error.textContent = '';
+    error.classList.remove('visible');
+}
+
+
+/**
  * Creates a new contact and
  * updates the contacts list and UI.
  *
@@ -23,6 +65,12 @@ export {
  */
 async function handleCreateContact() {
     const contactData = getNewContactData();
+    if (!isValidContactName(contactData.name)) {
+        showContactNameError();
+        return;
+    }
+
+    clearContactNameError();
     const savedContact = await createContact(contactData);
 
     addContactToList(savedContact);
@@ -84,12 +132,12 @@ function resetContactForm() {
  * @param {string} contactId - Contact ID.
  */
 async function handleDeleteContact(contactId) {
-        const contact = contacts.find(c => String(c.id) === String(contactId));
+    const contact = contacts.find(c => String(c.id) === String(contactId));
 
     if (contact) {
         await removeContactFromTasks(contact.name, contactId);
     }
-    
+
     await deleteContact(contactId);
 
     setContacts(contacts.filter(contact => String(contact.id) !== String(contactId)));
@@ -117,7 +165,12 @@ async function handleSaveContact() {
     if (!contact) return;
 
     const updatedData = getUpdatedContactData(contact);
+    if (!isValidContactName(updatedData.name)) {
+        showContactNameError();
+        return;
+    }
 
+    clearContactNameError();
     await updateContact(currentEditContactId, updatedData);
 
     refreshUpdatedContactUI(updatedData);

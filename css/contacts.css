@@ -200,7 +200,13 @@
 .contact-inputs-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
+}
+
+.contact-error {
+  min-height: 0;
+  margin-top: -8px;
+  margin-bottom: -4px;
 }
 
 /* ===== POPUP BUTTONS ===== */
