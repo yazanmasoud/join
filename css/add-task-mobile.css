@@ -1,0 +1,110 @@
+.success-toast {
+  position: fixed;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2a3647;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: bottom 0.5s ease-in-out;
+}
+
+.success-toast:not(.d-none) {
+  bottom: 50px;
+}
+
+.d-none {
+  display: none;
+}
+
+.edit-mode-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 40px 60px;
+  border-radius: 30px;
+  width: 1100px;
+  max-width: 95vw;
+  max-height: 95vh;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.edit-mode-container::-webkit-scrollbar {
+  display: none;
+}
+
+.edit-mode-container .add-task {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: nowrap;
+}
+
+.edit-mode-container .add-section-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.edit-mode-container .vertical-divider {
+  display: block;
+}
+
+.edit-mode-container .form-actions {
+  justify-content: flex-end;
+}
+
+#taskDetailDialog {
+  overflow-x: hidden;
+  border: unset;
+  background: transparent;
+  padding: 0;
+}
+
+@media (max-width: 1100px) {
+  .add-task {
+    flex-direction: column;
+  }
+
+  .vertical-divider {
+    display: none;
+  }
+
+  .content-area {
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-bottom {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 0;
+  }
+
+  .edit-mode-container {
+    padding: 20px;
+    width: 90%;
+  }
+}
+
+@media (max-width: 400px) {
+  .prio-btn {
+    padding: 8px 4px;
+  }
+
+  .form-actions {
+    gap: 8px;
+  }
+}
