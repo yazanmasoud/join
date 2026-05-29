@@ -298,19 +298,37 @@ function toggleSubtaskStatus(index) {
  * @param {Object} data - Task data.
  */
 export function prepareEditInDialog(id, data) {
+  fillFormForEdit(data);
   renderPriorityButtons();
   renderCategories();
-  renderContacts();
-  fillFormForEdit(data);
-  const headline = document.querySelector('.edit-mode-container h2');
-  if (headline) headline.innerText = 'Edit Task';
+  if (data.category) document.getElementById('taskCategory').value = data.category;
+  renderContacts().then(() => typeof updateSelectedBadges === 'function' && updateSelectedBadges());
+  const h2 = document.querySelector('.edit-mode-container h2');
+  if (h2) h2.innerText = 'Edit Task';
   const btn = document.querySelector('.edit-mode-container .btn-dark');
   if (btn) {
     btn.innerHTML = 'Ok <img src="../assets/icons/create-task.svg">';
     btn.onclick = () => saveEditFromDialog(id);
   }
-  const clearBtn = document.querySelector('.edit-mode-container .btn-light');
-  if (clearBtn) clearBtn.remove();
+  document.querySelector('.edit-mode-container .btn-light')?.remove();
+}
+
+function showDeleteToast() {
+  const toast = document.getElementById('successMessage');
+  const span = toast.querySelector('span');
+  const img = toast.querySelector('img');
+
+  const originalText = span.innerText;
+  span.innerText = 'Task deleted';
+  img.style.display = 'none';
+
+  toast.classList.remove('d-none');
+
+  setTimeout(() => {
+    toast.classList.add('d-none');
+    span.innerText = originalText;
+    img.style.display = '';
+  }, 1000);
 }
 
 /**
