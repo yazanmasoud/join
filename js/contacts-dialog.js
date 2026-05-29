@@ -237,6 +237,7 @@ function openDeleteDialog(contactId) {
     confirmButton.onclick = () => {
         dialog.close();
         handleDeleteContact(contactId);
+        showMobileListView();
     };
 
     dialog.showModal();
