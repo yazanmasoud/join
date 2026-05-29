@@ -151,19 +151,6 @@ function openEditContact(contactId) {
 
 
 /**
- * Returns a contact
- * by its ID.
- *
- * @param {string} contactId
- * @returns {Object|undefined}
- */
-function getContactById(contactId) {
-    return contacts.find(
-        contact => String(contact.id) === String(contactId));
-}
-
-
-/**
  * Configures the dialog
  * for edit mode.
  *

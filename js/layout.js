@@ -38,13 +38,10 @@ export function checkSession() {
       resolve(true);
       return;
     }
-
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = '../index.html';
+      if (!user) { window.location.href = '../index.html';
         return;
       }
-
       resolve(true);
     });
   });
@@ -59,15 +56,12 @@ function initPage(page) {
   if (page === 'summary') {
     initSummary();
   }
-
   if (page === 'board') {
     initBoard();
   }
-
   if (page === 'add-task') {
     initAddTask();
   }
-
   if (page === 'contacts') {
     initContacts();
   }
@@ -145,11 +139,9 @@ async function navigateTo(page) {
 
 async function loginNavigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
-
   if (currentPage !== page) {
     pageHistory.push(page);
   }
-
   await loadTemplate('mainLoginContent', `./${page}.html`);
 }
 
@@ -161,15 +153,10 @@ async function loginNavigateTo(page) {
  */
 async function goBack() {
   if (pageHistory.length <= 1) return;
-
   pageHistory.pop();
-
   const previousPage = pageHistory[pageHistory.length - 1];
-
   await loadTemplate('mainContent', `./${previousPage}.html`);
-
   initPage(previousPage);
-
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
@@ -183,9 +170,7 @@ function setActiveNavItem(clickedItem) {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
   clickedItem.classList.add('active');
-
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
@@ -200,12 +185,9 @@ function setActiveNavItem(clickedItem) {
 export async function initLoginLayout() {
   await loadTemplate('headerLoginContent', '../templates/headerlogin.html');
   await loadTemplate('sidebarLoginContent', '../templates/asidelogin.html');
-
   const params = new URLSearchParams(window.location.search);
   const page = params.get('page') || 'imprint';
-
   await loadTemplate('mainLoginContent', `./${page}.html`);
-
   setActiveLoginNavFromUrl(page);
   document.body.classList.add('has-active-page'); // Ensures a valid default page is loaded when layout-login.html is opened directly without a page parameter.
 }
@@ -218,7 +200,6 @@ function openHelp() {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
   document.body.classList.add('help-open');
   document.body.classList.remove('has-active-page');
 }
@@ -260,11 +241,9 @@ function setActiveLoginNavFromUrl(page) {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
   if (page === 'imprint') {
     document.getElementById('menuLegalLogin')?.classList.add('active');
   }
-
   if (page === 'privacy') {
     document.getElementById('menuPrivacyLogin')?.classList.add('active');
   }

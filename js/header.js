@@ -8,18 +8,13 @@ import { closeOpenElements } from './ui.js';
  */
 export function toggleAvatarDropdown(event) {
   event.stopPropagation();
-
   const dropdown = document.getElementById('avatarDropdown');
-
   if (!dropdown) {
     console.warn('Avatar dropdown element not found.');
     return;
   }
-
   const isOpen = dropdown.classList.contains('open');
-
   closeOpenElements();
-
   if (!isOpen) {
     dropdown.classList.add('open');
   }

@@ -119,8 +119,7 @@ function handleLoginError(error) {
     'auth/network-request-failed': {input: 'password', text: 'error-text-password', message: 'Network error. Please check your connection.'},
   };
   const currentError = errors[error.code];
-  if (!currentError) {
-    console.error(error);
+  if (!currentError) {console.error(error);
     return;
   }
   showInputError(currentError.input, currentError.text, currentError.message);

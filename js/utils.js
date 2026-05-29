@@ -9,11 +9,14 @@ export const CONTACT_OPTIONS = [
   'Benedikt Bauer',
 ];
 
+
 const overlay = document.getElementById('overlay');
+
 
 window.hideOverlay = hideOverlay;
 window.showOverlay = showOverlay;
 window.getInitials = getInitials;
+
 
 /**
  * Generates initials from a contact name.
@@ -24,10 +27,7 @@ window.getInitials = getInitials;
  * @returns {string} The generated initials
  */
 export function getInitials(name) {
-  let words = name
-    .trim()
-    .split(' ')
-    .filter((word) => word !== '');
+  let words = name.trim().split(' ').filter((word) => word !== '');
   if (words.length === 0) {
     return '';
   }
