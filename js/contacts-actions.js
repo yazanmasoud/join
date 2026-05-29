@@ -4,6 +4,7 @@ import { contacts, currentEditContactId, setContacts, setSelectedContactId, rend
 import { closeAddContact, closeDeleteDialog } from './contacts-dialog.js';
 import { getContactDetails } from './template.js';
 import { getRandomColor } from './utils.js';
+import { getTasks, updateTask } from './tasks-service.js';
 
 
 export {
@@ -83,6 +84,12 @@ function resetContactForm() {
  * @param {string} contactId - Contact ID.
  */
 async function handleDeleteContact(contactId) {
+        const contact = contacts.find(c => String(c.id) === String(contactId));
+
+    if (contact) {
+        await removeContactFromTasks(contact.name, contactId);
+    }
+    
     await deleteContact(contactId);
 
     setContacts(contacts.filter(contact => String(contact.id) !== String(contactId)));
@@ -208,4 +215,23 @@ function showToast(message) {
     setTimeout(() => {
         toast.classList.remove('toast-message-show');
     }, 2000);
+}
+
+
+async function removeContactFromTasks(contactName, contactId) {
+    const tasks = await getTasks();
+
+    for (const task of tasks) {
+        const assignedTo = task.assignedTo || [];
+        const filtered = assignedTo.filter(entry =>
+            entry !== contactName &&
+            entry !== contactId &&
+            entry?.name !== contactName &&
+            entry?.id !== contactId
+        );
+
+        if (filtered.length !== assignedTo.length) {
+            await updateTask(task.id, { assignedTo: filtered });
+        }
+    }
 }
