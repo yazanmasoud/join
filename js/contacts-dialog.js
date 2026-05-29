@@ -1,5 +1,6 @@
 import {contacts, setCurrentEditContactId} from './contacts.js';
-
+import {handleCreateContact, handleSaveContact, validateContactNameInput
+} from './contacts-actions.js';
 export {
     closeAddContact,
     openAddContact,
@@ -50,6 +51,7 @@ function openContactDialog() {
  */
 function openAddContact() {
     const elements = getContactDialogElements();
+    elements.nameInput.oninput = validateContactNameInput;
 
     setupCreateDialog(elements);
     resetDialogInputs(elements);
@@ -141,6 +143,7 @@ function openEditContact(contactId) {
     setCurrentEditContactId(contactId);
 
     const elements = getContactDialogElements();
+    elements.nameInput.oninput = validateContactNameInput;
 
     setupEditDialog(elements, contact, contactId);
     openContactDialog();

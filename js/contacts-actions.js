@@ -31,6 +31,24 @@ function isValidContactName(name) {
 
 
 /**
+ * Validates contact name input live.
+ */
+export function validateContactNameInput() {
+    const name =
+        document.getElementById(
+            'contact-name'
+        ).value;
+
+    if (!isValidContactName(name)) {
+        showContactNameError();
+        return;
+    }
+
+    clearContactNameError();
+}
+
+
+/**
  * Shows name validation error.
  */
 function showContactNameError() {
