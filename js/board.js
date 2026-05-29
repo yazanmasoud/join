@@ -55,6 +55,7 @@ window.removeHighlight = removeHighlight;
 
 export async function initBoard() {
   setupTaskSearch();
+  setupAddTaskResizeGuard();
   window.contacts = await getContacts();
   const setup = (data) => {
     CURRENT_TASKS = data || {};
@@ -63,6 +64,16 @@ export async function initBoard() {
   };
   if (isGuestUser()) return setup(convertTaskArrayToObject(getLocalTasks()));
   onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snap) => setup(snap.val()));
+}
+
+function setupAddTaskResizeGuard() {
+  window.addEventListener('resize', () => {
+    const dialog = document.getElementById('taskDetailDialog');
+    if (dialog?.open && dialog.querySelector('.edit-mode-container') && window.innerWidth < 850) {
+      dialog.close();
+      navigateTo('add-task');
+    }
+  });
 }
 
 function setupTaskSearch() {
@@ -357,6 +368,14 @@ export async function deleteTask(id) {
  * @param {string} [status='todo'] - Initial status column value.
  */
 export async function openAddTask(status = 'todo') {
+  if (window.innerWidth < 850) {
+    navigateTo('add-task');
+    return;
+  }
+  await loadAddTaskDialog(status);
+}
+
+async function loadAddTaskDialog(status) {
   currentStatus = status;
   const content = document.getElementById('taskDetailContent');
   const response = await fetch('add-task.html');
