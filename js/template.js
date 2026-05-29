@@ -22,9 +22,21 @@ export function generateTaskHTML(task, id) {
   const cat = (task.category || '').replace(/\s+/g, '').toLowerCase();
   const prio = (task.priority || 'Medium').toLowerCase();
   const icon = prio === 'medium' ? 'medium-icon-orange.svg' : `prio-${prio}-icon.svg`;
+  const isDesktop = window.innerWidth > 800;
   return `
     <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" onclick="openTaskDetail('${id}')">
+    <div class="task-card-header-mobile">
       <div class="task-category ${cat}">${task.category || ''}</div>
+      <div class="mobile-move-container">
+      <button class="move-mobile-btn" onclick="toggleMoveMenu(event, '${id}')"><img src="../assets/icons/arrow-drop-down.svg" alt="Move"></button>
+      <div id="moveMenu${id}" class="avatar-dropdown mobile-move-menu" onclick="event.stopPropagation()">
+      <p onclick="moveTaskMobile('${id}', 'todo')">To Do</p>
+      <p onclick="moveTaskMobile('${id}', 'progress')">In Progress</p>
+      <p onclick="moveTaskMobile('${id}', 'feedback')">Awaiting Feedback</p>
+      <p onclick="moveTaskMobile('${id}', 'done')">Done</p>
+      </div>
+      </div>
+      </div>
       ${renderTaskBody(task)}
       <div class="task-card-footer">
         <div class="assignee-list">${renderAssignedToDetail(task.assignedTo, false)}</div>

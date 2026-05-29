@@ -135,6 +135,17 @@
   box-sizing: border-box;
 }
 
+.task-card-header-mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.mobile-move-container {
+  display: none;
+}
+
 .task-card-footer {
   display: flex;
   justify-content: space-between;
@@ -480,5 +491,66 @@ textarea {
 
   .board-header-right {
     width: stretch;
+  }
+}
+
+@media (max-width: 800px) {
+  .task-card,
+  .task-card * {
+    -webkit-user-drag: none;
+    touch-action: manipulation;
+  }
+
+  .mobile-move-container {
+    display: block;
+    position: relative;
+  }
+  .move-mobile-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 6px;
+  }
+  .move-mobile-btn img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+
+  .mobile-move-menu {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    z-index: 100;
+    background-color: var(--color-bg-secondary, #2a3647);
+    border-radius: 20px 0 20px 20px;
+    padding: 10px 0;
+    display: none;
+    flex-direction: column;
+  }
+
+  .mobile-move-menu.open {
+    display: flex;
+  }
+
+  .mobile-move-menu p {
+    color: white;
+    padding: 8px 20px;
+    margin: 0;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .mobile-move-menu p:hover {
+    background-color: var(--color-menu-hover, #2a3d59);
+  }
+
+  .column {
+    width: 220px;
+    min-width: 220px;
+  }
+
+  .column-header {
+    width: 220px;
   }
 }
