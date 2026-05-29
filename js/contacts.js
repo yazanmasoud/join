@@ -107,6 +107,7 @@ export function renderContactDetails(index, forceRender = false, animate = true)
 }
 
 
+
 /**
  * Returns true if the contact can be rendered.
  *
