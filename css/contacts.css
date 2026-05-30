@@ -227,14 +227,13 @@
   display: flex;
   flex-direction: column;
   padding: 80px;
+  overflow-x: hidden;
 }
 
 .contact-details-title {
   display: flex;
   align-items: center;
   gap: 30px;
-
-
 }
 
 .contact-details-content {
