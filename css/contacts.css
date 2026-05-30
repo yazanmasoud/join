@@ -286,7 +286,7 @@
 /* ===== TOAST MESSAGE ===== */
 .toast-message {
   position: fixed;
-  bottom: 40px;
+  bottom: 100px;
   left: 50%;
   transform: translateX(-50%) translateY(80px);
   background-color: #2A3647;

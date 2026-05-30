@@ -11,6 +11,7 @@ import { getContacts } from './contacts-service.js';
 let subtasks = [];
 let currentPriority = 'Medium';
 let selectedContacts = [];
+let assignedDropdownListenerAdded = false;
 
 /** @section GLOBAL EXPORTS */
 window.toggleSubtaskStatus = toggleSubtaskStatus;
@@ -65,12 +66,24 @@ export async function initAddTask() {
   renderCategories();
   renderContacts();
   setPriority(currentPriority);
+  setupAssignedDropdownClose();
   const editId = localStorage.getItem('editTaskId');
   if (editId) {
     const editData = JSON.parse(localStorage.getItem('editTaskData'));
     fillFormForEdit(editData);
     updateButtonToSaveMode();
   }
+}
+
+function setupAssignedDropdownClose() {
+  if (assignedDropdownListenerAdded) return;
+  assignedDropdownListenerAdded = true;
+  document.addEventListener('click', (e) => {
+    const container = document.getElementById('assignedInputContainer');
+    const list = document.getElementById('contactList');
+    if (!list || list.classList.contains('d-none')) return;
+    if (!container?.contains(e.target)) list.classList.add('d-none');
+  });
 }
 
 /**
@@ -317,15 +330,12 @@ function showDeleteToast() {
   const toast = document.getElementById('successMessage');
   const span = toast.querySelector('span');
   const img = toast.querySelector('img');
-
   const originalText = span.innerText;
   span.innerText = 'Task deleted';
   img.style.display = 'none';
-
-  toast.classList.remove('d-none');
-
+  toast.classList.add('toast-message-show');
   setTimeout(() => {
-    toast.classList.add('d-none');
+    toast.classList.remove('toast-message-show');
     span.innerText = originalText;
     img.style.display = '';
   }, 1000);

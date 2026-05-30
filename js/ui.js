@@ -258,13 +258,9 @@ export function showSuccessToast(message = 'Task added to board') {
   if (!toast) return;
   const span = toast.querySelector('span');
   if (span) span.innerText = message;
-  toast.classList.remove('d-none');
+  toast.classList.add('toast-message-show');
   setTimeout(() => {
-    toast.style.bottom = '50px';
-  }, 10);
-  setTimeout(() => {
-    toast.classList.add('d-none');
-    toast.style.bottom = '-100px';
+    toast.classList.remove('toast-message-show');
   }, 2000);
 }
 
