@@ -107,19 +107,11 @@ export async function createContact(contactData) {
 export async function getContactById(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
-
-    return contacts.find(
-      (contact) => contact.id === contactId
-    );
+    return contacts.find((contact) => contact.id === contactId);
   }
-
   const uid = auth.currentUser.uid;
-  const snapshot = await get(
-    ref(database, userContactPath(uid, contactId))
-  );
-
+  const snapshot = await get(ref(database, userContactPath(uid, contactId)));
   if (!snapshot.exists()) return null;
-
   return {
     id: contactId,
     ...snapshot.val(),
