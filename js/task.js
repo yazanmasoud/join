@@ -73,7 +73,24 @@ export async function initAddTask() {
     fillFormForEdit(editData);
     updateButtonToSaveMode();
   }
+  setupBoardReturnButton(!!editId);
 }
+
+function setupBoardReturnButton(isEditMode) {
+  const boardReturn = localStorage.getItem('boardReturn');
+  if (!isEditMode && !boardReturn) return;
+  const btn = document.getElementById('addTaskCloseBtn');
+  const headline = document.getElementById('addTaskHeadline');
+  if (btn) btn.classList.remove('d-none');
+  if (headline && isEditMode) headline.innerText = 'Edit Task';
+}
+
+window.closeAddTaskPage = function () {
+  localStorage.removeItem('editTaskId');
+  localStorage.removeItem('editTaskData');
+  localStorage.removeItem('boardReturn');
+  navigateTo('board');
+};
 
 function setupAssignedDropdownClose() {
   if (assignedDropdownListenerAdded) return;
@@ -128,12 +145,12 @@ async function createTask() {
 function handleSuccess() {
   showSuccessToast();
   const editId = localStorage.getItem('editTaskId');
-
+  const boardReturn = localStorage.getItem('boardReturn');
   localStorage.removeItem('editTaskId');
   localStorage.removeItem('editTaskData');
-
+  localStorage.removeItem('boardReturn');
   setTimeout(async () => {
-    if (editId) {
+    if (editId || boardReturn) {
       await navigateTo('board');
     } else {
       clearForm();

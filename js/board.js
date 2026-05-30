@@ -1,4 +1,4 @@
-import { ref, onValue, get, child, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { ref, onValue, get, child, update, remove, push } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { auth, database } from './firebase-config.js';
 
 import {
@@ -264,9 +264,15 @@ async function moveFirebaseTaskTo(status) {
 export async function editTask(id) {
   const task = CURRENT_TASKS[id];
   if (!task) return;
-  const content = document.getElementById('taskDetailContent');
+  localStorage.setItem('editTaskId', id);
   localStorage.setItem('editTaskData', JSON.stringify(task));
-  const response = await fetch('add-task.html'); // Diese Zeile war weg!
+  if (window.innerWidth < 850) {
+    closeTaskDetail();
+    navigateTo('add-task');
+    return;
+  }
+  const content = document.getElementById('taskDetailContent');
+  const response = await fetch('add-task.html');
   content.innerHTML = `<div class="edit-mode-container">${await response.text()}</div>`;
   if (window.prepareEditInDialog) window.prepareEditInDialog(id, task);
   const dialog = document.getElementById('taskDetailDialog');
@@ -369,6 +375,7 @@ export async function deleteTask(id) {
  */
 export async function openAddTask(status = 'todo') {
   if (window.innerWidth < 850) {
+    localStorage.setItem('boardReturn', 'true');
     navigateTo('add-task');
     return;
   }

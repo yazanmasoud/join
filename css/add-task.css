@@ -1,3 +1,30 @@
+.add-task-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.add-task-close-btn {
+  background: none;
+  border: unset;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-task-close-btn:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.add-task-close-btn img {
+  width: 24px;
+  height: 24px;
+}
+
 .add-task {
   display: flex;
   gap: 40px;
