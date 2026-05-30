@@ -356,6 +356,10 @@ button {
   margin-bottom: 8px;
 }
 
+.plus-btn {
+  padding: 5px 6px 0px 6px !important;
+}
+
 @media (max-width: 1100px) {
   .fab-add-contact {
     display: flex;

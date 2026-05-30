@@ -3,9 +3,13 @@
     <div class="board-header">
       <div class="board-header-left">
         <h2>Board</h2>
-        <button class="btn-dark hidden" id="add-task-btn-mobile" onclick="openAddTask()">
+
+      <span class="tooltip">
+        <button class="btn-dark plus-btn hidden" id="add-task-btn-mobile" onclick="openAddTask()">
           <img src="../assets/icons/add.svg" alt="plus" />
         </button>
+        <span class="tooltip-text">"Add task"</span>
+      </span>
       </div>
       <p id="noSearchResults" class="no-search-results hidden">No search results. Clear search.</p>
       <div class="board-header-right">
@@ -52,7 +56,7 @@
             highlight('progress');
           "
           ondragleave="removeHighlight('progress')"
-        ></div>
+        > <!-- Task will be rendered here --></div>
       </div>
 
       <div class="column">

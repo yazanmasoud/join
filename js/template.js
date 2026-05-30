@@ -24,6 +24,7 @@ export function generateTaskHTML(task, id) {
   const icon = prio === 'medium' ? 'medium-icon-orange.svg' : `prio-${prio}-icon.svg`;
   const isDesktop = window.innerWidth > 800;
   return `
+    <span class="tooltip">
     <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" onclick="openTaskDetail('${id}')">
     <div class="task-card-header-mobile">
       <div class="task-category ${cat}">${task.category || ''}</div>
@@ -42,7 +43,10 @@ export function generateTaskHTML(task, id) {
         <div class="assignee-list">${renderAssignedToDetail(task.assignedTo, false)}</div>
         <img src="../assets/icons/${icon}" class="prio-icon-small">
       </div>
-    </div>`;
+    </div>
+    <span class="tooltip-text">Drag mobile Task over arrow-menu</span>
+    </span>
+    `;
 }
 
 function renderTaskBody(t) {

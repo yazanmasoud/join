@@ -486,6 +486,7 @@ textarea {
   .board-header-left {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: stretch;
   }
 
@@ -512,8 +513,8 @@ textarea {
     padding: 0 6px;
   }
   .move-mobile-btn img {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
   }
 
