@@ -53,6 +53,14 @@ window.saveEditSubtask = saveEditSubtask;
 window.highlight = highlight;
 window.removeHighlight = removeHighlight;
 
+/**
+ * Initializes the task board by setting up event listeners, loading contacts,
+ * and subscribing to task updates based on the user's authentication status.
+ *
+ * @async
+ * @function initBoard
+ * @returns {Promise<void>}
+ */
 export async function initBoard() {
   setupTaskSearch();
   setupAddTaskResizeGuard();
@@ -66,6 +74,9 @@ export async function initBoard() {
   onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snap) => setup(snap.val()));
 }
 
+/**
+ * Closes dialog and redirects to add-task if window shrinks below 850px in edit mode.
+ */
 function setupAddTaskResizeGuard() {
   window.addEventListener('resize', () => {
     const dialog = document.getElementById('taskDetailDialog');
@@ -76,6 +87,9 @@ function setupAddTaskResizeGuard() {
   });
 }
 
+/**
+ * Initializes task search listener and prevents double initialization.
+ */
 function setupTaskSearch() {
   const searchInput = document.getElementById('searchTask');
 
@@ -90,6 +104,9 @@ function setupTaskSearch() {
   });
 }
 
+/**
+ * Filters tasks by search term and updates the board UI.
+ */
 function renderFilteredTasks() {
   const filteredTasks = filterTasksBySearchTerm(CURRENT_TASKS);
 
@@ -97,6 +114,11 @@ function renderFilteredTasks() {
   updateNoSearchResults(filteredTasks);
 }
 
+/**
+ * Filters tasks where title or description matches the current search term.
+ * @param {Object|Array} allTasks
+ * @returns {Array}
+ */
 function filterTasksBySearchTerm(allTasks) {
   if (!currentSearchTerm) return allTasks;
 
@@ -108,6 +130,9 @@ function filterTasksBySearchTerm(allTasks) {
   });
 }
 
+/**
+ * Toggles visibility of the 'no results' message based on search matches.
+ */
 function updateNoSearchResults(filteredTasks) {
   const noResultsElement = document.getElementById('noSearchResults');
   if (!noResultsElement) return;
@@ -117,6 +142,9 @@ function updateNoSearchResults(filteredTasks) {
   noResultsElement.classList.toggle('hidden', !hasNoSearchResults);
 }
 
+/**
+ * Clears columns and renders all tasks into their respective status containers.
+ */
 function renderAllTasks(allTasks) {
   const columns = ['todo', 'progress', 'feedback', 'done'];
   if (!document.getElementById(columns[0])) return;
@@ -130,6 +158,9 @@ function renderAllTasks(allTasks) {
   columns.forEach((id) => checkPlaceholder(id));
 }
 
+/**
+ * Shows a placeholder if a task column is empty.
+ */
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
   if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
@@ -170,6 +201,9 @@ export async function toggleSubtask(taskId, index) {
   document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, taskId);
 }
 
+/**
+ * Replaces a subtask item with an input field to enable editing.
+ */
 export function editEditSubtask(index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
   const task = CURRENT_TASKS[taskId];
@@ -180,6 +214,9 @@ export function editEditSubtask(index, taskId) {
   }
 }
 
+/**
+ * Global wrapper for editEditSubtask to make it accessible via window.
+ */
 window.editEditSubtask = function (index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
   const task = CURRENT_TASKS[taskId];
@@ -193,6 +230,9 @@ window.editEditSubtask = function (index, taskId) {
   }
 };
 
+/**
+ * Saves the edited subtask title to the UI and updates the database.
+ */
 async function saveEditSubtask(index, taskId) {
   const input = document.getElementById(`editSubtaskInput${index}`);
   const task = CURRENT_TASKS[taskId];
@@ -241,6 +281,9 @@ async function moveTo(status) {
   await moveFirebaseTaskTo(status);
 }
 
+/**
+ * Updates a guest task's status and saves it to local storage.
+ */
 function moveGuestTaskTo(status) {
   CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT] = {
     ...CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT],
@@ -252,6 +295,9 @@ function moveGuestTaskTo(status) {
   renderFilteredTasks();
 }
 
+/**
+ * Updates a task's status in the Firebase database for the current user.
+ */
 async function moveFirebaseTaskTo(status) {
   const uid = auth.currentUser.uid;
   const taskRef = ref(database, userTaskPath(uid, CURRENT_DRAGGED_ELEMENT));
@@ -261,6 +307,9 @@ async function moveFirebaseTaskTo(status) {
 
 /** @section EDIT TASK (EDIT MODE) */
 
+/**
+ * Opens the task for editing; uses a dialog on desktop or redirects on mobile.
+ */
 export async function editTask(id) {
   const task = CURRENT_TASKS[id];
   if (!task) return;
@@ -279,6 +328,9 @@ export async function editTask(id) {
   if (!dialog.open) dialog.showModal();
 }
 
+/**
+ * Collects input data and updates the task in the database or local storage.
+ */
 export async function saveEdit(id) {
   const updates = {
     title: document.getElementById('editTitle').value,
@@ -370,8 +422,7 @@ export async function deleteTask(id) {
 }
 
 /**
- * Navigates the window viewport to the creation view.
- * @param {string} [status='todo'] - Initial status column value.
+ * Opens add-task via redirect on mobile or in a dialog on desktop.
  */
 export async function openAddTask(status = 'todo') {
   if (window.innerWidth < 850) {
@@ -382,6 +433,9 @@ export async function openAddTask(status = 'todo') {
   await loadAddTaskDialog(status);
 }
 
+/**
+ * Loads the add-task form into the dialog and initializes its logic.
+ */
 async function loadAddTaskDialog(status) {
   currentStatus = status;
   const content = document.getElementById('taskDetailContent');
@@ -395,6 +449,9 @@ async function loadAddTaskDialog(status) {
   document.getElementById('taskDetailDialog').showModal();
 }
 
+/**
+ * Saves a new task from the board to Firebase or local storage.
+ */
 async function saveNewTaskFromBoard() {
   const newTask = getTaskDataFromForm();
   if (isGuestUser()) {
@@ -410,6 +467,9 @@ async function saveNewTaskFromBoard() {
   renderFilteredTasks();
 }
 
+/**
+ * Collects and returns task data from the form fields.
+ */
 function getTaskDataFromForm() {
   return {
     title: document.getElementById('taskTitle')?.value || '',
@@ -423,6 +483,9 @@ function getTaskDataFromForm() {
   };
 }
 
+/**
+ * Converts a task array into an object using task IDs as keys.
+ */
 function convertTaskArrayToObject(tasks) {
   return tasks.reduce((taskObject, task) => {
     taskObject[task.id] = task;
@@ -430,10 +493,16 @@ function convertTaskArrayToObject(tasks) {
   }, {});
 }
 
+/**
+ * Converts a task object back into an array of tasks.
+ */
 function convertTaskObjectToArray(tasksObject) {
   return Object.values(tasksObject);
 }
 
+/**
+ * Toggles the mobile move menu and closes other open menus.
+ */
 window.toggleMoveMenu = function (event, id) {
   if (event) {
     event.stopPropagation();
@@ -444,6 +513,9 @@ window.toggleMoveMenu = function (event, id) {
   if (menuElement) menuElement.classList.toggle('open');
 };
 
+/**
+ * Changes task status via the mobile menu and refreshes the UI.
+ */
 window.moveTaskMobile = async function (id, status) {
   window.CURRENT_DRAGGED_ELEMENT = id;
   const mappedStatus = { inprogress: 'progress', awaiting: 'feedback' }[status] || status;
