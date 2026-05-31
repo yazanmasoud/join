@@ -289,20 +289,23 @@ function showToast(message) {
 }
 
 
+/**
+ * Removes a contact from all tasks' assignedTo arrays.
+ * @param {string} contactName - The contact's name.
+ * @param {string} contactId - The contact's ID.
+ */
 async function removeContactFromTasks(contactName, contactId) {
-    const tasks = await getTasks();
-
-    for (const task of tasks) {
-        const assignedTo = task.assignedTo || [];
-        const filtered = assignedTo.filter(entry =>
-            entry !== contactName &&
-            entry !== contactId &&
-            entry?.name !== contactName &&
-            entry?.id !== contactId
-        );
-
-        if (filtered.length !== assignedTo.length) {
-            await updateTask(task.id, { assignedTo: filtered });
-        }
+  const tasks = await getTasks();
+  for (const task of tasks) {
+    const assignedTo = task.assignedTo || [];
+    const filtered = assignedTo.filter(entry =>
+      entry !== contactName &&
+      entry !== contactId &&
+      entry?.name !== contactName &&
+      entry?.id !== contactId
+    );
+    if (filtered.length !== assignedTo.length) {
+      await updateTask(task.id, { assignedTo: filtered });
     }
+  }
 }

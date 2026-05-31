@@ -217,16 +217,18 @@ export function editEditSubtask(index, taskId) {
 /**
  * Global wrapper for editEditSubtask to make it accessible via window.
  */
+/**
+ * Replaces a subtask item with an inline edit input (window-accessible).
+ * @param {number} index - Subtask index.
+ * @param {string} taskId - Parent task ID.
+ */
 window.editEditSubtask = function (index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
   const task = CURRENT_TASKS[taskId];
-
   if (item && task && task.subtasks[index]) {
     item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
     const input = document.getElementById(`editSubtaskInput${index}`);
     input?.focus();
-  } else {
-    console.error(`Element subtaskItemDetail${index} nicht gefunden!`);
   }
 };
 
@@ -320,6 +322,16 @@ export async function editTask(id) {
     navigateTo('add-task');
     return;
   }
+  await openEditTaskDialog(id, task);
+}
+
+
+/**
+ * Loads the add-task form into the dialog and opens it in edit mode.
+ * @param {string} id - Task ID.
+ * @param {Object} task - Task data object.
+ */
+async function openEditTaskDialog(id, task) {
   const content = document.getElementById('taskDetailContent');
   const response = await fetch('add-task.html');
   content.innerHTML = `<div class="edit-mode-container">${await response.text()}</div>`;
@@ -332,13 +344,7 @@ export async function editTask(id) {
  * Collects input data and updates the task in the database or local storage.
  */
 export async function saveEdit(id) {
-  const updates = {
-    title: document.getElementById('editTitle').value,
-    description: document.getElementById('editDescription').value,
-    dueDate: document.getElementById('editDate').value,
-    priority: editPriority,
-    assignedTo: window.selectedContacts || CURRENT_TASKS[id].assignedTo || [],
-  };
+  const updates = getEditFormData(id);
   if (isGuestUser()) {
     Object.assign(CURRENT_TASKS[id], updates);
     setLocalTasks(Object.values(CURRENT_TASKS));
@@ -347,6 +353,22 @@ export async function saveEdit(id) {
   }
   renderFilteredTasks();
   closeTaskDetail();
+}
+
+
+/**
+ * Reads the edit form inputs and returns an update object.
+ * @param {string} id - Task ID used to fall back on existing assignedTo.
+ * @returns {Object} The updated task fields.
+ */
+function getEditFormData(id) {
+  return {
+    title: document.getElementById('editTitle').value,
+    description: document.getElementById('editDescription').value,
+    dueDate: document.getElementById('editDate').value,
+    priority: editPriority,
+    assignedTo: window.selectedContacts || CURRENT_TASKS[id].assignedTo || [],
+  };
 }
 
 /** @section EDITING SUBTASKS */

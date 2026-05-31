@@ -1,0 +1,104 @@
+@media (max-width: 1000px) {
+  #add-task-btn {
+    display: none;
+  }
+
+  #add-task-btn-mobile {
+    display: block !important;
+  }
+
+  .board-header {
+    flex-direction: column;
+  }
+
+  .board-header-left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: stretch;
+  }
+
+  .board-header-right {
+    width: stretch;
+  }
+
+  .task-container {
+    min-height: 20vh;
+  }
+}
+
+@media (max-width: 800px) {
+  .task-card,
+  .task-card * {
+    -webkit-user-drag: none;
+    touch-action: manipulation;
+  }
+
+  .mobile-move-container {
+    display: block;
+    position: relative;
+  }
+
+  .move-mobile-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 6px;
+  }
+
+  .move-mobile-btn img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
+
+  .mobile-move-menu {
+    position: absolute;
+    right: 0;
+    top: 30px;
+    z-index: 100;
+    background-color: var(--color-bg-secondary, #2a3647);
+    border-radius: 20px 0 20px 20px;
+    padding: 10px 0;
+    display: none;
+    flex-direction: column;
+  }
+
+  .mobile-move-menu.open {
+    display: flex;
+  }
+
+  .mobile-move-menu p {
+    color: white;
+    padding: 8px 20px;
+    margin: 0;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .mobile-move-menu p:hover {
+    background-color: var(--color-menu-hover, #2a3d59);
+  }
+
+  .task-container {
+    min-height: 0vh;
+  }
+
+  .detail-view-title {
+    font-size: 36px;
+  }
+
+  .detail-view-info-row {
+    font-size: 16px;
+  }
+
+  .detail-view-label {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .task-detail-content-style {
+    padding: 20px;
+  }
+}
