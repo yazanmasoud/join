@@ -150,24 +150,56 @@ function resetContactForm() {
  * @param {string} contactId - Contact ID.
  */
 async function handleDeleteContact(contactId) {
-    const contact = contacts.find(c => String(c.id) === String(contactId));
-
-    if (contact) {
-        await removeContactFromTasks(contact.name, contactId);
-    }
-
+    await removeDeletedContactTasks(contactId);
     await deleteContact(contactId);
 
-    setContacts(contacts.filter(contact => String(contact.id) !== String(contactId)));
-
-    setSelectedContactId(null);
-
-    renderContacts();
-    document.getElementById('contact-details').innerHTML = '';
+    refreshDeletedContactUI(contactId);
 
     closeDeleteDialog();
     closeAddContact();
     showToast('Contact deleted');
+}
+
+
+/**
+ * Removes deleted contact
+ * from assigned tasks.
+ *
+ * @param {string} contactId
+ */
+async function removeDeletedContactTasks(contactId) {
+    const contact = contacts.find(
+        c => String(c.id) === String(contactId)
+    );
+
+    if (!contact) return;
+
+    await removeContactFromTasks(
+        contact.name,
+        contactId
+    );
+}
+
+
+/**
+ * Refreshes UI after
+ * contact deletion.
+ *
+ * @param {string} contactId
+ */
+function refreshDeletedContactUI(contactId) {
+    setContacts(
+        contacts.filter(
+            contact =>
+                String(contact.id) !== String(contactId)
+        )
+    );
+
+    setSelectedContactId(null);
+
+    renderContacts();
+
+    document.getElementById('contact-details').innerHTML = '';
 }
 
 

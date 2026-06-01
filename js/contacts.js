@@ -22,6 +22,12 @@ window.handleDeleteContact = handleDeleteContact;
 window.handleSaveContact = handleSaveContact;
 
 
+/**
+ * Initializes contacts
+ * and renders the list.
+ *
+ * @returns {Promise<void>}
+ */
 export async function initContacts() {
     setSelectedContactId(null);
     contacts = await getContacts();
@@ -30,21 +36,43 @@ export async function initContacts() {
 }
 
 
+/**
+ * Updates the local
+ * contact state.
+ *
+ * @param {Array} newContacts - Updated contact list.
+ */
 export function setContacts(newContacts) {
     contacts = newContacts;
 }
 
 
+/**
+ * Sets the currently
+ * selected contact ID.
+ *
+ * @param {string|null} contactId - Selected contact ID.
+ */
 export function setSelectedContactId(contactId) {
     selectedContactId = contactId;
 }
 
 
+/**
+ * Sets the current
+ * edit contact ID.
+ *
+ * @param {string|null} contactId - Contact ID in edit mode.
+ */
 export function setCurrentEditContactId(contactId) {
     currentEditContactId = contactId;
 }
 
 
+/**
+ * Clears the selected
+ * contact state.
+ */
 export function resetSelection() {
     selectedContactId = null;
     renderContacts();
@@ -90,13 +118,11 @@ export function renderContactDetails(index, forceRender = false, animate = true)
     if (!canRenderContact(contact, forceRender)) return;
 
     selectedContactId = contact.id;
-    const detailsContainer = document.getElementById('contact-details');
-    renderContacts();
 
-    if (isMobile()) {
-        showMobileDetailView();
-        updateMobileActionMenu(contact.id);
-    }
+    const detailsContainer = document.getElementById('contact-details');
+
+    renderContacts();
+    handleMobileContactView(contact);
 
     if (!animate) {
         renderContactHtml(detailsContainer, contact);
@@ -106,6 +132,19 @@ export function renderContactDetails(index, forceRender = false, animate = true)
     animateContactDetails(detailsContainer, contact);
 }
 
+
+/**
+ * Handles mobile
+ * contact detail view.
+ *
+ * @param {Object} contact
+ */
+function handleMobileContactView(contact) {
+    if (!isMobile()) return;
+
+    showMobileDetailView();
+    updateMobileActionMenu(contact.id);
+}
 
 
 /**
