@@ -19,6 +19,14 @@ window.isValidEmail = isValidEmail;
 
 
 //handles the complete registration flow
+/**
+ * Creates a Firebase user account and stores the related profile data.
+ *
+ * @param {string} name - The display name entered during signup.
+ * @param {string} email - The email address used for the account.
+ * @param {string} password - The password used for the account.
+ * @returns {Promise<void>}
+ */
 export async function registerUser(name, email, password) {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -32,6 +40,14 @@ export async function registerUser(name, email, password) {
 }
 
 
+/**
+ * Stores the registered user as an own contact entry.
+ *
+ * @param {Object} user - The authenticated Firebase user.
+ * @param {string} name - The contact display name.
+ * @param {string} email - The contact email address.
+ * @returns {Promise<void>}
+ */
 async function saveUserAsContact(user, name, email) {
   await set(ref(database, userContactPath(user.uid, user.uid)), {
     id: user.uid,
@@ -44,6 +60,12 @@ async function saveUserAsContact(user, name, email) {
 }
 
 
+/**
+ * Displays the mapped signup validation error in the UI.
+ *
+ * @param {Object} error - The Firebase signup error object.
+ * @returns {void}
+ */
 function handleSignupError(error) {
   switch (error.code) {
     case 'auth/email-already-in-use':
@@ -61,6 +83,14 @@ function handleSignupError(error) {
 
 
 // saves the user profile to the database
+/**
+ * Saves the user profile data below the profile path.
+ *
+ * @param {Object} user - The authenticated Firebase user.
+ * @param {string} name - The user's display name.
+ * @param {string} email - The user's email address.
+ * @returns {Promise<void>}
+ */
 async function saveUserProfile(user, name, email) {
   await set(ref(database, userProfilePath(user.uid)), {
     name,
@@ -70,6 +100,11 @@ async function saveUserProfile(user, name, email) {
 
 
 // resets the UI after successful signup
+/**
+ * Resets signup UI elements and shows the success overlay.
+ *
+ * @returns {void}
+ */
 function handleSignupSuccess() {
   showOverlay('Account created. Please log in.');
   setTimeout(() => {
@@ -80,6 +115,13 @@ function handleSignupSuccess() {
 }
 
 
+/**
+ * Authenticates a regular user and initializes local session state.
+ *
+ * @param {string} email - The user's email address.
+ * @param {string} password - The user's password.
+ * @returns {Promise<void>}
+ */
 export async function loginAsUser(email, password) {
   localStorage.clear();
   try {
@@ -93,6 +135,11 @@ export async function loginAsUser(email, password) {
 }
 
 
+/**
+ * Validates the login email input and updates the error state.
+ *
+ * @returns {boolean} True if the email input is valid.
+ */
 export function validateLoginEmail() {
   const email = document.getElementById('email');
   const emailValue = email.value.trim();
@@ -109,6 +156,12 @@ export function validateLoginEmail() {
 }
 
 
+/**
+ * Handles Firebase login errors and displays matching UI feedback.
+ *
+ * @param {Object} error - The Firebase login error object.
+ * @returns {void}
+ */
 function handleLoginError(error) {
   const errors = {
     'auth/invalid-email': {input: 'email', text: 'error-text-email', message: 'Please enter a valid email address.'},
@@ -126,12 +179,22 @@ function handleLoginError(error) {
 }
 
 
+/**
+ * Starts a guest session and redirects into the application.
+ *
+ * @returns {Promise<void>}
+ */
 export async function loginAsGuest() {
   initGuestStorage();
   loginSuccess('Logged in as Guest!');
 }
 
 
+/**
+ * Signs out the active user, clears session data and redirects to login.
+ *
+ * @returns {Promise<void>}
+ */
 export async function logoutUser() {
   if (!isGuestUser()) {
     await signOut(auth);
@@ -141,6 +204,11 @@ export async function logoutUser() {
 }
 
 
+/**
+ * Initializes local storage with default guest session data.
+ *
+ * @returns {void}
+ */
 function initGuestStorage() {
   localStorage.setItem('isGuest', 'true');
   localStorage.setItem('currentUserId', 'guest_user');
@@ -149,6 +217,12 @@ function initGuestStorage() {
 }
 
 
+/**
+ * Shows a login success overlay and navigates to the summary page.
+ *
+ * @param {string} message - The success message shown in the overlay.
+ * @returns {void}
+ */
 function loginSuccess(message) {
   sessionStorage.removeItem('mobileGreetingPlayed');
   showOverlay(message);
@@ -161,6 +235,12 @@ function loginSuccess(message) {
 }
 
 
+/**
+ * Handles login form submission and starts user authentication.
+ *
+ * @param {Event} event - The login form submit event.
+ * @returns {Promise<void>}
+ */
 async function handleLogin(event) {
   event.preventDefault();
   if (!validateLoginEmail() || !validateLoginPassword()) return;
@@ -187,11 +267,22 @@ export async function getCurrentUserData() {
 }
 
 
+/**
+ * Checks whether a value matches the expected email format.
+ *
+ * @param {string} emailValue - The email value to validate.
+ * @returns {boolean} True if the value is a valid email address.
+ */
 function isValidEmail(emailValue) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(emailValue);
 }
 
 
+/**
+ * Validates the login password input and updates the error state.
+ *
+ * @returns {boolean} True if the password input is filled.
+ */
 function validateLoginPassword() {
   const password = document.getElementById('password');
   if (!password.value.trim()) {
@@ -207,6 +298,11 @@ function validateLoginPassword() {
 }
 
 
+/**
+ * Enables or disables the login button based on current login inputs.
+ *
+ * @returns {void}
+ */
 function updateLoginButtonState() {
   const loginButton = document.getElementById('login-button');
   const email = document.getElementById('email');

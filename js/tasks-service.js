@@ -4,6 +4,11 @@ import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
 import { normalizeObjectToArray } from './ui.js';
 import { userTaskPath, userTasksPath } from './database-paths.js';
 
+/**
+ * Loads tasks from guest storage or the authenticated user's Firebase path.
+ *
+ * @returns {Promise<Array>} The available tasks.
+ */
 export async function getTasks() {
   if (isGuestUser()) return getLocalTasks();
   const uid = auth.currentUser.uid;
@@ -12,6 +17,12 @@ export async function getTasks() {
 }
 
 
+/**
+ * Creates a task in guest storage or Firebase.
+ *
+ * @param {Object} taskData - The task values to create.
+ * @returns {Promise<Object>} The created task including its ID.
+ */
 export async function createTask(taskData) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
@@ -48,6 +59,13 @@ export function isTaskValid(task) {
 }
 
 
+/**
+ * Toggles validation styling and message visibility for a task field.
+ *
+ * @param {string} id - The field element ID.
+ * @param {boolean} isError - Whether the field is invalid.
+ * @returns {void}
+ */
 function toggleErrorState(id, isError) {
   const field = document.getElementById(id);
   if (field) field.classList.toggle('input-error', isError);
@@ -56,6 +74,13 @@ function toggleErrorState(id, isError) {
 }
 
 
+/**
+ * Updates a task in guest storage or Firebase.
+ *
+ * @param {string} taskId - The task ID to update.
+ * @param {Object} updatedData - The changed task values.
+ * @returns {Promise<void>}
+ */
 export async function updateTask(taskId, updatedData) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
@@ -68,6 +93,12 @@ export async function updateTask(taskId, updatedData) {
 }
 
 
+/**
+ * Deletes a task from guest storage or Firebase.
+ *
+ * @param {string} taskId - The task ID to delete.
+ * @returns {Promise<void>}
+ */
 export async function deleteTask(taskId) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
@@ -80,6 +111,12 @@ export async function deleteTask(taskId) {
 }
 
 
+/**
+ * Subscribes to task changes and forwards the mapped task list.
+ *
+ * @param {Function} callback - Receives the current task array.
+ * @returns {Function|void} Firebase unsubscribe function for authenticated users.
+ */
 export function listenToTasks(callback) {
   if (isGuestUser()) return callback(getLocalTasks());
   return onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snapshot) => {

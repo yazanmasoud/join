@@ -65,6 +65,12 @@ export async function initBoard() {
   setupTaskSearch();
   setupAddTaskResizeGuard();
   window.contacts = await getContacts();
+  /**
+   * Applies loaded task data to the board state and renders the board.
+   *
+   * @param {Object|Array} data - The loaded task data.
+   * @returns {void}
+   */
   const setup = (data) => {
     CURRENT_TASKS = data || {};
     renderFilteredTasks();

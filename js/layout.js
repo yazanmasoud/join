@@ -137,6 +137,12 @@ async function navigateTo(page) {
 }
 
 
+/**
+ * Loads a legal login-layout subpage into the login content area.
+ *
+ * @param {string} page - The login subpage identifier.
+ * @returns {Promise<void>}
+ */
 async function loginNavigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
   if (currentPage !== page) {
