@@ -65,6 +65,7 @@ export async function initBoard() {
   onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snap) => setup(snap.val()));
 }
 
+
 function setupTaskSearch() {
   const searchInput = document.getElementById('searchTask');
 
@@ -79,12 +80,14 @@ function setupTaskSearch() {
   });
 }
 
+
 function renderFilteredTasks() {
   const filteredTasks = filterTasksBySearchTerm(CURRENT_TASKS);
 
   renderAllTasks(filteredTasks);
   updateNoSearchResults(filteredTasks);
 }
+
 
 function filterTasksBySearchTerm(allTasks) {
   if (!currentSearchTerm) return allTasks;
@@ -97,6 +100,7 @@ function filterTasksBySearchTerm(allTasks) {
   });
 }
 
+
 function updateNoSearchResults(filteredTasks) {
   const noResultsElement = document.getElementById('noSearchResults');
   if (!noResultsElement) return;
@@ -105,6 +109,7 @@ function updateNoSearchResults(filteredTasks) {
 
   noResultsElement.classList.toggle('hidden', !hasNoSearchResults);
 }
+
 
 function renderAllTasks(allTasks) {
   const columns = ['todo', 'progress', 'feedback', 'done'];
@@ -118,6 +123,7 @@ function renderAllTasks(allTasks) {
 
   columns.forEach((id) => checkPlaceholder(id));
 }
+
 
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
@@ -159,6 +165,7 @@ export async function toggleSubtask(taskId, index) {
   document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, taskId);
 }
 
+
 export function editEditSubtask(index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
   const task = CURRENT_TASKS[taskId];
@@ -168,6 +175,7 @@ export function editEditSubtask(index, taskId) {
     input?.focus();
   }
 }
+
 
 window.editEditSubtask = function (index, taskId) {
   const item = document.getElementById(`subtaskItemDetail${index}`);
@@ -181,6 +189,7 @@ window.editEditSubtask = function (index, taskId) {
     console.error(`Element subtaskItemDetail${index} nicht gefunden!`);
   }
 };
+
 
 async function saveEditSubtask(index, taskId) {
   const input = document.getElementById(`editSubtaskInput${index}`);
@@ -230,6 +239,7 @@ async function moveTo(status) {
   await moveFirebaseTaskTo(status);
 }
 
+
 function moveGuestTaskTo(status) {
   CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT] = {
     ...CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT],
@@ -241,12 +251,14 @@ function moveGuestTaskTo(status) {
   renderFilteredTasks();
 }
 
+
 async function moveFirebaseTaskTo(status) {
   const uid = auth.currentUser.uid;
   const taskRef = ref(database, userTaskPath(uid, CURRENT_DRAGGED_ELEMENT));
 
   await update(taskRef, { status });
 }
+
 
 /** @section EDIT TASK (EDIT MODE) */
 
@@ -261,6 +273,7 @@ export async function editTask(id) {
   const dialog = document.getElementById('taskDetailDialog');
   if (!dialog.open) dialog.showModal();
 }
+
 
 export async function saveEdit(id) {
   const updates = {
@@ -369,6 +382,7 @@ export async function openAddTask(status = 'todo') {
   document.getElementById('taskDetailDialog').showModal();
 }
 
+
 async function saveNewTaskFromBoard() {
   const newTask = getTaskDataFromForm();
   if (isGuestUser()) {
@@ -384,6 +398,7 @@ async function saveNewTaskFromBoard() {
   renderFilteredTasks();
 }
 
+
 function getTaskDataFromForm() {
   return {
     title: document.getElementById('taskTitle')?.value || '',
@@ -397,12 +412,14 @@ function getTaskDataFromForm() {
   };
 }
 
+
 function convertTaskArrayToObject(tasks) {
   return tasks.reduce((taskObject, task) => {
     taskObject[task.id] = task;
     return taskObject;
   }, {});
 }
+
 
 function convertTaskObjectToArray(tasksObject) {
   return Object.values(tasksObject);

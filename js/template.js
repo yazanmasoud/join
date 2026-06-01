@@ -33,6 +33,7 @@ export function generateTaskHTML(task, id) {
     </div>`;
 }
 
+
 function renderTaskBody(t) {
   return `
     <div class="task-card-content">
@@ -91,6 +92,7 @@ export function getPriorityButtonsHTML(selectedPrio) {
     .join('');
 }
 
+
 function setPriority(prio) {
   currentPriority = currentPriority === prio ? '' : prio;
 
@@ -134,6 +136,7 @@ export function getSubtaskHTML(task, index) {
       </div>
     </li>`;
 }
+
 
 export function getSubtaskEditHTML(title, index, isEditMode = false, taskId = '') {
   const saveFn = isEditMode ? `saveEditSubtask(${index}, '${taskId}')` : `saveSubtask(${index})`;
@@ -215,6 +218,7 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
     .join('');
 }
 
+
 export function getSingleDetailSubtaskHTML(subtask, index, taskId) {
   return `
     <li id="subtaskItemDetail${index}" class="subtask-item">
@@ -275,6 +279,7 @@ export function renderAssignedToDetail(assignedTo, showName = true) {
   return assignedTo.map((item) => renderSingleBadge(item, allContacts, showName)).join('');
 }
 
+
 function getInitialsFromName(fullName, contact) {
   if (contact?.initials) return contact.initials;
   return fullName
@@ -284,6 +289,7 @@ function getInitialsFromName(fullName, contact) {
     .toUpperCase()
     .slice(0, 2);
 }
+
 
 function renderSingleBadge(item, allContacts, showName) {
   const c = allContacts.find((c) => c.name === (item.name || item) || c.id === item);
@@ -326,6 +332,7 @@ export function getEditLeftSection(task) {
         <textarea id="editDescription">${task.description || ''}</textarea></div>
     </div>`;
 }
+
 
 export function getEditRightSection(task, id) {
   return `
@@ -387,6 +394,7 @@ export function getSingleContact(list, contact, index, isActive) {
     </div>`;
 }
 
+
 export function getContactDetails(contact) {
   return `
     <div class="contact-details-content">
@@ -402,6 +410,7 @@ export function getContactDetails(contact) {
         <span><b>Email:</b> <a class="contact-email" href="mailto:${contact.email}">${contact.email}</a></span>
         <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div></div>`;
 }
+
 
 export function getContactOptionsHTML(contactsArray, defaultText) {
   const def = `<option value="" disabled selected>${defaultText}</option>`;

@@ -7,6 +7,7 @@ function isMobileLandscape() {
   );
 }
 
+
 function updateOrientationGuard() {
   document.body.classList.toggle(
     'landscape-blocked',

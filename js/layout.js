@@ -140,6 +140,7 @@ async function navigateTo(page) {
   initPage(page);
 }
 
+
 async function loginNavigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
 

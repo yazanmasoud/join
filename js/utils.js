@@ -59,6 +59,7 @@ export function clearActivePrioClasses(selector) {
   );
 }
 
+
 /**Board.js */
 export function capitalizeFirstLetter(string) {
   if (!string) return '';
@@ -100,12 +101,14 @@ export function getNextDeadline(tasks) {
   return nextDate.toLocaleDateString('en-US', options);
 }
 
+
 export function showOverlay(message = 'Success!') {
   const text = overlay.querySelector('.success-message');
   text.textContent = message;
   overlay.classList.remove('hidden');
   overlay.style.opacity = '1';
 }
+
 
 export function hideOverlay() {
   overlay.style.opacity = '0';

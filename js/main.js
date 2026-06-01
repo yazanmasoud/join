@@ -9,6 +9,7 @@ if (isLoginPage && wrapper) {
   initMainLoginPage();
 }
 
+
 function initMainLoginPage() {
   const animationAlreadyPlayed = sessionStorage.getItem('startAnimationPlayed');
   if (animationAlreadyPlayed) {
@@ -138,7 +139,6 @@ function openSignUp() {
 }
 
 
-
 function openLogin() {
   closeSignUp();
 }
@@ -230,7 +230,6 @@ function validateForm() {
   signupButton.disabled = !isValid;
   return isValid;
 }
-
 
 
 export function clearSignupErrors() {
