@@ -9,6 +9,11 @@ if (isLoginPage && wrapper) {
   initMainLoginPage();
 }
 
+/**
+ * Initializes login page animation state and global form handlers.
+ *
+ * @returns {void}
+ */
 function initMainLoginPage() {
   const animationAlreadyPlayed = sessionStorage.getItem('startAnimationPlayed');
   if (animationAlreadyPlayed) {
@@ -92,6 +97,11 @@ function isMobile() {
 }
 
 
+/**
+ * Starts the login page intro animation once per browser session.
+ *
+ * @returns {void}
+ */
 function initStartAnimation() {
   const logo = document.getElementById('logo');
   const login = document.getElementById('login');
@@ -106,6 +116,14 @@ function initStartAnimation() {
 }
 
 
+/**
+ * Displays the login start page in its final state without replaying animation.
+ *
+ * @param {HTMLElement} wrapper - The page wrapper element.
+ * @param {HTMLElement} logo - The logo element.
+ * @param {HTMLElement} login - The login form container.
+ * @returns {void}
+ */
 function showStartPageWithoutAnimation(wrapper, logo, login) {
   wrapper.classList.add('no-animation');
   logo.classList.add('no-animation');
@@ -139,11 +157,22 @@ function openSignUp() {
 
 
 
+/**
+ * Returns from signup view to the login view.
+ *
+ * @returns {void}
+ */
 function openLogin() {
   closeSignUp();
 }
 
 
+/**
+ * Validates the signup username input.
+ *
+ * @param {HTMLInputElement} username - The username input element.
+ * @returns {boolean} True if the username is filled.
+ */
 function checkUsername(username) {
   if (username.value.trim() === '') {
     showInputError('signup-username', 'error-text-signup-username', 'Please enter a username.');
@@ -153,6 +182,13 @@ function checkUsername(username) {
 }
 
 
+/**
+ * Validates password presence, length and confirmation match.
+ *
+ * @param {HTMLInputElement} password - The password input element.
+ * @param {HTMLInputElement} confirmPassword - The confirmation input element.
+ * @returns {boolean} True if all password checks pass.
+ */
 function checkPassword(password, confirmPassword) {
   if (!hasPassword(password)) return false;
   if (!hasValidPasswordLength(password)) return false;
@@ -162,6 +198,12 @@ function checkPassword(password, confirmPassword) {
 }
 
 
+/**
+ * Checks whether the signup password input is filled.
+ *
+ * @param {HTMLInputElement} password - The password input element.
+ * @returns {boolean} True if a password is entered.
+ */
 function hasPassword(password) {
   if (password.value.trim()) return true;
   showInputError('signup-password', 'error-text-signup-password', 'Please enter a password.');
@@ -169,6 +211,12 @@ function hasPassword(password) {
 }
 
 
+/**
+ * Checks whether the signup password reaches the minimum length.
+ *
+ * @param {HTMLInputElement} password - The password input element.
+ * @returns {boolean} True if the password is long enough.
+ */
 function hasValidPasswordLength(password) {
   if (password.value.length >= 6) return true;
   showInputError('signup-password', 'error-text-signup-password', 'Password must be at least 6 characters.');
@@ -176,6 +224,12 @@ function hasValidPasswordLength(password) {
 }
 
 
+/**
+ * Checks whether the signup confirmation password is filled.
+ *
+ * @param {HTMLInputElement} confirmPassword - The confirmation input element.
+ * @returns {boolean} True if confirmation is entered.
+ */
 function hasConfirmPassword(confirmPassword) {
   if (confirmPassword.value.trim()) return true;
   showInputError('signup-confirm-password', 'error-text-confirm-password', 'Please confirm your password.');
@@ -183,6 +237,13 @@ function hasConfirmPassword(confirmPassword) {
 }
 
 
+/**
+ * Checks whether password and confirmation password match.
+ *
+ * @param {HTMLInputElement} password - The password input element.
+ * @param {HTMLInputElement} confirmPassword - The confirmation input element.
+ * @returns {boolean} True if both values match.
+ */
 function passwordsMatch(password, confirmPassword) {
   if (password.value === confirmPassword.value) return true;
   showInputError('signup-confirm-password', 'error-text-confirm-password', 'Passwords do not match.');
@@ -190,6 +251,12 @@ function passwordsMatch(password, confirmPassword) {
 }
 
 
+/**
+ * Validates the signup privacy checkbox state.
+ *
+ * @param {HTMLInputElement} privacy - The privacy checkbox element.
+ * @returns {boolean} True if privacy was accepted.
+ */
 function checkPrivacy(privacy) {
   if (!privacy.checked) {
     privacy.classList.add('input-error');
@@ -200,6 +267,12 @@ function checkPrivacy(privacy) {
 }
 
 
+/**
+ * Validates the signup email input and shows feedback.
+ *
+ * @param {HTMLInputElement} email - The email input element.
+ * @returns {boolean} True if the email is filled and valid.
+ */
 function checkEmail(email) {
   const emailValue = email.value.trim();
   if (!emailValue) {
@@ -214,6 +287,11 @@ function checkEmail(email) {
 }
 
 
+/**
+ * Validates the complete signup form and updates the submit button state.
+ *
+ * @returns {boolean} True if all signup fields are valid.
+ */
 function validateForm() {
   clearSignupErrors();
   const username = document.getElementById('signup-username');
@@ -233,6 +311,11 @@ function validateForm() {
 
 
 
+/**
+ * Clears all signup validation error states.
+ *
+ * @returns {void}
+ */
 export function clearSignupErrors() {
   clearInputError('signup-username', 'error-text-signup-username');
   clearInputError('signup-email', 'error-text-signup-email');
@@ -245,6 +328,12 @@ export function clearSignupErrors() {
 }
 
 
+/**
+ * Handles signup form submission and starts account registration.
+ *
+ * @param {Event} event - The signup submit event.
+ * @returns {Promise<void>}
+ */
 export async function handleSignup(event) {
   event.preventDefault();
   if (!validateForm()) return;

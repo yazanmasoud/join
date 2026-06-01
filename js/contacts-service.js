@@ -15,6 +15,11 @@ import { isGuestUser } from './storage.js';
 import { userContactPath, userContactsPath } from './database-paths.js';
 
 
+/**
+ * Loads contacts from guest storage or the authenticated user's Firebase path.
+ *
+ * @returns {Promise<Array>} The available contacts.
+ */
 export async function getContacts() {
   if (isGuestUser()) {
     return getGuestUserContacts();
@@ -29,6 +34,11 @@ export async function getContacts() {
 }
 
 
+/**
+ * Loads guest contacts from local storage or the default guest data.
+ *
+ * @returns {Promise<Array>} The guest contact list.
+ */
 async function getGuestUserContacts() {
   const storedGuestContacts = getGuestContacts();
 
@@ -50,6 +60,13 @@ async function getGuestUserContacts() {
 }
 
 
+/**
+ * Maps a Firebase contacts snapshot to an array of contact objects.
+ *
+ * @param {Object} snapshot - The Firebase snapshot to map.
+ * @param {boolean} [withInitials=false] - Whether initials should be generated.
+ * @returns {Array} The mapped contacts.
+ */
 function mapContacts(snapshot, withInitials = false) {
   if (!snapshot.exists()) return [];
 
@@ -65,6 +82,11 @@ function mapContacts(snapshot, withInitials = false) {
 }
 
 
+/**
+ * Reads guest contacts from local storage.
+ *
+ * @returns {Array} The stored guest contacts.
+ */
 function getGuestContacts() {
   return JSON.parse(
     localStorage.getItem('guestContacts')
@@ -72,6 +94,12 @@ function getGuestContacts() {
 }
 
 
+/**
+ * Writes guest contacts to local storage.
+ *
+ * @param {Array} contacts - The guest contacts to store.
+ * @returns {void}
+ */
 function saveGuestContacts(contacts) {
   localStorage.setItem(
     'guestContacts',
@@ -80,11 +108,22 @@ function saveGuestContacts(contacts) {
 }
 
 
+/**
+ * Creates a local timestamp-based contact ID.
+ *
+ * @returns {string} The generated local ID.
+ */
 function generateLocalId() {
   return Date.now().toString();
 }
 
 
+/**
+ * Creates a contact in guest storage or Firebase.
+ *
+ * @param {Object} contactData - The contact values to create.
+ * @returns {Promise<Object>} The created contact including its ID.
+ */
 export async function createContact(contactData) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
@@ -104,6 +143,12 @@ export async function createContact(contactData) {
 }
 
 
+/**
+ * Loads a single contact by ID from the active data source.
+ *
+ * @param {string} contactId - The contact ID to load.
+ * @returns {Promise<Object|null>} The matching contact or null.
+ */
 export async function getContactById(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
@@ -127,6 +172,13 @@ export async function getContactById(contactId) {
 }
 
 
+/**
+ * Updates a contact in guest storage or Firebase.
+ *
+ * @param {string} contactId - The contact ID to update.
+ * @param {Object} updatedData - The changed contact values.
+ * @returns {Promise<void>}
+ */
 export async function updateContact(contactId, updatedData) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
@@ -150,6 +202,12 @@ export async function updateContact(contactId, updatedData) {
 }
 
 
+/**
+ * Deletes a contact from guest storage or Firebase.
+ *
+ * @param {string} contactId - The contact ID to delete.
+ * @returns {Promise<void>}
+ */
 export async function deleteContact(contactId) {
   if (isGuestUser()) {
     const contacts = getGuestContacts();
@@ -168,6 +226,12 @@ export async function deleteContact(contactId) {
 }
 
 
+/**
+ * Subscribes to contact changes and forwards the mapped contact list.
+ *
+ * @param {Function} callback - Receives the current contact array.
+ * @returns {Function|void} Firebase unsubscribe function for authenticated users.
+ */
 export function listenToContacts(callback) {
   if (isGuestUser()) {
     callback(getGuestContacts());

@@ -22,6 +22,11 @@ window.handleDeleteContact = handleDeleteContact;
 window.handleSaveContact = handleSaveContact;
 
 
+/**
+ * Loads, sorts and renders the contacts page data.
+ *
+ * @returns {Promise<void>}
+ */
 export async function initContacts() {
     setSelectedContactId(null);
     contacts = await getContacts();
@@ -30,21 +35,44 @@ export async function initContacts() {
 }
 
 
+/**
+ * Replaces the module contact list state.
+ *
+ * @param {Array} newContacts - The new contacts array.
+ * @returns {void}
+ */
 export function setContacts(newContacts) {
     contacts = newContacts;
 }
 
 
+/**
+ * Stores the currently selected contact ID.
+ *
+ * @param {string|null} contactId - The selected contact ID.
+ * @returns {void}
+ */
 export function setSelectedContactId(contactId) {
     selectedContactId = contactId;
 }
 
 
+/**
+ * Stores the contact ID currently being edited.
+ *
+ * @param {string|null} contactId - The edit contact ID.
+ * @returns {void}
+ */
 export function setCurrentEditContactId(contactId) {
     currentEditContactId = contactId;
 }
 
 
+/**
+ * Clears the selected contact and re-renders the list.
+ *
+ * @returns {void}
+ */
 export function resetSelection() {
     selectedContactId = null;
     renderContacts();

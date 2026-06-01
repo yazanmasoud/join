@@ -100,6 +100,12 @@ export function getNextDeadline(tasks) {
   return nextDate.toLocaleDateString('en-US', options);
 }
 
+/**
+ * Shows the global success overlay with a message.
+ *
+ * @param {string} [message='Success!'] - The overlay message.
+ * @returns {void}
+ */
 export function showOverlay(message = 'Success!') {
   const text = overlay.querySelector('.success-message');
   text.textContent = message;
@@ -107,6 +113,11 @@ export function showOverlay(message = 'Success!') {
   overlay.style.opacity = '1';
 }
 
+/**
+ * Hides the global success overlay after a short fade-out.
+ *
+ * @returns {void}
+ */
 export function hideOverlay() {
   overlay.style.opacity = '0';
   setTimeout(() => {
