@@ -38,13 +38,10 @@ export function checkSession() {
       resolve(true);
       return;
     }
-
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = '../index.html';
+      if (!user) { window.location.href = '../index.html';
         return;
       }
-
       resolve(true);
     });
   });
@@ -59,15 +56,12 @@ function initPage(page) {
   if (page === 'summary') {
     initSummary();
   }
-
   if (page === 'board') {
     initBoard();
   }
-
   if (page === 'add-task') {
     initAddTask();
   }
-
   if (page === 'contacts') {
     initContacts();
   }
@@ -90,6 +84,7 @@ async function loadTemplate(containerId, templatePath) {
 
   container.innerHTML = html;
 }
+
 
 /**
  * Returns the initial page identifier based on the current URL query parameters.
@@ -120,6 +115,7 @@ export async function initLayout() {
   initPage(initialPage);
 }
 
+
 /**
  * Handles client-side page navigation by updating the page history,
  * loading the target page template,
@@ -143,11 +139,9 @@ async function navigateTo(page) {
 
 async function loginNavigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
-
   if (currentPage !== page) {
     pageHistory.push(page);
   }
-
   await loadTemplate('mainLoginContent', `./${page}.html`);
 }
 
@@ -159,18 +153,14 @@ async function loginNavigateTo(page) {
  */
 async function goBack() {
   if (pageHistory.length <= 1) return;
-
   pageHistory.pop();
-
   const previousPage = pageHistory[pageHistory.length - 1];
-
   await loadTemplate('mainContent', `./${previousPage}.html`);
-
   initPage(previousPage);
-
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
+
 
 /**
  * Updates navigation item visual states by assigning active styling classes.
@@ -180,12 +170,11 @@ function setActiveNavItem(clickedItem) {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
   clickedItem.classList.add('active');
-
   document.body.classList.add('has-active-page');
   document.body.classList.remove('help-open');
 }
+
 
 /**
  * Initializes the public login layout components and loads the initial subpage
@@ -196,15 +185,13 @@ function setActiveNavItem(clickedItem) {
 export async function initLoginLayout() {
   await loadTemplate('headerLoginContent', '../templates/headerlogin.html');
   await loadTemplate('sidebarLoginContent', '../templates/asidelogin.html');
-
   const params = new URLSearchParams(window.location.search);
   const page = params.get('page') || 'imprint';
-
   await loadTemplate('mainLoginContent', `./${page}.html`);
-
   setActiveLoginNavFromUrl(page);
   document.body.classList.add('has-active-page'); // Ensures a valid default page is loaded when layout-login.html is opened directly without a page parameter.
 }
+
 
 /**
  * Clears sidebar active navigation styling selections and displays the help page interface components.
@@ -213,20 +200,21 @@ function openHelp() {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
   document.body.classList.add('help-open');
   document.body.classList.remove('has-active-page');
 }
+
 
 /**
  * Clears authentication state parameters and redirects the browser window back to login view.
  */
 function logOut() {
-  localStorage.removeItem('currentUser'); // Delete Login-Status
+  localStorage.clear();
   sessionStorage.removeItem('mobileGreetingPlayed');
   closeOpenElements();
   window.location.href = '../index.html'; // Redirect to login page
 }
+
 
 /**
  * Redirects the main page location reference point back to the central index login gateway.
@@ -234,6 +222,7 @@ function logOut() {
 function backToLogin() {
   window.location.href = '../index.html';
 }
+
 
 /**
  * Modifies visibility displays to remove unauthenticated navigation history back arrows.
@@ -243,6 +232,7 @@ function turnOffBackarrow() {
   if (backArrow) backArrow.style.display = 'none';
 }
 
+
 /**
  * Highlights corresponding sidebar links dynamically according to current URL routing paths.
  * @param {string} page - The current page parameter identifier key.
@@ -251,11 +241,9 @@ function setActiveLoginNavFromUrl(page) {
   document.querySelectorAll('.nav-link').forEach((item) => {
     item.classList.remove('active');
   });
-
   if (page === 'imprint') {
     document.getElementById('menuLegalLogin')?.classList.add('active');
   }
-
   if (page === 'privacy') {
     document.getElementById('menuPrivacyLogin')?.classList.add('active');
   }
@@ -265,6 +253,7 @@ function setActiveLoginNavFromUrl(page) {
 if (document.querySelector('.layout')) {
   initLayout();
 }
+
 
 if (document.querySelector('.layout-login')) {
   initLoginLayout();

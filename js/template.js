@@ -5,7 +5,6 @@ window.getNoTaskPlaceholder = getNoTaskPlaceholder;
 window.generateTaskDetailHTML = generateTaskDetailHTML;
 window.generateEditTaskHTML = generateEditTaskHTML;
 window.getContactDetails = getContactDetails;
-window.openEditContact = openEditContact;
 window.getPriorityButtonsHTML = getPriorityButtonsHTML;
 window.setPriority = setPriority;
 window.getSingleDetailSubtaskHTML = getSingleDetailSubtaskHTML;
@@ -22,15 +21,31 @@ export function generateTaskHTML(task, id) {
   const cat = (task.category || '').replace(/\s+/g, '').toLowerCase();
   const prio = (task.priority || 'Medium').toLowerCase();
   const icon = prio === 'medium' ? 'medium-icon-orange.svg' : `prio-${prio}-icon.svg`;
+  const isDesktop = window.innerWidth > 800;
   return `
+    <span class="tooltip">
     <div class="task-card" draggable="true" ondragstart="startDragging('${id}')" onclick="openTaskDetail('${id}')">
+    <div class="task-card-header-mobile">
       <div class="task-category ${cat}">${task.category || ''}</div>
+      <div class="mobile-move-container">
+      <button class="move-mobile-btn" onclick="toggleMoveMenu(event, '${id}')"><img src="../assets/icons/arrow-drop-down.svg" alt="Move"></button>
+      <div id="moveMenu${id}" class="avatar-dropdown mobile-move-menu" onclick="event.stopPropagation()">
+      <p onclick="moveTaskMobile('${id}', 'todo')">To Do</p>
+      <p onclick="moveTaskMobile('${id}', 'progress')">In Progress</p>
+      <p onclick="moveTaskMobile('${id}', 'feedback')">Awaiting Feedback</p>
+      <p onclick="moveTaskMobile('${id}', 'done')">Done</p>
+      </div>
+      </div>
+      </div>
       ${renderTaskBody(task)}
       <div class="task-card-footer">
         <div class="assignee-list">${renderAssignedToDetail(task.assignedTo, false)}</div>
         <img src="../assets/icons/${icon}" class="prio-icon-small">
       </div>
-    </div>`;
+    </div>
+    <span class="tooltip-text">Drag mobile Task over arrow-menu</span>
+    </span>
+    `;
 }
 
 
@@ -280,23 +295,13 @@ export function renderAssignedToDetail(assignedTo, showName = true) {
 }
 
 
-function getInitialsFromName(fullName, contact) {
-  if (contact?.initials) return contact.initials;
-  return fullName
-    .split(' ')
-    .map((x) => x[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
-}
-
-
 function renderSingleBadge(item, allContacts, showName) {
   const c = allContacts.find((c) => c.name === (item.name || item) || c.id === item);
   const n = c?.name || (typeof item === 'string' ? item : item?.name) || 'Guest';
-  const badge = `<div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${getInitialsFromName(n, c)}</div>`;
+  const badge = `<div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${getInitials(n)}</div>`;
   return showName ? `<div class="assigned-contact-row">${badge}<span>${n}</span></div>` : badge;
 }
+
 /** --- EDIT MODE --- */
 /**
  * Generates the full framework block wrapper structure for task editor view.
@@ -343,7 +348,7 @@ export function getEditRightSection(task, id) {
         <div class="combo-wrapper" id="assignedInputContainer">
           <input type="text" id="assignedInput" placeholder="Select contacts to assign" 
                  oninput="renderContacts(this.value)" onclick="toggleContactList()">
-          <img src="../assets/icons/arrow_drop_down.svg" class="dropdown-arrow" onclick="toggleContactList()">
+          <img src="../assets/icons/arrow-drop-down.svg" class="dropdown-arrow" onclick="toggleContactList()">
         </div>
         <div id="contactList" class="contact-list-dropdown d-none"></div>
         <div id="assignedBadges" class="assigned-badges-container"></div>
@@ -382,7 +387,7 @@ export function getContactLetter(list, letter) {
  */
 export function getSingleContact(list, contact, index, isActive) {
   list.innerHTML += `
-    <div class="contact-item ${isActive ? 'contact-item-active' : ''}"
+    <div class="contact-items ${isActive ? 'contact-item-active' : ''}"
       onclick="window.renderContactDetails(${index})">
       <div class="contact-avatar" style="background-color: ${contact.color}">
         ${contact.initials || '??'}

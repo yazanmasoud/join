@@ -4,6 +4,7 @@ import { contacts, currentEditContactId, setContacts, setSelectedContactId, rend
 import { closeAddContact, closeDeleteDialog } from './contacts-dialog.js';
 import { getContactDetails } from './template.js';
 import { getRandomColor } from './utils.js';
+import { getTasks, updateTask } from './tasks-service.js';
 
 
 export {
@@ -15,6 +16,66 @@ export {
 
 
 /**
+ * Validates contact name input.
+ *
+ * @param {string} name
+ * @returns {boolean}
+ */
+function isValidContactName(name) {
+    return (
+        name.trim().length > 0 &&
+        !name.startsWith(' ') &&
+        !/^\d/.test(name)
+    );
+}
+
+
+/**
+ * Validates contact name input live.
+ */
+export function validateContactNameInput() {
+    const name =
+        document.getElementById(
+            'contact-name'
+        ).value;
+
+    if (!isValidContactName(name)) {
+        showContactNameError();
+        return;
+    }
+
+    clearContactNameError();
+}
+
+
+/**
+ * Shows name validation error.
+ */
+function showContactNameError() {
+    const input = document.getElementById('contact-name');
+    const error = document.getElementById('contact-name-error');
+
+    input.classList.add('input-error');
+    error.textContent =
+        'Please enter a valid name';
+    error.classList.add('visible');
+}
+
+
+/**
+ * Clears name validation error.
+ */
+function clearContactNameError() {
+    const input = document.getElementById('contact-name');
+    const error = document.getElementById('contact-name-error');
+
+    input.classList.remove('input-error');
+    error.textContent = '';
+    error.classList.remove('visible');
+}
+
+
+/**
  * Creates a new contact and
  * updates the contacts list and UI.
  *
@@ -22,6 +83,12 @@ export {
  */
 async function handleCreateContact() {
     const contactData = getNewContactData();
+    if (!isValidContactName(contactData.name)) {
+        showContactNameError();
+        return;
+    }
+
+    clearContactNameError();
     const savedContact = await createContact(contactData);
 
     addContactToList(savedContact);
@@ -83,6 +150,12 @@ function resetContactForm() {
  * @param {string} contactId - Contact ID.
  */
 async function handleDeleteContact(contactId) {
+    const contact = contacts.find(c => String(c.id) === String(contactId));
+
+    if (contact) {
+        await removeContactFromTasks(contact.name, contactId);
+    }
+
     await deleteContact(contactId);
 
     setContacts(contacts.filter(contact => String(contact.id) !== String(contactId)));
@@ -110,7 +183,12 @@ async function handleSaveContact() {
     if (!contact) return;
 
     const updatedData = getUpdatedContactData(contact);
+    if (!isValidContactName(updatedData.name)) {
+        showContactNameError();
+        return;
+    }
 
+    clearContactNameError();
     await updateContact(currentEditContactId, updatedData);
 
     refreshUpdatedContactUI(updatedData);
@@ -132,6 +210,7 @@ function getCurrentEditContact() {
             String(currentEditContactId)
     );
 }
+
 
 /**
  * Reads the contact form inputs and
@@ -171,6 +250,7 @@ function updateLocalContact(updatedData) {
     );
 }
 
+
 /**
  * Updates the contact list
  * and details after saving.
@@ -206,4 +286,26 @@ function showToast(message) {
     setTimeout(() => {
         toast.classList.remove('toast-message-show');
     }, 2000);
+}
+
+
+/**
+ * Removes a contact from all tasks' assignedTo arrays.
+ * @param {string} contactName - The contact's name.
+ * @param {string} contactId - The contact's ID.
+ */
+async function removeContactFromTasks(contactName, contactId) {
+  const tasks = await getTasks();
+  for (const task of tasks) {
+    const assignedTo = task.assignedTo || [];
+    const filtered = assignedTo.filter(entry =>
+      entry !== contactName &&
+      entry !== contactId &&
+      entry?.name !== contactName &&
+      entry?.id !== contactId
+    );
+    if (filtered.length !== assignedTo.length) {
+      await updateTask(task.id, { assignedTo: filtered });
+    }
+  }
 }

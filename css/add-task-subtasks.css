@@ -1,0 +1,71 @@
+.subtasks-item-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.subtask-edit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: background-color 125ms ease;
+  box-sizing: border-box;
+}
+
+.subtask-edit-item:hover {
+  background-color: var(--color-bg-tertiary, #eeeeee);
+}
+
+.subtask-edit-mode-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-bottom: 2px solid #29abe2;
+}
+
+.subtask-edit-input {
+  border: unset;
+  outline: none;
+  flex: 1;
+  font-size: 16px;
+  background: transparent;
+}
+
+.subtask-edit-actions,
+.subtask-actions {
+  display: flex;
+  align-items: center;
+}
+
+.subtask-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #d1d1d1;
+  margin: 0 8px;
+}
+
+.subtask-left {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.subtask-check-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.subtask-text {
+  font-size: 16px;
+  color: var(--color-text-main);
+}

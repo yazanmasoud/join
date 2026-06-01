@@ -3,9 +3,12 @@
     <div class="board-header">
       <div class="board-header-left">
         <h2>Board</h2>
-        <button class="btn-dark hidden" id="add-task-btn-mobile" onclick="openAddTask()">
+      <span class="tooltip">
+        <button class="btn-dark plus-btn hidden" id="add-task-btn-mobile" onclick="openAddTask()">
           <img src="../assets/icons/add.svg" alt="plus" />
         </button>
+        <span class="tooltip-text">"Add task"</span>
+      </span>
       </div>
       <p id="noSearchResults" class="no-search-results hidden">No search results. Clear search.</p>
       <div class="board-header-right">
@@ -19,7 +22,7 @@
       <div class="column">
         <div class="column-header">
           <span>To do</span>
-          <button class="add-task-small" onclick="openAddTask('todo')">
+          <button class="add-task-small-btn" onclick="openAddTask('todo')">
             <img src="../assets/icons/board-add-icon.svg" alt="add" />
           </button>
         </div>
@@ -37,7 +40,7 @@
       <div class="column">
         <div class="column-header">
           <span>In progress</span>
-          <button class="add-task-small" onclick="openAddTask('progress')">
+          <button class="add-task-small-btn" onclick="openAddTask('progress')">
             <img src="../assets/icons/board-add-icon.svg" alt="add" />
           </button>
         </div>
@@ -50,12 +53,12 @@
             highlight('progress');
           "
           ondragleave="removeHighlight('progress')"
-        ></div>
+        > <!-- Task will be rendered here --></div>
       </div>
       <div class="column">
         <div class="column-header">
           <span>Await feedback</span>
-          <button class="add-task-small" onclick="openAddTask('feedback')">
+          <button class="add-task-small-btn" onclick="openAddTask('feedback')">
             <img src="../assets/icons/board-add-icon.svg" alt="add" />
           </button>
         </div>
@@ -88,12 +91,14 @@
     </div>
   </section>
 </main>
+<!-- Add Task Dialog when click on add task plus icon on board -->
 <dialog id="taskDetailDialog" class="detail-dialog-frame">
   <div id="taskDetailContent" class="task-detail-content-style">
     <!-- Hier wird das Template eingefügt -->
   </div>
 </dialog>
-<div id="successMessage" class="success-toast d-none">
+<!-- Success Message after task creation -->
+<div id="successMessage" class="toast-message">
   <span>Task added to board</span>
   <img src="../assets/icons/create-task.svg" alt="erstelle Task" />
 </div>

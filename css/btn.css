@@ -4,7 +4,7 @@ button {
 }
 
 .btn {
-  border: none;
+  border: unset;
   background: none;
 }
 
@@ -15,7 +15,7 @@ button {
   padding: 16px 20px;
   background-color: var(--color-bg-secondary);
   color: var(--color-bg-primary);
-  border: none;
+  border: unset;
   border-radius: 8px;
   font-size: 20px;
   font-weight: 700;
@@ -66,7 +66,7 @@ button {
   padding: 10px 20px;
   background-color: var(--color-bg-secondary);
   color: var(--color-bg-primary);
-  border: none;
+  border: unset;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 700;
@@ -84,7 +84,7 @@ button {
   color: var(--color-bg-primary);
   width: 280px;
   height: 56px;
-  border: none;
+  border: unset;
   font-size: 20px;
   font-weight: 700;
   display: flex;
@@ -94,7 +94,7 @@ button {
 }
 
 .contact-dialog-close-button {
-  border: none;
+  border: unset;
   background: none;
   display: flex;
   align-items: center;
@@ -132,12 +132,12 @@ button {
 }
 
 .edit-delete-btn {
-  border: none;
+  border: unset;
   background: none;
 }
 
 .edit-delete-btn img {
-  transition: 100ms ease;
+  transition: 125ms ease;
 }
 
 .edit-delete-btn:hover img {
@@ -146,14 +146,14 @@ button {
 
 .subtasks-item-list li button {
   background: none;
-  border: none;
+  border: unset;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
   border-radius: 50%;
-  transition: all 0.2s ease;
+  transition: all 125ms ease;
 }
 
 .subtasks-item-list li button:hover {
@@ -167,7 +167,7 @@ button {
 
 .subtask-action-btn {
   background: none;
-  border: none;
+  border: unset;
   cursor: pointer;
   padding: 0 4px;
 }
@@ -190,7 +190,7 @@ button {
   position: absolute;
   right: 12px;
   background: none;
-  border: none;
+  border: unset;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -217,7 +217,7 @@ button {
   gap: 8px;
   font-size: 16px;
   font-weight: 400;
-  transition: all 0.2s ease;
+  transition: all 125ms ease;
   color: black;
 }
 
@@ -248,85 +248,116 @@ button {
 
 .subtasks-list button {
   background: none;
-  border: none;
+  border: unset;
   cursor: pointer;
   font-weight: bold;
   color: var(--color-bg-secondary);
 }
 
+.add-task-small-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-bg-secondary);
+  border-radius: 8px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.add-task-small-btn:hover {
+  border-color: var(--color-highlights);
+}
+
+.add-task-small-btn:hover img {
+  filter: invert(59%) sepia(80%) saturate(1915%) hue-rotate(164deg) brightness(97%) contrast(91%) !important;
+}
+
+.add-task-small-btn img {
+  width: 14px;
+  height: 14px;
+  transition: filter 0.1s ease-in-out;
+}
+
 /* ===== FAB BUTTON (Mobile) ===== */
 .fab-add-contact {
-    display: none;
-    position: fixed;
-    bottom: 96px;
-    right: 24px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    z-index: 100;
+  display: none;
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  z-index: 100;
 }
 
 /* ===== 3-DOT BUTTON (Mobile) ===== */
 .mobile-three-dot-btn {
-    display: none;
-    position: fixed;
-    bottom: 96px;
-    right: 24px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background-color: var(--color-bg-secondary);
-    border: none;
-    color: white;
-    font-size: 28px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 100;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  display: none;
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-bg-secondary);
+  border: unset;
+  color: white;
+  font-size: 28px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
 .mobile-action-menu {
-    display: none;
-    position: fixed;
-    bottom: 164px;
-    right: 24px;
-    background: white;
-    border-radius: 20px 20px 4px 20px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 101;
+  display: none;
+  position: fixed;
+  bottom: 164px;
+  right: 24px;
+  background: white;
+  border-radius: 20px 20px 4px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 101;
 }
 
 .mobile-action-menu.open {
-    display: flex;
-    padding: 8px;
+  display: flex;
+  padding: 8px;
 }
 
 .mobile-action-item {
-    display: flex;
-    align-items: center;
-    border: none;
-    background: none;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  border: unset;
+  background: none;
+  cursor: pointer;
 }
 
 .mobile-action-item:hover {
-    background-color: var(--color-highlights);
+  background-color: var(--color-highlights);
 }
 
 .mobile-back-btn {
-    display: none;
-    border: none;
-    background: none;
-    cursor: pointer;
-    padding: 8px;
-    margin-bottom: 8px;
+  display: none;
+  border: unset;
+  background: none;
+  cursor: pointer;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.plus-btn {
+  padding: 5px 6px 0px 6px !important;
 }
 
 @media (max-width: 1100px) {
@@ -337,13 +368,19 @@ button {
   .contacts-page.mobile-detail-active .fab-add-contact {
     display: none;
   }
-  
+
   .contacts-page.mobile-detail-active .mobile-three-dot-btn {
     display: flex;
   }
 
   .mobile-back-btn {
     display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  #login-button {
+    min-width: 180px;
   }
 }
 

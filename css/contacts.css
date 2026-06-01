@@ -128,7 +128,7 @@
 /* ===== POPUP / DIALOG ===== */
 
 .contact-dialog {
-  border: none;
+  border: unset;
   border-radius: 20px;
   padding: 0;
   position: fixed;
@@ -137,12 +137,12 @@
   width: fit-content;
   height: fit-content;
   transform: translateX(100%);
-  transition: transform 120ms ease;
+  transition: transform 125ms ease;
 }
 
 .contact-dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.25);
-  transition: opacity 120ms ease;
+  transition: opacity 125ms ease;
 }
 
 .contact-dialog-open {
@@ -200,7 +200,13 @@
 .contact-inputs-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
+}
+
+.contact-error {
+  min-height: 0;
+  margin-top: -8px;
+  margin-bottom: -4px;
 }
 
 /* ===== POPUP BUTTONS ===== */
@@ -221,14 +227,13 @@
   display: flex;
   flex-direction: column;
   padding: 80px;
+  overflow-x: hidden;
 }
 
 .contact-details-title {
   display: flex;
   align-items: center;
   gap: 30px;
-
-
 }
 
 .contact-details-content {
@@ -281,7 +286,7 @@
 /* ===== TOAST MESSAGE ===== */
 .toast-message {
   position: fixed;
-  bottom: 40px;
+  bottom: 100px;
   left: 50%;
   transform: translateX(-50%) translateY(80px);
   background-color: #2A3647;
@@ -302,7 +307,7 @@
 
 /* ===== DELETE CONFIRM DIALOG ===== */
 .delete-dialog {
-  border: none;
+  border: unset;
   border-radius: 20px;
   padding: 0;
   margin: auto;
@@ -339,4 +344,13 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+}
+
+.contact-items {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    cursor: pointer;
 }

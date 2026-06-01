@@ -214,6 +214,10 @@ function checkEmail(email) {
 }
 
 
+/**
+ * Validates all signup fields and enables or disables the submit button.
+ * @returns {boolean} Whether the form is valid.
+ */
 function validateForm() {
   clearSignupErrors();
   const username = document.getElementById('signup-username');

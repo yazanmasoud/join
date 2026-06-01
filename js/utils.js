@@ -9,11 +9,14 @@ export const CONTACT_OPTIONS = [
   'Benedikt Bauer',
 ];
 
+
 const overlay = document.getElementById('overlay');
+
 
 window.hideOverlay = hideOverlay;
 window.showOverlay = showOverlay;
 window.getInitials = getInitials;
+
 
 /**
  * Generates initials from a contact name.
@@ -24,10 +27,7 @@ window.getInitials = getInitials;
  * @returns {string} The generated initials
  */
 export function getInitials(name) {
-  let words = name
-    .trim()
-    .split(' ')
-    .filter((word) => word !== '');
+  let words = name.trim().split(' ').filter((word) => word !== '');
   if (words.length === 0) {
     return '';
   }
@@ -39,6 +39,7 @@ export function getInitials(name) {
   return firstLetter + lastLetter;
 }
 
+
 /**
  * Constructs a CSS class name mapped to a priority level.
  * @param {string} prio - The priority level string.
@@ -47,6 +48,7 @@ export function getInitials(name) {
 export function getPrioClass(prio) {
   return 'active-' + prio.toLowerCase();
 }
+
 
 /**
  * Resets priority button styles by removing all active priority CSS classes.
@@ -66,6 +68,7 @@ export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+
 /**Summary.js */
 /**
  * Berechnet die Metriken für die Summary Seite.
@@ -83,6 +86,7 @@ export function calculateMetrics(tasks) {
     deadline: getNextDeadline(tasks),
   };
 }
+
 
 /**
  * Finds and formats the earliest upcoming task deadline.

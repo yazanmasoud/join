@@ -1,5 +1,6 @@
 import {contacts, setCurrentEditContactId} from './contacts.js';
-
+import {handleCreateContact, handleSaveContact, validateContactNameInput
+} from './contacts-actions.js';
 export {
     closeAddContact,
     openAddContact,
@@ -50,6 +51,7 @@ function openContactDialog() {
  */
 function openAddContact() {
     const elements = getContactDialogElements();
+    elements.nameInput.oninput = validateContactNameInput;
 
     setupCreateDialog(elements);
     resetDialogInputs(elements);
@@ -128,6 +130,19 @@ function closeAddContact() {
 
 
 /**
+ * Returns a contact
+ * by its ID.
+ *
+ * @param {string} contactId
+ * @returns {Object|undefined}
+ */
+function getContactById(contactId) {
+    return contacts.find(
+        contact => String(contact.id) === String(contactId));
+}
+
+
+/**
  * Opens the dialog
  * in edit contact mode.
  *
@@ -141,22 +156,10 @@ function openEditContact(contactId) {
     setCurrentEditContactId(contactId);
 
     const elements = getContactDialogElements();
+    elements.nameInput.oninput = validateContactNameInput;
 
     setupEditDialog(elements, contact, contactId);
     openContactDialog();
-}
-
-
-/**
- * Returns a contact
- * by its ID.
- *
- * @param {string} contactId
- * @returns {Object|undefined}
- */
-function getContactById(contactId) {
-    return contacts.find(
-        contact => String(contact.id) === String(contactId));
 }
 
 
@@ -234,6 +237,7 @@ function openDeleteDialog(contactId) {
     confirmButton.onclick = () => {
         dialog.close();
         handleDeleteContact(contactId);
+        showMobileListView();
     };
 
     dialog.showModal();

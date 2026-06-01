@@ -1,0 +1,82 @@
+@media (max-width: 768px) {
+  .show-start-animation .content-wrapper {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .skip-start-animation .logo-start {
+    left: 40px;
+    top: 40px;
+    transform: translate(0, 0) scale(1);
+  }
+
+  .content-wrapper.is-ready {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  .show-start-animation .logo-dark {
+    opacity: 0;
+  }
+
+  .show-start-animation .logo-white {
+    opacity: 1;
+  }
+
+  .content-wrapper.is-ready .logo-dark {
+    opacity: 1;
+  }
+
+  .content-wrapper.is-ready .logo-white {
+    opacity: 0;
+  }
+
+  .logo-start.shrink,
+  .logo-start.final {
+    left: 40px;
+    top: 40px;
+    transform: translate(0, 0) scale(1);
+  }
+
+  .logo-wrap,
+  .logo-start,
+  .join-logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .logo-wrap {
+    margin-top: 40px;
+    margin-left: 40px;
+  }
+
+  .login_btn-container {
+    flex-direction: column;
+    width: 180px;
+    gap: 20px;
+  }
+
+  .login-signup-section {
+    width: 270px;
+    padding: 32px 16px;
+  }
+
+  .welcome-section {
+    margin-bottom: 0;
+  }
+
+  .signup-container {
+    display: none;
+  }
+
+  .signup-container-mobile.visible {
+    display: flex;
+  }
+
+  .h1-login-signup {
+    font-size: 48px;
+  }
+
+  .btn-light,
+  .btn-dark {
+    font-size: 16px;
+  }
+}

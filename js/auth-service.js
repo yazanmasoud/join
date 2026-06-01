@@ -17,63 +17,6 @@ window.validateLoginPassword = validateLoginPassword;
 window.updateLoginButtonState = updateLoginButtonState;
 window.isValidEmail = isValidEmail;
 
-const SIGNUP_ERRORS = {
-  'auth/email-already-in-use': {
-    input: 'signup-email',
-    text: 'error-text-signup-email',
-    message: 'This email is already in use.',
-  },
-  'auth/network-request-failed': {
-    input: 'signup-email',
-    text: 'error-text-signup-email',
-    message: 'Network error. Please check your connection.',
-  },
-  'auth/too-many-requests': {
-    input: 'signup-email',
-    text: 'error-text-signup-email',
-    message: 'Too many attempts. Please try again later.',
-  },
-};
-
-const LOGIN_ERRORS = {
-  'auth/invalid-email': {
-    input: 'email',
-    text: 'error-text-email',
-    message: 'Please enter a valid email address.',
-  },
-  'auth/invalid-credential': {
-    input: 'password',
-    text: 'error-text-password',
-    message: 'Check your email and password. Please try again.',
-  },
-  'auth/user-not-found': {
-    input: 'password',
-    text: 'error-text-password',
-    message: 'Check your email and password. Please try again.',
-  },
-  'auth/wrong-password': {
-    input: 'password',
-    text: 'error-text-password',
-    message: 'Check your email and password. Please try again.',
-  },
-  'auth/too-many-requests': {
-    input: 'password',
-    text: 'error-text-password',
-    message: 'Too many failed attempts. Please try again later.',
-  },
-  'auth/network-request-failed': {
-    input: 'password',
-    text: 'error-text-password',
-    message: 'Network error. Please check your connection.',
-  },
-};
-
-const DEFAULT_SIGNUP_ERROR = {
-  input: 'signup-email',
-  text: 'error-text-signup-email',
-  message: 'Something went wrong. Please try again.',
-};
-
 
 //handles the complete registration flow
 export async function registerUser(name, email, password) {
@@ -102,12 +45,18 @@ async function saveUserAsContact(user, name, email) {
 
 
 function handleSignupError(error) {
-  showMappedInputError(getSignupError(error));
-}
-
-
-function getSignupError(error) {
-  return SIGNUP_ERRORS[error.code] || DEFAULT_SIGNUP_ERROR;
+  switch (error.code) {
+    case 'auth/email-already-in-use':
+      showInputError('signup-email', 'error-text-signup-email', 'This email is already in use.');
+      break;
+    case 'auth/network-request-failed':
+      showInputError('signup-email', 'error-text-signup-email', 'Network error. Please check your connection.');
+      break;
+    case 'auth/too-many-requests':
+      showInputError('signup-email', 'error-text-signup-email', 'Too many attempts. Please try again later.');
+      break;
+    default: showInputError('signup-email', 'error-text-signup-email', 'Something went wrong. Please try again.');
+  }
 }
 
 
@@ -161,28 +110,19 @@ export function validateLoginEmail() {
 
 
 function handleLoginError(error) {
-  const currentError = getLoginError(error);
-
-  if (!currentError) {
-    console.error(error);
+  const errors = {
+    'auth/invalid-email': {input: 'email', text: 'error-text-email', message: 'Please enter a valid email address.'},
+    'auth/invalid-credential': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/user-not-found': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/wrong-password': {input: 'password', text: 'error-text-password', message: 'Check your email and password. Please try again.'},
+    'auth/too-many-requests': {input: 'password', text: 'error-text-password', message: 'Too many failed attempts. Please try again later.'},
+    'auth/network-request-failed': {input: 'password', text: 'error-text-password', message: 'Network error. Please check your connection.'},
+  };
+  const currentError = errors[error.code];
+  if (!currentError) {console.error(error);
     return;
   }
-
-  showMappedInputError(currentError);
-}
-
-
-function getLoginError(error) {
-  return LOGIN_ERRORS[error.code];
-}
-
-
-function showMappedInputError(errorConfig) {
-  showInputError(
-    errorConfig.input,
-    errorConfig.text,
-    errorConfig.message
-  );
+  showInputError(currentError.input, currentError.text, currentError.message);
 }
 
 

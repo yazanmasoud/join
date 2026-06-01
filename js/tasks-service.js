@@ -26,6 +26,7 @@ export async function createTask(taskData) {
   return { id: newTaskRef.key, ...taskData };
 }
 
+
 /**
  * Validates if the task has a title, date and category.
  */
