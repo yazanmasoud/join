@@ -1,4 +1,5 @@
 import { isGuestUser } from './storage.js';
+import { getInitials } from './utils.js';
 
 window.handleBackArrow = handleBackArrow;
 window.setGreeting = setGreeting;
