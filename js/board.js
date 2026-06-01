@@ -253,7 +253,7 @@ async function saveEditSubtask(index, taskId) {
     item.outerHTML = getSingleDetailSubtaskHTML(task.subtasks[index], index, taskId);
 
     if (!isGuestUser()) {
-      const path = `tasks/${auth.currentUser.uid}/${taskId}/subtasks/${index}`;
+      const path = userSubtaskPath(auth.currentUser.uid, taskId, index);
       await update(ref(database, path), { title: task.subtasks[index].title });
     }
   }
@@ -424,7 +424,7 @@ export async function deleteEditSubtask(id, index) {
   if (task && task.subtasks) {
     task.subtasks.splice(index, 1);
     document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, id);
-    if (!isGuestUser()) await update(ref(database, `tasks/${auth.currentUser.uid}/${id}`), { subtasks: task.subtasks });
+    if (!isGuestUser()) await update(ref(database, userTaskPath(auth.currentUser.uid, id)), { subtasks: task.subtasks });
   }
 }
 
@@ -499,7 +499,7 @@ async function saveNewTaskFromBoard() {
     CURRENT_TASKS[tempId] = newTask;
     setLocalTasks(Object.values(CURRENT_TASKS));
   } else {
-    const newTaskRef = push(ref(database, `tasks/${auth.currentUser.uid}`));
+    const newTaskRef = push(ref(database, userTasksPath(auth.currentUser.uid)));
     await update(newTaskRef, newTask);
     CURRENT_TASKS[newTaskRef.key] = newTask;
   }
