@@ -48,6 +48,7 @@ export function generateTaskHTML(task, id) {
     `;
 }
 
+
 function renderTaskBody(t) {
   return `
     <div class="task-card-content">
@@ -106,6 +107,7 @@ export function getPriorityButtonsHTML(selectedPrio) {
     .join('');
 }
 
+
 function setPriority(prio) {
   currentPriority = currentPriority === prio ? '' : prio;
 
@@ -149,6 +151,7 @@ export function getSubtaskHTML(task, index) {
       </div>
     </li>`;
 }
+
 
 export function getSubtaskEditHTML(title, index, isEditMode = false, taskId = '') {
   const saveFn = isEditMode ? `saveEditSubtask(${index}, '${taskId}')` : `saveSubtask(${index})`;
@@ -229,6 +232,7 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
     )
     .join('');
 }
+
 
 export function getSingleDetailSubtaskHTML(subtask, index, taskId) {
   return `
@@ -334,6 +338,7 @@ export function getEditLeftSection(task) {
     </div>`;
 }
 
+
 export function getEditRightSection(task, id) {
   return `
     <div class="edit-section">
@@ -394,6 +399,7 @@ export function getSingleContact(list, contact, index, isActive) {
     </div>`;
 }
 
+
 export function getContactDetails(contact) {
   return `
     <div class="contact-details-content">
@@ -409,6 +415,7 @@ export function getContactDetails(contact) {
         <span><b>Email:</b> <a class="contact-email" href="mailto:${contact.email}">${contact.email}</a></span>
         <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div></div>`;
 }
+
 
 export function getContactOptionsHTML(contactsArray, defaultText) {
   const def = `<option value="" disabled selected>${defaultText}</option>`;

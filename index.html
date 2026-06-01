@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="de">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,7 +25,6 @@
     }
   </script>
 </head>
-
 <body>
   <div id="content-wrapper" class="content-wrapper">
     <section class="welcome-section">
@@ -44,7 +42,6 @@
         <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
       </div>
     </section>
-
     <section id="login" class="login-signup-section">
       <h1 class="h1-login-signup">Log in</h1>
       <hr class="login-signup-hr" />
@@ -71,16 +68,13 @@
         </div>
       </form>
     </section>
-
     <div id="overlay" class="overlay hidden">
       <div class="success-message ">You Signed Up successfully!</div>
     </div>
-
     <div id="signup-container-mobile" class="signup-container-mobile">
       <p class="p-welcome">Not a Join User?</p>
       <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
     </div>
-
     <section id="signup" class="login-signup-section hidden">
       <div class="signup-section-header">
         <button class="btn arrow-btn" onclick="openLogin()">
@@ -88,9 +82,7 @@
         </button>
         <h1 class="h1-login-signup">Sign Up</h1>
       </div>
-
       <hr class="login-signup-hr" />
-
       <form novalidate onsubmit="handleSignup(event)">
         <div class="username-input-area">
           <input oninput="validateForm();" type="text" id="signup-username" class="username" placeholder="Name"
@@ -124,7 +116,6 @@
         <span class="tooltip-text">Fill all inputs and check Privacy Policy to Sign Up.</span></div>
       </form>
     </section>
-
     <footer class="login-footer">
       <a id="imprintLink" class="footer-link" href="./pages/layout-login.html?page=imprint">Legal Notice</a>
       <a id="privacyLink" class="footer-link" href="./pages/layout-login.html?page=privacy">Privacy Policy</a>
@@ -133,13 +124,12 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
   <script type="module" src="./js/firebase-config.js"></script>
   <script type="module" src="./js/storage.js"></script>
   <script type="module" src="./js/ui.js"></script>
   <script type="module" src="./js/guest-data.js"></script>
   <script type="module" src="./js/auth-service.js"></script>
+  <script type="module" src="./js/orientation-guard.js"></script>
   <script type="module" src="./js/main.js"></script>
 </body>
-
 </html>

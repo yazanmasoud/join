@@ -4,10 +4,8 @@
             <span>Add new contact</span>
             <img src="../assets/icons/add-contact-icon.svg" alt="">
         </button>
-
         <div id="contact-list"></div>
     </section>
-
     <dialog id="add-contact-popup" class="contact-dialog">
         <div class="contact-dialog-content">
             <img id="contact-dialog-sidebar-image" class="contact-dialog-sidebar"
@@ -22,7 +20,6 @@
                     alt="Profile icon" />
                 <span id="contact-dialog-avatar-initials" style="display:none"></span>
             </div>
-
             <div class="contact-dialog-form">
                 <div class="contact-input-and-close-button">
                     <button class="contact-dialog-close-button" onclick="closeAddContact()"><img
@@ -40,7 +37,6 @@
                         onclick="closeAddContact()">
                         <span>cancel</span>
                     </button>
-
                     <button id="create-save-button" class="contact-dialog-create-button btn-dark"
                         onclick="handleCreateContact()">
                         <span>Create Contact</span>
@@ -49,45 +45,35 @@
             </div>
         </div>
     </dialog>
-
     <div id="toast-message" class="toast-message"></div>
-
     <dialog id="delete-confirm-dialog" class="delete-dialog">
         <div class="delete-dialog-content">
             <h3>Delete contact?</h3>
             <p>Do you really want to delete this contact?</p>
-
             <div class="delete-dialog-buttons">
                 <button class="btn-light" onclick="closeDeleteDialog()">
                     Cancel
                 </button>
-
                 <button id="confirm-delete-button" class="btn-dark">
                     Delete
                 </button>
             </div>
         </div>
     </dialog>
-
     <section class="contact-details">
-
         <button class="mobile-back-btn" onclick="showMobileListView()">
           <img src="../assets/icons/arrow-left-line.svg" alt="Back">
         </button>
-
         <div class="contact-details-title">
             <h2 class="contact-details-title">Contacts</h2>
             <div class="divider"></div>
             <span class="contact-name">Better with a team</span>
         </div>
-
         <div id="contact-details" ></div>
     </section>
-
     <button class="fab-add-contact btn-dark" onclick="openAddContact()">
         <img src="../assets/icons/add-contact-icon.svg" alt="Add contact">
     </button>
-
     <button class="mobile-three-dot-btn" onclick="toggleMobileActionMenu(event)">
     ⋮
     </button>
