@@ -418,8 +418,8 @@ function toggleEditSubtask(taskId, index) {
   document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
 }
 
-/** @section MISCELLANEOUS ACTIONS */
 
+/** @section MISCELLANEOUS ACTIONS */
 /**
  * Deletes a task from the respective data source.
  * @param {string} id - The task ID to delete.
@@ -435,6 +435,7 @@ export async function deleteTask(id) {
   renderFilteredTasks();
   if (typeof showSuccessToast === 'function') showSuccessToast('Task deleted');
 }
+
 
 /**
  * Navigates the window viewport to the creation view.
@@ -452,6 +453,7 @@ export async function openAddTask(status = 'todo') {
   if (btn) btn.onclick = () => saveNewTaskFromBoard();
   document.getElementById('taskDetailDialog').showModal();
 }
+
 
 /**
  * Creates a new task from the board dialog form values.
@@ -473,6 +475,7 @@ async function saveNewTaskFromBoard() {
   renderFilteredTasks();
 }
 
+
 /**
  * Reads task form fields and returns a normalized task object.
  *
@@ -491,6 +494,7 @@ function getTaskDataFromForm() {
   };
 }
 
+
 /**
  * Converts a task array into an object keyed by task ID.
  *
@@ -503,6 +507,7 @@ function convertTaskArrayToObject(tasks) {
     return taskObject;
   }, {});
 }
+
 
 /**
  * Converts a task object map into an array.

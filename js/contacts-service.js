@@ -1,6 +1,5 @@
 import { auth, database } from './firebase-config.js';
 import { getInitials } from './utils.js';
-
 import {
   ref,
   get,
@@ -24,12 +23,10 @@ export async function getContacts() {
   if (isGuestUser()) {
     return getGuestUserContacts();
   }
-
   const uid = auth.currentUser.uid;
   const snapshot = await get(
     ref(database, userContactsPath(uid))
   );
-
   return mapContacts(snapshot);
 }
 
@@ -45,16 +42,13 @@ async function getGuestUserContacts() {
   if (storedGuestContacts.length) {
     return storedGuestContacts;
   }
-
   const snapshot = await get(
     ref(database, 'defaultGuestData/contacts')
   );
-
   const guestContacts = mapContacts(
     snapshot,
     true
   );
-
   saveGuestContacts(guestContacts);
   return guestContacts;
 }

@@ -5,7 +5,6 @@ window.getNoTaskPlaceholder = getNoTaskPlaceholder;
 window.generateTaskDetailHTML = generateTaskDetailHTML;
 window.generateEditTaskHTML = generateEditTaskHTML;
 window.getContactDetails = getContactDetails;
-window.openEditContact = openEditContact;
 window.getPriorityButtonsHTML = getPriorityButtonsHTML;
 window.setPriority = setPriority;
 window.getSingleDetailSubtaskHTML = getSingleDetailSubtaskHTML;
