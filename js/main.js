@@ -139,7 +139,6 @@ function openSignUp() {
 }
 
 
-
 function openLogin() {
   closeSignUp();
 }
