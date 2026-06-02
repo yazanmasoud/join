@@ -12,6 +12,7 @@ body {
   font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
+  background-color: var(--color-bg-tertiary);
   min-height: 100vh;
 }
 
@@ -29,65 +30,9 @@ h2{
   display: none !important;
 }
 
-.d-none {
-  display: none;
-}
-
 p {
   font-weight: 400;
   font-size: 16px;
-}
-
-body.landscape-blocked {
-  overflow: hidden;
-}
-
-body.landscape-blocked > * {
-  display: none !important;
-}
-
-body.landscape-blocked::before {
-  content: "Bitte drehe dein Gerät ins Hochformat.";
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  background: var(--color-bg-primary);
-  color: var(--color-text-main);
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.3;
-  text-align: center;
-}
-
-@media (max-height: 500px) and (max-width: 950px) {
-  body {
-    overflow: hidden;
-  }
-
-  body > * {
-    display: none !important;
-  }
-
-  body::before {
-    content: "Bitte drehe dein Gerät ins Hochformat.";
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-    background: var(--color-bg-primary);
-    color: var(--color-text-main);
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.3;
-    text-align: center;
-  }
 }
 
 .aside {
