@@ -8,9 +8,7 @@
     flex-direction: column;
     gap: 32px;
     max-width: calc(1920px - 230px);
-    padding-right: 35px;
-    padding-left: 60px;
-    padding-top: 20px;
+    padding: 20px 20px 0 20px;
 }
 
 .legalnotice-main {
