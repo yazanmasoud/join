@@ -37,13 +37,17 @@ body.help-open .help-icon {
   z-index: 3;
 }
 
+.header {
+  background-color: var(--color-bg-primary);
+  width: 100%;
+}
+
 .header-left {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: calc(100% - 100px);
   max-width: 1920px;
-  background-color: var(--color-bg-primary);
   padding-top: 20px;
   padding-bottom: 20px;
   padding-right: 40px;
@@ -256,6 +260,7 @@ body.help-open .help-icon {
   display: flex;
   justify-content: flex-end;
 }
+
 .backarrow {
   width: 32px;
   height: 32px;
