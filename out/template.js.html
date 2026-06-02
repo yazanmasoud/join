@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: template.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: template.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { contacts } from './contacts.js';
+
+window.generateTaskHTML = generateTaskHTML;
+window.getNoTaskPlaceholder = getNoTaskPlaceholder;
+window.generateTaskDetailHTML = generateTaskDetailHTML;
+window.generateEditTaskHTML = generateEditTaskHTML;
+window.getContactDetails = getContactDetails;
+window.getPriorityButtonsHTML = getPriorityButtonsHTML;
+window.setPriority = setPriority;
+window.getSingleDetailSubtaskHTML = getSingleDetailSubtaskHTML;
+
+/** --- BOARD TASK CARDS --- */
+
+/**
+ * Generates the HTML structure for a board task card.
+ * @param {Object} task - The task data object.
+ * @param {string} id - The unique task ID.
+ * @returns {string} The task card HTML string.
+ */
+export function generateTaskHTML(task, id) {
+  const cat = (task.category || '').replace(/\s+/g, '').toLowerCase();
+  const prio = (task.priority || 'Medium').toLowerCase();
+  const icon = prio === 'medium' ? 'medium-icon-orange.svg' : `prio-${prio}-icon.svg`;
+  const isDesktop = window.innerWidth > 800;
+  return `
+    &lt;span class="tooltip">
+    &lt;div class="task-card" draggable="true" ondragstart="startDragging('${id}')" onclick="openTaskDetail('${id}')">
+    &lt;div class="task-card-header-mobile">
+      &lt;div class="task-category ${cat}">${task.category || ''}&lt;/div>
+      &lt;div class="mobile-move-container">
+      &lt;button class="move-mobile-btn" onclick="toggleMoveMenu(event, '${id}')">&lt;img src="../assets/icons/arrow-drop-down.svg" alt="Move">&lt;/button>
+      &lt;div id="moveMenu${id}" class="avatar-dropdown mobile-move-menu" onclick="event.stopPropagation()">
+      &lt;p onclick="moveTaskMobile('${id}', 'todo')">To Do&lt;/p>
+      &lt;p onclick="moveTaskMobile('${id}', 'progress')">In Progress&lt;/p>
+      &lt;p onclick="moveTaskMobile('${id}', 'feedback')">Awaiting Feedback&lt;/p>
+      &lt;p onclick="moveTaskMobile('${id}', 'done')">Done&lt;/p>
+      &lt;/div>
+      &lt;/div>
+      &lt;/div>
+      ${renderTaskBody(task)}
+      &lt;div class="task-card-footer">
+        &lt;div class="assignee-list">${renderAssignedToDetail(task.assignedTo, false)}&lt;/div>
+        &lt;img src="../assets/icons/${icon}" class="prio-icon-small">
+      &lt;/div>
+    &lt;/div>
+    &lt;span class="tooltip-text">Drag mobile Task over arrow-menu&lt;/span>
+    &lt;/span>
+    `;
+}
+
+
+/**
+ * Builds the body markup for a board task card.
+ *
+ * @param {Object} t - The task data object.
+ * @returns {string} The task body HTML.
+ */
+function renderTaskBody(t) {
+  return `
+    &lt;div class="task-card-content">
+      &lt;h3>${t.title || ''}&lt;/h3>
+      &lt;p class="description-task-board">${t.description || ''}&lt;/p>
+    &lt;/div>
+    ${renderSmallSubtaskInfo(t)}`;
+}
+
+
+/**
+ * Renders a progress bar and subtask completion text.
+ * @param {Object} task - The task data object.
+ * @returns {string} The progress bar and text HTML string.
+ */
+export function renderSmallSubtaskInfo(task) {
+  const subtasks = Array.isArray(task.subtasks) ? task.subtasks : [];
+  if (subtasks.length === 0) return ''; // Zeigt gar nichts an, wenn keine Subtasks da sind
+
+  const done = subtasks.filter((s) => s.done).length;
+  const percent = (done / subtasks.length) * 100;
+
+  return `
+    &lt;div class="subtask-progress-container">
+      &lt;div class="progress-bar-bg">
+        &lt;div class="progress-bar-fill" style="width: ${percent}%">&lt;/div>
+      &lt;/div>
+      &lt;span>${done}/${subtasks.length} Subtasks&lt;/span> 
+    &lt;/div>`; // "Subtasks" Text sorgt dafür, dass keine leeren Punkte stehen
+}
+
+
+/**
+ * Generates placeholder HTML for an empty board column.
+ * @param {string} label - The text label of the empty column.
+ * @returns {string} The placeholder element HTML string.
+ */
+export function getNoTaskPlaceholder(label) {
+  return `&lt;div class="no-tasks">No tasks ${label}&lt;/div>`;
+}
+
+
+/** --- ADD TASK TEMPLATES --- */
+/**
+ * Generates HTML buttons for selecting task priority levels.
+ */
+export function getPriorityButtonsHTML(selectedPrio) {
+  return ['Urgent', 'Medium', 'Low']
+    .map((p) => {
+      const isSel = p === selectedPrio,
+        low = p.toLowerCase();
+      const icon = p === 'Medium' ? `medium-icon-orange.svg` : `prio-${low}-icon.svg`;
+      return `
+      &lt;button type="button" class="prio-btn ${isSel ? 'active-' + low : ''}" 
+              id="prio${p}" onclick="setPriority('${p}')">
+        ${p} &lt;img src="../assets/icons/${icon}" class="prio-icon" alt="${p}">
+      &lt;/button>`;
+    })
+    .join('');
+}
+
+
+/**
+ * Updates the current priority selection and re-renders priority buttons.
+ *
+ * @param {string} prio - The selected priority value.
+ * @returns {void}
+ */
+function setPriority(prio) {
+  currentPriority = currentPriority === prio ? '' : prio;
+
+  const container = document.getElementById('prioContainer');
+  if (container) {
+    container.innerHTML = getPriorityButtonsHTML(currentPriority);
+  }
+}
+
+
+/**
+ * Generates HTML option elements for a select dropdown menu.
+ * @param {string[]} optionsArray - List of string options to display.
+ * @param {string} defaultText - The disabled placeholder text option.
+ * @returns {string} The complete dropdown options HTML string.
+ */
+export function getSelectOptionsHTML(optionsArray, defaultText) {
+  const def = `&lt;option value="" disabled selected>${defaultText}&lt;/option>`;
+  const opts = optionsArray.map((opt) => `&lt;option value="${opt}">${opt}&lt;/option>`).join('');
+  return def + opts;
+}
+
+
+/**
+ * Generates a single subtask list element with a delete action button.
+ */
+export function getSubtaskHTML(task, index) {
+  const icon = task.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
+  return `
+    &lt;li class="subtask-edit-item" id="subtaskItem${index}" ondblclick="editSubtask(${index})">
+      &lt;div class="subtask-left" onclick="toggleSubtaskStatus(${index})">
+        &lt;img src="../assets/icons/${icon}" class="subtask-check-icon">
+        &lt;span class="subtask-text">${task.title}&lt;/span>
+      &lt;/div>
+      &lt;div class="subtask-actions">
+        &lt;button type="button" class="subtask-action-btn" onclick="editSubtask(${index})">
+          &lt;img src="../assets/icons/edit-icon.svg" alt="edit">
+        &lt;/button>
+        &lt;div class="subtask-divider">&lt;/div>
+        &lt;button type="button" class="subtask-action-btn" onclick="deleteSubtask(${index})">
+          &lt;img src="../assets/icons/delete-icon.svg" alt="delete">
+        &lt;/button>
+      &lt;/div>
+    &lt;/li>`;
+}
+
+
+/**
+ * Generates the editable subtask list item markup.
+ *
+ * @param {string} title - The current subtask title.
+ * @param {number} index - The subtask index.
+ * @param {boolean} [isEditMode=false] - Whether the parent task is in edit mode.
+ * @param {string} [taskId=''] - The parent task ID.
+ * @returns {string} The editable subtask HTML.
+ */
+export function getSubtaskEditHTML(title, index, isEditMode = false, taskId = '') {
+  const saveFn = isEditMode ? `saveEditSubtask(${index}, '${taskId}')` : `saveSubtask(${index})`;
+  const deleteFn = isEditMode ? `deleteEditSubtask(${index}, '${taskId}')` : `deleteSubtask(${index})`;
+  return `
+    &lt;li class="subtask-edit-mode-item">
+      &lt;input type="text" id="editSubtaskInput${index}" class="subtask-edit-input" value="${title}" 
+             onkeydown="if(event.key==='Enter') ${saveFn}">
+      &lt;div class="subtask-edit-actions">
+        &lt;button type="button" class="subtask-action-btn" onclick="${deleteFn}">&lt;img src="../assets/icons/delete-icon.svg">&lt;/button>
+        &lt;div class="subtask-divider">&lt;/div>
+        &lt;button type="button" class="subtask-action-btn" onclick="${saveFn}">&lt;img src="../assets/icons/subtask-check-icon.svg">&lt;/button>
+      &lt;/div>
+    &lt;/li>`;
+}
+
+
+/** --- TASK DETAIL DIALOG --- */
+/**
+ * Generates the full HTML markup template for the task detail view dialog.
+ * @param {Object} task - The task data object.
+ * @param {string} id - The unique task ID.
+ * @returns {string} The task detail layout HTML string.
+ */
+export function generateTaskDetailHTML(task, id) {
+  const p = (task.priority || 'Medium').toLowerCase();
+  return `
+    &lt;div class="detail-view">
+      &lt;div class="detail-view-header">&lt;div class="task-category ${task.category?.replace(/\s+/g, '').toLowerCase() || ''}">${task.category || ''}&lt;/div>&lt;div class="detail-view-close" onclick="closeTaskDetail()">×&lt;/div>&lt;/div>
+      &lt;h1 class="detail-view-title">${task.title || ''}&lt;/h1>
+      &lt;p class="detail-view-description">${task.description || ''}&lt;/p>
+      &lt;div class="detail-view-info-row">&lt;span class="detail-view-label" style="white-space:nowrap">Due date:&lt;/span> ${task.dueDate?.replaceAll('-', '/') || ''}&lt;/div>
+      &lt;div class="detail-view-info-row">&lt;span class="detail-view-label" style="white-space:nowrap">Priority:&lt;/span>
+        &lt;div class="detail-view-prio-badge">${task.priority || 'Medium'} &lt;img src="../assets/icons/${p === 'medium' ? 'medium-icon-orange.svg' : `prio-${p}-icon.svg`}">&lt;/div>&lt;/div>
+      &lt;div class="detail-section">&lt;p class="detail-view-label" style="white-space:nowrap">Assigned To&lt;/p>&lt;div class="assigned-list-detail">${renderAssignedToDetail(task.assignedTo)}&lt;/div>&lt;/div>
+      &lt;div class="detail-section">&lt;p class="detail-view-label">Subtasks&lt;/p>&lt;ul class="subtask-list-detail">${getDetailSubtasksHTML(task.subtasks, id)}&lt;/ul>&lt;/div>
+      ${getDetailFooter(id)}
+    &lt;/div>`;
+}
+
+
+/**
+ * Generates HTML table rows containing due date and priority badges.
+ * @param {Object} task - The task data object.
+ * @returns {string} The info rows HTML snippet.
+ */
+export function getDetailInfoRows(task) {
+  const prio = task.priority ? task.priority.toLowerCase() : 'medium';
+  return `
+    &lt;div class="detail-view-info-row">
+      &lt;span class="detail-view-label-inline">Due date:&lt;/span> 
+      &lt;span>${task.dueDate || ''}&lt;/span>
+    &lt;/div>
+    &lt;div class="detail-view-info-row">
+      &lt;span class="detail-view-label-inline">Priority:&lt;/span> 
+      &lt;div class="detail-view-prio-badge">${task.priority || 'Medium'} 
+        &lt;img src="../assets/icons/prio-${prio}-icon.svg">&lt;/div>
+    &lt;/div>`;
+}
+
+
+/**
+ * Generates the HTML list items for subtasks in the detail view.
+ */
+export function getDetailSubtasksHTML(subtasks, taskId) {
+  const safeSubtasks = Array.isArray(subtasks) ? subtasks : [];
+  return safeSubtasks
+    .map(
+      (subtask, index) => `
+&lt;li id="subtaskItemDetail${index}" class="subtask-item">
+&lt;div class="subtask-left">
+&lt;input type="checkbox" ${subtask.done ? 'checked' : ''} onclick="toggleSubtask('${taskId}', ${index})">
+&lt;span>${subtask.title}&lt;/span>
+&lt;/div>
+&lt;div class="subtask-icons">
+&lt;img src="../assets/icons/edit-icon.svg" onclick="editEditSubtask(${index}, '${taskId}')">
+&lt;div class="icon-divider">&lt;/div>
+&lt;img src="../assets/icons/delete-icon.svg" onclick="deleteEditSubtask('${taskId}', ${index})">
+&lt;/div>
+&lt;/li>`,
+    )
+    .join('');
+}
+
+
+/**
+ * Generates a single subtask row for the task detail view.
+ *
+ * @param {Object} subtask - The subtask data object.
+ * @param {number} index - The subtask index.
+ * @param {string} taskId - The parent task ID.
+ * @returns {string} The subtask detail row HTML.
+ */
+export function getSingleDetailSubtaskHTML(subtask, index, taskId) {
+  return `
+    &lt;li id="subtaskItemDetail${index}" class="subtask-item">
+      &lt;div class="subtask-left">
+        &lt;input type="checkbox" ${subtask.done ? 'checked' : ''} onclick="toggleSubtask('${taskId}', ${index})">
+        &lt;span>${subtask.title}&lt;/span>
+      &lt;/div>
+      &lt;div class="subtask-icons">
+        &lt;img src="../assets/icons/edit-icon.svg" onclick="editEditSubtask(${index}, '${taskId}')">
+        &lt;div class="icon-divider">&lt;/div>
+        &lt;img src="../assets/icons/delete-icon.svg" onclick="deleteEditSubtask('${taskId}', ${index})">
+      &lt;/div>
+    &lt;/li>`;
+}
+
+
+/**
+ * Generates the functional action buttons for editing and deleting tasks.
+ * @param {string} id - The unique task ID.
+ * @returns {string} The detail dialog footer menu HTML string.
+ */
+export function getDetailFooter(id) {
+  return `
+    &lt;div class="detail-view-footer">
+      &lt;button class="action-btn" onclick="deleteTask('${id}')">
+        &lt;img src="../assets/icons/delete-icon.svg"> Delete
+      &lt;/button>
+      &lt;div class="footer-divider">&lt;/div>
+      &lt;button class="action-btn" onclick="editTask('${id}')">
+        &lt;img src="../assets/icons/edit-icon.svg"> Edit
+      &lt;/button>
+    &lt;/div>`;
+}
+
+
+/** --- ASSIGNED USERS --- */
+/**
+ * Generates an assigned user element containing initials badges and names.
+ * @param {any} name - The contact name or object.
+ * @returns {string} The individual contact badge element HTML string.
+ */
+export function getAssignedUserHTML(name) {
+  const safeName = typeof name === 'string' ? name : name?.name || 'Guest';
+  const color = typeof getContactColor === 'function' ? getContactColor(safeName) : '#ff7a00';
+  const initials = typeof getInitials === 'function' ? getInitials(safeName) : '??';
+
+  return `&lt;div class="assigned-user">
+      &lt;div class="user-badge" style="background-color: ${color}">${initials}&lt;/div>
+      &lt;span class="user-name">${safeName}&lt;/span>&lt;/div>`;
+}
+
+
+/**
+ * Iterates over contacts list parameters and generates detail row HTML output.
+ * @param {any} assignedTo - Assigned string name or collection array.
+ * @returns {string} Consolidated contact list markup string.
+ */
+export function renderAssignedToDetail(assignedTo, showName = true) {
+  if (!Array.isArray(assignedTo)) return '';
+  const allContacts = window.contacts?.length > 0 ? window.contacts : JSON.parse(localStorage.getItem('guestContacts')) || [];
+  return assignedTo.map((item) => renderSingleBadge(item, allContacts, showName)).join('');
+}
+
+
+/**
+ * Generates one assigned contact badge from contact data or a fallback value.
+ *
+ * @param {Object|string} item - The assigned contact reference.
+ * @param {Array} allContacts - The available contacts.
+ * @param {boolean} showName - Whether the contact name should be shown.
+ * @returns {string} The assigned contact badge HTML.
+ */
+function renderSingleBadge(item, allContacts, showName) {
+  const c = allContacts.find((c) => c.name === (item.name || item) || c.id === item);
+  const n = c?.name || (typeof item === 'string' ? item : item?.name) || 'Guest';
+  const badge = `&lt;div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${getInitials(n)}&lt;/div>`;
+  return showName ? `&lt;div class="assigned-contact-row">${badge}&lt;span>${n}&lt;/span>&lt;/div>` : badge;
+}
+
+
+/** --- EDIT MODE --- */
+/**
+ * Generates the full framework block wrapper structure for task editor view.
+ * @param {Object} task - The active task object.
+ * @param {string} id - The targeted task identifier ID.
+ * @returns {string} The editor structure view form HTML string.
+ */
+export function generateEditTaskHTML(task, id) {
+  return `
+    &lt;div class="edit-mode-main">
+      &lt;div class="edit-content-wrapper">
+        ${getEditLeftSection(task)}
+        &lt;div class="edit-vertical-divider">&lt;/div>
+        ${getEditRightSection(task, id)}
+      &lt;/div>
+      &lt;div class="edit-footer-action">
+        &lt;button class="btn-primary" onclick="saveEdit('${id}')">Ok 🗸&lt;/button>
+      &lt;/div>
+    &lt;/div>`;
+}
+
+
+/**
+ * Generates the layout view container structure for editor left sections.
+ * @param {Object} task - The targeted active task data object.
+ * @returns {string} HTML snippet wrapper input form elements.
+ */
+export function getEditLeftSection(task) {
+  return `
+    &lt;div class="edit-section">
+      &lt;div class="input-group">&lt;label>Title&lt;span class="required">*&lt;/span>&lt;/label>
+        &lt;input type="text" id="editTitle" value="${task.title || ''}">&lt;/div>
+      &lt;div class="input-group">&lt;label>Description&lt;/label>
+        &lt;textarea id="editDescription">${task.description || ''}&lt;/textarea>&lt;/div>
+    &lt;/div>`;
+}
+
+
+/**
+ * Generates the right-side editor fields for due date and assignment.
+ *
+ * @param {Object} task - The active task object.
+ * @param {string} id - The task ID being edited.
+ * @returns {string} The right editor section HTML.
+ */
+export function getEditRightSection(task, id) {
+  return `
+    &lt;div class="edit-section">
+      &lt;div class="input-group">&lt;label>Due Date&lt;/label>
+        &lt;input type="date" id="editDate" value="${task.dueDate || ''}">&lt;/div>
+      &lt;div class="input-group">&lt;label>Assigned To&lt;/label>
+        &lt;div class="combo-wrapper" id="assignedInputContainer">
+          &lt;input type="text" id="assignedInput" placeholder="Select contacts to assign" 
+                 oninput="renderContacts(this.value)" onclick="toggleContactList()">
+          &lt;img src="../assets/icons/arrow-drop-down.svg" class="dropdown-arrow" onclick="toggleContactList()">
+        &lt;/div>
+        &lt;div id="contactList" class="contact-list-dropdown d-none">&lt;/div>
+        &lt;div id="assignedBadges" class="assigned-badges-container">&lt;/div>
+    &lt;/div>`;
+}
+
+/* Contacts Template */
+/**
+ * Gets a letter separator
+ * for grouping contacts alphabetically.
+ *
+ * @param {HTMLElement} list - The contact list container
+ * @param {string} letter - The current contact letter
+ */
+export function getContactLetter(list, letter) {
+  list.innerHTML += `
+        &lt;div class="contact-letter-container">
+
+            &lt;div class="contact-letter">
+                ${letter}
+            &lt;/div>
+
+            &lt;div class="contact-divider">&lt;/div>
+
+        &lt;/div>
+    `;
+}
+
+
+/**
+ * Gets a single contact item
+ * for rendering in the contact list.
+ *
+ * @param {HTMLElement} list - The contact list container
+ * @param {Object} contact - The contact object
+ * @param {number} i - The index of the contact in the contacts array
+ */
+export function getSingleContact(list, contact, index, isActive) {
+  list.innerHTML += `
+    &lt;div class="contact-items ${isActive ? 'contact-item-active' : ''}"
+      onclick="window.renderContactDetails(${index})">
+      &lt;div class="contact-avatar" style="background-color: ${contact.color}">
+        ${contact.initials || '??'}
+      &lt;/div>
+      &lt;div class="contact-information">
+        &lt;h4 class="contact-name">${contact.name || ''}&lt;/h4>
+        &lt;p class="contact-email">${contact.email || ''}&lt;/p>
+      &lt;/div>
+    &lt;/div>`;
+}
+
+
+/**
+ * Generates the detail view markup for a contact.
+ *
+ * @param {Object} contact - The contact to render.
+ * @returns {string} The contact detail HTML.
+ */
+export function getContactDetails(contact) {
+  return `
+    &lt;div class="contact-details-content">
+      &lt;div class="contact-details-header">
+        &lt;div class="contact-avatar contact-avatar--big" style="background-color: ${contact.color}">${contact.initials}&lt;/div>
+        &lt;div class="contact-details-header-info">
+          &lt;h3>${contact.name}&lt;/h3>
+          &lt;div class="contact-details-actions">
+            &lt;button onclick="window.openEditContact('${contact.id}')" class="edit-delete-btn">&lt;img src="../assets/img/edit-contact.svg" alt="Edit">&lt;/button>
+            &lt;button onclick="openDeleteDialog('${contact.id}')" class="edit-delete-btn">&lt;img src="../assets/img/delete-contact.svg" alt="Delete">&lt;/button>
+          &lt;/div>&lt;/div>&lt;/div>
+      &lt;div class="contact-details-information">&lt;span>Contact Information&lt;/span>
+        &lt;span>&lt;b>Email:&lt;/b> &lt;a class="contact-email" href="mailto:${contact.email}">${contact.email}&lt;/a>&lt;/span>
+        &lt;span>&lt;b>Phone:&lt;/b> ${contact.phone || 'No phone number'}&lt;/span>&lt;/div>&lt;/div>`;
+}
+
+
+/**
+ * Generates contact option markup for a select element.
+ *
+ * @param {Array} contactsArray - The contacts to render as options.
+ * @param {string} defaultText - The disabled default option text.
+ * @returns {string} The contact options HTML.
+ */
+export function getContactOptionsHTML(contactsArray, defaultText) {
+  const def = `&lt;option value="" disabled selected>${defaultText}&lt;/option>`;
+  const opts = contactsArray.map((c) => `&lt;option value="${c.name}">${c.name}&lt;/option>`).join('');
+  return def + opts;
+}
+
+
+/**
+ * Generates the HTML for a contact item in the dropdown with your specific icons.
+ */
+export function getContactCheckboxHTML(contact, isChecked) {
+  const icon = isChecked ? 'subtask-done-icon.svg' : 'check-empty.svg';
+  return `
+    &lt;div class="contact-item ${isChecked ? 'selected' : ''}" 
+         onclick="toggleContactSelection('${contact.name}'); event.stopPropagation();">
+      &lt;div class="contact-name-left" style="pointer-events: none;">
+        &lt;div class="user-badge-small" style="background-color: ${contact.color}">${contact.initials}&lt;/div>
+        &lt;span style="color: inherit;">${contact.name}&lt;/span>
+      &lt;/div>
+      &lt;input type="checkbox" name="assignedContact" value="${contact.name}" 
+             ${isChecked ? 'checked' : ''} style="display:none">
+      &lt;img src="../assets/icons/${icon}" class="custom-checkbox" style="pointer-events: none;">
+    &lt;/div>`;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#CURRENT_TASKS">CURRENT_TASKS</a></li><li><a href="global.html#activateFinalLogoState">activateFinalLogoState</a></li><li><a href="global.html#addContactToList">addContactToList</a></li><li><a href="global.html#addEditSubtask">addEditSubtask</a></li><li><a href="global.html#allowDrop">allowDrop</a></li><li><a href="global.html#animateContactDetails">animateContactDetails</a></li><li><a href="global.html#animateExistingContact">animateExistingContact</a></li><li><a href="global.html#animateLogo">animateLogo</a></li><li><a href="global.html#animateNewContact">animateNewContact</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#applyEditModeUI">applyEditModeUI</a></li><li><a href="global.html#auth">auth</a></li><li><a href="global.html#backToLogin">backToLogin</a></li><li><a href="global.html#calculateMetrics">calculateMetrics</a></li><li><a href="global.html#canRenderContact">canRenderContact</a></li><li><a href="global.html#capitalizeFirstLetter">capitalizeFirstLetter</a></li><li><a href="global.html#checkEmail">checkEmail</a></li><li><a href="global.html#checkPassword">checkPassword</a></li><li><a href="global.html#checkPlaceholder">checkPlaceholder</a></li><li><a href="global.html#checkPrivacy">checkPrivacy</a></li><li><a href="global.html#checkSession">checkSession</a></li><li><a href="global.html#checkUsername">checkUsername</a></li><li><a href="global.html#clearActivePrioClasses">clearActivePrioClasses</a></li><li><a href="global.html#clearContactNameError">clearContactNameError</a></li><li><a href="global.html#clearElementsByIds">clearElementsByIds</a></li><li><a href="global.html#clearForm">clearForm</a></li><li><a href="global.html#clearInputError">clearInputError</a></li><li><a href="global.html#clearSignupErrors">clearSignupErrors</a></li><li><a href="global.html#clearSignupInputs">clearSignupInputs</a></li><li><a href="global.html#closeAddContact">closeAddContact</a></li><li><a href="global.html#closeDeleteDialog">closeDeleteDialog</a></li><li><a href="global.html#closeMobileActionMenu">closeMobileActionMenu</a></li><li><a href="global.html#closeOpenElements">closeOpenElements</a></li><li><a href="global.html#closeSignUp">closeSignUp</a></li><li><a href="global.html#closeTaskDetail">closeTaskDetail</a></li><li><a href="global.html#convertTaskArrayToObject">convertTaskArrayToObject</a></li><li><a href="global.html#convertTaskObjectToArray">convertTaskObjectToArray</a></li><li><a href="global.html#createContact">createContact</a></li><li><a href="global.html#createFirebaseContact">createFirebaseContact</a></li><li><a href="global.html#createGuestContact">createGuestContact</a></li><li><a href="global.html#createGuestUserContact">createGuestUserContact</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#database">database</a></li><li><a href="global.html#deleteContact">deleteContact</a></li><li><a href="global.html#deleteEditSubtask">deleteEditSubtask</a></li><li><a href="global.html#deleteFirebaseContact">deleteFirebaseContact</a></li><li><a href="global.html#deleteGuestContact">deleteGuestContact</a></li><li><a href="global.html#deleteSubtask">deleteSubtask</a></li><li><a href="global.html#deleteTask">deleteTask</a></li><li><a href="global.html#editEditSubtask">editEditSubtask</a></li><li><a href="global.html#editSubtask">editSubtask</a></li><li><a href="global.html#editTask">editTask</a></li><li><a href="global.html#fetchSummaryData">fetchSummaryData</a></li><li><a href="global.html#fillEditInputs">fillEditInputs</a></li><li><a href="global.html#fillFormForEdit">fillFormForEdit</a></li><li><a href="global.html#filterTasksBySearchTerm">filterTasksBySearchTerm</a></li><li><a href="global.html#finishLogoAnimation">finishLogoAnimation</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#generateEditTaskHTML">generateEditTaskHTML</a></li><li><a href="global.html#generateLocalId">generateLocalId</a></li><li><a href="global.html#generateTaskDetailHTML">generateTaskDetailHTML</a></li><li><a href="global.html#generateTaskHTML">generateTaskHTML</a></li><li><a href="global.html#getAssignedUserHTML">getAssignedUserHTML</a></li><li><a href="global.html#getContactById">getContactById</a></li><li><a href="global.html#getContactCheckboxHTML">getContactCheckboxHTML</a></li><li><a href="global.html#getContactDetails">getContactDetails</a></li><li><a href="global.html#getContactDialogElements">getContactDialogElements</a></li><li><a href="global.html#getContactLetter">getContactLetter</a></li><li><a href="global.html#getContactOptionsHTML">getContactOptionsHTML</a></li><li><a href="global.html#getContacts">getContacts</a></li><li><a href="global.html#getCurrentEditContact">getCurrentEditContact</a></li><li><a href="global.html#getCurrentUserData">getCurrentUserData</a></li><li><a href="global.html#getCurrentUserId">getCurrentUserId</a></li><li><a href="global.html#getDetailFooter">getDetailFooter</a></li><li><a href="global.html#getDetailInfoRows">getDetailInfoRows</a></li><li><a href="global.html#getDetailSubtasksHTML">getDetailSubtasksHTML</a></li><li><a href="global.html#getEditFormData">getEditFormData</a></li><li><a href="global.html#getEditLeftSection">getEditLeftSection</a></li><li><a href="global.html#getEditRightSection">getEditRightSection</a></li><li><a href="global.html#getFirebaseTasks">getFirebaseTasks</a></li><li><a href="global.html#getGuestContacts">getGuestContacts</a></li><li><a href="global.html#getGuestUserContacts">getGuestUserContacts</a></li><li><a href="global.html#getInitialPage">getInitialPage</a></li><li><a href="global.html#getInitials">getInitials</a></li><li><a href="global.html#getLocalTasks">getLocalTasks</a></li><li><a href="global.html#getNewContactData">getNewContactData</a></li><li><a href="global.html#getNextDeadline">getNextDeadline</a></li><li><a href="global.html#getNoTaskPlaceholder">getNoTaskPlaceholder</a></li><li><a href="global.html#getPrioClass">getPrioClass</a></li><li><a href="global.html#getPriorityButtonsHTML">getPriorityButtonsHTML</a></li><li><a href="global.html#getRandomColor">getRandomColor</a></li><li><a href="global.html#getSelectOptionsHTML">getSelectOptionsHTML</a></li><li><a href="global.html#getSingleContact">getSingleContact</a></li><li><a href="global.html#getSingleDetailSubtaskHTML">getSingleDetailSubtaskHTML</a></li><li><a href="global.html#getSubtaskEditHTML">getSubtaskEditHTML</a></li><li><a href="global.html#getSubtaskHTML">getSubtaskHTML</a></li><li><a href="global.html#getTaskDataFromForm">getTaskDataFromForm</a></li><li><a href="global.html#getTaskObject">getTaskObject</a></li><li><a href="global.html#getTasks">getTasks</a></li><li><a href="global.html#getUpdatedContactData">getUpdatedContactData</a></li><li><a href="global.html#goBack">goBack</a></li><li><a href="global.html#guestContacts">guestContacts</a></li><li><a href="global.html#guestTasks">guestTasks</a></li><li><a href="global.html#handleBackArrow">handleBackArrow</a></li><li><a href="global.html#handleCreateContact">handleCreateContact</a></li><li><a href="global.html#handleDeleteContact">handleDeleteContact</a></li><li><a href="global.html#handleEditSubtaskKey">handleEditSubtaskKey</a></li><li><a href="global.html#handleGuestLogin">handleGuestLogin</a></li><li><a href="global.html#handleLogin">handleLogin</a></li><li><a href="global.html#handleLoginError">handleLoginError</a></li><li><a href="global.html#handleMobileContactView">handleMobileContactView</a></li><li><a href="global.html#handleMobileGreeting">handleMobileGreeting</a></li><li><a href="global.html#handleSaveContact">handleSaveContact</a></li><li><a href="global.html#handleSignup">handleSignup</a></li><li><a href="global.html#handleSignupError">handleSignupError</a></li><li><a href="global.html#handleSignupSuccess">handleSignupSuccess</a></li><li><a href="global.html#handleSubtaskKey">handleSubtaskKey</a></li><li><a href="global.html#handleSuccess">handleSuccess</a></li><li><a href="global.html#hasConfirmPassword">hasConfirmPassword</a></li><li><a href="global.html#hasPassword">hasPassword</a></li><li><a href="global.html#hasValidPasswordLength">hasValidPasswordLength</a></li><li><a href="global.html#hideOverlay">hideOverlay</a></li><li><a href="global.html#highlight">highlight</a></li><li><a href="global.html#initAddTask">initAddTask</a></li><li><a href="global.html#initBoard">initBoard</a></li><li><a href="global.html#initContacts">initContacts</a></li><li><a href="global.html#initGuestStorage">initGuestStorage</a></li><li><a href="global.html#initLayout">initLayout</a></li><li><a href="global.html#initLoginLayout">initLoginLayout</a></li><li><a href="global.html#initMainLoginPage">initMainLoginPage</a></li><li><a href="global.html#initPage">initPage</a></li><li><a href="global.html#initStartAnimation">initStartAnimation</a></li><li><a href="global.html#initSummary">initSummary</a></li><li><a href="global.html#isGuestUser">isGuestUser</a></li><li><a href="global.html#isMobile">isMobile</a></li><li><a href="global.html#isMobileLandscape">isMobileLandscape</a></li><li><a href="global.html#isTaskValid">isTaskValid</a></li><li><a href="global.html#isValidContactName">isValidContactName</a></li><li><a href="global.html#isValidEmail">isValidEmail</a></li><li><a href="global.html#listenToContacts">listenToContacts</a></li><li><a href="global.html#listenToTasks">listenToTasks</a></li><li><a href="global.html#loadAddTaskDialog">loadAddTaskDialog</a></li><li><a href="global.html#loadDefaultGuestContacts">loadDefaultGuestContacts</a></li><li><a href="global.html#loadTemplate">loadTemplate</a></li><li><a href="global.html#logOut">logOut</a></li><li><a href="global.html#loginAsGuest">loginAsGuest</a></li><li><a href="global.html#loginAsUser">loginAsUser</a></li><li><a href="global.html#loginNavigateTo">loginNavigateTo</a></li><li><a href="global.html#loginSuccess">loginSuccess</a></li><li><a href="global.html#logoutUser">logoutUser</a></li><li><a href="global.html#mapContacts">mapContacts</a></li><li><a href="global.html#mobileDeleteContact">mobileDeleteContact</a></li><li><a href="global.html#mobileEditContact">mobileEditContact</a></li><li><a href="global.html#moveFirebaseTaskTo">moveFirebaseTaskTo</a></li><li><a href="global.html#moveGuestTaskTo">moveGuestTaskTo</a></li><li><a href="global.html#moveTo">moveTo</a></li><li><a href="global.html#navigateTo">navigateTo</a></li><li><a href="global.html#normalizeObjectToArray">normalizeObjectToArray</a></li><li><a href="global.html#openAddContact">openAddContact</a></li><li><a href="global.html#openAddTask">openAddTask</a></li><li><a href="global.html#openAvatarDropdown">openAvatarDropdown</a></li><li><a href="global.html#openContactDialog">openContactDialog</a></li><li><a href="global.html#openDeleteDialog">openDeleteDialog</a></li><li><a href="global.html#openEditContact">openEditContact</a></li><li><a href="global.html#openEditTaskDialog">openEditTaskDialog</a></li><li><a href="global.html#openHelp">openHelp</a></li><li><a href="global.html#openLogin">openLogin</a></li><li><a href="global.html#openSignUp">openSignUp</a></li><li><a href="global.html#openTaskDetail">openTaskDetail</a></li><li><a href="global.html#passwordsMatch">passwordsMatch</a></li><li><a href="global.html#prepareEditInDialog">prepareEditInDialog</a></li><li><a href="global.html#refreshDeletedContactUI">refreshDeletedContactUI</a></li><li><a href="global.html#refreshUpdatedContactUI">refreshUpdatedContactUI</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#removeContactFromTasks">removeContactFromTasks</a></li><li><a href="global.html#removeDeletedContactTasks">removeDeletedContactTasks</a></li><li><a href="global.html#removeHighlight">removeHighlight</a></li><li><a href="global.html#renderAllTasks">renderAllTasks</a></li><li><a href="global.html#renderAssignedToDetail">renderAssignedToDetail</a></li><li><a href="global.html#renderAvatar">renderAvatar</a></li><li><a href="global.html#renderCategories">renderCategories</a></li><li><a href="global.html#renderContactDetails">renderContactDetails</a></li><li><a href="global.html#renderContactHtml">renderContactHtml</a></li><li><a href="global.html#renderContacts">renderContacts</a></li><li><a href="global.html#renderFilteredTasks">renderFilteredTasks</a></li><li><a href="global.html#renderGreetingName">renderGreetingName</a></li><li><a href="global.html#renderPriorityButtons">renderPriorityButtons</a></li><li><a href="global.html#renderSingleBadge">renderSingleBadge</a></li><li><a href="global.html#renderSmallSubtaskInfo">renderSmallSubtaskInfo</a></li><li><a href="global.html#renderSubtasks">renderSubtasks</a></li><li><a href="global.html#renderTaskBody">renderTaskBody</a></li><li><a href="global.html#resetContactForm">resetContactForm</a></li><li><a href="global.html#resetDialogAvatar">resetDialogAvatar</a></li><li><a href="global.html#resetDialogInputs">resetDialogInputs</a></li><li><a href="global.html#resetFormInputs">resetFormInputs</a></li><li><a href="global.html#resetFormState">resetFormState</a></li><li><a href="global.html#resetInputFields">resetInputFields</a></li><li><a href="global.html#resetSelection">resetSelection</a></li><li><a href="global.html#saveEdit">saveEdit</a></li><li><a href="global.html#saveEditFromDialog">saveEditFromDialog</a></li><li><a href="global.html#saveEditSubtask">saveEditSubtask</a></li><li><a href="global.html#saveGuestContacts">saveGuestContacts</a></li><li><a href="global.html#saveNewTaskFromBoard">saveNewTaskFromBoard</a></li><li><a href="global.html#saveSubtask">saveSubtask</a></li><li><a href="global.html#saveUserAsContact">saveUserAsContact</a></li><li><a href="global.html#saveUserProfile">saveUserProfile</a></li><li><a href="global.html#setActiveLoginNavFromUrl">setActiveLoginNavFromUrl</a></li><li><a href="global.html#setActiveNavItem">setActiveNavItem</a></li><li><a href="global.html#setContacts">setContacts</a></li><li><a href="global.html#setCurrentEditContactId">setCurrentEditContactId</a></li><li><a href="global.html#setEditPriority">setEditPriority</a></li><li><a href="global.html#setGreeting">setGreeting</a></li><li><a href="global.html#setGreetingName">setGreetingName</a></li><li><a href="global.html#setLocalTasks">setLocalTasks</a></li><li><a href="global.html#setPriority">setPriority</a></li><li><a href="global.html#setSelectedContactId">setSelectedContactId</a></li><li><a href="global.html#setupAddTaskResizeGuard">setupAddTaskResizeGuard</a></li><li><a href="global.html#setupAssignedDropdownClose">setupAssignedDropdownClose</a></li><li><a href="global.html#setupBoardReturnButton">setupBoardReturnButton</a></li><li><a href="global.html#setupCardNavigation">setupCardNavigation</a></li><li><a href="global.html#setupCreateDialog">setupCreateDialog</a></li><li><a href="global.html#setupDialogClose">setupDialogClose</a></li><li><a href="global.html#setupEditButtons">setupEditButtons</a></li><li><a href="global.html#setupEditDialog">setupEditDialog</a></li><li><a href="global.html#setupTaskSearch">setupTaskSearch</a></li><li><a href="global.html#showContactNameError">showContactNameError</a></li><li><a href="global.html#showDeleteToast">showDeleteToast</a></li><li><a href="global.html#showInputError">showInputError</a></li><li><a href="global.html#showMobileDetailView">showMobileDetailView</a></li><li><a href="global.html#showMobileListView">showMobileListView</a></li><li><a href="global.html#showMobileSignup">showMobileSignup</a></li><li><a href="global.html#showOverlay">showOverlay</a></li><li><a href="global.html#showStartPageWithoutAnimation">showStartPageWithoutAnimation</a></li><li><a href="global.html#showSuccessToast">showSuccessToast</a></li><li><a href="global.html#showToast">showToast</a></li><li><a href="global.html#startDragging">startDragging</a></li><li><a href="global.html#toggleAvatarDropdown">toggleAvatarDropdown</a></li><li><a href="global.html#toggleContactList">toggleContactList</a></li><li><a href="global.html#toggleEditSubtask">toggleEditSubtask</a></li><li><a href="global.html#toggleErrorState">toggleErrorState</a></li><li><a href="global.html#toggleMobileActionMenu">toggleMobileActionMenu</a></li><li><a href="global.html#toggleSubtask">toggleSubtask</a></li><li><a href="global.html#toggleSubtaskStatus">toggleSubtaskStatus</a></li><li><a href="global.html#turnOffBackarrow">turnOffBackarrow</a></li><li><a href="global.html#updateButtonToSaveMode">updateButtonToSaveMode</a></li><li><a href="global.html#updateContact">updateContact</a></li><li><a href="global.html#updateFirebaseContact">updateFirebaseContact</a></li><li><a href="global.html#updateGuestContact">updateGuestContact</a></li><li><a href="global.html#updateLocalContact">updateLocalContact</a></li><li><a href="global.html#updateLoginButtonState">updateLoginButtonState</a></li><li><a href="global.html#updateMobileActionMenu">updateMobileActionMenu</a></li><li><a href="global.html#updateNoSearchResults">updateNoSearchResults</a></li><li><a href="global.html#updateOrientationGuard">updateOrientationGuard</a></li><li><a href="global.html#updateSelectedBadges">updateSelectedBadges</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateUI">updateUI</a></li><li><a href="global.html#userContactPath">userContactPath</a></li><li><a href="global.html#userContactsPath">userContactsPath</a></li><li><a href="global.html#userPath">userPath</a></li><li><a href="global.html#userProfilePath">userProfilePath</a></li><li><a href="global.html#userSubtaskPath">userSubtaskPath</a></li><li><a href="global.html#userTaskPath">userTaskPath</a></li><li><a href="global.html#userTasksPath">userTasksPath</a></li><li><a href="global.html#validateContactNameInput">validateContactNameInput</a></li><li><a href="global.html#validateForm">validateForm</a></li><li><a href="global.html#validateLoginEmail">validateLoginEmail</a></li><li><a href="global.html#validateLoginPassword">validateLoginPassword</a></li><li><a href="global.html#validateTask">validateTask</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jun 02 2026 22:36:12 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
