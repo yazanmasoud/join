@@ -41,7 +41,7 @@ p {
 
 .tooltip {
   position: relative;
-  cursor: help !important;
+  cursor: pointer;
 }
 
 .tooltip-text {
