@@ -174,8 +174,12 @@ function openLogin() {
  * @returns {boolean} True if the username is filled.
  */
 function checkUsername(username) {
-  if (username.value.trim() === '') {
-    showInputError('signup-username', 'error-text-signup-username', 'Please enter a username.');
+  if (username.value.trim().length < 3) {
+    showInputError(
+      'signup-username',
+      'error-text-signup-username',
+      'Name must be at least 3 characters.'
+    );
     return false;
   }
   return true;
@@ -258,11 +262,27 @@ function passwordsMatch(password, confirmPassword) {
  * @returns {boolean} True if privacy was accepted.
  */
 function checkPrivacy(privacy) {
+  const privacyError = document.getElementById('error-text-privacy');
+
   if (!privacy.checked) {
     privacy.classList.add('input-error');
+
+    if (privacyError) {
+      privacyError.textContent =
+        'Please accept the Privacy Policy.';
+      privacyError.classList.add('visible');
+    }
+
     return false;
   }
+
   privacy.classList.remove('input-error');
+
+  if (privacyError) {
+    privacyError.textContent = '';
+    privacyError.classList.remove('visible');
+  }
+
   return true;
 }
 

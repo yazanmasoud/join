@@ -85,23 +85,23 @@
       <hr class="login-signup-hr" />
       <form novalidate onsubmit="handleSignup(event)">
         <div class="username-input-area">
-          <input oninput="validateForm();" type="text" id="signup-username" class="username" placeholder="Name"
+          <input oninput="validateForm()" onblur="validateForm();" type="text" id="signup-username" class="username" placeholder="Name"
             required />
           <p id="error-text-signup-username" class="form-error"></p>
         </div>
         <div class="email-input-area">
-          <input oninput="validateForm();" type="email" id="signup-email" class="email" placeholder="Email" required />
+          <input oninput="validateForm()" onblur="validateForm();" type="email" id="signup-email" class="email" placeholder="Email" required />
           <p id="error-text-signup-email" class="form-error"></p>
         </div>
         <div class="password-input-area">
           <span class="tooltip">
-          <input oninput="validateForm();" type="password" id="signup-password" class="password" placeholder="Password"
+          <input oninput="validateForm()" onblur="validateForm();" type="password" id="signup-password" class="password" placeholder="Password"
             required />
           <span class="tooltip-text">Password must be at least 6 characters.</span></span>
           <p id="error-text-signup-password" class="form-error"></p>
         </div>
         <div class="confirm-password-input-area">
-          <input oninput="validateForm();" type="password" id="signup-confirm-password" class="password"
+          <input oninput="validateForm()" onblur="validateForm();" type="password" id="signup-confirm-password" class="password"
             placeholder="Confirm Password" required />
           <p id="error-text-confirm-password" class="form-error"></p>
         </div>
@@ -111,6 +111,7 @@
             I accept the <a href="./pages/privacy.html">Privacy policy</a>
           </label>
         </div>
+        <p id="error-text-privacy" class="form-error"></p>
         <div class="tooltip">
         <button id="signup-button" type="submit" class="btn-dark" disabled>Sign Up</button>
         <span class="tooltip-text">Fill all inputs and check Privacy Policy to Sign Up.</span></div>
