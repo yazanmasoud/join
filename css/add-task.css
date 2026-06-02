@@ -6,6 +6,10 @@
 }
 
 .add-task-close-btn {
+  display: none;
+}
+
+.edit-mode-container .add-task-close-btn {
   background: none;
   border: unset;
   cursor: pointer;
@@ -16,13 +20,31 @@
   justify-content: center;
 }
 
-.add-task-close-btn:hover {
+.edit-mode-container .add-task-close-btn:hover {
   background: var(--color-bg-tertiary);
 }
 
+.edit-mode-container .add-task-close-btn img,
 .add-task-close-btn img {
   width: 24px;
   height: 24px;
+}
+
+@media (max-width: 768px) {
+  .add-task-close-btn:not(.d-none) {
+    background: none;
+    border: unset;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .add-task-close-btn:not(.d-none):hover {
+    background: var(--color-bg-tertiary);
+  }
 }
 
 .add-task {
@@ -258,6 +280,12 @@ textarea {
   height: 42px;
   font-size: 14px;
   flex-shrink: 0;
+}
+
+.user-badge-extra {
+  background-color: var(--color-bg-secondary);
+  color: white;
+  font-size: 13px;
 }
 
 .user-badge-small {

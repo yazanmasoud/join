@@ -52,12 +52,14 @@ export async function updateSelectedBadges() {
   const container = document.getElementById('assignedBadges');
   if (!container) return;
   const allContacts = await getContacts();
-  container.innerHTML = selectedContacts
-    .map((item) => {
-      const c = allContacts.find((contact) => contact.name === item || contact.id === item);
-      return `<div class="user-badge" style="background-color: ${c?.color || '#2A3647'}">${c?.initials || '??'}</div>`;
-    })
-    .join('');
+  const visible = selectedContacts.slice(0, 4);
+  const extra = selectedContacts.length - 4;
+  const badges = visible.map((item) => {
+    const c = allContacts.find((contact) => contact.name === item || contact.id === item);
+    return `<div class="user-badge" style="background-color: ${c?.color || '#2A3647'}">${c?.initials || '??'}</div>`;
+  }).join('');
+  const extraBadge = extra > 0 ? `<div class="user-badge user-badge-extra">+${extra}</div>` : '';
+  container.innerHTML = badges + extraBadge;
 }
 
 
@@ -70,6 +72,7 @@ export async function initAddTask() {
   renderContacts();
   setPriority(currentPriority);
   setupAssignedDropdownClose();
+  setDateMin();
   const editId = localStorage.getItem('editTaskId');
   if (editId) {
     const editData = JSON.parse(localStorage.getItem('editTaskData'));
@@ -81,11 +84,21 @@ export async function initAddTask() {
 
 
 /**
+ * Sets the minimum selectable date on the due date input to today.
+ */
+function setDateMin() {
+  const dateInput = document.getElementById('taskDate');
+  if (dateInput) dateInput.min = new Date().toISOString().split('T')[0];
+}
+
+
+/**
  * Shows the close button and updates the headline for board-return or edit mode.
  * @param {boolean} isEditMode - Whether the form is in edit mode.
  */
 function setupBoardReturnButton(isEditMode) {
   const boardReturn = localStorage.getItem('boardReturn');
+  localStorage.removeItem('boardReturn');
   if (!isEditMode && !boardReturn) return;
   const btn = document.getElementById('addTaskCloseBtn');
   const headline = document.getElementById('addTaskHeadline');
@@ -162,17 +175,11 @@ async function createTask() {
  */
 function handleSuccess() {
   showSuccessToast();
-  const editId = localStorage.getItem('editTaskId');
-  const boardReturn = localStorage.getItem('boardReturn');
   localStorage.removeItem('editTaskId');
   localStorage.removeItem('editTaskData');
   localStorage.removeItem('boardReturn');
   setTimeout(async () => {
-    if (editId || boardReturn) {
-      await navigateTo('board');
-    } else {
-      clearForm();
-    }
+    await navigateTo('board');
   }, 1000);
 }
 
@@ -331,7 +338,7 @@ function resetFormInputs() {
   });
   subtasks = [];
   selectedContacts = [];
-  if (window.renderSubtasks) renderSubtasks();
+  renderSubtasks();
   if (window.renderContacts) {
     renderContacts().then(() => updateSelectedBadges());
   } else {

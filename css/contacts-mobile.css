@@ -208,3 +208,29 @@
     font-size: 16px;
   }
 }
+
+@media (max-width: 350px) {
+  .contact-dialog-mobile-header h2 {
+    font-size: 32px;
+  }
+
+  .contact-dialog-content::before {
+    height: 200px;
+  }
+
+  #contact-dialog-avatar {
+    margin-top: 150px;
+    width: 80px;
+    height: 80px;
+    font-size: 28px;
+  }
+
+  .contact-dialog-form {
+    padding: 0 12px 16px;
+  }
+
+  .contact-dialog-input {
+    font-size: 16px;
+    padding: 8px 36px 8px 8px;
+  }
+}

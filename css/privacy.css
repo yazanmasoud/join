@@ -19,7 +19,13 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
-    padding: 20px 20px 0 20px;
+    padding: 60px;
+}
+
+@media (max-width: 768px) {
+  .privacy-section {
+    padding: 20px;
+  }
 }
 
 .privacy-main {

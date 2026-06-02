@@ -126,14 +126,28 @@ export async function initLayout() {
  */
 async function navigateTo(page) {
   const currentPage = pageHistory[pageHistory.length - 1];
-
   if (currentPage !== page) {
     pageHistory.push(page);
   }
-
   await loadTemplate('mainContent', `./${page}.html`);
-
   initPage(page);
+  activateNavByPage(page);
+}
+
+
+/**
+ * Sets the sidebar nav item active state based on the current page name.
+ * @param {string} page - The page identifier to activate.
+ */
+function activateNavByPage(page) {
+  const pageNavMap = {
+    'summary': 'menuSummary',
+    'add-task': 'menuTasks',
+    'board': 'menuBoards',
+    'contacts': 'menuContacts',
+  };
+  const navItem = document.getElementById(pageNavMap[page]);
+  if (navItem) setActiveNavItem(navItem);
 }
 
 
