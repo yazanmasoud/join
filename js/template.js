@@ -150,11 +150,9 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
  * Generates a single subtask list element with a delete action button.
  */
 export function getSubtaskHTML(task, index) {
-  const icon = task.done ? 'subtask-done-icon.svg' : 'check-empty.svg';
   return `
     <li class="subtask-edit-item" id="subtaskItem${index}" ondblclick="editSubtask(${index})">
-      <div class="subtask-left" onclick="toggleSubtaskStatus(${index})">
-        <img src="../assets/icons/${icon}" class="subtask-check-icon">
+      <div class="subtask-left">
         <span class="subtask-text">${task.title}</span>
       </div>
       <div class="subtask-actions">
@@ -331,7 +329,11 @@ export function getAssignedUserHTML(name) {
 export function renderAssignedToDetail(assignedTo, showName = true) {
   if (!Array.isArray(assignedTo)) return '';
   const allContacts = window.contacts?.length > 0 ? window.contacts : JSON.parse(localStorage.getItem('guestContacts')) || [];
-  return assignedTo.map((item) => renderSingleBadge(item, allContacts, showName)).join('');
+  const visible = showName ? assignedTo : assignedTo.slice(0, 4);
+  const extra = !showName && assignedTo.length > 4 ? assignedTo.length - 4 : 0;
+  const badges = visible.map((item) => renderSingleBadge(item, allContacts, showName)).join('');
+  const extraBadge = extra > 0 ? `<div class="user-badge user-badge-extra">+${extra}</div>` : '';
+  return badges + extraBadge;
 }
 
 

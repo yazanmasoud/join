@@ -66,7 +66,7 @@ export function isTaskValid(task) {
  * @param {boolean} isError - Whether the field is invalid.
  * @returns {void}
  */
-function toggleErrorState(id, isError) {
+export function toggleErrorState(id, isError) {
   const field = document.getElementById(id);
   if (field) field.classList.toggle('input-error', isError);
   const msg = document.getElementById(`error-${id}`);

@@ -10,8 +10,13 @@
   max-width: calc(1920px - 230px);
   font-size: 16px;
   line-height: 24px;
-  padding-right: 35px;
-  padding-left: 60px;
+  padding: 60px;
+}
+
+@media (max-width: 768px) {
+  .help-section {
+    padding: 20px;
+  }
 }
 
 .help-main {

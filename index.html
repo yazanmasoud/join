@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,6 +18,7 @@
   <link rel="stylesheet" href="./css/add-task-mobile.css" />
   <link rel="stylesheet" href="./css/contacts.css" />
   <link rel="stylesheet" href="./css/contacts-mobile.css" />
+  <link rel="icon" type="image/png" href="../assets/logos/main-logo-white.svg" />
   <script>
     if (!sessionStorage.getItem('startAnimationPlayed')) {
       document.documentElement.classList.add('show-start-animation');
@@ -25,6 +27,7 @@
     }
   </script>
 </head>
+
 <body>
   <div id="content-wrapper" class="content-wrapper">
     <section class="welcome-section">
@@ -37,8 +40,9 @@
       </div>
       <div id="signup-container" class="signup-container">
         <div class="tooltip">
-        <p class="p-welcome">Not a Join User?</p>
-        <span class="tooltip-text">Press Sign Up<br> to register.</span></div>
+          <p class="p-welcome">Not a Join User?</p>
+          <span class="tooltip-text">Press Sign Up<br> to register.</span>
+        </div>
         <button class="btn-dark" onclick="openSignUp()">Sign Up</button>
       </div>
     </section>
@@ -49,19 +53,22 @@
         <div class="input-area-wrapper">
           <div class="email-input-area">
             <input type="email" id="email" class="username" placeholder="Email" required
-              onblur="validateLoginEmail(); updateLoginButtonState()" oninput="clearInputError('email', 'error-text-email'); updateLoginButtonState()"/>
+              onblur="validateLoginEmail(); updateLoginButtonState()"
+              oninput="clearInputError('email', 'error-text-email'); updateLoginButtonState()" />
             <p id="error-text-email" class="form-error"></p>
           </div>
           <div class="password-input-area">
             <input type="password" id="password" class="password" placeholder="Password" required
-              onblur="validateLoginPassword(); updateLoginButtonState()" oninput="clearInputError('password', 'error-text-password'); updateLoginButtonState()" />
+              onblur="validateLoginPassword(); updateLoginButtonState()"
+              oninput="clearInputError('password', 'error-text-password'); updateLoginButtonState()" />
             <p id="error-text-password" class="form-error"></p>
           </div>
         </div>
         <div class="login_btn-container">
           <div class="tooltip">
-          <button id="login-button" type="submit" class="btn-dark" disabled>Log in</button>
-          <span class="tooltip-text">Enter your Email and Password to Log in.</span></div>
+            <button id="login-button" type="submit" class="btn-dark" disabled>Log in</button>
+            <span class="tooltip-text">Enter your Email and Password to Log in.</span>
+          </div>
           <button type="button" class="btn-light" onclick="loginAsGuest()">
             Guest Log in
           </button>
@@ -85,36 +92,42 @@
       <hr class="login-signup-hr" />
       <form novalidate onsubmit="handleSignup(event)">
         <div class="username-input-area">
-          <input oninput="validateForm()" onblur="validateForm();" type="text" id="signup-username" class="username" placeholder="Name"
-            required />
+          <input oninput="clearInputError('signup-username', 'error-text-signup-username')" onblur="checkUsername(document.getElementById('signup-username'))" type="text" id="signup-username"
+            class="username" placeholder="Name" required />
           <p id="error-text-signup-username" class="form-error"></p>
         </div>
         <div class="email-input-area">
-          <input oninput="validateForm()" onblur="validateForm();" type="email" id="signup-email" class="email" placeholder="Email" required />
+          <input oninput="clearInputError('signup-email', 'error-text-signup-email')" onblur="checkEmail(document.getElementById('signup-email'))" type="email" id="signup-email"
+            class="email" placeholder="Email" required />
           <p id="error-text-signup-email" class="form-error"></p>
         </div>
         <div class="password-input-area">
           <span class="tooltip">
-          <input oninput="validateForm()" onblur="validateForm();" type="password" id="signup-password" class="password" placeholder="Password"
-            required />
-          <span class="tooltip-text">Password must be at least 6 characters.</span></span>
+            <input oninput="clearInputError('signup-password', 'error-text-signup-password')" onblur="checkPassword(
+            document.getElementById('signup-password'),
+            document.getElementById('signup-confirm-password')
+            )" type="password" id="signup-password" class="password" placeholder="Password" required />
+            <span class="tooltip-text">Password must be at least 6 characters.</span></span>
           <p id="error-text-signup-password" class="form-error"></p>
         </div>
         <div class="confirm-password-input-area">
-          <input oninput="validateForm()" onblur="validateForm();" type="password" id="signup-confirm-password" class="password"
-            placeholder="Confirm Password" required />
+          <input oninput="clearInputError('signup-confirm-password', 'error-text-confirm-password')" onblur="checkPassword(
+                document.getElementById('signup-password'),
+                document.getElementById('signup-confirm-password')
+            )" type="password" id="signup-confirm-password" class="password" placeholder="Confirm Password" required />
           <p id="error-text-confirm-password" class="form-error"></p>
         </div>
         <div class="privacy-container">
           <input type="checkbox" id="privacy" onchange="validateForm()" />
           <label for="privacy">
-            I accept the <a href="./pages/privacy.html">Privacy policy</a>
+            I accept the <a href="./pages/layout-login.html?page=privacy">Privacy policy</a>
           </label>
         </div>
         <p id="error-text-privacy" class="form-error"></p>
         <div class="tooltip">
-        <button id="signup-button" type="submit" class="btn-dark" disabled>Sign Up</button>
-        <span class="tooltip-text">Fill all inputs and check Privacy Policy to Sign Up.</span></div>
+          <button id="signup-button" type="submit" class="btn-dark" disabled>Sign Up</button>
+          <span class="tooltip-text">Fill all inputs and check Privacy Policy to Sign Up.</span>
+        </div>
       </form>
     </section>
     <footer class="login-footer">
@@ -130,4 +143,5 @@
   <script type="module" src="./js/orientation-guard.js"></script>
   <script type="module" src="./js/main.js"></script>
 </body>
+
 </html>

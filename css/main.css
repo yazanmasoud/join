@@ -21,13 +21,17 @@ a {
   color: var(--color-link);
 }
 
-h2{
+h2 {
   font-size: 54px;
   color: var(--color-text-main);
 }
 
 .hidden {
   display: none !important;
+}
+
+.d-none {
+  display: none;
 }
 
 p {
@@ -83,9 +87,5 @@ p {
   border-width: 5px;
   border-style: solid;
 
-  border-color:
-    var(--color-bg-secondary)
-    transparent
-    transparent
-    transparent;
+  border-color: var(--color-bg-secondary) transparent transparent transparent;
 }

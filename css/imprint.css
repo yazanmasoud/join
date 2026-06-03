@@ -1,30 +1,35 @@
 .legalnotice-head {
-    display: flex;
-    max-width: calc(1920px - 230px);
+  display: flex;
+  max-width: calc(1920px - 230px);
 }
 
 .legalnotice-section {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    max-width: calc(1920px - 230px);
-    padding: 20px 20px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: calc(1920px - 230px);
+  padding: 60px;
+}
+
+@media (max-width: 768px) {
+  .legalnotice-section {
+    padding: 20px;
+  }
 }
 
 .legalnotice-main {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding-right: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-right: 35px;
 }
 
 .imprint {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .imprint-li {
-    margin-left: 25px;
+  margin-left: 25px;
 }
-

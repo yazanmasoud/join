@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: board.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: board.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { ref, onValue, get, child, update, remove, push } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { auth, database } from './firebase-config.js';
+import {
+  highlight,
+  removeHighlight,
+  setEditPriority,
+  closeTaskDetail,
+  setupDialogClose,
+  clearElementsByIds,
+  normalizeObjectToArray,
+  showSuccessToast,
+} from './ui.js';
+import {
+  getNoTaskPlaceholder,
+  generateTaskHTML,
+  generateTaskDetailHTML,
+  generateEditTaskHTML,
+  getSubtaskHTML,
+  getSubtaskEditHTML,
+} from './template.js';
+import { isGuestUser, getLocalTasks, setLocalTasks } from './storage.js';
+import { getContacts } from './contacts-service.js';
+import { userSubtaskPath, userTaskPath, userTasksPath } from './database-paths.js';
+
+
+/** @section GLOBAL VARIABLES */
+let CURRENT_TASKS = {};
+let CURRENT_DRAGGED_ELEMENT;
+let editPriority;
+let currentSearchTerm = '';
+let currentStatus = 'todo';
+
+
+/** @section GLOBAL EXPORTS FOR HTML ONCLICK */
+window.initBoard = initBoard;
+window.openAddTask = openAddTask;
+window.openTaskDetail = openTaskDetail;
+window.toggleSubtask = toggleSubtask;
+window.startDragging = startDragging;
+window.allowDrop = allowDrop;
+window.moveTo = moveTo;
+window.editTask = editTask;
+window.saveEdit = saveEdit;
+window.handleEditSubtaskKey = handleEditSubtaskKey;
+window.addEditSubtask = addEditSubtask;
+window.deleteEditSubtask = deleteEditSubtask;
+window.toggleEditSubtask = toggleEditSubtask;
+window.deleteTask = deleteTask;
+window.closeTaskDetail = closeTaskDetail;
+window.editEditSubtask = editEditSubtask;
+window.saveEditSubtask = saveEditSubtask;
+window.highlight = highlight;
+window.removeHighlight = removeHighlight;
+
+
+/**
+ * Initializes the task board by setting up event listeners, loading contacts,
+ * and subscribing to task updates based on the user's authentication status.
+ *
+ * @async
+ * @function initBoard
+ * @returns {Promise&lt;void>}
+ */
+export async function initBoard() {
+  setupTaskSearch();
+  setupAddTaskResizeGuard();
+  window.contacts = await getContacts();
+  /**
+   * Applies loaded task data to the board state and renders the board.
+   *
+   * @param {Object|Array} data - The loaded task data.
+   * @returns {void}
+   */
+  const setup = (data) => {
+    CURRENT_TASKS = data || {};
+    renderFilteredTasks();
+    setupDialogClose(closeTaskDetail);
+  };
+  if (isGuestUser()) return setup(convertTaskArrayToObject(getLocalTasks()));
+  onValue(ref(database, userTasksPath(auth.currentUser.uid)), (snap) => setup(snap.val()));
+}
+
+
+/**
+ * Closes dialog and redirects to add-task if window shrinks below 850px in edit mode.
+ */
+function setupAddTaskResizeGuard() {
+  window.addEventListener('resize', () => {
+    const dialog = document.getElementById('taskDetailDialog');
+    if (dialog?.open &amp;&amp; dialog.querySelector('.edit-mode-container') &amp;&amp; window.innerWidth &lt; 850) {
+      dialog.close();
+      navigateTo('add-task');
+    }
+  });
+}
+
+
+/**
+ * Initializes task search listener and prevents double initialization.
+ */
+function setupTaskSearch() {
+  const searchInput = document.getElementById('searchTask');
+  if (!searchInput || searchInput.dataset.searchInitialized === 'true') return;
+  currentSearchTerm = searchInput.value.trim().toLowerCase();
+  searchInput.dataset.searchInitialized = 'true';
+  searchInput.addEventListener('input', () => {
+    currentSearchTerm = searchInput.value.trim().toLowerCase();
+    renderFilteredTasks();
+  });
+}
+
+
+/**
+ * Filters tasks by search term and updates the board UI.
+ */
+function renderFilteredTasks() {
+  const filteredTasks = filterTasksBySearchTerm(CURRENT_TASKS);
+  renderAllTasks(filteredTasks);
+  updateNoSearchResults(filteredTasks);
+}
+
+
+/**
+ * Filters tasks where title or description matches the current search term.
+ * @param {Object|Array} allTasks
+ * @returns {Array}
+ */
+function filterTasksBySearchTerm(allTasks) {
+  if (!currentSearchTerm) return allTasks;
+
+  return normalizeObjectToArray(allTasks).filter((task) => {
+    const title = String(task.title || '').toLowerCase();
+    const description = String(task.description || '').toLowerCase();
+
+    return title.includes(currentSearchTerm) || description.includes(currentSearchTerm);
+  });
+}
+
+
+/**
+ * Toggles visibility of the 'no results' message based on search matches.
+ */
+function updateNoSearchResults(filteredTasks) {
+  const noResultsElement = document.getElementById('noSearchResults');
+  if (!noResultsElement) return;
+  const hasNoSearchResults = currentSearchTerm &amp;&amp; normalizeObjectToArray(filteredTasks).length === 0;
+  noResultsElement.classList.toggle('hidden', !hasNoSearchResults);
+}
+
+
+/**
+ * Clears columns and renders all tasks into their respective status containers.
+ */
+function renderAllTasks(allTasks) {
+  const columns = ['todo', 'progress', 'feedback', 'done'];
+  if (!document.getElementById(columns[0])) return;
+  clearElementsByIds(columns);
+  normalizeObjectToArray(allTasks).forEach((task) => {
+    const container = document.getElementById(task.status || 'todo');
+    if (container) container.innerHTML += generateTaskHTML(task, task.id);
+  });
+  columns.forEach((id) => checkPlaceholder(id));
+}
+
+
+/**
+ * Shows a placeholder if a task column is empty.
+ */
+function checkPlaceholder(id) {
+  const el = document.getElementById(id);
+  if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
+}
+
+
+/** @section TASK DETAILS &amp; DIALOG CONTROL */
+/**
+ * Opens the task detail dialog using locally stored task data.
+ * @param {string} id - The unique ID of the task.
+ */
+export async function openTaskDetail(id) {
+  const dialog = document.getElementById('taskDetailDialog');
+  const content = document.getElementById('taskDetailContent');
+  const task = CURRENT_TASKS[id];
+
+  if (task) {
+    content.innerHTML = generateTaskDetailHTML(task, id);
+    dialog.showModal();
+  } else {
+    console.error('Task not found in CURRENT_TASKS:', id);
+  }
+}
+
+
+/**
+ * Toggles a subtask and re-renders the board to update the progress bar.
+ */
+export async function toggleSubtask(taskId, index) {
+  const task = CURRENT_TASKS[taskId];
+  task.subtasks[index].done = !task.subtasks[index].done;
+  if (isGuestUser()) {
+    setLocalTasks(Object.values(CURRENT_TASKS));
+    renderFilteredTasks(); // Sofortiges Update für Gäste
+  } else {
+    const path = userSubtaskPath(auth.currentUser.uid, taskId, index);
+    await update(ref(database, path), { done: task.subtasks[index].done });
+  }
+  document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, taskId);
+}
+
+
+/**
+ * Replaces a subtask item with an input field to enable editing.
+ */
+export function editEditSubtask(index, taskId) {
+  const item = document.getElementById(`subtaskItemDetail${index}`);
+  const task = CURRENT_TASKS[taskId];
+  if (item &amp;&amp; task) {
+    item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
+    const input = document.getElementById(`editSubtaskInput${index}`);
+    input?.focus();
+  }
+}
+
+
+/**
+ * Global wrapper for editEditSubtask to make it accessible via window.
+ */
+/**
+ * Replaces a subtask item with an inline edit input (window-accessible).
+ * @param {number} index - Subtask index.
+ * @param {string} taskId - Parent task ID.
+ */
+window.editEditSubtask = function (index, taskId) {
+  const item = document.getElementById(`subtaskItemDetail${index}`);
+  const task = CURRENT_TASKS[taskId];
+  if (item &amp;&amp; task &amp;&amp; task.subtasks[index]) {
+    item.outerHTML = getSubtaskEditHTML(task.subtasks[index].title, index, true, taskId);
+    const input = document.getElementById(`editSubtaskInput${index}`);
+    input?.focus();
+  }
+};
+
+
+/**
+ * Saves the edited subtask title to the UI and updates the database.
+ */
+async function saveEditSubtask(index, taskId) {
+  const input = document.getElementById(`editSubtaskInput${index}`);
+  const task = CURRENT_TASKS[taskId];
+  if (input &amp;&amp; input.value.trim() !== '') {
+    task.subtasks[index].title = input.value.trim();
+    const item = input.closest('li');
+    item.outerHTML = getSingleDetailSubtaskHTML(task.subtasks[index], index, taskId);
+
+    if (!isGuestUser()) {
+      const path = userSubtaskPath(auth.currentUser.uid, taskId, index);
+      await update(ref(database, path), { title: task.subtasks[index].title });
+    }
+  }
+}
+
+
+/** @section DRAG &amp; DROP */
+/**
+ * Sets the ID of the task being dragged.
+ * @param {string} id - The task element ID.
+ */
+function startDragging(id) {
+  CURRENT_DRAGGED_ELEMENT = id;
+}
+
+
+/**
+ * Prevents default handler to allow dropping elements.
+ * @param {Event} ev - The dragover event object.
+ */
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+
+/**
+ * Updates a task status column value in Firebase.
+ * @param {string} status - Target status column key.
+ */
+async function moveTo(status) {
+  removeHighlight(status);
+  if (!CURRENT_DRAGGED_ELEMENT) return;
+
+  if (isGuestUser()) {
+    moveGuestTaskTo(status);
+    return;
+  }
+  await moveFirebaseTaskTo(status);
+}
+
+
+/**
+ * Updates a guest task's status and saves it to local storage.
+ */
+function moveGuestTaskTo(status) {
+  CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT] = {
+    ...CURRENT_TASKS[CURRENT_DRAGGED_ELEMENT],
+    status,
+  };
+  setLocalTasks(convertTaskObjectToArray(CURRENT_TASKS));
+  renderFilteredTasks();
+}
+
+
+/**
+ * Updates a task's status in the Firebase database for the current user.
+ */
+async function moveFirebaseTaskTo(status) {
+  const uid = auth.currentUser.uid;
+  const taskRef = ref(database, userTaskPath(uid, CURRENT_DRAGGED_ELEMENT));
+
+  await update(taskRef, { status });
+}
+
+
+/** @section EDIT TASK (EDIT MODE) */
+/**
+ * Opens the task for editing; uses a dialog on desktop or redirects on mobile.
+ */
+export async function editTask(id) {
+  const task = CURRENT_TASKS[id];
+  if (!task) return;
+  localStorage.setItem('editTaskId', id);
+  localStorage.setItem('editTaskData', JSON.stringify(task));
+  if (window.innerWidth &lt; 850) {
+    closeTaskDetail();
+    navigateTo('add-task');
+    return;
+  }
+  await openEditTaskDialog(id, task);
+}
+
+
+/**
+ * Loads the add-task form into the dialog and opens it in edit mode.
+ * @param {string} id - Task ID.
+ * @param {Object} task - Task data object.
+ */
+async function openEditTaskDialog(id, task) {
+  const content = document.getElementById('taskDetailContent');
+  const response = await fetch('add-task.html');
+  content.innerHTML = `&lt;div class="edit-mode-container">${await response.text()}&lt;/div>`;
+  if (window.prepareEditInDialog) window.prepareEditInDialog(id, task);
+  const dialog = document.getElementById('taskDetailDialog');
+  if (!dialog.open) dialog.showModal();
+}
+
+
+/**
+ * Collects input data and updates the task in the database or local storage.
+ */
+export async function saveEdit(id) {
+  const updates = getEditFormData(id);
+  if (isGuestUser()) {
+    Object.assign(CURRENT_TASKS[id], updates);
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    await update(ref(database, userTaskPath(auth.currentUser.uid, id)), updates);
+  }
+  renderFilteredTasks();
+  closeTaskDetail();
+}
+
+
+/**
+ * Reads the edit form inputs and returns an update object.
+ * @param {string} id - Task ID used to fall back on existing assignedTo.
+ * @returns {Object} The updated task fields.
+ */
+function getEditFormData(id) {
+  return {
+    title: document.getElementById('editTitle').value,
+    description: document.getElementById('editDescription').value,
+    dueDate: document.getElementById('editDate').value,
+    priority: editPriority,
+    assignedTo: window.selectedContacts || CURRENT_TASKS[id].assignedTo || [],
+  };
+}
+
+
+/** @section EDITING SUBTASKS */
+/**
+ * Listens for the enter key to submit new subtasks.
+ * @param {KeyboardEvent} event - The keyboard event object.
+ * @param {string} taskId - The parent task ID.
+ */
+function handleEditSubtaskKey(event, taskId) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    addEditSubtask(taskId);
+  }
+}
+
+
+/**
+ * Adds a subtask entry into the temporary local list.
+ * @param {string} taskId - The parent task ID.
+ */
+async function addEditSubtask(taskId) {
+  const input = document.getElementById('editSubtaskInput');
+  const title = input.value.trim();
+  const task = CURRENT_TASKS[taskId];
+  if (title === '' || !task) return;
+  if (!task.subtasks) task.subtasks = [];
+  task.subtasks.push({ title: title, done: false });
+  input.value = '';
+  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
+}
+
+
+/**
+ * Deletes a subtask entry from the temporary editor view.
+ * @param {string} id - The parent task ID.
+ * @param {number} index - Subtask position index.
+ */
+export async function deleteEditSubtask(id, index) {
+  const task = CURRENT_TASKS[id];
+  if (task &amp;&amp; task.subtasks) {
+    task.subtasks.splice(index, 1);
+    document.getElementById('taskDetailContent').innerHTML = generateTaskDetailHTML(task, id);
+    if (!isGuestUser()) await update(ref(database, userTaskPath(auth.currentUser.uid, id)), { subtasks: task.subtasks });
+  }
+}
+
+
+/**
+ * Switches a subtask checkmark status within the editor.
+ * @param {string} taskId - The parent task ID.
+ * @param {number} index - Subtask position index.
+ */
+function toggleEditSubtask(taskId, index) {
+  const task = CURRENT_TASKS[taskId];
+  task.subtasks[index].done = !task.subtasks[index].done;
+  document.getElementById('taskDetailContent').innerHTML = generateEditTaskHTML(task, taskId);
+}
+
+
+/** @section MISCELLANEOUS ACTIONS */
+/**
+ * Deletes a task from the respective data source.
+ * @param {string} id - The task ID to delete.
+ */
+export async function deleteTask(id) {
+  if (isGuestUser()) {
+    delete CURRENT_TASKS[id];
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    await remove(ref(database, userTaskPath(auth.currentUser.uid, id)));
+  }
+  closeTaskDetail();
+  renderFilteredTasks();
+  if (typeof showSuccessToast === 'function') showSuccessToast('Task deleted');
+}
+
+
+/**
+ * Opens add-task via redirect on mobile or in a dialog on desktop.
+ */
+export async function openAddTask(status = 'todo') {
+  if (window.innerWidth &lt; 850) {
+    localStorage.setItem('boardReturn', 'true');
+    navigateTo('add-task');
+    return;
+  }
+  await loadAddTaskDialog(status);
+}
+
+
+/**
+ * Loads the add-task form into the dialog and initializes its logic.
+ */
+async function loadAddTaskDialog(status) {
+  currentStatus = status;
+  const content = document.getElementById('taskDetailContent');
+  const response = await fetch('add-task.html');
+  content.innerHTML = `&lt;div class="edit-mode-container">${await response.text()}&lt;/div>`;
+  localStorage.removeItem('editTaskId');
+  if (window.initAddTask) await window.initAddTask();
+  currentStatus = status;
+  const btn = content.querySelector('#createTaskBtn') || content.querySelector('.btn-dark');
+  if (btn) btn.onclick = () => saveNewTaskFromBoard();
+  document.getElementById('taskDetailDialog').showModal();
+}
+
+
+/**
+ * Saves a new task from the board to Firebase or local storage.
+ */
+async function saveNewTaskFromBoard() {
+  const newTask = getTaskDataFromForm();
+  if (isGuestUser()) {
+    const tempId = Date.now();
+    CURRENT_TASKS[tempId] = newTask;
+    setLocalTasks(Object.values(CURRENT_TASKS));
+  } else {
+    const newTaskRef = push(ref(database, userTasksPath(auth.currentUser.uid)));
+    await update(newTaskRef, newTask);
+    CURRENT_TASKS[newTaskRef.key] = newTask;
+  }
+  closeTaskDetail();
+  renderFilteredTasks();
+}
+
+
+/**
+ * Collects and returns task data from the form fields.
+ */
+function getTaskDataFromForm() {
+  return {
+    title: document.getElementById('taskTitle')?.value || '',
+    description: document.getElementById('taskDescription')?.value || '',
+    dueDate: document.getElementById('taskDate')?.value || '',
+    priority: window.currentPriority || 'Medium',
+    status: currentStatus,
+    category: document.getElementById('selectedCategory')?.innerText || 'User Story',
+    assignedTo: window.selectedContacts || [],
+    subtasks: window.subtasks || [],
+  };
+}
+
+
+/**
+ * Converts a task array into an object using task IDs as keys.
+ */
+function convertTaskArrayToObject(tasks) {
+  return tasks.reduce((taskObject, task) => {
+    taskObject[task.id] = task;
+    return taskObject;
+  }, {});
+}
+
+
+/**
+ * Converts a task object back into an array of tasks.
+ */
+function convertTaskObjectToArray(tasksObject) {
+  return Object.values(tasksObject);
+}
+
+
+/**
+ * Toggles the mobile move menu and closes other open menus.
+ */
+window.toggleMoveMenu = function (event, id) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  const menuElement = document.getElementById('moveMenu' + id);
+  document.querySelectorAll('.mobile-move-menu').forEach((m) => m !== menuElement &amp;&amp; m.classList.remove('open'));
+  if (menuElement) menuElement.classList.toggle('open');
+};
+
+
+/**
+ * Changes task status via the mobile menu and refreshes the UI.
+ */
+window.moveTaskMobile = async function (id, status) {
+  window.CURRENT_DRAGGED_ELEMENT = id;
+  const mappedStatus = { inprogress: 'progress', awaiting: 'feedback' }[status] || status;
+  await moveTo(mappedStatus);
+  if (CURRENT_TASKS[id]) CURRENT_TASKS[id].status = mappedStatus;
+  renderFilteredTasks();
+  document.getElementById('moveMenu' + id)?.classList.remove('open');
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#CURRENT_TASKS">CURRENT_TASKS</a></li><li><a href="global.html#activateFinalLogoState">activateFinalLogoState</a></li><li><a href="global.html#addContactToList">addContactToList</a></li><li><a href="global.html#addEditSubtask">addEditSubtask</a></li><li><a href="global.html#allowDrop">allowDrop</a></li><li><a href="global.html#animateContactDetails">animateContactDetails</a></li><li><a href="global.html#animateExistingContact">animateExistingContact</a></li><li><a href="global.html#animateLogo">animateLogo</a></li><li><a href="global.html#animateNewContact">animateNewContact</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#applyEditModeUI">applyEditModeUI</a></li><li><a href="global.html#auth">auth</a></li><li><a href="global.html#backToLogin">backToLogin</a></li><li><a href="global.html#calculateMetrics">calculateMetrics</a></li><li><a href="global.html#canRenderContact">canRenderContact</a></li><li><a href="global.html#capitalizeFirstLetter">capitalizeFirstLetter</a></li><li><a href="global.html#checkEmail">checkEmail</a></li><li><a href="global.html#checkPassword">checkPassword</a></li><li><a href="global.html#checkPlaceholder">checkPlaceholder</a></li><li><a href="global.html#checkPrivacy">checkPrivacy</a></li><li><a href="global.html#checkSession">checkSession</a></li><li><a href="global.html#checkUsername">checkUsername</a></li><li><a href="global.html#clearActivePrioClasses">clearActivePrioClasses</a></li><li><a href="global.html#clearContactNameError">clearContactNameError</a></li><li><a href="global.html#clearElementsByIds">clearElementsByIds</a></li><li><a href="global.html#clearForm">clearForm</a></li><li><a href="global.html#clearInputError">clearInputError</a></li><li><a href="global.html#clearSignupErrors">clearSignupErrors</a></li><li><a href="global.html#clearSignupInputs">clearSignupInputs</a></li><li><a href="global.html#closeAddContact">closeAddContact</a></li><li><a href="global.html#closeDeleteDialog">closeDeleteDialog</a></li><li><a href="global.html#closeMobileActionMenu">closeMobileActionMenu</a></li><li><a href="global.html#closeOpenElements">closeOpenElements</a></li><li><a href="global.html#closeSignUp">closeSignUp</a></li><li><a href="global.html#closeTaskDetail">closeTaskDetail</a></li><li><a href="global.html#convertTaskArrayToObject">convertTaskArrayToObject</a></li><li><a href="global.html#convertTaskObjectToArray">convertTaskObjectToArray</a></li><li><a href="global.html#createContact">createContact</a></li><li><a href="global.html#createFirebaseContact">createFirebaseContact</a></li><li><a href="global.html#createGuestContact">createGuestContact</a></li><li><a href="global.html#createGuestUserContact">createGuestUserContact</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#database">database</a></li><li><a href="global.html#deleteContact">deleteContact</a></li><li><a href="global.html#deleteEditSubtask">deleteEditSubtask</a></li><li><a href="global.html#deleteFirebaseContact">deleteFirebaseContact</a></li><li><a href="global.html#deleteGuestContact">deleteGuestContact</a></li><li><a href="global.html#deleteSubtask">deleteSubtask</a></li><li><a href="global.html#deleteTask">deleteTask</a></li><li><a href="global.html#editEditSubtask">editEditSubtask</a></li><li><a href="global.html#editSubtask">editSubtask</a></li><li><a href="global.html#editTask">editTask</a></li><li><a href="global.html#fetchSummaryData">fetchSummaryData</a></li><li><a href="global.html#fillEditInputs">fillEditInputs</a></li><li><a href="global.html#fillFormForEdit">fillFormForEdit</a></li><li><a href="global.html#filterTasksBySearchTerm">filterTasksBySearchTerm</a></li><li><a href="global.html#finishLogoAnimation">finishLogoAnimation</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#generateEditTaskHTML">generateEditTaskHTML</a></li><li><a href="global.html#generateLocalId">generateLocalId</a></li><li><a href="global.html#generateTaskDetailHTML">generateTaskDetailHTML</a></li><li><a href="global.html#generateTaskHTML">generateTaskHTML</a></li><li><a href="global.html#getAssignedUserHTML">getAssignedUserHTML</a></li><li><a href="global.html#getContactById">getContactById</a></li><li><a href="global.html#getContactCheckboxHTML">getContactCheckboxHTML</a></li><li><a href="global.html#getContactDetails">getContactDetails</a></li><li><a href="global.html#getContactDialogElements">getContactDialogElements</a></li><li><a href="global.html#getContactLetter">getContactLetter</a></li><li><a href="global.html#getContactOptionsHTML">getContactOptionsHTML</a></li><li><a href="global.html#getContacts">getContacts</a></li><li><a href="global.html#getCurrentEditContact">getCurrentEditContact</a></li><li><a href="global.html#getCurrentUserData">getCurrentUserData</a></li><li><a href="global.html#getCurrentUserId">getCurrentUserId</a></li><li><a href="global.html#getDetailFooter">getDetailFooter</a></li><li><a href="global.html#getDetailInfoRows">getDetailInfoRows</a></li><li><a href="global.html#getDetailSubtasksHTML">getDetailSubtasksHTML</a></li><li><a href="global.html#getEditFormData">getEditFormData</a></li><li><a href="global.html#getEditLeftSection">getEditLeftSection</a></li><li><a href="global.html#getEditRightSection">getEditRightSection</a></li><li><a href="global.html#getFirebaseTasks">getFirebaseTasks</a></li><li><a href="global.html#getGuestContacts">getGuestContacts</a></li><li><a href="global.html#getGuestUserContacts">getGuestUserContacts</a></li><li><a href="global.html#getInitialPage">getInitialPage</a></li><li><a href="global.html#getInitials">getInitials</a></li><li><a href="global.html#getLocalTasks">getLocalTasks</a></li><li><a href="global.html#getNewContactData">getNewContactData</a></li><li><a href="global.html#getNextDeadline">getNextDeadline</a></li><li><a href="global.html#getNoTaskPlaceholder">getNoTaskPlaceholder</a></li><li><a href="global.html#getPrioClass">getPrioClass</a></li><li><a href="global.html#getPriorityButtonsHTML">getPriorityButtonsHTML</a></li><li><a href="global.html#getRandomColor">getRandomColor</a></li><li><a href="global.html#getSelectOptionsHTML">getSelectOptionsHTML</a></li><li><a href="global.html#getSingleContact">getSingleContact</a></li><li><a href="global.html#getSingleDetailSubtaskHTML">getSingleDetailSubtaskHTML</a></li><li><a href="global.html#getSubtaskEditHTML">getSubtaskEditHTML</a></li><li><a href="global.html#getSubtaskHTML">getSubtaskHTML</a></li><li><a href="global.html#getTaskDataFromForm">getTaskDataFromForm</a></li><li><a href="global.html#getTaskObject">getTaskObject</a></li><li><a href="global.html#getTasks">getTasks</a></li><li><a href="global.html#getUpdatedContactData">getUpdatedContactData</a></li><li><a href="global.html#goBack">goBack</a></li><li><a href="global.html#guestContacts">guestContacts</a></li><li><a href="global.html#guestTasks">guestTasks</a></li><li><a href="global.html#handleBackArrow">handleBackArrow</a></li><li><a href="global.html#handleCreateContact">handleCreateContact</a></li><li><a href="global.html#handleDeleteContact">handleDeleteContact</a></li><li><a href="global.html#handleEditSubtaskKey">handleEditSubtaskKey</a></li><li><a href="global.html#handleGuestLogin">handleGuestLogin</a></li><li><a href="global.html#handleLogin">handleLogin</a></li><li><a href="global.html#handleLoginError">handleLoginError</a></li><li><a href="global.html#handleMobileContactView">handleMobileContactView</a></li><li><a href="global.html#handleMobileGreeting">handleMobileGreeting</a></li><li><a href="global.html#handleSaveContact">handleSaveContact</a></li><li><a href="global.html#handleSignup">handleSignup</a></li><li><a href="global.html#handleSignupError">handleSignupError</a></li><li><a href="global.html#handleSignupSuccess">handleSignupSuccess</a></li><li><a href="global.html#handleSubtaskKey">handleSubtaskKey</a></li><li><a href="global.html#handleSuccess">handleSuccess</a></li><li><a href="global.html#hasConfirmPassword">hasConfirmPassword</a></li><li><a href="global.html#hasPassword">hasPassword</a></li><li><a href="global.html#hasValidPasswordLength">hasValidPasswordLength</a></li><li><a href="global.html#hideOverlay">hideOverlay</a></li><li><a href="global.html#highlight">highlight</a></li><li><a href="global.html#initAddTask">initAddTask</a></li><li><a href="global.html#initBoard">initBoard</a></li><li><a href="global.html#initContacts">initContacts</a></li><li><a href="global.html#initGuestStorage">initGuestStorage</a></li><li><a href="global.html#initLayout">initLayout</a></li><li><a href="global.html#initLoginLayout">initLoginLayout</a></li><li><a href="global.html#initMainLoginPage">initMainLoginPage</a></li><li><a href="global.html#initPage">initPage</a></li><li><a href="global.html#initStartAnimation">initStartAnimation</a></li><li><a href="global.html#initSummary">initSummary</a></li><li><a href="global.html#isGuestUser">isGuestUser</a></li><li><a href="global.html#isMobile">isMobile</a></li><li><a href="global.html#isMobileLandscape">isMobileLandscape</a></li><li><a href="global.html#isTaskValid">isTaskValid</a></li><li><a href="global.html#isValidContactName">isValidContactName</a></li><li><a href="global.html#isValidEmail">isValidEmail</a></li><li><a href="global.html#listenToContacts">listenToContacts</a></li><li><a href="global.html#listenToTasks">listenToTasks</a></li><li><a href="global.html#loadAddTaskDialog">loadAddTaskDialog</a></li><li><a href="global.html#loadDefaultGuestContacts">loadDefaultGuestContacts</a></li><li><a href="global.html#loadTemplate">loadTemplate</a></li><li><a href="global.html#logOut">logOut</a></li><li><a href="global.html#loginAsGuest">loginAsGuest</a></li><li><a href="global.html#loginAsUser">loginAsUser</a></li><li><a href="global.html#loginNavigateTo">loginNavigateTo</a></li><li><a href="global.html#loginSuccess">loginSuccess</a></li><li><a href="global.html#logoutUser">logoutUser</a></li><li><a href="global.html#mapContacts">mapContacts</a></li><li><a href="global.html#mobileDeleteContact">mobileDeleteContact</a></li><li><a href="global.html#mobileEditContact">mobileEditContact</a></li><li><a href="global.html#moveFirebaseTaskTo">moveFirebaseTaskTo</a></li><li><a href="global.html#moveGuestTaskTo">moveGuestTaskTo</a></li><li><a href="global.html#moveTo">moveTo</a></li><li><a href="global.html#navigateTo">navigateTo</a></li><li><a href="global.html#normalizeObjectToArray">normalizeObjectToArray</a></li><li><a href="global.html#openAddContact">openAddContact</a></li><li><a href="global.html#openAddTask">openAddTask</a></li><li><a href="global.html#openAvatarDropdown">openAvatarDropdown</a></li><li><a href="global.html#openContactDialog">openContactDialog</a></li><li><a href="global.html#openDeleteDialog">openDeleteDialog</a></li><li><a href="global.html#openEditContact">openEditContact</a></li><li><a href="global.html#openEditTaskDialog">openEditTaskDialog</a></li><li><a href="global.html#openHelp">openHelp</a></li><li><a href="global.html#openLogin">openLogin</a></li><li><a href="global.html#openSignUp">openSignUp</a></li><li><a href="global.html#openTaskDetail">openTaskDetail</a></li><li><a href="global.html#passwordsMatch">passwordsMatch</a></li><li><a href="global.html#prepareEditInDialog">prepareEditInDialog</a></li><li><a href="global.html#refreshDeletedContactUI">refreshDeletedContactUI</a></li><li><a href="global.html#refreshUpdatedContactUI">refreshUpdatedContactUI</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#removeContactFromTasks">removeContactFromTasks</a></li><li><a href="global.html#removeDeletedContactTasks">removeDeletedContactTasks</a></li><li><a href="global.html#removeHighlight">removeHighlight</a></li><li><a href="global.html#renderAllTasks">renderAllTasks</a></li><li><a href="global.html#renderAssignedToDetail">renderAssignedToDetail</a></li><li><a href="global.html#renderAvatar">renderAvatar</a></li><li><a href="global.html#renderCategories">renderCategories</a></li><li><a href="global.html#renderContactDetails">renderContactDetails</a></li><li><a href="global.html#renderContactHtml">renderContactHtml</a></li><li><a href="global.html#renderContacts">renderContacts</a></li><li><a href="global.html#renderFilteredTasks">renderFilteredTasks</a></li><li><a href="global.html#renderGreetingName">renderGreetingName</a></li><li><a href="global.html#renderPriorityButtons">renderPriorityButtons</a></li><li><a href="global.html#renderSingleBadge">renderSingleBadge</a></li><li><a href="global.html#renderSmallSubtaskInfo">renderSmallSubtaskInfo</a></li><li><a href="global.html#renderSubtasks">renderSubtasks</a></li><li><a href="global.html#renderTaskBody">renderTaskBody</a></li><li><a href="global.html#resetContactForm">resetContactForm</a></li><li><a href="global.html#resetDialogAvatar">resetDialogAvatar</a></li><li><a href="global.html#resetDialogInputs">resetDialogInputs</a></li><li><a href="global.html#resetFormInputs">resetFormInputs</a></li><li><a href="global.html#resetFormState">resetFormState</a></li><li><a href="global.html#resetInputFields">resetInputFields</a></li><li><a href="global.html#resetSelection">resetSelection</a></li><li><a href="global.html#saveEdit">saveEdit</a></li><li><a href="global.html#saveEditFromDialog">saveEditFromDialog</a></li><li><a href="global.html#saveEditSubtask">saveEditSubtask</a></li><li><a href="global.html#saveGuestContacts">saveGuestContacts</a></li><li><a href="global.html#saveNewTaskFromBoard">saveNewTaskFromBoard</a></li><li><a href="global.html#saveSubtask">saveSubtask</a></li><li><a href="global.html#saveUserAsContact">saveUserAsContact</a></li><li><a href="global.html#saveUserProfile">saveUserProfile</a></li><li><a href="global.html#setActiveLoginNavFromUrl">setActiveLoginNavFromUrl</a></li><li><a href="global.html#setActiveNavItem">setActiveNavItem</a></li><li><a href="global.html#setContacts">setContacts</a></li><li><a href="global.html#setCurrentEditContactId">setCurrentEditContactId</a></li><li><a href="global.html#setEditPriority">setEditPriority</a></li><li><a href="global.html#setGreeting">setGreeting</a></li><li><a href="global.html#setGreetingName">setGreetingName</a></li><li><a href="global.html#setLocalTasks">setLocalTasks</a></li><li><a href="global.html#setPriority">setPriority</a></li><li><a href="global.html#setSelectedContactId">setSelectedContactId</a></li><li><a href="global.html#setupAddTaskResizeGuard">setupAddTaskResizeGuard</a></li><li><a href="global.html#setupAssignedDropdownClose">setupAssignedDropdownClose</a></li><li><a href="global.html#setupBoardReturnButton">setupBoardReturnButton</a></li><li><a href="global.html#setupCardNavigation">setupCardNavigation</a></li><li><a href="global.html#setupCreateDialog">setupCreateDialog</a></li><li><a href="global.html#setupDialogClose">setupDialogClose</a></li><li><a href="global.html#setupEditButtons">setupEditButtons</a></li><li><a href="global.html#setupEditDialog">setupEditDialog</a></li><li><a href="global.html#setupTaskSearch">setupTaskSearch</a></li><li><a href="global.html#showContactNameError">showContactNameError</a></li><li><a href="global.html#showDeleteToast">showDeleteToast</a></li><li><a href="global.html#showInputError">showInputError</a></li><li><a href="global.html#showMobileDetailView">showMobileDetailView</a></li><li><a href="global.html#showMobileListView">showMobileListView</a></li><li><a href="global.html#showMobileSignup">showMobileSignup</a></li><li><a href="global.html#showOverlay">showOverlay</a></li><li><a href="global.html#showStartPageWithoutAnimation">showStartPageWithoutAnimation</a></li><li><a href="global.html#showSuccessToast">showSuccessToast</a></li><li><a href="global.html#showToast">showToast</a></li><li><a href="global.html#startDragging">startDragging</a></li><li><a href="global.html#toggleAvatarDropdown">toggleAvatarDropdown</a></li><li><a href="global.html#toggleContactList">toggleContactList</a></li><li><a href="global.html#toggleEditSubtask">toggleEditSubtask</a></li><li><a href="global.html#toggleErrorState">toggleErrorState</a></li><li><a href="global.html#toggleMobileActionMenu">toggleMobileActionMenu</a></li><li><a href="global.html#toggleSubtask">toggleSubtask</a></li><li><a href="global.html#toggleSubtaskStatus">toggleSubtaskStatus</a></li><li><a href="global.html#turnOffBackarrow">turnOffBackarrow</a></li><li><a href="global.html#updateButtonToSaveMode">updateButtonToSaveMode</a></li><li><a href="global.html#updateContact">updateContact</a></li><li><a href="global.html#updateFirebaseContact">updateFirebaseContact</a></li><li><a href="global.html#updateGuestContact">updateGuestContact</a></li><li><a href="global.html#updateLocalContact">updateLocalContact</a></li><li><a href="global.html#updateLoginButtonState">updateLoginButtonState</a></li><li><a href="global.html#updateMobileActionMenu">updateMobileActionMenu</a></li><li><a href="global.html#updateNoSearchResults">updateNoSearchResults</a></li><li><a href="global.html#updateOrientationGuard">updateOrientationGuard</a></li><li><a href="global.html#updateSelectedBadges">updateSelectedBadges</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateUI">updateUI</a></li><li><a href="global.html#userContactPath">userContactPath</a></li><li><a href="global.html#userContactsPath">userContactsPath</a></li><li><a href="global.html#userPath">userPath</a></li><li><a href="global.html#userProfilePath">userProfilePath</a></li><li><a href="global.html#userSubtaskPath">userSubtaskPath</a></li><li><a href="global.html#userTaskPath">userTaskPath</a></li><li><a href="global.html#userTasksPath">userTasksPath</a></li><li><a href="global.html#validateContactNameInput">validateContactNameInput</a></li><li><a href="global.html#validateForm">validateForm</a></li><li><a href="global.html#validateLoginEmail">validateLoginEmail</a></li><li><a href="global.html#validateLoginPassword">validateLoginPassword</a></li><li><a href="global.html#validateTask">validateTask</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jun 02 2026 22:36:12 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

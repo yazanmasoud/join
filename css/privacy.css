@@ -1,31 +1,37 @@
 .privacy-textbox {
-    display: flex;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 19.2px;
-    max-width: calc(1920px - 230px);
+  display: flex;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19.2px;
+  max-width: calc(1920px - 230px);
 }
 
 .headline-privacy-layout {
-    gap: 30px;
+  gap: 30px;
 }
 
 .privacy-head {
-    display: flex;
-    max-width: calc(1920px - 230px);
+  display: flex;
+  max-width: calc(1920px - 230px);
 }
 
 .privacy-section {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 20px 20px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 60px;
+}
+
+@media (max-width: 768px) {
+  .privacy-section {
+    padding: 20px;
+  }
 }
 
 .privacy-main {
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
 }
 
 .privacy-article {

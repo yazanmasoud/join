@@ -8,6 +8,8 @@ import { showSuccessToast, toggleContactList, updateButtonToSaveMode } from './u
 
 import { getContacts } from './contacts-service.js';
 
+import { toggleErrorState } from './tasks-service.js';
+
 let subtasks = [];
 let currentPriority = 'Medium';
 let selectedContacts = [];
@@ -52,12 +54,14 @@ export async function updateSelectedBadges() {
   const container = document.getElementById('assignedBadges');
   if (!container) return;
   const allContacts = await getContacts();
-  container.innerHTML = selectedContacts
-    .map((item) => {
-      const c = allContacts.find((contact) => contact.name === item || contact.id === item);
-      return `<div class="user-badge" style="background-color: ${c?.color || '#2A3647'}">${c?.initials || '??'}</div>`;
-    })
-    .join('');
+  const visible = selectedContacts.slice(0, 4);
+  const extra = selectedContacts.length - 4;
+  const badges = visible.map((item) => {
+    const c = allContacts.find((contact) => contact.name === item || contact.id === item);
+    return `<div class="user-badge" style="background-color: ${c?.color || '#2A3647'}">${c?.initials || '??'}</div>`;
+  }).join('');
+  const extraBadge = extra > 0 ? `<div class="user-badge user-badge-extra">+${extra}</div>` : '';
+  container.innerHTML = badges + extraBadge;
 }
 
 
@@ -70,6 +74,7 @@ export async function initAddTask() {
   renderContacts();
   setPriority(currentPriority);
   setupAssignedDropdownClose();
+  setDateMin();
   const editId = localStorage.getItem('editTaskId');
   if (editId) {
     const editData = JSON.parse(localStorage.getItem('editTaskData'));
@@ -81,11 +86,21 @@ export async function initAddTask() {
 
 
 /**
+ * Sets the minimum selectable date on the due date input to today.
+ */
+function setDateMin() {
+  const dateInput = document.getElementById('taskDate');
+  if (dateInput) dateInput.min = new Date().toISOString().split('T')[0];
+}
+
+
+/**
  * Shows the close button and updates the headline for board-return or edit mode.
  * @param {boolean} isEditMode - Whether the form is in edit mode.
  */
 function setupBoardReturnButton(isEditMode) {
   const boardReturn = localStorage.getItem('boardReturn');
+  localStorage.removeItem('boardReturn');
   if (!isEditMode && !boardReturn) return;
   const btn = document.getElementById('addTaskCloseBtn');
   const headline = document.getElementById('addTaskHeadline');
@@ -162,17 +177,11 @@ async function createTask() {
  */
 function handleSuccess() {
   showSuccessToast();
-  const editId = localStorage.getItem('editTaskId');
-  const boardReturn = localStorage.getItem('boardReturn');
   localStorage.removeItem('editTaskId');
   localStorage.removeItem('editTaskData');
   localStorage.removeItem('boardReturn');
   setTimeout(async () => {
-    if (editId || boardReturn) {
-      await navigateTo('board');
-    } else {
-      clearForm();
-    }
+    await navigateTo('board');
   }, 1000);
 }
 
@@ -331,7 +340,7 @@ function resetFormInputs() {
   });
   subtasks = [];
   selectedContacts = [];
-  if (window.renderSubtasks) renderSubtasks();
+  renderSubtasks();
   if (window.renderContacts) {
     renderContacts().then(() => updateSelectedBadges());
   } else {
@@ -346,6 +355,9 @@ function resetFormInputs() {
  * Resets dropdowns, priority, localStorage and the submit button label.
  */
 function resetFormState() {
+  toggleErrorState('taskTitle', false);
+  toggleErrorState('taskDate', false);
+  toggleErrorState('taskCategory', false);
   document.getElementById('taskCategory') && (document.getElementById('taskCategory').selectedIndex = 0);
   document.getElementById('tasksAssigned') && (document.getElementById('tasksAssigned').selectedIndex = 0);
   if (window.setPriority) setPriority('Medium');
@@ -423,7 +435,11 @@ function showDeleteToast() {
 async function saveEditFromDialog(id) {
   const task = getTaskObject();
   if (!isTaskValid(task)) return;
-  await serviceUpdateTask(id, task);
-  document.getElementById('taskDetailDialog').close();
-  if (window.initBoard) window.initBoard();
+  try {
+    await serviceUpdateTask(id, task);
+    if (window.updateBoardTask) window.updateBoardTask(id, task);
+    document.getElementById('taskDetailDialog').close();
+  } catch (e) {
+    console.error('Error saving task:', e);
+  }
 }

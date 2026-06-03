@@ -16,14 +16,13 @@ export {
 
 
 /**
- * Validates contact name input.
- *
+ * Validates contact name — min. 3 chars, no leading space, not starting with digit.
  * @param {string} name
  * @returns {boolean}
  */
 function isValidContactName(name) {
     return (
-        name.trim().length > 0 &&
+        name.trim().length >= 3 &&
         !name.startsWith(' ') &&
         !/^\d/.test(name)
     );
@@ -31,19 +30,62 @@ function isValidContactName(name) {
 
 
 /**
+ * Validates that an email address is non-empty and has a valid format.
+ * @param {string} email
+ * @returns {boolean}
+ */
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
+
+/**
+ * Shows the email validation error in the dialog.
+ */
+function showContactEmailError() {
+    const input = document.getElementById('contact-email');
+    const error = document.getElementById('contact-email-error');
+    input.classList.add('input-error');
+    if (error) { error.textContent = 'Please enter a valid email'; error.classList.add('visible'); }
+}
+
+
+/**
+ * Clears the email validation error in the dialog.
+ */
+function clearContactEmailError() {
+    const input = document.getElementById('contact-email');
+    const error = document.getElementById('contact-email-error');
+    input.classList.remove('input-error');
+    if (error) { error.textContent = ''; error.classList.remove('visible'); }
+}
+
+
+/**
+ * Validates name and email fields and shows errors if invalid.
+ * @param {{name: string, email: string}} data - Contact form data.
+ * @returns {boolean} True if all fields are valid.
+ */
+function isContactFormValid(data) {
+    if (!isValidContactName(data.name)) { showContactNameError(); return false; }
+    if (!isValidEmail(data.email)) { showContactEmailError(); return false; }
+    clearContactNameError();
+    clearContactEmailError();
+    return true;
+}
+
+
+/**
  * Validates contact name input live.
  */
 export function validateContactNameInput() {
-    const name =
-        document.getElementById(
-            'contact-name'
-        ).value;
-
+    const name = document.getElementById('contact-name').value;
+    const hint = document.querySelector('.contact-input-hint');
+    if (hint) hint.style.display = (name.length > 0 && name.length < 3) ? 'block' : 'none';
     if (!isValidContactName(name)) {
         showContactNameError();
         return;
     }
-
     clearContactNameError();
 }
 
@@ -83,14 +125,8 @@ function clearContactNameError() {
  */
 async function handleCreateContact() {
     const contactData = getNewContactData();
-    if (!isValidContactName(contactData.name)) {
-        showContactNameError();
-        return;
-    }
-
-    clearContactNameError();
+    if (!isContactFormValid(contactData)) return;
     const savedContact = await createContact(contactData);
-
     addContactToList(savedContact);
     resetContactForm();
     closeAddContact();
@@ -211,18 +247,10 @@ function refreshDeletedContactUI(contactId) {
  */
 async function handleSaveContact() {
     const contact = getCurrentEditContact();
-
     if (!contact) return;
-
     const updatedData = getUpdatedContactData(contact);
-    if (!isValidContactName(updatedData.name)) {
-        showContactNameError();
-        return;
-    }
-
-    clearContactNameError();
+    if (!isContactFormValid(updatedData)) return;
     await updateContact(currentEditContactId, updatedData);
-
     refreshUpdatedContactUI(updatedData);
     closeAddContact();
     showToast('Contact updated');

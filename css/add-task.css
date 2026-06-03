@@ -6,6 +6,10 @@
 }
 
 .add-task-close-btn {
+  display: none;
+}
+
+.edit-mode-container .add-task-close-btn {
   background: none;
   border: unset;
   cursor: pointer;
@@ -16,13 +20,37 @@
   justify-content: center;
 }
 
-.add-task-close-btn:hover {
+.edit-mode-container .add-task-close-btn:hover {
   background: var(--color-bg-tertiary);
 }
 
+.edit-mode-container .add-task-close-btn img,
 .add-task-close-btn img {
   width: 24px;
   height: 24px;
+}
+
+#taskCategory {
+  appearance: none;
+  background: url('../assets/icons/arrow-drop-down.svg') no-repeat right 16px center;
+  background-color: var(--color-bg-primary);
+}
+
+@media (max-width: 768px) {
+  .add-task-close-btn:not(.d-none) {
+    background: none;
+    border: unset;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .add-task-close-btn:not(.d-none):hover {
+    background: var(--color-bg-tertiary);
+  }
 }
 
 .add-task {
@@ -45,8 +73,9 @@
 
 .error-message {
   color: var(--color-required, #ff3d00);
-  font-size: 12px;
+  font-size: 16px;
   margin-top: 4px;
+  padding-left: 4px;
 }
 
 .add-section-left {
@@ -260,10 +289,16 @@ textarea {
   flex-shrink: 0;
 }
 
+.user-badge-extra {
+  background-color: var(--color-bg-secondary);
+  color: white;
+  font-size: 13px;
+}
+
 .user-badge-small {
   width: 30px;
   height: 30px;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 ::placeholder {
