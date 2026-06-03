@@ -280,18 +280,56 @@
     padding: 20px;
   }
 
+  .summary-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    margin-bottom: 16px;
+  }
+
+  .summary-header h2 {
+    font-size: 48px;
+    margin: 0;
+    order: 1;
+  }
+
+  .summary-header p {
+    font-size: 16px;
+    margin: 0;
+    order: 2;
+  }
+
+  .vertical-line {
+    order: 3;
+    width: 60px;
+    height: 3px;
+    margin-top: 6px;
+  }
+
+  .dashboard-grid {
+    gap: 0;
+  }
+
   .top-row {
-    gap: 16px;
-    padding: 8px 0;
+    gap: 12px;
+    padding: 6px 0;
+  }
+
+  .bottom-row {
+    gap: 8px;
+    padding: 6px 0;
   }
 
   .summary-card {
-    height: 100px;
-    gap: 8px;
+    height: 90px;
   }
 
   .summary-card-content {
     gap: 12px;
+  }
+
+  .summary-card-small {
+    height: 90px;
   }
 
   .urgent-row {
@@ -300,13 +338,14 @@
     justify-content: space-evenly;
     align-items: center;
     padding: 0 16px;
-    height: 100px;
+    height: 90px;
+    margin: 6px 0;
   }
 
   .urgent-divider {
     position: static;
     transform: none;
-    height: 60px;
+    height: 56px;
     margin: 0 8px;
   }
 
@@ -315,8 +354,8 @@
   }
 
   .icon-container {
-    width: 45px;
-    height: 45px;
+    width: 44px;
+    height: 44px;
   }
 
   .icon-container img {
@@ -329,14 +368,10 @@
   }
 
   .stat-label {
-    font-size: 16px;
+    font-size: 14px;
   }
 
-  .bottom-row {
-    gap: 8px;
-  }
-
-  .summary-card-small {
-    height: 100px;
+  .deadline-date {
+    font-size: 14px;
   }
 }
