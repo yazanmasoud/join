@@ -430,7 +430,11 @@ function showDeleteToast() {
 async function saveEditFromDialog(id) {
   const task = getTaskObject();
   if (!isTaskValid(task)) return;
-  await serviceUpdateTask(id, task);
-  document.getElementById('taskDetailDialog').close();
-  if (window.initBoard) window.initBoard();
+  try {
+    await serviceUpdateTask(id, task);
+    if (window.updateBoardTask) window.updateBoardTask(id, task);
+    document.getElementById('taskDetailDialog').close();
+  } catch (e) {
+    console.error('Error saving task:', e);
+  }
 }

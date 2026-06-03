@@ -48,6 +48,17 @@ window.saveEditSubtask = saveEditSubtask;
 window.highlight = highlight;
 window.removeHighlight = removeHighlight;
 
+/**
+ * Updates a single task in boardState and re-renders the board immediately.
+ * Called from task.js after saving an edited task via the dialog.
+ * @param {string} id - Task ID.
+ * @param {Object} taskData - Updated task fields.
+ */
+window.updateBoardTask = function (id, taskData) {
+  boardState.CURRENT_TASKS[id] = { ...boardState.CURRENT_TASKS[id], ...taskData };
+  renderFilteredTasks();
+};
+
 
 /**
  * Initializes the task board by setting up event listeners, loading contacts,
