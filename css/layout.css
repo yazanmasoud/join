@@ -77,6 +77,7 @@ body.help-open .help-icon {
   justify-content: center;
   align-items: center;
   gap: 16px;
+  position: relative;
 }
 
 .help-icon {
@@ -123,10 +124,10 @@ body.help-open .help-icon {
 }
 
 .avatar-dropdown {
-  position: fixed;
+  position: absolute;
   display: none;
-  top: 120px;
-  right: 20px;
+  top: 85px;
+  right: 0px;
   flex-direction: column;
   padding: 10px;
   background-color: var(--color-bg-secondary);
@@ -134,6 +135,7 @@ body.help-open .help-icon {
   border-radius: 20px 0px 20px 20px;
   box-shadow: 0px 0px 4px 0px #0000001a;
   z-index: 999;
+  width: 80px;
 }
 
 .avatar-dropdown.open {
@@ -145,7 +147,7 @@ body.help-open .help-icon {
   font-size: 16px;
   color: var(--color-menu-button-text);
   text-decoration: none;
-  padding: 10px;
+  padding: 6px;
 }
 
 .avatar-dropdown-item:hover {
