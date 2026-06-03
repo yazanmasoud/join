@@ -215,10 +215,14 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   transition: all 125ms ease;
   color: black;
+}
+
+.prio-btn:hover {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .prio-btn.active-urgent {
@@ -391,6 +395,10 @@ button {
   }
 
   .btn-dark {
+    font-size: 16px;
+  }
+
+  .prio-btn {
     font-size: 16px;
   }
 }

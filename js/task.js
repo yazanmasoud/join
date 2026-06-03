@@ -1,6 +1,6 @@
 import { createTask as serviceCreateTask, updateTask as serviceUpdateTask, isTaskValid } from './tasks-service.js';
 
-import { getPriorityButtonsHTML, getSelectOptionsHTML, getSubtaskHTML, getContactCheckboxHTML, getSubtaskEditHTML } from './template.js';
+import { getPriorityButtonsHTML, getSubtaskHTML, getContactCheckboxHTML, getSubtaskEditHTML } from './template.js';
 
 import { clearActivePrioClasses, getPrioClass, CATEGORY_OPTIONS } from './utils.js';
 
@@ -14,6 +14,7 @@ let subtasks = [];
 let currentPriority = 'Medium';
 let selectedContacts = [];
 let assignedDropdownListenerAdded = false;
+let categoryDropdownListenerAdded = false;
 
 /** @section GLOBAL EXPORTS */
 window.toggleSubtaskStatus = toggleSubtaskStatus;
@@ -24,6 +25,8 @@ window.handleSubtaskKey = handleSubtaskKey;
 window.deleteSubtask = deleteSubtask;
 window.prepareEditInDialog = prepareEditInDialog;
 window.toggleContactList = toggleContactList;
+window.toggleCategoryList = toggleCategoryList;
+window.selectCategory = selectCategory;
 window.updateSelectedBadges = updateSelectedBadges;
 window.clearForm = clearForm;
 window.renderContacts = renderContacts;
@@ -74,6 +77,7 @@ export async function initAddTask() {
   renderContacts();
   setPriority(currentPriority);
   setupAssignedDropdownClose();
+  setupCategoryDropdownClose();
   setDateMin();
   const editId = localStorage.getItem('editTaskId');
   if (editId) {
@@ -144,6 +148,7 @@ function fillFormForEdit(data) {
   document.getElementById('taskDescription').value = data.description || '';
   document.getElementById('taskDate').value = data.dueDate || '';
   document.getElementById('taskCategory').value = data.category || '';
+  updateCategoryDisplay();
   subtasks = Array.isArray(data.subtasks) ? data.subtasks : Object.values(data.subtasks || {});
   selectedContacts = (data.assignedTo || []).map((item) => (typeof item === 'object' ? item.name || item.id : item));
   setPriority(data.priority || 'Medium');
@@ -227,11 +232,66 @@ function renderPriorityButtons() {
 
 
 /**
- * Renders category dropdown options.
+ * Renders the custom category dropdown options.
  */
 function renderCategories() {
-  const select = document.getElementById('taskCategory');
-  if (select) select.innerHTML = getSelectOptionsHTML(CATEGORY_OPTIONS, 'Select task category');
+  const list = document.getElementById('categoryList');
+  if (!list) return;
+  list.innerHTML = CATEGORY_OPTIONS.map(
+    (opt) => `<div class="category-option" onclick="selectCategory('${opt}')">${opt}</div>`
+  ).join('');
+  updateCategoryDisplay();
+}
+
+/**
+ * Registers a one-time outside-click listener to close the category dropdown.
+ */
+function setupCategoryDropdownClose() {
+  if (categoryDropdownListenerAdded) return;
+  categoryDropdownListenerAdded = true;
+  document.addEventListener('click', (e) => {
+    const container = document.getElementById('categoryTrigger');
+    const list = document.getElementById('categoryList');
+    if (!list || list.classList.contains('d-none')) return;
+    if (!container?.contains(e.target)) list.classList.add('d-none');
+  });
+}
+
+/**
+ * Toggles the visibility of the custom category dropdown list.
+ * @param {Event} [event] - The triggering click event.
+ */
+function toggleCategoryList(event) {
+  if (event) event.stopPropagation();
+  const list = document.getElementById('categoryList');
+  if (list) list.classList.toggle('d-none');
+}
+
+/**
+ * Selects a category, updates the hidden input and display, clears errors.
+ * @param {string} value - The chosen category.
+ */
+function selectCategory(value) {
+  const input = document.getElementById('taskCategory');
+  if (input) input.value = value;
+  updateCategoryDisplay();
+  toggleErrorState('taskCategory', false);
+  const trigger = document.getElementById('categoryTrigger');
+  if (trigger) trigger.classList.remove('input-error');
+  const list = document.getElementById('categoryList');
+  if (list) list.classList.add('d-none');
+}
+
+/**
+ * Syncs the trigger label with the hidden input's current value.
+ */
+function updateCategoryDisplay() {
+  const input = document.getElementById('taskCategory');
+  const label = document.getElementById('categorySelectedText');
+  if (!input || !label) return;
+  const value = input.value;
+  label.textContent = value || 'Select task category';
+  label.classList.toggle('category-placeholder', !value);
 }
 
 
@@ -358,7 +418,11 @@ function resetFormState() {
   toggleErrorState('taskTitle', false);
   toggleErrorState('taskDate', false);
   toggleErrorState('taskCategory', false);
-  document.getElementById('taskCategory') && (document.getElementById('taskCategory').selectedIndex = 0);
+  const catTrigger = document.getElementById('categoryTrigger');
+  if (catTrigger) catTrigger.classList.remove('input-error');
+  const catInput = document.getElementById('taskCategory');
+  if (catInput) catInput.value = '';
+  updateCategoryDisplay();
   document.getElementById('tasksAssigned') && (document.getElementById('tasksAssigned').selectedIndex = 0);
   if (window.setPriority) setPriority('Medium');
   ['editTaskId', 'editTaskData'].forEach((k) => localStorage.removeItem(k));
@@ -387,7 +451,10 @@ export function prepareEditInDialog(id, data) {
   fillFormForEdit(data);
   renderPriorityButtons();
   renderCategories();
-  if (data.category) document.getElementById('taskCategory').value = data.category;
+  if (data.category) {
+    document.getElementById('taskCategory').value = data.category;
+    updateCategoryDisplay();
+  }
   renderContacts().then(() => typeof updateSelectedBadges === 'function' && updateSelectedBadges());
   applyEditModeUI(id);
 }
