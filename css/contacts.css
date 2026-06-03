@@ -62,7 +62,7 @@
 .contacts-page {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 100%;
 }
 
 .contact-information {
