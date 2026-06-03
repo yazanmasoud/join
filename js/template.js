@@ -29,7 +29,7 @@ export function generateTaskHTML(task, id) {
       <div class="task-category ${cat}">${task.category || ''}</div>
       <div class="mobile-move-container">
       <button class="move-mobile-btn" onclick="toggleMoveMenu(event, '${id}')"><img src="../assets/icons/arrow-drop-down.svg" alt="Move"></button>
-      <div id="moveMenu${id}" class="avatar-dropdown mobile-move-menu" onclick="event.stopPropagation()">
+      <div id="moveMenu${id}" class=" mobile-move-menu" onclick="event.stopPropagation()">
       <p onclick="moveTaskMobile('${id}', 'todo')">To Do</p>
       <p onclick="moveTaskMobile('${id}', 'progress')">In Progress</p>
       <p onclick="moveTaskMobile('${id}', 'feedback')">Awaiting Feedback</p>
@@ -48,7 +48,6 @@ export function generateTaskHTML(task, id) {
     `;
 }
 
-
 /**
  * Builds the body markup for a board task card.
  *
@@ -63,7 +62,6 @@ function renderTaskBody(t) {
     </div>
     ${renderSmallSubtaskInfo(t)}`;
 }
-
 
 /**
  * Renders a progress bar and subtask completion text.
@@ -86,7 +84,6 @@ export function renderSmallSubtaskInfo(task) {
     </div>`; // "Subtasks" Text sorgt dafür, dass keine leeren Punkte stehen
 }
 
-
 /**
  * Generates placeholder HTML for an empty board column.
  * @param {string} label - The text label of the empty column.
@@ -95,7 +92,6 @@ export function renderSmallSubtaskInfo(task) {
 export function getNoTaskPlaceholder(label) {
   return `<div class="no-tasks">No tasks ${label}</div>`;
 }
-
 
 /** --- ADD TASK TEMPLATES --- */
 /**
@@ -116,7 +112,6 @@ export function getPriorityButtonsHTML(selectedPrio) {
     .join('');
 }
 
-
 /**
  * Updates the current priority selection and re-renders priority buttons.
  *
@@ -132,7 +127,6 @@ function setPriority(prio) {
   }
 }
 
-
 /**
  * Generates HTML option elements for a select dropdown menu.
  * @param {string[]} optionsArray - List of string options to display.
@@ -144,7 +138,6 @@ export function getSelectOptionsHTML(optionsArray, defaultText) {
   const opts = optionsArray.map((opt) => `<option value="${opt}">${opt}</option>`).join('');
   return def + opts;
 }
-
 
 /**
  * Generates a single subtask list element with a delete action button.
@@ -166,7 +159,6 @@ export function getSubtaskHTML(task, index) {
       </div>
     </li>`;
 }
-
 
 /**
  * Generates the editable subtask list item markup.
@@ -192,7 +184,6 @@ export function getSubtaskEditHTML(title, index, isEditMode = false, taskId = ''
     </li>`;
 }
 
-
 /** --- TASK DETAIL DIALOG --- */
 /**
  * Generates the full HTML markup template for the task detail view dialog.
@@ -216,7 +207,6 @@ export function generateTaskDetailHTML(task, id) {
     </div>`;
 }
 
-
 /**
  * Generates HTML table rows containing due date and priority badges.
  * @param {Object} task - The task data object.
@@ -235,7 +225,6 @@ export function getDetailInfoRows(task) {
         <img src="../assets/icons/prio-${prio}-icon.svg"></div>
     </div>`;
 }
-
 
 /**
  * Generates the HTML list items for subtasks in the detail view.
@@ -260,7 +249,6 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
     .join('');
 }
 
-
 /**
  * Generates a single subtask row for the task detail view.
  *
@@ -284,7 +272,6 @@ export function getSingleDetailSubtaskHTML(subtask, index, taskId) {
     </li>`;
 }
 
-
 /**
  * Generates the functional action buttons for editing and deleting tasks.
  * @param {string} id - The unique task ID.
@@ -303,7 +290,6 @@ export function getDetailFooter(id) {
     </div>`;
 }
 
-
 /** --- ASSIGNED USERS --- */
 /**
  * Generates an assigned user element containing initials badges and names.
@@ -320,7 +306,6 @@ export function getAssignedUserHTML(name) {
       <span class="user-name">${safeName}</span></div>`;
 }
 
-
 /**
  * Iterates over contacts list parameters and generates detail row HTML output.
  * @param {any} assignedTo - Assigned string name or collection array.
@@ -336,7 +321,6 @@ export function renderAssignedToDetail(assignedTo, showName = true) {
   return badges + extraBadge;
 }
 
-
 /**
  * Generates one assigned contact badge from contact data or a fallback value.
  *
@@ -351,7 +335,6 @@ function renderSingleBadge(item, allContacts, showName) {
   const badge = `<div class="user-badge" style="background-color: ${c?.color || '#ff7a00'}">${getInitials(n)}</div>`;
   return showName ? `<div class="assigned-contact-row">${badge}<span>${n}</span></div>` : badge;
 }
-
 
 /** --- EDIT MODE --- */
 /**
@@ -374,7 +357,6 @@ export function generateEditTaskHTML(task, id) {
     </div>`;
 }
 
-
 /**
  * Generates the layout view container structure for editor left sections.
  * @param {Object} task - The targeted active task data object.
@@ -389,7 +371,6 @@ export function getEditLeftSection(task) {
         <textarea id="editDescription">${task.description || ''}</textarea></div>
     </div>`;
 }
-
 
 /**
  * Generates the right-side editor fields for due date and assignment.
@@ -436,7 +417,6 @@ export function getContactLetter(list, letter) {
     `;
 }
 
-
 /**
  * Gets a single contact item
  * for rendering in the contact list.
@@ -458,7 +438,6 @@ export function getSingleContact(list, contact, index, isActive) {
       </div>
     </div>`;
 }
-
 
 /**
  * Generates the detail view markup for a contact.
@@ -482,7 +461,6 @@ export function getContactDetails(contact) {
         <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div></div>`;
 }
 
-
 /**
  * Generates contact option markup for a select element.
  *
@@ -495,7 +473,6 @@ export function getContactOptionsHTML(contactsArray, defaultText) {
   const opts = contactsArray.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
   return def + opts;
 }
-
 
 /**
  * Generates the HTML for a contact item in the dropdown with your specific icons.
