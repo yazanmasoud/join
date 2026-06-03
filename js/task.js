@@ -8,6 +8,8 @@ import { showSuccessToast, toggleContactList, updateButtonToSaveMode } from './u
 
 import { getContacts } from './contacts-service.js';
 
+import { toggleErrorState } from './tasks-service.js';
+
 let subtasks = [];
 let currentPriority = 'Medium';
 let selectedContacts = [];
@@ -353,6 +355,9 @@ function resetFormInputs() {
  * Resets dropdowns, priority, localStorage and the submit button label.
  */
 function resetFormState() {
+  toggleErrorState('taskTitle', false);
+  toggleErrorState('taskDate', false);
+  toggleErrorState('taskCategory', false);
   document.getElementById('taskCategory') && (document.getElementById('taskCategory').selectedIndex = 0);
   document.getElementById('tasksAssigned') && (document.getElementById('tasksAssigned').selectedIndex = 0);
   if (window.setPriority) setPriority('Medium');
