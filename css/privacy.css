@@ -35,7 +35,12 @@
 }
 
 .privacy-article {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+ul {
+    list-style-type: disc;
+    padding-left: 20px;
 }
