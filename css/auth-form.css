@@ -80,8 +80,8 @@
 .form-error {
   min-height: 18px;
   margin: 0;
-  padding: 0;
-  font-size: 12px;
+  padding: 4px;
+  font-size: 16px;
   line-height: 18px;
   color: var(--color-error);
   visibility: hidden;

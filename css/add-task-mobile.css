@@ -57,6 +57,16 @@
   }
 }
 
+@media (max-width: 768px) {
+  #taskDescription {
+    height: 88px;
+  }
+
+  .add-task-page-header h2 {
+    font-size: 48px;
+  }
+}
+
 @media (max-width: 600px) {
   .form-bottom {
     flex-direction: column;

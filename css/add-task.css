@@ -73,8 +73,9 @@
 
 .error-message {
   color: var(--color-required, #ff3d00);
-  font-size: 12px;
+  font-size: 16px;
   margin-top: 4px;
+  padding-left: 4px;
 }
 
 .add-section-left {
@@ -297,7 +298,7 @@ textarea {
 .user-badge-small {
   width: 30px;
   height: 30px;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 ::placeholder {
