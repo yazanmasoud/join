@@ -4,8 +4,8 @@
   }
 
   .skip-start-animation .logo-start {
-    left: 40px;
-    top: 40px;
+    left: 16px;
+    top: 16px;
     transform: translate(0, 0) scale(1);
   }
 
@@ -31,8 +31,8 @@
 
   .logo-start.shrink,
   .logo-start.final {
-    left: 40px;
-    top: 40px;
+    left: 16px;
+    top: 16px;
     transform: translate(0, 0) scale(1);
   }
 
@@ -44,8 +44,8 @@
   }
 
   .logo-wrap {
-    margin-top: 40px;
-    margin-left: 40px;
+    margin-top: 16px;
+    margin-left: 16px;
   }
 
   .login_btn-container {

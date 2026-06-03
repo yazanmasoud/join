@@ -55,10 +55,6 @@
   .vertical-divider {
     display: none;
   }
-
-  .content-area {
-    padding: 40px 20px;
-  }
 }
 
 @media (max-width: 600px) {
