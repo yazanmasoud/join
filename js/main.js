@@ -31,6 +31,10 @@ function initMainLoginPage() {
   window.handleSignup = handleSignup;
   window.closeSignUp = closeSignUp;
   window.clearSignupInputs = clearSignupInputs;
+  window.checkUsername = checkUsername;
+  window.checkEmail = checkEmail;
+  window.checkPassword = checkPassword;
+  window.checkPrivacy = checkPrivacy;
 }
 
 
