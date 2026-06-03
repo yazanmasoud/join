@@ -72,16 +72,15 @@
         <div id="assignedBadges" class="assigned-badges-container"></div>
       </div>
       <div class="input-group">
-        <label for="taskCategory">Category<span class="required">*</span></label>
-        <select
-          id="taskCategory"
-          onchange="
-            this.classList.remove('input-error');
-            document.getElementById('error-taskCategory').classList.add('d-none');
-          "
-        >
-          <option>Select task category</option>
-        </select>
+        <label for="categoryTrigger">Category<span class="required">*</span></label>
+        <div class="multiselect-container">
+          <div class="select-trigger-wrapper" id="categoryTrigger" onclick="toggleCategoryList(event)">
+            <span id="categorySelectedText" class="category-placeholder">Select task category</span>
+            <img src="../assets/icons/arrow-drop-down.svg" class="dropdown-arrow" />
+          </div>
+          <div id="categoryList" class="dropdown-content category-dropdown d-none"></div>
+        </div>
+        <input type="hidden" id="taskCategory" />
         <div id="error-taskCategory" class="error-message d-none">This field is required</div>
       </div>
       <div class="input-group">

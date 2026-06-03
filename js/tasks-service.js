@@ -54,6 +54,8 @@ export function isTaskValid(task) {
   toggleErrorState('taskTitle', !titleOk);
   toggleErrorState('taskDate', !dateOk);
   toggleErrorState('taskCategory', !catOk);
+  const catTrigger = document.getElementById('categoryTrigger');
+  if (catTrigger) catTrigger.classList.toggle('input-error', !catOk);
 
   return titleOk && dateOk && catOk;
 }

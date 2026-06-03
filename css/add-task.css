@@ -57,6 +57,7 @@
   display: flex;
   gap: 40px;
   flex-wrap: wrap;
+  max-width: 981px;
 }
 
 .add-task .input-group input:focus,
@@ -80,6 +81,7 @@
 
 .add-section-left {
   flex: 1;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
 }
@@ -137,6 +139,11 @@ textarea {
   position: relative;
 }
 
+.multiselect-container:hover {
+  box-shadow: 0 0 4px 0 rgba(41, 171, 226, 0.5);
+  border-radius: 10px;
+}
+
 .select-trigger-wrapper,
 .combo-wrapper {
   display: flex;
@@ -176,6 +183,7 @@ textarea {
 
 .contact-name-left {
   display: flex;
+  align-items: center;
   gap: 12px;
 }
 
@@ -187,6 +195,7 @@ textarea {
   cursor: pointer;
   border-radius: 10px;
   transition: background 125ms;
+  font-size: 20px;
 }
 
 .contact-item:hover span,
@@ -214,6 +223,43 @@ textarea {
   border: 1px solid var(--color-divider);
   border-radius: 0 0 10px 10px;
   z-index: 10;
+}
+
+.category-dropdown {
+  border: none;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.category-option {
+  padding: 12px 20px;
+  font-size: 20px;
+  font-family: 'Inter', sans-serif;
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: background 125ms;
+}
+
+.category-option:hover {
+  background-color: #eeeeee;
+}
+
+.category-placeholder {
+  color: var(--color-divider);
+}
+
+.add-task .select-trigger-wrapper span {
+  font-size: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.add-task .select-trigger-wrapper.input-error {
+  border-color: var(--color-required, #ff3d00);
+}
+
+#categoryTrigger {
+  cursor: pointer;
 }
 
 .contact-label {
@@ -331,4 +377,5 @@ input[type='date']:valid::-webkit-datetime-edit-fields-wrapper {
   align-items: center;
   margin-top: 32px;
   width: 100%;
+  max-width: 981px;
 }
