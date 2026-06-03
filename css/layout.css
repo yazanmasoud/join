@@ -173,6 +173,8 @@ body.help-open .help-icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 110px;
   padding-top: 60px;
 }
 
