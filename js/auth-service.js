@@ -274,7 +274,10 @@ export async function getCurrentUserData() {
  * @returns {boolean} True if the value is a valid email address.
  */
 function isValidEmail(emailValue) {
-  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(emailValue);
+  const isValid =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(emailValue);
+
+  return isValid && !emailValue.includes('..');
 }
 
 
