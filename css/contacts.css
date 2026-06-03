@@ -45,7 +45,7 @@
 .contact-avatar {
   width: 40px;
   height: 40px;
-  font-size: 14px;
+  font-size: 16px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -78,7 +78,7 @@
 
 .contact-email {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-user-mail);
 }
 
@@ -296,7 +296,7 @@
   bottom: 100px;
   left: 50%;
   transform: translateX(-50%) translateY(80px);
-  background-color: #2A3647;
+  background-color: #2a3647;
   color: white;
   padding: 18px 32px;
   border-radius: 12px;
@@ -342,7 +342,6 @@
   margin: 0;
 }
 
-
 .delete-dialog-content p {
   margin: 0;
 }
@@ -354,10 +353,10 @@
 }
 
 .contact-items {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 8px 12px;
-    margin-top: 8px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  cursor: pointer;
 }
