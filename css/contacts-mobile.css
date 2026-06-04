@@ -196,8 +196,12 @@
 }
 
 @media (max-width: 760px) {
-    .contacts-sidebar {
-      width: 100%;
+  .contacts-sidebar {
+    width: 100%;
+  }
+
+  .delete-dialog-content {
+    min-width: 230px
   }
 
 }
@@ -210,6 +214,10 @@
   .contact-dialog #create-save-button {
     width: 100%;
     font-size: 16px;
+  }
+
+  .delete-dialog-content {
+    min-width: 200px
   }
 }
 
