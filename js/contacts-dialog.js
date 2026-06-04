@@ -1,7 +1,9 @@
 import {contacts, setCurrentEditContactId} from './contacts.js';
 import {handleCreateContact, handleSaveContact, validateContactNameInput
 } from './contacts-actions.js';
-export {
+import {clearContactNameError, clearContactEmailError, clearContactPhoneError,
+    validatePhoneInput
+} from './contact-validation.js';export {
     closeAddContact,
     openAddContact,
     openEditContact,
@@ -52,6 +54,7 @@ function openContactDialog() {
 function openAddContact() {
     const elements = getContactDialogElements();
     elements.nameInput.oninput = validateContactNameInput;
+    elements.phoneInput.oninput = validatePhoneInput;
 
     setupCreateDialog(elements);
     resetDialogInputs(elements);
@@ -119,6 +122,9 @@ function resetDialogAvatar(elements) {
  * and removes the animation class.
  */
 function closeAddContact() {
+    clearContactPhoneError();
+    clearContactEmailError();
+    clearContactNameError();
     const dialog = document.getElementById('add-contact-popup');
 
     dialog.classList.remove('contact-dialog-open');
@@ -157,6 +163,7 @@ function openEditContact(contactId) {
 
     const elements = getContactDialogElements();
     elements.nameInput.oninput = validateContactNameInput;
+    elements.phoneInput.oninput = validatePhoneInput;
 
     setupEditDialog(elements, contact, contactId);
     openContactDialog();

@@ -5,7 +5,10 @@ import { closeAddContact, closeDeleteDialog } from './contacts-dialog.js';
 import { getContactDetails } from './template.js';
 import { getRandomColor } from './utils.js';
 import { getTasks, updateTask } from './tasks-service.js';
-
+import { isValidPhone, showContactPhoneError, clearContactPhoneError,
+    isValidContactName, isValidEmail, showContactNameError,
+    clearContactNameError, showContactEmailError,clearContactEmailError,
+} from './contact-validation.js';
 
 export {
     handleCreateContact,
@@ -16,61 +19,21 @@ export {
 
 
 /**
- * Validates contact name — min. 3 chars, no leading space, not starting with digit.
- * @param {string} name
- * @returns {boolean}
- */
-function isValidContactName(name) {
-    return (
-        name.trim().length >= 3 &&
-        !name.startsWith(' ') &&
-        !/^\d/.test(name)
-    );
-}
-
-
-/**
- * Validates that an email address is non-empty and has a valid format.
- * @param {string} email
- * @returns {boolean}
- */
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-}
-
-
-/**
- * Shows the email validation error in the dialog.
- */
-function showContactEmailError() {
-    const input = document.getElementById('contact-email');
-    const error = document.getElementById('contact-email-error');
-    input.classList.add('input-error');
-    if (error) { error.textContent = 'Please enter a valid email'; error.classList.add('visible'); }
-}
-
-
-/**
- * Clears the email validation error in the dialog.
- */
-function clearContactEmailError() {
-    const input = document.getElementById('contact-email');
-    const error = document.getElementById('contact-email-error');
-    input.classList.remove('input-error');
-    if (error) { error.textContent = ''; error.classList.remove('visible'); }
-}
-
-
-/**
  * Validates name and email fields and shows errors if invalid.
  * @param {{name: string, email: string}} data - Contact form data.
  * @returns {boolean} True if all fields are valid.
  */
 function isContactFormValid(data) {
     if (!isValidContactName(data.name)) { showContactNameError(); return false; }
+
     if (!isValidEmail(data.email)) { showContactEmailError(); return false; }
+
+    if (!isValidPhone(data.phone)) { showContactPhoneError(); return false; }
+
     clearContactNameError();
     clearContactEmailError();
+    clearContactPhoneError();
+
     return true;
 }
 
@@ -87,33 +50,6 @@ export function validateContactNameInput() {
         return;
     }
     clearContactNameError();
-}
-
-
-/**
- * Shows name validation error.
- */
-function showContactNameError() {
-    const input = document.getElementById('contact-name');
-    const error = document.getElementById('contact-name-error');
-
-    input.classList.add('input-error');
-    error.textContent =
-        'Please enter a valid name';
-    error.classList.add('visible');
-}
-
-
-/**
- * Clears name validation error.
- */
-function clearContactNameError() {
-    const input = document.getElementById('contact-name');
-    const error = document.getElementById('contact-name-error');
-
-    input.classList.remove('input-error');
-    error.textContent = '';
-    error.classList.remove('visible');
 }
 
 
@@ -355,17 +291,17 @@ function showToast(message) {
  * @param {string} contactId - The contact's ID.
  */
 async function removeContactFromTasks(contactName, contactId) {
-  const tasks = await getTasks();
-  for (const task of tasks) {
-    const assignedTo = task.assignedTo || [];
-    const filtered = assignedTo.filter(entry =>
-      entry !== contactName &&
-      entry !== contactId &&
-      entry?.name !== contactName &&
-      entry?.id !== contactId
-    );
-    if (filtered.length !== assignedTo.length) {
-      await updateTask(task.id, { assignedTo: filtered });
+    const tasks = await getTasks();
+    for (const task of tasks) {
+        const assignedTo = task.assignedTo || [];
+        const filtered = assignedTo.filter(entry =>
+            entry !== contactName &&
+            entry !== contactId &&
+            entry?.name !== contactName &&
+            entry?.id !== contactId
+        );
+        if (filtered.length !== assignedTo.length) {
+            await updateTask(task.id, { assignedTo: filtered });
+        }
     }
-  }
 }
