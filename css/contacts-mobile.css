@@ -74,7 +74,6 @@
     left: 12px;
     right: 12px;
     width: 700px;
-    height: auto;
     max-height: none;
     overflow-y: auto;
     overflow-x: hidden;
@@ -147,7 +146,7 @@
     filter: invert(1);
   }
 
-  #contact-dialog-avatar {
+  .contact-dialog-avatar {
     margin-top: 190px;
     margin-bottom: 20px;
     align-self: center;
@@ -204,6 +203,10 @@
     min-width: 230px
   }
 
+  .contact-inputs-container {
+    gap: 8px;
+  }
+
 }
 
 @media (max-width: 400px) {
@@ -230,7 +233,7 @@
     height: 200px;
   }
 
-  #contact-dialog-avatar {
+  .contact-dialog-avatar {
     margin-top: 150px;
     width: 80px;
     height: 80px;

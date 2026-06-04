@@ -157,7 +157,7 @@
 }
 
 /* dialog avatar: match big avatar size and circular */
-#contact-dialog-avatar {
+.contact-dialog-avatar {
   width: 120px;
   height: 120px;
   border-radius: 50%;
@@ -168,14 +168,14 @@
   background-color: #cccccc;
 }
 
-#contact-dialog-avatar img {
+.contact-dialog-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-#contact-dialog-avatar #contact-dialog-avatar-initials {
+.contact-dialog-avatar .contact-dialog-avatar-initials {
   position: absolute;
   color: #fff;
   font-size: 40px;
