@@ -87,7 +87,7 @@ function setupAddTaskResizeGuard() {
     const dialog = document.getElementById('taskDetailDialog');
     if (dialog?.open && dialog.querySelector('.edit-mode-container') && window.innerWidth < 850) {
       dialog.close();
-      navigateTo('add-task');
+      navigateTo('add-task', { activePage: 'board' });
     }
   });
 }

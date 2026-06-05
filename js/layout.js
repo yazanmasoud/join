@@ -122,16 +122,18 @@ export async function initLayout() {
  * and initializing the corresponding page logic.
  *
  * @param {string} page - The target page identifier.
+ * @param {Object} [options={}] - Optional navigation behavior.
+ * @param {string} [options.activePage] - Page identifier to keep active in navigation.
  * @returns {Promise<void>}
  */
-async function navigateTo(page) {
+async function navigateTo(page, options = {}) {
   const currentPage = pageHistory[pageHistory.length - 1];
   if (currentPage !== page) {
     pageHistory.push(page);
   }
   await loadTemplate('mainContent', `./${page}.html`);
   initPage(page);
-  activateNavByPage(page);
+  activateNavByPage(options.activePage || page);
 }
 
 
