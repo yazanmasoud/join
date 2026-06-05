@@ -1,14 +1,11 @@
 export {
-    isValidPhone,
-    isValidContactName,
-    isValidEmail,
-    showContactPhoneError,
-    clearContactPhoneError,
-    clearContactNameError,
-    clearContactEmailError,
-    showContactNameError,
-    showContactEmailError,
-    validatePhoneInput
+    isValidPhone, isValidContactName,
+    isValidEmail, showContactPhoneError,
+    clearContactPhoneError, clearContactNameError,
+    clearContactEmailError, showContactNameError,
+    showContactEmailError, validatePhoneInput,
+    validateContactNameBlur, validateEmailBlur,
+    validateEmailInput
 };
 
 
@@ -39,12 +36,19 @@ function isValidContactName(name) {
 
 
 /**
- * Validates that an email address is non-empty and has a valid format.
+ * Validates that an email address
+ * has a valid format.
+ *
  * @param {string} email
  * @returns {boolean}
  */
 function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    const trimmedEmail = email.trim();
+
+    return (
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail) &&
+        !trimmedEmail.includes('..')
+    );
 }
 
 
@@ -135,4 +139,53 @@ function validatePhoneInput() {
     }
 
     showContactPhoneError();
+}
+
+
+/**
+ * Validates contact name when
+ * the input loses focus.
+ */
+function validateContactNameBlur() {
+    const name = document.getElementById('contact-name').value;
+
+    if (!name) return;
+
+    if (!isValidContactName(name)) {
+        showContactNameError();
+        return;
+    }
+
+    clearContactNameError();
+}
+
+
+/**
+ * Validates email when
+ * the input loses focus.
+ */
+function validateEmailBlur() {
+    const email = document.getElementById('contact-email').value;
+
+    if (!email) return;
+
+    if (!isValidEmail(email)) {
+        showContactEmailError();
+        return;
+    }
+
+    clearContactEmailError();
+}
+
+
+/**
+ * Clears email error when
+ * the email becomes valid.
+ */
+function validateEmailInput() {
+    const email = document.getElementById('contact-email').value;
+
+    if (isValidEmail(email)) {
+        clearContactEmailError();
+    }
 }
