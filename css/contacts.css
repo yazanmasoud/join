@@ -201,6 +201,7 @@
 .contact-dialog-input {
   box-sizing: border-box;
   width: 400px;
+  padding: 8px 36px 8px 8px;
 }
 
 .contact-inputs-container {
