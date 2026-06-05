@@ -129,13 +129,16 @@ function closeAddContact() {
     clearContactPhoneError();
     clearContactEmailError();
     clearContactNameError();
-    const dialog = document.getElementById('add-contact-popup');
+    const hint = document.querySelector('.contact-input-hint');
 
+    if (hint) {
+        hint.style.display = 'none';
+    }
+
+    const dialog = document.getElementById('add-contact-popup');
     dialog.classList.remove('contact-dialog-open');
 
-    setTimeout(() => {
-        dialog.close();
-    }, 125);
+    setTimeout(() => { dialog.close();}, 125);
 }
 
 
