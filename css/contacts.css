@@ -74,6 +74,12 @@
   margin: 0;
   font-size: 16px;
   color: var(--color-bg-secondary);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  max-width: 180px;
 }
 
 .contact-email {
@@ -230,6 +236,12 @@
   overflow-x: hidden;
 }
 
+.contact-details-name {
+  margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
 .contact-details-title {
   display: flex;
   align-items: center;
@@ -266,6 +278,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
 }
 
 .contact-details-actions {
