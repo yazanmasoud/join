@@ -37,17 +37,21 @@
 }
 
 .subtask-input-actions {
-  display: flex;
+  display: none;
   align-items: center;
   padding-right: 8px;
+}
+
+.subtask-input-wrapper:focus-within .subtask-input-actions {
+  display: flex;
 }
 
 .subtask-input-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -67,8 +71,15 @@
 }
 
 .subtask-input-btn img {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
+}
+
+.subtask-input-divider {
+  color: var(--color-divider);
+  font-size: 20px;
+  line-height: 1;
+  margin: 0 4px;
 }
 
 .subtask-edit-item {
