@@ -5,9 +5,10 @@ import { closeAddContact, closeDeleteDialog } from './contacts-dialog.js';
 import { getContactDetails } from './template.js';
 import { getRandomColor } from './utils.js';
 import { getTasks, updateTask } from './tasks-service.js';
-import { isValidPhone, showContactPhoneError, clearContactPhoneError,
+import {
+    isValidPhone, showContactPhoneError, clearContactPhoneError,
     isValidContactName, isValidEmail, showContactNameError,
-    clearContactNameError, showContactEmailError,clearContactEmailError,
+    clearContactNameError, showContactEmailError, clearContactEmailError,
 } from './contact-validation.js';
 
 export {

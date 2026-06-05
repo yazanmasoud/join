@@ -164,7 +164,6 @@ function openEditContact(contactId) {
     if (!contact) return;
 
     setCurrentEditContactId(contactId);
-
     const elements = getContactDialogElements();
     elements.nameInput.oninput = validateContactNameInput;
     elements.nameInput.onblur = validateContactNameBlur;
