@@ -119,6 +119,19 @@
     flex: 0 0 100%;
   }
 
+  .task-container-empty {
+    overflow-x: hidden;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .task-container-empty .no-tasks {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    max-width: 100%;
+    width: 100%;
+  }
+
   .detail-view-title {
     font-size: 36px;
   }

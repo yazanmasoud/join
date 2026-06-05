@@ -167,7 +167,9 @@ function renderAllTasks(allTasks) {
  */
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
-  if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
+  const isEmpty = !el.hasChildNodes();
+  el.classList.toggle('task-container-empty', isEmpty);
+  if (isEmpty) el.innerHTML = getNoTaskPlaceholder(id);
 }
 
 
