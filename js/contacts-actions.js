@@ -44,16 +44,8 @@ function isContactFormValid(data) {
  */
 export function validateContactNameInput() {
     const name = document.getElementById('contact-name').value;
-    const hint = document.querySelector('.contact-input-hint');
 
-    if (hint) {
-        hint.style.display =
-            name.length > 0 && name.length < 3
-                ? 'block'
-                : 'none';
-    }
-
-    if (name.length >= 3) {
+    if (name.trim().length > 0) {
         clearContactNameError();
     }
 }

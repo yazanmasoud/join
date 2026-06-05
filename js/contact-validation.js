@@ -22,16 +22,13 @@ function isValidPhone(phone) {
 
 
 /**
- * Validates contact name — min. 3 chars, no leading space, not starting with digit.
+ * Validates contact name.
+ *
  * @param {string} name
  * @returns {boolean}
  */
 function isValidContactName(name) {
-    return (
-        name.trim().length >= 3 &&
-        !name.startsWith(' ') &&
-        !/^\d/.test(name)
-    );
+    return name.trim().length > 0;
 }
 
 
@@ -74,9 +71,10 @@ function showContactNameError() {
 
     input.classList.add('input-error');
     error.textContent =
-        'Please enter a valid name';
+        'Name cannot be empty';
     error.classList.add('visible');
 }
+
 
 
 /**
@@ -149,8 +147,6 @@ function validatePhoneInput() {
 function validateContactNameBlur() {
     const name = document.getElementById('contact-name').value;
 
-    if (!name) return;
-
     if (!isValidContactName(name)) {
         showContactNameError();
         return;
@@ -183,9 +179,5 @@ function validateEmailBlur() {
  * the email becomes valid.
  */
 function validateEmailInput() {
-    const email = document.getElementById('contact-email').value;
-
-    if (isValidEmail(email)) {
-        clearContactEmailError();
-    }
+    clearContactEmailError();
 }
