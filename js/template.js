@@ -451,7 +451,7 @@ export function getContactDetails(contact) {
       <div class="contact-details-header">
         <div class="contact-avatar contact-avatar--big" style="background-color: ${contact.color}">${contact.initials}</div>
         <div class="contact-details-header-info">
-          <h3>${contact.name}</h3>
+          <h3 class="contact-details-name">${contact.name}</h3>
           <div class="contact-details-actions">
             <button onclick="window.openEditContact('${contact.id}')" class="edit-delete-btn"><img src="../assets/img/edit-contact.svg" alt="Edit"></button>
             <button onclick="openDeleteDialog('${contact.id}')" class="edit-delete-btn"><img src="../assets/img/delete-contact.svg" alt="Delete"></button>
