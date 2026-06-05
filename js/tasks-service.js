@@ -86,7 +86,9 @@ export function toggleErrorState(id, isError) {
 export async function updateTask(taskId, updatedData) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
-    const updatedTasks = tasks.map((task) => (task.id === taskId ? { ...task, ...updatedData } : task));
+    const updatedTasks = tasks.map((task) =>
+      String(task.id) === String(taskId) ? { ...task, ...updatedData, id: task.id } : task
+    );
     setLocalTasks(updatedTasks);
     return;
   }
@@ -104,7 +106,7 @@ export async function updateTask(taskId, updatedData) {
 export async function deleteTask(taskId) {
   if (isGuestUser()) {
     const tasks = getLocalTasks();
-    const filteredTasks = tasks.filter((task) => task.id !== taskId);
+    const filteredTasks = tasks.filter((task) => String(task.id) !== String(taskId));
     setLocalTasks(filteredTasks);
     return;
   }
