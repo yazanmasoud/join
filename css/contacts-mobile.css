@@ -1,14 +1,20 @@
 /* ===== CONTACTS RESPONSIVE ===== */
 @media (max-width: 1415px) {
-.contact-avatar--big {
+  .contact-avatar--big {
     width: 100px;
     height: 100px;
     font-size: 32px;
   }
 }
+
 @media (max-width: 1200px) {
   .contact-details {
     padding: 40px;
+  }
+
+  .contact-dialog-avatar {
+    width: 100px;
+    height: 100px;
   }
 }
 
@@ -222,9 +228,6 @@
 }
 
 @media (max-width: 400px) {
-  .contact-dialog #cancel-delete-button {
-    display: none;
-  }
 
   .contact-dialog #create-save-button {
     width: 100%;
@@ -234,6 +237,7 @@
   .delete-dialog-content {
     min-width: 200px
   }
+
   .contact-dialog-avatar .contact-dialog-avatar-initials {
     font-size: 28px;
   }
