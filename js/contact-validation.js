@@ -28,7 +28,12 @@ function isValidPhone(phone) {
  * @returns {boolean}
  */
 function isValidContactName(name) {
-    return name.trim().length > 0;
+    const trimmedName = name.trim();
+
+    return (
+        trimmedName.length > 0 &&
+        /[a-zA-Z]/.test(trimmedName)
+    );
 }
 
 
@@ -65,13 +70,12 @@ function showContactPhoneError() {
 /**
  * Shows name validation error.
  */
-function showContactNameError() {
+function showContactNameError(message) {
     const input = document.getElementById('contact-name');
     const error = document.getElementById('contact-name-error');
 
     input.classList.add('input-error');
-    error.textContent =
-        'Name cannot be empty';
+    error.textContent = message;
     error.classList.add('visible');
 }
 
@@ -145,10 +149,15 @@ function validatePhoneInput() {
  * the input loses focus.
  */
 function validateContactNameBlur() {
-    const name = document.getElementById('contact-name').value;
+    const name = document.getElementById('contact-name').value.trim();
 
-    if (!isValidContactName(name)) {
-        showContactNameError();
+    if (!name) {
+        showContactNameError('Name is required');
+        return;
+    }
+
+    if (!/[a-zA-Z]/.test(name)) {
+        showContactNameError('Name must contain letters');
         return;
     }
 
