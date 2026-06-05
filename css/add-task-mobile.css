@@ -67,6 +67,39 @@
   }
 }
 
+/* Fixiert die Action-Buttons über der mobilen Bottom-NavBar (80px hoch), ohne mitzuscrollen.
+   Die Leiste wird exakt auf die Feld-Box gelegt (linkes Content-Padding + Spaltenbreite 440px),
+   damit die Buttons rechtsbündig unter dem Inhalt enden statt am Viewport-Rand.
+   Breakpoint 760px = ab hier erscheint die NavBar unten (layout.css);
+   Content-Padding ist 60px (>600) bzw. 16px (<=600, siehe summary.css). */
+@media (max-width: 760px) {
+  .form-actions {
+    position: fixed;
+    bottom: 80px;
+    left: 60px;
+    width: min(440px, calc(100% - 120px));
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 12px 0;
+    background: var(--color-bg-quaternary);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    z-index: 5;
+  }
+
+  /* Scroll-Platz, damit der letzte Inhalt nicht hinter der fixen Leiste verschwindet */
+  .form-bottom {
+    padding-bottom: 90px;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-actions {
+    left: 16px;
+    width: min(440px, calc(100% - 32px));
+  }
+}
+
 @media (max-width: 600px) {
   .form-bottom {
     flex-direction: column;
