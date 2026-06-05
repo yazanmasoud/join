@@ -239,11 +239,6 @@ export function getDetailSubtasksHTML(subtasks, taskId) {
 <input type="checkbox" ${subtask.done ? 'checked' : ''} onclick="toggleSubtask('${taskId}', ${index})">
 <span>${subtask.title}</span>
 </div>
-<div class="subtask-icons">
-<img src="../assets/icons/edit-icon.svg" onclick="editEditSubtask(${index}, '${taskId}')">
-<div class="icon-divider"></div>
-<img src="../assets/icons/delete-icon.svg" onclick="deleteEditSubtask('${taskId}', ${index})">
-</div>
 </li>`,
     )
     .join('');
