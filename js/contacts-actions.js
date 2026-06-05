@@ -5,9 +5,10 @@ import { closeAddContact, closeDeleteDialog } from './contacts-dialog.js';
 import { getContactDetails } from './template.js';
 import { getRandomColor } from './utils.js';
 import { getTasks, updateTask } from './tasks-service.js';
-import { isValidPhone, showContactPhoneError, clearContactPhoneError,
+import {
+    isValidPhone, showContactPhoneError, clearContactPhoneError,
     isValidContactName, isValidEmail, showContactNameError,
-    clearContactNameError, showContactEmailError,clearContactEmailError,
+    clearContactNameError, showContactEmailError, clearContactEmailError,
 } from './contact-validation.js';
 
 export {
@@ -44,12 +45,17 @@ function isContactFormValid(data) {
 export function validateContactNameInput() {
     const name = document.getElementById('contact-name').value;
     const hint = document.querySelector('.contact-input-hint');
-    if (hint) hint.style.display = (name.length > 0 && name.length < 3) ? 'block' : 'none';
-    if (!isValidContactName(name)) {
-        showContactNameError();
-        return;
+
+    if (hint) {
+        hint.style.display =
+            name.length > 0 && name.length < 3
+                ? 'block'
+                : 'none';
     }
-    clearContactNameError();
+
+    if (name.length >= 3) {
+        clearContactNameError();
+    }
 }
 
 
