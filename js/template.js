@@ -452,7 +452,7 @@ export function getContactDetails(contact) {
             <button onclick="openDeleteDialog('${contact.id}')" class="edit-delete-btn"><img src="../assets/img/delete-contact.svg" alt="Delete"></button>
           </div></div></div>
       <div class="contact-details-information"><span>Contact Information</span>
-        <span><b>Email:</b> <a class="contact-email" href="mailto:${contact.email}">${contact.email}</a></span>
+        <span><b>Email:</b> <a class="contact-details-email" href="mailto:${contact.email}">${contact.email}</a></span>
         <span><b>Phone:</b> ${contact.phone || 'No phone number'}</span></div></div>`;
 }
 

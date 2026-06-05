@@ -68,17 +68,18 @@
 .contact-information {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
+
 }
 
 .contact-name {
   margin: 0;
   font-size: 16px;
   color: var(--color-bg-secondary);
-
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-
   max-width: 180px;
 }
 
@@ -86,6 +87,12 @@
   margin: 0;
   font-size: 16px;
   color: var(--color-user-mail);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+
 }
 
 /* ===== SIDE BAR ===== */
@@ -295,6 +302,13 @@
   flex-direction: column;
   gap: 30px;
   margin-top: 20px;
+}
+
+.contact-details-email {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  color: var(--color-user-mail);
+
 }
 
 /* ===== TOAST MESSAGE ===== */
