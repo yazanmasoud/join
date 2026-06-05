@@ -9,6 +9,68 @@
   overflow-y: auto;
 }
 
+.subtask-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--color-divider);
+  border-radius: 10px;
+  background: var(--color-bg-primary);
+  box-sizing: border-box;
+}
+
+.subtask-input-wrapper:focus-within {
+  border-color: #29abe2;
+  box-shadow: 0 0 4px 0 rgba(41, 171, 226, 0.5);
+}
+
+.subtask-input-wrapper input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+}
+
+.add-task .input-group .subtask-input-wrapper input:focus {
+  box-shadow: none;
+}
+
+.subtask-input-actions {
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+}
+
+.subtask-input-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 125ms ease, transform 125ms ease;
+}
+
+.subtask-input-btn:hover,
+.subtask-input-btn:focus-visible {
+  background: rgba(12, 46, 98, 0.12);
+  transform: scale(1.08);
+}
+
+.subtask-input-btn:active {
+  transform: scale(0.96);
+}
+
+.subtask-input-btn img {
+  width: 16px;
+  height: 16px;
+}
+
 .subtask-edit-item {
   display: flex;
   align-items: center;
