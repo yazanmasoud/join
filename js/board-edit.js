@@ -22,7 +22,7 @@ export async function editTask(id) {
   localStorage.setItem('editTaskData', JSON.stringify(task));
   if (window.innerWidth < 850) {
     closeTaskDetail();
-    navigateTo('add-task');
+    navigateTo('add-task', { activePage: 'board' });
     return;
   }
   await openEditTaskDialog(id, task);

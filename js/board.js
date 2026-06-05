@@ -87,7 +87,7 @@ function setupAddTaskResizeGuard() {
     const dialog = document.getElementById('taskDetailDialog');
     if (dialog?.open && dialog.querySelector('.edit-mode-container') && window.innerWidth < 850) {
       dialog.close();
-      navigateTo('add-task');
+      navigateTo('add-task', { activePage: 'board' });
     }
   });
 }
@@ -167,7 +167,9 @@ function renderAllTasks(allTasks) {
  */
 function checkPlaceholder(id) {
   const el = document.getElementById(id);
-  if (!el.hasChildNodes()) el.innerHTML = getNoTaskPlaceholder(id);
+  const isEmpty = !el.hasChildNodes();
+  el.classList.toggle('task-container-empty', isEmpty);
+  if (isEmpty) el.innerHTML = getNoTaskPlaceholder(id);
 }
 
 

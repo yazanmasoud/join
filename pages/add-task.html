@@ -85,7 +85,18 @@
       </div>
       <div class="input-group">
         <label for="subtasks">Subtasks</label>
-        <input type="text" id="subtasks" placeholder="Add new subtask" onkeydown="handleSubtaskKey(event)" />
+        <div class="subtask-input-wrapper">
+          <input type="text" id="subtasks" placeholder="Add new subtask" onkeydown="handleSubtaskKey(event)" />
+          <div class="subtask-input-actions">
+            <button type="button" class="subtask-input-btn" onclick="clearSubtaskInput()" aria-label="Clear subtask input">
+              <img src="../assets/icons/cancel-icon.svg" alt="" />
+            </button>
+            <span class="subtask-input-divider" aria-hidden="true">|</span>
+            <button type="button" class="subtask-input-btn" onclick="addSubtaskFromInput()" aria-label="Add subtask">
+              <img src="../assets/icons/subtask-check-icon.svg" alt="" />
+            </button>
+          </div>
+        </div>
         <ul id="subtasksList" class="subtasks-item-list"></ul>
       </div>
     </div>

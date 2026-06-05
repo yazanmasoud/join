@@ -1,9 +1,11 @@
-import {contacts, setCurrentEditContactId} from './contacts.js';
-import {handleCreateContact, handleSaveContact, validateContactNameInput
+import { contacts, setCurrentEditContactId } from './contacts.js';
+import {
+    handleCreateContact, handleSaveContact, validateContactNameInput
 } from './contacts-actions.js';
-import {clearContactNameError, clearContactEmailError, clearContactPhoneError,
-    validatePhoneInput
-} from './contact-validation.js';export {
+import {
+    clearContactNameError, clearContactEmailError, clearContactPhoneError,
+    validatePhoneInput, validateContactNameBlur, validateEmailBlur, validateEmailInput
+} from './contact-validation.js'; export {
     closeAddContact,
     openAddContact,
     openEditContact,
@@ -54,8 +56,10 @@ function openContactDialog() {
 function openAddContact() {
     const elements = getContactDialogElements();
     elements.nameInput.oninput = validateContactNameInput;
+    elements.nameInput.onblur = validateContactNameBlur;
     elements.phoneInput.oninput = validatePhoneInput;
-
+    elements.emailInput.onblur = validateEmailBlur;
+    elements.emailInput.oninput = validateEmailInput;
     setupCreateDialog(elements);
     resetDialogInputs(elements);
     resetDialogAvatar(elements);
@@ -79,9 +83,9 @@ function setupCreateDialog(elements) {
 
     elements.createSaveButton.onclick = handleCreateContact;
 
-    elements.cancelDeleteButton.innerHTML ='Cancel';
+    elements.cancelDeleteButton.innerHTML = 'Cancel';
 
-    elements.cancelDeleteButton.onclick =closeAddContact;
+    elements.cancelDeleteButton.onclick = closeAddContact;
 
     elements.createSaveButton.classList.remove('save-button');
 }
@@ -125,13 +129,11 @@ function closeAddContact() {
     clearContactPhoneError();
     clearContactEmailError();
     clearContactNameError();
-    const dialog = document.getElementById('add-contact-popup');
 
+    const dialog = document.getElementById('add-contact-popup');
     dialog.classList.remove('contact-dialog-open');
 
-    setTimeout(() => {
-        dialog.close();
-    }, 125);
+    setTimeout(() => { dialog.close();}, 125);
 }
 
 
@@ -160,11 +162,12 @@ function openEditContact(contactId) {
     if (!contact) return;
 
     setCurrentEditContactId(contactId);
-
     const elements = getContactDialogElements();
     elements.nameInput.oninput = validateContactNameInput;
+    elements.nameInput.onblur = validateContactNameBlur;
     elements.phoneInput.oninput = validatePhoneInput;
-
+    elements.emailInput.onblur = validateEmailBlur;
+    elements.emailInput.oninput = validateEmailInput;
     setupEditDialog(elements, contact, contactId);
     openContactDialog();
 }
@@ -196,11 +199,11 @@ function setupEditDialog(elements, contact, contactId) {
  * @param {string} contactId
  */
 function setupEditButtons(elements, contactId) {
-    elements.createSaveButton.innerHTML ='Save';
+    elements.createSaveButton.innerHTML = 'Save';
 
     elements.createSaveButton.onclick = handleSaveContact;
 
-    elements.cancelDeleteButton.innerHTML ='Delete';
+    elements.cancelDeleteButton.innerHTML = 'Delete';
 
     elements.cancelDeleteButton.onclick = () => openDeleteDialog(contactId);
 

@@ -1,14 +1,11 @@
 export {
-    isValidPhone,
-    isValidContactName,
-    isValidEmail,
-    showContactPhoneError,
-    clearContactPhoneError,
-    clearContactNameError,
-    clearContactEmailError,
-    showContactNameError,
-    showContactEmailError,
-    validatePhoneInput
+    isValidPhone, isValidContactName,
+    isValidEmail, showContactPhoneError,
+    clearContactPhoneError, clearContactNameError,
+    clearContactEmailError, showContactNameError,
+    showContactEmailError, validatePhoneInput,
+    validateContactNameBlur, validateEmailBlur,
+    validateEmailInput
 };
 
 
@@ -25,26 +22,35 @@ function isValidPhone(phone) {
 
 
 /**
- * Validates contact name — min. 3 chars, no leading space, not starting with digit.
+ * Validates contact name.
+ *
  * @param {string} name
  * @returns {boolean}
  */
 function isValidContactName(name) {
+    const trimmedName = name.trim();
+
     return (
-        name.trim().length >= 3 &&
-        !name.startsWith(' ') &&
-        !/^\d/.test(name)
+        trimmedName.length > 0 &&
+        /[a-zA-Z]/.test(trimmedName)
     );
 }
 
 
 /**
- * Validates that an email address is non-empty and has a valid format.
+ * Validates that an email address
+ * has a valid format.
+ *
  * @param {string} email
  * @returns {boolean}
  */
 function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    const trimmedEmail = email.trim();
+
+    return (
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail) &&
+        !trimmedEmail.includes('..')
+    );
 }
 
 
@@ -64,15 +70,15 @@ function showContactPhoneError() {
 /**
  * Shows name validation error.
  */
-function showContactNameError() {
+function showContactNameError(message) {
     const input = document.getElementById('contact-name');
     const error = document.getElementById('contact-name-error');
 
     input.classList.add('input-error');
-    error.textContent =
-        'Please enter a valid name';
+    error.textContent = message;
     error.classList.add('visible');
 }
+
 
 
 /**
@@ -135,4 +141,52 @@ function validatePhoneInput() {
     }
 
     showContactPhoneError();
+}
+
+
+/**
+ * Validates contact name when
+ * the input loses focus.
+ */
+function validateContactNameBlur() {
+    const name = document.getElementById('contact-name').value.trim();
+
+    if (!name) {
+        showContactNameError('Name is required');
+        return;
+    }
+
+    if (!/[a-zA-Z]/.test(name)) {
+        showContactNameError('Name must contain letters');
+        return;
+    }
+
+    clearContactNameError();
+}
+
+
+/**
+ * Validates email when
+ * the input loses focus.
+ */
+function validateEmailBlur() {
+    const email = document.getElementById('contact-email').value;
+
+    if (!email) return;
+
+    if (!isValidEmail(email)) {
+        showContactEmailError();
+        return;
+    }
+
+    clearContactEmailError();
+}
+
+
+/**
+ * Clears email error when
+ * the email becomes valid.
+ */
+function validateEmailInput() {
+    clearContactEmailError();
 }

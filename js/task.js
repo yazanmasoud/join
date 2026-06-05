@@ -22,6 +22,8 @@ window.initAddTask = initAddTask;
 window.createTask = createTask;
 window.setPriority = setPriority;
 window.handleSubtaskKey = handleSubtaskKey;
+window.addSubtaskFromInput = addSubtaskFromInput;
+window.clearSubtaskInput = clearSubtaskInput;
 window.deleteSubtask = deleteSubtask;
 window.prepareEditInDialog = prepareEditInDialog;
 window.toggleContactList = toggleContactList;
@@ -318,14 +320,32 @@ export async function renderContacts(searchTerm = '') {
 function handleSubtaskKey(event) {
   if (event.key === 'Enter') {
     event.preventDefault();
-    let input = document.getElementById('subtasks');
-    let title = input.value.trim();
-    if (title.length > 0) {
-      subtasks.push({ title: title, done: false });
-      input.value = '';
-      renderSubtasks();
-    }
+    addSubtaskFromInput();
   }
+}
+
+
+/**
+ * Adds the current subtask input value to the subtask list.
+ */
+function addSubtaskFromInput() {
+  const input = document.getElementById('subtasks');
+  const title = input?.value.trim();
+  if (!title) return;
+  subtasks.push({ title: title, done: false });
+  clearSubtaskInput();
+  renderSubtasks();
+}
+
+
+/**
+ * Clears the subtask input field and keeps it ready for typing.
+ */
+function clearSubtaskInput() {
+  const input = document.getElementById('subtasks');
+  if (!input) return;
+  input.value = '';
+  input.focus();
 }
 
 
