@@ -1,0 +1,16 @@
+# pack-refs with: peeled fully-peeled sorted 
+31b5eb7a564047ba2ba7b63047ebdde5a40beab3 refs/heads/Developement
+bc046243f0d660e3631edd84faa08fd08b6c494b refs/heads/add-js-docs
+65d9f70b121ad080f4b36dc39ce363c6936a003a refs/heads/adrian
+fcf31e84f57d42ad7e0ac74acee7871f0cc6f184 refs/heads/dev
+e21e1420d83cdb4693a11c1ffe88c13650bda59b refs/heads/feature1
+5768ccc609e017770b536d6d94888ac69b867edf refs/heads/feature3
+aab01df8f1b66c3c9dfb4b76a87df88d6c981d1b refs/heads/feature4
+aab01df8f1b66c3c9dfb4b76a87df88d6c981d1b refs/heads/feature5
+aab01df8f1b66c3c9dfb4b76a87df88d6c981d1b refs/heads/feature6
+669c12bfaf102ae2851e340e39d9ac2094aff410 refs/heads/feature6.1
+d50b77e063ce4bcb13d48e4d0a4e8dd0490909e5 refs/heads/features
+d5b2dc46209f024b83cdedc7aafc66e8ff00cc17 refs/heads/index-features
+b53f14361e6cd43e646d14c36f587f862dd2672a refs/heads/main
+bf83520b34b87dc3c09f03be4810d45ad40e7d47 refs/heads/refactor/firebase-v9
+c89276e98a22a0a877485263a15151fbfa9dfbcc refs/heads/task
