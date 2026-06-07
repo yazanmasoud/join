@@ -2,26 +2,37 @@
 
 ## 📝 Description
 
-Join is a web-based Kanban board application designed to help teams manage tasks efficiently.
-It allows users to organize tasks into different stages, track progress, and collaborate in real time.
+Join is a web-based Kanban board application developed as a team project. It helps users organize, track, and manage tasks through an intuitive Kanban workflow.
+
+The application allows users to create tasks, assign contacts, track progress, and manage projects efficiently using a responsive user interface.
 
 ---
 
 ## 🚀 Features
 
-* Create and manage tasks
-* Drag & drop functionality
-* Task categories (To Do, In Progress, Done)
-* Assign tasks to team members
-* Simple and clean user interface
+* User authentication with Firebase
+* Guest login functionality
+* Create, edit, and delete tasks
+* Drag & drop task management
+* Task categories and priorities
+* Contact management
+* Responsive design for desktop and mobile devices
+* Real-time data storage with Firebase Realtime Database
+* Task assignment to contacts
+* Subtask management
 
 ---
 
 ## 🛠️ Technologies
 
-* HTML
-* CSS
-* JavaScript
+* HTML5
+* CSS3
+* JavaScript (ES6 Modules)
+* Firebase Authentication
+* Firebase Realtime Database
+* Git
+* GitHub
+* JSDoc
 
 ---
 
@@ -29,28 +40,42 @@ It allows users to organize tasks into different stages, track progress, and col
 
 1. Clone the repository:
 
-```
-git clone https://github.com/USERNAME/join.git
+```bash
+git clone https://github.com/yazanmasoud/join.git
 ```
 
-2. Open the project:
+2. Open the project folder:
 
-```
+```bash
 cd join
-code .
 ```
 
-3. Open `index.html` in your browser
+3. Start the project using a local server (for example VS Code Live Server).
 
 ---
 
-## 👥 Team
+## 👥 Team Project
 
-This project is developed as a group project.
-Each member contributes to different parts of the application.
+This project was developed collaboratively as part of a web development bootcamp.
+
+Team members contributed to different areas of the application, including authentication, task management, contacts, UI/UX, responsiveness, and Firebase integration.
 
 ---
 
-## 📌 Status
+## 📌 Project Status
 
-🚧 Work in progress – more features coming soon.
+✅ Completed and successfully accepted.
+
+---
+
+## 📄 Documentation
+
+Project documentation was generated using JSDoc.
+
+To generate the documentation locally:
+
+```bash
+npx jsdoc ./js -r
+```
+
+The generated documentation will be available in the `out/` directory.
